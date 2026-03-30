@@ -2,12 +2,137 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=dashboard.html">
-<title>resumeai</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai &mdash; Smarter resume tailoring</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/public.css">
 </head>
-<body>
-<p style="font-family:sans-serif;color:#888;margin:40px auto;text-align:center">
-  Redirecting… <a href="dashboard.html">click here if not redirected</a>
-</p>
+<body class="public-body">
+<div class="public-page">
+  <header class="site-nav">
+    <a class="site-brand" href="index.html">resumeai</a>
+    <nav class="site-links">
+      <a href="about.html">About</a>
+      <button type="button" class="nav-link-btn" onclick="showAuthModal()">Login</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="hero-kicker">PRE-AUTH EXPERIENCE</div>
+        <h1 class="hero-title">Tailor every resume without rebuilding your story from scratch.</h1>
+        <p class="hero-text">Upload once, match faster, and keep your best versions organized across ATS checks, JD comparisons, and exports.</p>
+        <div class="hero-actions">
+          <button class="primary-cta" type="button" onclick="showAuthModal()">Start with Google</button>
+          <a class="secondary-cta" href="about.html">See how it works</a>
+        </div>
+        <div class="hero-meta">
+          <span>3 parses per day on Free Plan</span>
+          <span>Rule-based ATS + JD matching</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="visual-board">
+          <div class="visual-topline">
+            <span class="visual-pill">Most recent</span>
+            <span class="visual-pill muted">Google-ready</span>
+          </div>
+          <div class="visual-doc">
+            <div class="visual-doc-head">
+              <div class="visual-name">Arjun Kumar</div>
+              <div class="visual-sub">Backend-focused resume</div>
+            </div>
+            <div class="visual-lines">
+              <span style="width:78%"></span>
+              <span style="width:92%"></span>
+              <span style="width:66%"></span>
+              <span style="width:88%"></span>
+            </div>
+          </div>
+          <div class="visual-report">
+            <div class="visual-report-num">87</div>
+            <div class="visual-report-copy">
+              <div>Strong ATS signal</div>
+              <small>5 matched keywords surfaced for the role</small>
+            </div>
+          </div>
+        </div>
+        <div class="visual-shadow"></div>
+      </div>
+    </section>
+
+    <section class="feature-strip">
+      <article>
+        <h2>Versioned resume workspace</h2>
+        <p>Keep targeted versions for SDE, PM, data, and ML applications without losing the master source.</p>
+      </article>
+      <article>
+        <h2>Fast JD matching</h2>
+        <p>Compare one resume against a saved job description and see where the language still misses.</p>
+      </article>
+      <article>
+        <h2>Practical free plan</h2>
+        <p>Start lightweight with daily parsing limits and usage tracking before expanding the workflow.</p>
+      </article>
+    </section>
+
+    <section class="split-story">
+      <div class="story-card">
+        <div class="story-label">Workflow</div>
+        <h3>Upload, parse, refine, export.</h3>
+        <p>resumeai is designed for iterative application work. Parse a PDF, inspect the text, tune it for a role, then export the improved version.</p>
+      </div>
+      <div class="story-steps">
+        <div class="story-step">
+          <span>01</span>
+          <div>
+            <h4>Bring in your resume</h4>
+            <p>Import from PDF or paste raw text when you need to start quickly.</p>
+          </div>
+        </div>
+        <div class="story-step">
+          <span>02</span>
+          <div>
+            <h4>Run ATS and JD checks</h4>
+            <p>See score summaries, missing keywords, and a detailed report without leaving the page.</p>
+          </div>
+        </div>
+        <div class="story-step">
+          <span>03</span>
+          <div>
+            <h4>Manage versions</h4>
+            <p>Rename, page through, and maintain separate resumes and saved JDs as your applications grow.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>resumeai prototype</span>
+    <div>
+      <a href="about.html">About</a>
+      <a href="404.html">404</a>
+      <a href="500.html">500</a>
+    </div>
+  </footer>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal">
+    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
+    <div class="auth-eyebrow">SIGN IN / SIGN UP</div>
+    <h2>Continue with Google</h2>
+    <p>Use your Google account to enter the resumeai workspace. This prototype only supports Google auth.</p>
+    <button class="google-cta" type="button" onclick="continueWithGoogle()">
+      <span class="google-badge">G</span>
+      <span>Continue with Google</span>
+    </button>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
 </body>
 </html>

@@ -36,64 +36,29 @@
   </nav>
 
   <div class="profile-body" style="flex-direction:column;gap:16px">
-    <div style="display:flex;align-items:center;gap:16px">
+    <div class="profile-section" style="display:flex;align-items:center;gap:16px">
       <div class="profile-avatar-big">AK</div>
       <div style="flex:1">
-        <div style="display:flex;gap:5px;margin-bottom:4px">
-          <span class="badge-accent">PRO PLAN</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px">
+          <span class="badge-accent">FREE PLAN</span>
           <span class="badge-info">MEMBER SINCE JAN 2026</span>
         </div>
         <div class="profile-name" style="font-size:16px">Arjun Kumar</div>
         <div class="profile-email">arjun@email.com</div>
       </div>
-      <button class="r-action primary" style="padding:6px 14px;font-size:11px">Edit profile</button>
       <button class="r-action" style="padding:6px 14px;font-size:11px;border-color:var(--err);color:var(--err)" onclick="window.location.href='index.html'">Logout</button>
     </div>
 
-    <div style="display:flex;gap:12px">
-      <div style="flex:1;display:flex;flex-direction:column;gap:12px">
-        <div class="profile-section">
-          <div class="profile-section-title">Account details</div>
-          <div class="profile-field"><div class="pfl">Full name</div><input class="pfi" value="Arjun Kumar"></div>
-          <div class="profile-field"><div class="pfl">Email</div><input class="pfi" value="arjun@email.com"></div>
-          <div class="profile-field"><div class="pfl">Phone</div><input class="pfi" value="+91 98765 43210"></div>
-        </div>
-        <div class="profile-section">
-          <div class="profile-section-title">Preferences</div>
-          <div class="profile-field"><div class="pfl">Default template</div><div class="pfi" style="cursor:pointer">Classic (B&amp;W) &#9662;</div></div>
-          <div class="profile-field"><div class="pfl">Export format</div><div class="pfi" style="cursor:pointer">PDF &#9662;</div></div>
-          <div class="profile-field" style="display:flex;align-items:center;justify-content:space-between">
-            <div class="pfl" style="margin-bottom:0">Auto-compile on save</div>
-            <div style="width:32px;height:18px;border-radius:9px;background:var(--accent);cursor:pointer;position:relative">
-              <div style="width:14px;height:14px;border-radius:50%;background:white;position:absolute;top:2px;right:2px"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="flex:1;display:flex;flex-direction:column;gap:12px">
-        <div class="profile-section">
-          <div class="profile-section-title">Profile completeness</div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="font-size:22px;font-weight:600;font-family:var(--font);color:var(--accent)">70%</div>
-            <div style="flex:1"><div class="usage-track"><div class="usage-fill" style="width:70%"></div></div></div>
-          </div>
-          <div class="audit-row"><span class="abadge bp">&#10003;</span>Contact information added</div>
-          <div class="audit-row"><span class="abadge bp">&#10003;</span>Email verified</div>
-          <div class="audit-row"><span class="abadge bw">!</span>Add a profile summary</div>
-          <div class="audit-row"><span class="abadge bf">&#10007;</span>Connect LinkedIn profile</div>
-          <div class="audit-row"><span class="abadge bf">&#10007;</span>Set up GitHub link</div>
-        </div>
-        <div class="profile-section">
-          <div class="profile-section-title">Usage this month</div>
-          <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
-          <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
-          <div class="usage-row" style="margin-top:10px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
-          <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
-          <div class="usage-row" style="margin-top:10px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
-          <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
-        </div>
-      </div>
+    <div class="profile-section">
+      <div class="profile-section-title">Usage details</div>
+      <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
+      <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
+      <div class="usage-row" style="margin-top:10px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
+      <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
+      <div class="usage-row" style="margin-top:10px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
+      <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
+      <div class="usage-row" style="margin-top:10px"><span>Parses today</span><span style="font-family:var(--font)">3 / 3</span></div>
+      <div class="usage-track"><div class="usage-fill" style="width:100%"></div></div>
     </div>
   </div>
 </div><!-- /desktop-view -->
@@ -104,12 +69,12 @@
       <span class="mob-topbar-logo">resumeai</span>
       <div class="avatar" style="margin-left:auto;border-color:var(--accent-dim)">AK</div>
     </div>
-    <div style="flex:1;overflow-y:auto">
-      <div style="padding:16px 14px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid var(--border0)">
-        <div class="profile-avatar-big" style="width:44px;height:44px;font-size:16px">AK</div>
+    <div style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:12px">
+      <div class="profile-section" style="display:flex;align-items:center;gap:12px">
+        <div class="profile-avatar-big" style="width:46px;height:46px;font-size:16px">AK</div>
         <div style="flex:1">
-          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:3px">
-            <span class="badge-accent" style="font-size:7px">PRO PLAN</span>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">
+            <span class="badge-accent" style="font-size:7px">FREE PLAN</span>
             <span class="badge-info" style="font-size:7px">MEMBER SINCE JAN 2026</span>
           </div>
           <div style="font-size:13px;font-weight:500">Arjun Kumar</div>
@@ -117,54 +82,19 @@
         </div>
       </div>
 
-      <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:8px">
-          <button class="r-action primary" style="flex:1;padding:10px;font-size:11px">Edit profile</button>
-          <button class="r-action" style="flex:1;padding:10px;font-size:11px;border-color:var(--err);color:var(--err)" onclick="window.location.href='index.html'">Logout</button>
-        </div>
-
-        <div class="profile-section">
-          <div class="profile-section-title">Account details</div>
-          <div class="profile-field"><div class="pfl">Full name</div><input class="pfi" value="Arjun Kumar"></div>
-          <div class="profile-field"><div class="pfl">Email</div><input class="pfi" value="arjun@email.com"></div>
-          <div class="profile-field"><div class="pfl">Phone</div><input class="pfi" value="+91 98765 43210"></div>
-        </div>
-
-        <div class="profile-section">
-          <div class="profile-section-title">Profile completeness</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <div style="font-size:18px;font-weight:600;font-family:var(--font);color:var(--accent)">70%</div>
-            <div style="flex:1"><div class="usage-track"><div class="usage-fill" style="width:70%"></div></div></div>
-          </div>
-          <div class="audit-row" style="font-size:10px"><span class="abadge bp" style="font-size:8px">&#10003;</span>Contact information added</div>
-          <div class="audit-row" style="font-size:10px"><span class="abadge bp" style="font-size:8px">&#10003;</span>Email verified</div>
-          <div class="audit-row" style="font-size:10px"><span class="abadge bw" style="font-size:8px">!</span>Add a profile summary</div>
-          <div class="audit-row" style="font-size:10px"><span class="abadge bf" style="font-size:8px">&#10007;</span>Connect LinkedIn profile</div>
-          <div class="audit-row" style="font-size:10px"><span class="abadge bf" style="font-size:8px">&#10007;</span>Set up GitHub link</div>
-        </div>
-
-        <div class="profile-section">
-          <div class="profile-section-title">Usage this month</div>
-          <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
-          <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
-          <div class="usage-row" style="margin-top:8px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
-          <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
-          <div class="usage-row" style="margin-top:8px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
-          <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
-        </div>
-
-        <div class="profile-section">
-          <div class="profile-section-title">Preferences</div>
-          <div class="profile-field"><div class="pfl">Default template</div><div class="pfi" style="cursor:pointer;font-size:10px">Classic (B&amp;W) &#9662;</div></div>
-          <div class="profile-field"><div class="pfl">Export format</div><div class="pfi" style="cursor:pointer;font-size:10px">PDF &#9662;</div></div>
-          <div class="profile-field" style="display:flex;align-items:center;justify-content:space-between">
-            <div class="pfl" style="margin-bottom:0;font-size:10px">Auto-compile on save</div>
-            <div style="width:28px;height:16px;border-radius:8px;background:var(--accent);cursor:pointer;position:relative">
-              <div style="width:12px;height:12px;border-radius:50%;background:white;position:absolute;top:2px;right:2px"></div>
-            </div>
-          </div>
-        </div>
+      <div class="profile-section">
+        <div class="profile-section-title">Usage details</div>
+        <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
+        <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
+        <div class="usage-row" style="margin-top:8px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
+        <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
+        <div class="usage-row" style="margin-top:8px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
+        <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
+        <div class="usage-row" style="margin-top:8px"><span>Parses today</span><span style="font-family:var(--font)">3 / 3</span></div>
+        <div class="usage-track"><div class="usage-fill" style="width:100%"></div></div>
       </div>
+
+      <button class="r-action" style="padding:10px;font-size:11px;border-color:var(--err);color:var(--err)" onclick="window.location.href='index.html'">Logout</button>
     </div>
     <div class="mob-bottombar">
       <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></div>
@@ -180,6 +110,5 @@
 <script src="js/jds.js"></script>
 <script src="js/mobile.js"></script>
 <script src="js/tips.js"></script>
-<script src="js/modal.js"></script>
 </body>
 </html>

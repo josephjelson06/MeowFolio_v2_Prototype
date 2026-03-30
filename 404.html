@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai &mdash; 404</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/public.css">
+</head>
+<body class="public-body">
+<div class="public-page error-page">
+  <div class="error-shell">
+    <div class="error-code">404</div>
+    <h1>That page wandered off.</h1>
+    <p>The link may be outdated, mistyped, or unavailable in this prototype state.</p>
+    <div class="hero-actions">
+      <a class="primary-cta link-cta" href="index.html">Back home</a>
+      <button class="secondary-cta" type="button" onclick="showAuthModal()">Open Google sign in</button>
+    </div>
+  </div>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal">
+    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
+    <div class="auth-eyebrow">SIGN IN / SIGN UP</div>
+    <h2>Continue with Google</h2>
+    <p>Use your Google account to enter the resumeai workspace. This prototype only supports Google auth.</p>
+    <button class="google-cta" type="button" onclick="continueWithGoogle()">
+      <span class="google-badge">G</span>
+      <span>Continue with Google</span>
+    </button>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

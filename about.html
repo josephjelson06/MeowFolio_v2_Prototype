@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai &mdash; About</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/public.css">
+</head>
+<body class="public-body">
+<div class="public-page">
+  <header class="site-nav">
+    <a class="site-brand" href="index.html">resumeai</a>
+    <nav class="site-links">
+      <a href="about.html">About</a>
+      <button type="button" class="nav-link-btn" onclick="showAuthModal()">Login</button>
+    </nav>
+  </header>
+
+  <main class="content-page">
+    <section class="page-hero">
+      <div class="hero-kicker">ABOUT RESUMEAI</div>
+      <h1 class="page-title">A lightweight resume workflow built for repeated applications, not one-off uploads.</h1>
+      <p class="page-text">This prototype separates the public entry experience from the authenticated workspace. The goal is simple: make parsing, versioning, ATS review, and JD matching feel like one continuous loop.</p>
+    </section>
+
+    <section class="about-grid">
+      <article class="about-panel">
+        <h2>What the free plan keeps visible</h2>
+        <p>Profile essentials, usage details, limited daily parsing, and rule-based ATS/JD checks so the core loop is still understandable without paid complexity.</p>
+      </article>
+      <article class="about-panel">
+        <h2>What the workspace is optimized for</h2>
+        <p>Resume version libraries, saved JDs, quick comparisons, and focused reports that help you decide what to rewrite next.</p>
+      </article>
+      <article class="about-panel">
+        <h2>How auth works here</h2>
+        <p>The public surface exposes a Google-only sign in modal. Entering the workspace takes you directly to the existing post-auth dashboard flow.</p>
+      </article>
+      <article class="about-panel">
+        <h2>Where this prototype is opinionated</h2>
+        <p>It favors visible structure over hidden automation: paginated lists, editable names, parsed-text previews, and reports you can inspect before acting.</p>
+      </article>
+    </section>
+
+    <section class="about-band">
+      <div>
+        <div class="story-label">System split</div>
+        <h3>Pre-auth for trust. Post-auth for work.</h3>
+      </div>
+      <p>The landing and about pages explain the product and access path, while dashboard, resumes, JDs, editor, and profile remain the working app once the user continues with Google.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>resumeai prototype</span>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="404.html">404</a>
+      <a href="500.html">500</a>
+    </div>
+  </footer>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal">
+    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
+    <div class="auth-eyebrow">SIGN IN / SIGN UP</div>
+    <h2>Continue with Google</h2>
+    <p>Use your Google account to enter the resumeai workspace. This prototype only supports Google auth.</p>
+    <button class="google-cta" type="button" onclick="continueWithGoogle()">
+      <span class="google-badge">G</span>
+      <span>Continue with Google</span>
+    </button>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

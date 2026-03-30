@@ -22,7 +22,6 @@
   <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
 </div>
 
-<!-- DESKTOP -->
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
     <span class="gnav-logo">resumeai</span>
@@ -40,118 +39,22 @@
     <div class="res-page-header">
       <div style="display:flex;gap:5px;margin-bottom:8px">
         <span class="badge-accent">RESUME LIBRARY</span>
-        <span class="badge-info">5 RESUMES</span>
+        <span class="badge-info" id="desktop-resume-count">0 RESUMES</span>
       </div>
       <div class="res-page-title">All your resumes</div>
-      <div class="res-page-desc">Create a new resume, then keep the rest of your saved versions ready for editing, downloading, or removing.</div>
+      <div class="res-page-desc">Paginated resume versions with rename, download, and delete actions. Each page shows up to 10 saved resumes.</div>
     </div>
-    <div class="res-cards-grid">
-      <div class="res-new-card" onclick="showModal()">
-        <div class="res-new-plus">+</div>
-        <div class="section-label">CREATE NEW RESUME</div>
-        <div class="res-new-title">Upload or start blank</div>
-        <div class="res-new-desc">Open the modal, upload an existing resume, or create a new one from scratch.</div>
-      </div>
-
-      <div class="res-visual-card" onclick="openEditor()">
-        <div class="res-visual-thumb">
-          <span class="badge-accent" style="position:absolute;top:8px;right:8px;font-size:8px">MOST RECENT</span>
-          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:55%"></div>
-          <div class="pdf-line" style="width:90%"></div>
-          <div class="pdf-line" style="width:80%"></div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:50%"></div>
-          <div class="pdf-line" style="width:60%"></div>
-        </div>
-        <div class="res-visual-name">resume_v3.tex</div>
-        <div class="res-visual-meta">Last updated 2h ago &middot; Classic</div>
-        <div class="res-visual-actions">
-          <button class="r-action primary" onclick="openEditor(event)">&#9998;</button>
-          <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-        </div>
-      </div>
-
-      <div class="res-visual-card">
-        <div class="res-visual-thumb">
-          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:60%"></div>
-          <div class="pdf-line" style="width:85%"></div>
-          <div class="pdf-line" style="width:75%"></div>
-        </div>
-        <div class="res-visual-name">resume_sde.tex</div>
-        <div class="res-visual-meta">Last updated yesterday &middot; Sidebar</div>
-        <div class="res-visual-actions">
-          <button class="r-action primary" onclick="openEditor(event)">&#9998;</button>
-          <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-        </div>
-      </div>
-
-      <div class="res-visual-card">
-        <div class="res-visual-thumb">
-          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:50%"></div>
-          <div class="pdf-line" style="width:70%"></div>
-        </div>
-        <div class="res-visual-name">resume_pm.tex</div>
-        <div class="res-visual-meta">Last updated 3d ago &middot; Classic</div>
-        <div class="res-visual-actions">
-          <button class="r-action primary" onclick="openEditor(event)">&#9998;</button>
-          <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-        </div>
-      </div>
-
-      <div class="res-visual-card">
-        <div class="res-visual-thumb">
-          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:45%"></div>
-          <div class="pdf-line" style="width:80%"></div>
-          <div class="pdf-line" style="width:65%"></div>
-          <div class="pdf-line" style="width:90%"></div>
-        </div>
-        <div class="res-visual-name">resume_ds.tex</div>
-        <div class="res-visual-meta">Last updated 5d ago &middot; Minimal</div>
-        <div class="res-visual-actions">
-          <button class="r-action primary" onclick="openEditor(event)">&#9998;</button>
-          <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-        </div>
-      </div>
-
-      <div class="res-visual-card">
-        <div class="res-visual-thumb">
-          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:52%"></div>
-          <div class="pdf-line" style="width:88%"></div>
-          <div class="pdf-line" style="width:72%"></div>
-          <div class="pdf-line" style="width:68%"></div>
-        </div>
-        <div class="res-visual-name">resume_ml.tex</div>
-        <div class="res-visual-meta">Last updated 1w ago &middot; Modern</div>
-        <div class="res-visual-actions">
-          <button class="r-action primary" onclick="openEditor(event)">&#9998;</button>
-          <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-        </div>
+    <div class="res-cards-grid" id="desktop-resume-grid"></div>
+    <div class="list-pagination">
+      <div class="page-status" id="desktop-resume-page">Page 1 of 1</div>
+      <div class="page-controls">
+        <button class="r-action" id="desktop-resume-prev" onclick="changeResumePage(-1)">Previous</button>
+        <button class="r-action" id="desktop-resume-next" onclick="changeResumePage(1)">Next</button>
       </div>
     </div>
   </div>
 </div><!-- /desktop-view -->
 
-<!-- MOBILE -->
 <div class="frame mobile view active" id="mobile-view">
   <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
     <div class="mob-topbar">
@@ -162,125 +65,17 @@
       <div style="padding:12px">
         <div style="display:flex;gap:5px;margin-bottom:6px">
           <span class="badge-accent" style="font-size:8px">RESUME LIBRARY</span>
-          <span class="badge-info" style="font-size:8px">5 RESUMES</span>
+          <span class="badge-info" style="font-size:8px" id="mobile-resume-count">0 RESUMES</span>
         </div>
         <div style="font-size:15px;font-weight:600;color:var(--txt0)">All your resumes</div>
+        <div style="font-size:10px;color:var(--txt2);margin-top:4px">Up to 10 resume cards per page with rename support.</div>
       </div>
-      <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px">
-        <div class="dash-create-card" onclick="showModal()" style="padding:16px 14px">
-          <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
-          <div class="dash-create-label">CREATE NEW RESUME</div>
-          <div class="dash-create-title">Upload or start blank</div>
-        </div>
-
-        <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
-          <div class="mob-res-visual-thumb">
-            <span class="badge-accent" style="position:absolute;top:6px;right:6px;font-size:7px">MOST RECENT</span>
-            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-            <div class="pdf-divider"></div>
-            <div class="pdf-line d" style="width:55%"></div>
-            <div class="pdf-line" style="width:90%"></div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div>
-              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
-              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago &middot; Classic</div>
-            </div>
-            <div style="display:flex;gap:5px">
-              <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">&#9998;</button>
-              <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mob-res-visual-card">
-          <div class="mob-res-visual-thumb">
-            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-            <div class="pdf-divider"></div>
-            <div class="pdf-line d" style="width:60%"></div>
-            <div class="pdf-line" style="width:85%"></div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div>
-              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_sde.tex</div>
-              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated yesterday &middot; Sidebar</div>
-            </div>
-            <div style="display:flex;gap:5px">
-              <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">&#9998;</button>
-              <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mob-res-visual-card">
-          <div class="mob-res-visual-thumb">
-            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-            <div class="pdf-divider"></div>
-            <div class="pdf-line d" style="width:50%"></div>
-            <div class="pdf-line" style="width:70%"></div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div>
-              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_pm.tex</div>
-              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 3d ago &middot; Classic</div>
-            </div>
-            <div style="display:flex;gap:5px">
-              <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">&#9998;</button>
-              <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mob-res-visual-card">
-          <div class="mob-res-visual-thumb">
-            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-            <div class="pdf-divider"></div>
-            <div class="pdf-line d" style="width:45%"></div>
-            <div class="pdf-line" style="width:80%"></div>
-            <div class="pdf-line" style="width:65%"></div>
-            <div class="pdf-line" style="width:90%"></div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div>
-              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_ds.tex</div>
-              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 5d ago &middot; Minimal</div>
-            </div>
-            <div style="display:flex;gap:5px">
-              <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">&#9998;</button>
-              <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mob-res-visual-card">
-          <div class="mob-res-visual-thumb">
-            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-            <div class="pdf-divider"></div>
-            <div class="pdf-line d" style="width:52%"></div>
-            <div class="pdf-line" style="width:88%"></div>
-            <div class="pdf-line" style="width:72%"></div>
-            <div class="pdf-line" style="width:68%"></div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div>
-              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_ml.tex</div>
-              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 1w ago &middot; Modern</div>
-            </div>
-            <div style="display:flex;gap:5px">
-              <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">&#9998;</button>
-              <button class="r-action" onclick="event.stopPropagation()">&#11015;</button>
-              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="event.stopPropagation()">&#128465;</button>
-            </div>
-          </div>
+      <div id="mobile-resume-list" style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px"></div>
+      <div class="list-pagination" style="padding:0 12px 12px">
+        <div class="page-status" id="mobile-resume-page">Page 1 of 1</div>
+        <div class="page-controls">
+          <button class="r-action" id="mobile-resume-prev" onclick="changeResumePage(-1)">Previous</button>
+          <button class="r-action" id="mobile-resume-next" onclick="changeResumePage(1)">Next</button>
         </div>
       </div>
     </div>
@@ -293,16 +88,15 @@
   </div>
 </div><!-- /mobile-view -->
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-title">Create new resume</div>
-    <div class="modal-desc">Choose how you'd like to start.</div>
+    <div class="modal-desc">Upload a file, preview the parsed text, or start with a blank editor.</div>
     <div class="modal-options">
       <div class="modal-option" onclick="setModalMode('upload')">
         <div class="modal-option-icon">&#8593;</div>
-        <div><div class="modal-option-name">Upload a file</div><div class="modal-option-desc">Upload a PDF or .tex file and open in editor.</div></div>
+        <div><div class="modal-option-name">Upload a file</div><div class="modal-option-desc">Parse a PDF or document and preview the text before importing.</div></div>
       </div>
       <div class="modal-option" onclick="setModalMode('paste')">
         <div class="modal-option-icon">&#9112;</div>
@@ -313,22 +107,21 @@
         <div><div class="modal-option-name">Start from blank</div><div class="modal-option-desc">Open an empty editor with a fresh template.</div></div>
       </div>
     </div>
-    <div class="modal-upload-zone" id="modal-upload-zone">
+    <input type="file" id="modal-upload-input" accept=".pdf,application/pdf,.tex,.docx,.txt" hidden onchange="handleResumeFileSelect()">
+    <div class="modal-upload-zone" id="modal-upload-zone" onclick="document.getElementById('modal-upload-input').click()">
       <div class="modal-upload-icon">&#9729;</div>
       <div class="modal-upload-text">Drag &amp; drop your file here, or click to browse</div>
       <div class="modal-upload-sub">Supports .pdf, .tex, .docx &middot; Max 5 MB</div>
     </div>
-    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse &amp; open in editor &rarr;</button>
-    <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Paste your resume text here..."></textarea>
+    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse PDF into text box &rarr;</button>
+    <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Pasted or parsed resume text will appear here..."></textarea>
     <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import &amp; open in editor &rarr;</button>
   </div>
 </div>
 
 <script src="js/app.js"></script>
-<script src="js/editor.js"></script>
-<script src="js/jds.js"></script>
 <script src="js/mobile.js"></script>
-<script src="js/tips.js"></script>
 <script src="js/modal.js"></script>
+<script src="js/resumes.js"></script>
 </body>
 </html>
