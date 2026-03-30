@@ -39,28 +39,42 @@
     <div class="jd-list-pane">
       <div class="jd-list-head">
         <div class="jd-list-title">Saved JDs</div>
-        <button class="btn-new" style="font-size:10px">+ Add JD</button>
+        <button class="btn-new" style="font-size:10px" onclick="showJDModal()">+ Add JD</button>
       </div>
       <div class="jd-cards">
-        <div class="jd-card active" onclick="selectJD(0)">
+        <div class="jd-card active" data-jd="0" onclick="selectJD(0)">
           <div class="jd-card-title">Software Engineer II</div>
           <div class="jd-card-co">Google &middot; Full-time</div>
-          <span class="jd-card-badge">2 resumes matched</span>
+          <div class="jd-card-foot">
+            <span class="jd-card-badge">2 resumes matched</span>
+            <div class="jd-card-actions">
+              <button class="r-action" onclick="downloadJD(0, event)">&#11015;</button>
+              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(0, event)">&#128465;</button>
+            </div>
+          </div>
         </div>
-        <div class="jd-card" onclick="selectJD(1)">
+        <div class="jd-card" data-jd="1" onclick="selectJD(1)">
           <div class="jd-card-title">Senior Frontend Dev</div>
           <div class="jd-card-co">Razorpay &middot; Full-time</div>
-          <span class="jd-card-badge">Not analyzed yet</span>
+          <div class="jd-card-foot">
+            <span class="jd-card-badge">Not analyzed yet</span>
+            <div class="jd-card-actions">
+              <button class="r-action" onclick="downloadJD(1, event)">&#11015;</button>
+              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(1, event)">&#128465;</button>
+            </div>
+          </div>
         </div>
-        <div class="jd-card" onclick="selectJD(2)">
+        <div class="jd-card" data-jd="2" onclick="selectJD(2)">
           <div class="jd-card-title">ML Engineer</div>
           <div class="jd-card-co">OpenAI &middot; Remote</div>
-          <span class="jd-card-badge">1 resume matched</span>
+          <div class="jd-card-foot">
+            <span class="jd-card-badge">1 resume matched</span>
+            <div class="jd-card-actions">
+              <button class="r-action" onclick="downloadJD(2, event)">&#11015;</button>
+              <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(2, event)">&#128465;</button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="jd-upload-section">
-        <div class="jd-upload-label">Paste or upload JD</div>
-        <textarea class="jd-paste-area" placeholder="Paste job description text here..."></textarea>
       </div>
     </div>
 
@@ -97,10 +111,14 @@
       <span class="mob-topbar-logo">resumeai</span>
       <div class="avatar" style="margin-left:auto" onclick="mobShowPage('profile')">AK</div>
     </div>
-    <div style="flex:1;overflow-y:auto">
+    <div class="mob-edit-toggle">
+      <button class="mob-et-btn active" id="mob-jd-tab-workspace" onclick="setMobJDView('workspace')">Workspace</button>
+      <button class="mob-et-btn" id="mob-jd-tab-report" onclick="setMobJDView('report')">Detailed Report</button>
+    </div>
+    <div id="mob-jd-workspace-mode" style="flex:1;overflow-y:auto">
       <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border0)">
         <span style="font-size:11px;font-weight:500">Saved JDs</span>
-        <button class="btn-new" style="font-size:10px" onclick="focusMobJDInput()">+ Add JD</button>
+        <button class="btn-new" style="font-size:10px" onclick="showJDModal()">+ Add JD</button>
       </div>
 
       <div class="mob-jd-list">
@@ -110,6 +128,8 @@
           <div class="mob-jd-action">
             <button class="r-action primary" onclick="prepareMobJDAnalysis(0, event)">Analyze Match</button>
             <button class="r-action" onclick="editMobJD(0, event)">Edit</button>
+            <button class="r-action" onclick="downloadJD(0, event)">&#11015;</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(0, event)">&#128465;</button>
           </div>
         </div>
         <div class="mob-jd-card" data-jd="1" onclick="selectMobJD(1)">
@@ -118,6 +138,8 @@
           <div class="mob-jd-action">
             <button class="r-action primary" onclick="prepareMobJDAnalysis(1, event)">Analyze Match</button>
             <button class="r-action" onclick="editMobJD(1, event)">Edit</button>
+            <button class="r-action" onclick="downloadJD(1, event)">&#11015;</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(1, event)">&#128465;</button>
           </div>
         </div>
         <div class="mob-jd-card" data-jd="2" onclick="selectMobJD(2)">
@@ -126,6 +148,8 @@
           <div class="mob-jd-action">
             <button class="r-action primary" onclick="prepareMobJDAnalysis(2, event)">Analyze Match</button>
             <button class="r-action" onclick="editMobJD(2, event)">Edit</button>
+            <button class="r-action" onclick="downloadJD(2, event)">&#11015;</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(2, event)">&#128465;</button>
           </div>
         </div>
       </div>
@@ -141,10 +165,6 @@
             <button class="run-btn" id="mob-jd-run-btn" onclick="runMobJDAnalysis()" disabled>Run</button>
           </div>
           <div>
-            <div class="jd-upload-label">Paste or upload JD</div>
-            <textarea class="jd-paste-area" id="mob-jd-paste-area" placeholder="Paste job description text here..."></textarea>
-          </div>
-          <div>
             <div class="jd-upload-label">Select Resume</div>
             <div class="mob-jd-pick-list">
               <div class="jd-pick-item" data-mob-resume="resume_v3" onclick="selectMobResume('resume_v3')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_v3</span></div>
@@ -155,13 +175,15 @@
             </div>
           </div>
         </div>
-
-        <div class="mob-jd-panel">
-          <div class="jd-upload-label">Results</div>
-          <div id="mob-jd-results" class="mob-jd-result-col">
-            <div class="jd-no-result">
+      </div>
+    </div>
+    <div id="mob-jd-report-mode" class="hidden" style="flex:1;overflow-y:auto">
+      <div class="mob-ats-pane">
+        <div id="mob-jd-report-content" class="mob-jd-report-content">
+          <div class="mob-jd-panel">
+            <div class="jd-no-result" style="min-height:240px">
               <div class="jd-no-result-icon">&#9678;</div>
-              <div class="jd-no-result-txt">Pick a resume above, then tap <strong style="color:var(--txt1)">Run</strong>.</div>
+              <div class="jd-no-result-txt">Run a JD analysis from the workspace tab to view the detailed report.</div>
             </div>
           </div>
         </div>
@@ -173,14 +195,60 @@
       <div class="mob-tab active" onclick="mobShowPage('jds')"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></div>
       <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></div>
     </div>
+
+    <div class="mob-bottom-sheet" id="mob-jd-sheet">
+      <div class="mob-sheet-handle" onclick="toggleMobJDSheet()"></div>
+      <div class="mob-sheet-head">
+        <span>JD Match Report</span>
+        <button class="close-x" onclick="toggleMobJDSheet()">&times;</button>
+      </div>
+      <div class="mob-sheet-body" id="mob-jd-sheet-body">
+        <div class="jd-no-result" style="min-height:180px">
+          <div class="jd-no-result-icon">&#9678;</div>
+          <div class="jd-no-result-txt">Run a JD analysis to preview the report summary here.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div><!-- /mobile-view -->
+
+<div class="modal-overlay" id="jd-modal-overlay" onclick="if(event.target===this)closeJDModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeJDModal()">&times;</button>
+    <div class="modal-title">Add job description</div>
+    <div class="modal-desc">Upload a JD PDF or paste the job description directly. This keeps the saved JD flow available without leaving the page.</div>
+    <div class="modal-options">
+      <div class="modal-option" onclick="setJDModalMode('upload')">
+        <div class="modal-option-icon">&#8593;</div>
+        <div>
+          <div class="modal-option-name">Upload JD PDF</div>
+          <div class="modal-option-desc">Choose a PDF job description and add it to the JD workspace.</div>
+        </div>
+      </div>
+      <div class="modal-option" onclick="setJDModalMode('paste')">
+        <div class="modal-option-icon">&#9112;</div>
+        <div>
+          <div class="modal-option-name">Paste JD text</div>
+          <div class="modal-option-desc">Paste the role description directly if you already copied it from a listing.</div>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="jd-upload-input" accept=".pdf,application/pdf" hidden onchange="handleJDFileSelect()">
+    <div class="modal-upload-zone" id="jd-modal-upload-zone" onclick="document.getElementById('jd-upload-input').click()">
+      <div class="modal-upload-icon">&#9729;</div>
+      <div class="modal-upload-text" id="jd-upload-text">Drag &amp; drop your JD PDF here, or click to browse</div>
+      <div class="modal-upload-sub">PDF only &middot; Max 5 MB</div>
+    </div>
+    <button class="modal-btn" id="jd-modal-upload-btn" onclick="handleJDUpload()">Add uploaded JD &rarr;</button>
+    <textarea class="modal-paste-area" id="jd-modal-paste-area" placeholder="Paste the job description text here..."></textarea>
+    <button class="modal-btn" id="jd-modal-paste-btn" onclick="handleJDPaste()">Save pasted JD &rarr;</button>
+  </div>
+</div>
 
 <script src="js/app.js"></script>
 <script src="js/editor.js"></script>
 <script src="js/jds.js"></script>
 <script src="js/mobile.js"></script>
 <script src="js/tips.js"></script>
-<script src="js/modal.js"></script>
 </body>
 </html>

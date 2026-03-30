@@ -82,3 +82,6 @@
 .mob-jd-panel-sub { font-size: 10px; color: var(--txt2); }
 .mob-jd-pick-list { display: flex; flex-direction: column; gap: 6px; }
 .mob-jd-result-col { padding: 0; }
+.mob-jd-report-content { display: flex; flex-direction: column; gap: 12px; }
+.mob-jd-sheet-metrics { display: flex; flex-direction: column; gap: 10px; }
+.mob-jd-sheet-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
