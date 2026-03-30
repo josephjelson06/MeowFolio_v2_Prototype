@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>resumeai — JD Match</title>
+<title>resumeai &mdash; JD Match</title>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
@@ -22,7 +22,6 @@
   <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
 </div>
 
-<!-- ══ DESKTOP ══ -->
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
     <span class="gnav-logo">resumeai</span>
@@ -37,7 +36,6 @@
   </nav>
 
   <div class="jd-page-body">
-    <!-- Left: JD list -->
     <div class="jd-list-pane">
       <div class="jd-list-head">
         <div class="jd-list-title">Saved JDs</div>
@@ -46,63 +44,45 @@
       <div class="jd-cards">
         <div class="jd-card active" onclick="selectJD(0)">
           <div class="jd-card-title">Software Engineer II</div>
-          <div class="jd-card-co">Google · Full-time</div>
+          <div class="jd-card-co">Google &middot; Full-time</div>
           <span class="jd-card-badge">2 resumes matched</span>
         </div>
         <div class="jd-card" onclick="selectJD(1)">
           <div class="jd-card-title">Senior Frontend Dev</div>
-          <div class="jd-card-co">Razorpay · Full-time</div>
+          <div class="jd-card-co">Razorpay &middot; Full-time</div>
           <span class="jd-card-badge">Not analyzed yet</span>
         </div>
         <div class="jd-card" onclick="selectJD(2)">
           <div class="jd-card-title">ML Engineer</div>
-          <div class="jd-card-co">OpenAI · Remote</div>
+          <div class="jd-card-co">OpenAI &middot; Remote</div>
           <span class="jd-card-badge">1 resume matched</span>
         </div>
       </div>
       <div class="jd-upload-section">
         <div class="jd-upload-label">Paste or upload JD</div>
-        <textarea class="jd-paste-area" placeholder="Paste job description text here…"></textarea>
+        <textarea class="jd-paste-area" placeholder="Paste job description text here..."></textarea>
       </div>
     </div>
 
-    <!-- Right: analyze pane -->
     <div class="jd-analyze-pane">
       <div class="jd-analyze-head">
-        <div class="jd-analyze-title">Software Engineer II — Google</div>
-        <button class="run-btn" id="jd-run-btn" onclick="runJDAnalysis()" disabled>Run Analysis ↗</button>
+        <div class="jd-analyze-title">Software Engineer II &mdash; Google</div>
+        <button class="run-btn" id="jd-run-btn" onclick="runJDAnalysis()" disabled>Run Analysis &rarr;</button>
       </div>
       <div class="jd-analyze-body">
-        <!-- Resume picker (radio) -->
         <div class="jd-pick-col">
           <div class="jd-pick-head">Select Resume</div>
           <div class="jd-pick-list">
-            <div class="jd-pick-item" data-resume="resume_v3" onclick="selectResume('resume_v3')">
-              <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-              <span class="jd-pick-label">resume_v3</span>
-            </div>
-            <div class="jd-pick-item" data-resume="resume_sde" onclick="selectResume('resume_sde')">
-              <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-              <span class="jd-pick-label">resume_sde</span>
-            </div>
-            <div class="jd-pick-item" data-resume="resume_pm" onclick="selectResume('resume_pm')">
-              <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-              <span class="jd-pick-label">resume_pm</span>
-            </div>
-            <div class="jd-pick-item" data-resume="resume_ds" onclick="selectResume('resume_ds')">
-              <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-              <span class="jd-pick-label">resume_ds</span>
-            </div>
-            <div class="jd-pick-item" data-resume="resume_ml" onclick="selectResume('resume_ml')">
-              <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-              <span class="jd-pick-label">resume_ml</span>
-            </div>
+            <div class="jd-pick-item" data-resume="resume_v3" onclick="selectResume('resume_v3')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_v3</span></div>
+            <div class="jd-pick-item" data-resume="resume_sde" onclick="selectResume('resume_sde')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_sde</span></div>
+            <div class="jd-pick-item" data-resume="resume_pm" onclick="selectResume('resume_pm')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_pm</span></div>
+            <div class="jd-pick-item" data-resume="resume_ds" onclick="selectResume('resume_ds')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_ds</span></div>
+            <div class="jd-pick-item" data-resume="resume_ml" onclick="selectResume('resume_ml')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_ml</span></div>
           </div>
         </div>
-        <!-- Results -->
         <div class="jd-result-col" id="jd-results">
           <div class="jd-no-result">
-            <div class="jd-no-result-icon">◎</div>
+            <div class="jd-no-result-icon">&#9678;</div>
             <div class="jd-no-result-txt">Select a resume on the left,<br>then click <strong style="color:var(--txt1)">Run Analysis</strong></div>
           </div>
         </div>
@@ -111,7 +91,6 @@
   </div>
 </div><!-- /desktop-view -->
 
-<!-- ══ MOBILE ══ -->
 <div class="frame mobile view active" id="mobile-view">
   <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
     <div class="mob-topbar">
@@ -121,40 +100,78 @@
     <div style="flex:1;overflow-y:auto">
       <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border0)">
         <span style="font-size:11px;font-weight:500">Saved JDs</span>
-        <button class="btn-new" style="font-size:10px">+ Add JD</button>
+        <button class="btn-new" style="font-size:10px" onclick="focusMobJDInput()">+ Add JD</button>
       </div>
+
       <div class="mob-jd-list">
-        <div class="mob-jd-card">
+        <div class="mob-jd-card active" data-jd="0" onclick="selectMobJD(0)">
           <div class="mob-jd-title">Software Engineer II</div>
-          <div class="mob-jd-co">Google · Full-time</div>
+          <div class="mob-jd-co">Google &middot; Full-time</div>
           <div class="mob-jd-action">
-            <button class="r-action primary">Analyze Match</button>
-            <button class="r-action">Edit</button>
+            <button class="r-action primary" onclick="prepareMobJDAnalysis(0, event)">Analyze Match</button>
+            <button class="r-action" onclick="editMobJD(0, event)">Edit</button>
           </div>
         </div>
-        <div class="mob-jd-card">
+        <div class="mob-jd-card" data-jd="1" onclick="selectMobJD(1)">
           <div class="mob-jd-title">Senior Frontend Dev</div>
-          <div class="mob-jd-co">Razorpay · Full-time</div>
+          <div class="mob-jd-co">Razorpay &middot; Full-time</div>
           <div class="mob-jd-action">
-            <button class="r-action primary">Analyze Match</button>
-            <button class="r-action">Edit</button>
+            <button class="r-action primary" onclick="prepareMobJDAnalysis(1, event)">Analyze Match</button>
+            <button class="r-action" onclick="editMobJD(1, event)">Edit</button>
           </div>
         </div>
-        <div class="mob-jd-card">
+        <div class="mob-jd-card" data-jd="2" onclick="selectMobJD(2)">
           <div class="mob-jd-title">ML Engineer</div>
-          <div class="mob-jd-co">OpenAI · Remote</div>
+          <div class="mob-jd-co">OpenAI &middot; Remote</div>
           <div class="mob-jd-action">
-            <button class="r-action primary">Analyze Match</button>
-            <button class="r-action">Edit</button>
+            <button class="r-action primary" onclick="prepareMobJDAnalysis(2, event)">Analyze Match</button>
+            <button class="r-action" onclick="editMobJD(2, event)">Edit</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mob-jd-workbench">
+        <div class="mob-jd-panel">
+          <div class="mob-jd-panel-head">
+            <div>
+              <div class="jd-upload-label" style="margin-bottom:4px">Analyze JD</div>
+              <div class="mob-jd-panel-title" id="mob-jd-selected-title">Software Engineer II &mdash; Google</div>
+              <div class="mob-jd-panel-sub">Choose a resume and run the same match workflow available on desktop.</div>
+            </div>
+            <button class="run-btn" id="mob-jd-run-btn" onclick="runMobJDAnalysis()" disabled>Run</button>
+          </div>
+          <div>
+            <div class="jd-upload-label">Paste or upload JD</div>
+            <textarea class="jd-paste-area" id="mob-jd-paste-area" placeholder="Paste job description text here..."></textarea>
+          </div>
+          <div>
+            <div class="jd-upload-label">Select Resume</div>
+            <div class="mob-jd-pick-list">
+              <div class="jd-pick-item" data-mob-resume="resume_v3" onclick="selectMobResume('resume_v3')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_v3</span></div>
+              <div class="jd-pick-item" data-mob-resume="resume_sde" onclick="selectMobResume('resume_sde')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_sde</span></div>
+              <div class="jd-pick-item" data-mob-resume="resume_pm" onclick="selectMobResume('resume_pm')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_pm</span></div>
+              <div class="jd-pick-item" data-mob-resume="resume_ds" onclick="selectMobResume('resume_ds')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_ds</span></div>
+              <div class="jd-pick-item" data-mob-resume="resume_ml" onclick="selectMobResume('resume_ml')"><div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div><span class="jd-pick-label">resume_ml</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mob-jd-panel">
+          <div class="jd-upload-label">Results</div>
+          <div id="mob-jd-results" class="mob-jd-result-col">
+            <div class="jd-no-result">
+              <div class="jd-no-result-icon">&#9678;</div>
+              <div class="jd-no-result-txt">Pick a resume above, then tap <strong style="color:var(--txt1)">Run</strong>.</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="mob-bottombar">
-      <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">⊞</div><span>Dashboard</span></div>
-      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">☰</div><span>Resumes</span></div>
-      <div class="mob-tab active" onclick="mobShowPage('jds')"><div class="mob-tab-icon">⊙</div><span>JDs</span></div>
-      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">○</div><span>Profile</span></div>
+      <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></div>
+      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">&#9776;</div><span>Resumes</span></div>
+      <div class="mob-tab active" onclick="mobShowPage('jds')"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></div>
+      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></div>
     </div>
   </div>
 </div><!-- /mobile-view -->

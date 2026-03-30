@@ -1,20 +1,26 @@
-/* ── DEVICE SWITCH ── */
+/* DEVICE SWITCH */
 function setDevice(d) {
-  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('desktop-view').classList.toggle('active', d === 'desktop');
-  document.getElementById('mobile-view').classList.toggle('active', d === 'mobile');
+  document.querySelectorAll('.dev-btn').forEach(btn => {
+    const wantsDesktop = btn.textContent.includes('Desktop');
+    btn.classList.toggle('active', (d === 'desktop') === wantsDesktop);
+  });
+
+  const desktopView = document.getElementById('desktop-view');
+  const mobileView = document.getElementById('mobile-view');
+  if (desktopView) desktopView.classList.toggle('active', d === 'desktop');
+  if (mobileView) mobileView.classList.toggle('active', d === 'mobile');
 }
 
-/* ── DESKTOP NAVIGATION ── */
+/* DESKTOP NAVIGATION */
 function showPage(p) {
   const pages = {
-    dash:    'dashboard.html',
+    dash: 'dashboard.html',
     resumes: 'resumes.html',
-    jds:     'jds.html',
+    jds: 'jds.html',
     profile: 'profile.html',
-    editor:  'editor.html',
+    editor: 'editor.html',
   };
+
   if (pages[p]) window.location.href = pages[p];
 }
 

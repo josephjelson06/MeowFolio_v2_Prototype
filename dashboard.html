@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>resumeai — Dashboard</title>
+<title>resumeai &mdash; Dashboard</title>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
@@ -22,7 +22,7 @@
   <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
 </div>
 
-<!-- ══ DESKTOP ══ -->
+<!-- DESKTOP -->
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
     <span class="gnav-logo">resumeai</span>
@@ -41,19 +41,19 @@
     <div class="dash-greeting-name">Good afternoon, Arjun Kumar!</div>
     <div class="dash-stats-row">
       <div class="dash-stat-big">
-        <div class="dash-stat-icon">◎</div>
+        <div class="dash-stat-icon">&#9678;</div>
         <div class="dash-stat-label">Average ATS Score</div>
         <div class="dash-stat-num">74%</div>
         <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:74%"></div></div>
       </div>
       <div class="dash-stat-big">
-        <div class="dash-stat-icon">◈</div>
+        <div class="dash-stat-icon">&#9670;</div>
         <div class="dash-stat-label">Resume Strength</div>
         <div class="dash-stat-num">79%</div>
         <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:79%"></div></div>
       </div>
       <div class="dash-stat-big">
-        <div class="dash-stat-icon">⊕</div>
+        <div class="dash-stat-icon">&#8857;</div>
         <div class="dash-stat-label">JD Match Success</div>
         <div class="dash-stat-num">18%</div>
         <div class="dash-stat-bar"><div class="dash-stat-fill warn" style="width:18%"></div></div>
@@ -80,7 +80,7 @@
           <div class="pdf-line" style="width:60%"></div>
         </div>
         <div class="dash-preview-chips">
-          <span class="chip">B&W</span>
+          <span class="chip">B&amp;W</span>
           <span class="chip">Classic</span>
           <span class="chip">1 page</span>
         </div>
@@ -97,7 +97,7 @@
           <span class="badge-outline">1 SAVED RESUME</span>
           <span class="badge-outline">EDITOR READY</span>
         </div>
-        <div class="dash-recent-link" onclick="openEditor()">Open editor →</div>
+        <div class="dash-recent-link" onclick="openEditor()">Open editor &rarr;</div>
       </div>
     </div>
 
@@ -107,28 +107,28 @@
         <div class="dash-actions-title">Move faster</div>
         <div class="dash-actions-grid">
           <div class="dash-action-item" onclick="openEditor()">
-            <div class="dash-action-icon">≡</div>
+            <div class="dash-action-icon">&#8801;</div>
             <div class="dash-action-name">Open Editor</div>
             <div class="dash-action-desc">Jump back into the latest resume.</div>
           </div>
           <div class="dash-action-item" onclick="openATS()">
-            <div class="dash-action-icon">◎</div>
+            <div class="dash-action-icon">&#9678;</div>
             <div class="dash-action-name">Calculate ATS Score</div>
             <div class="dash-action-desc">Run a formatting and content scan.</div>
           </div>
           <div class="dash-action-item" onclick="showPage('jds')">
-            <div class="dash-action-icon">⊙</div>
+            <div class="dash-action-icon">&#8857;</div>
             <div class="dash-action-name">Calculate JD Match</div>
             <div class="dash-action-desc">Compare resume against a target role.</div>
           </div>
         </div>
       </div>
       <div class="dash-jd-card">
-        <div class="dash-jd-icon">☰</div>
+        <div class="dash-jd-icon">&#9784;</div>
         <div class="section-label">ACTIVE JD</div>
         <div class="dash-jd-name">Software Engineer II</div>
-        <div class="dash-jd-co">Google · Full-time</div>
-        <div class="dash-jd-link" onclick="showPage('jds')">View JD analysis →</div>
+        <div class="dash-jd-co">Google &middot; Full-time</div>
+        <div class="dash-jd-link" onclick="showPage('jds')">View JD analysis &rarr;</div>
       </div>
     </div>
 
@@ -147,7 +147,7 @@
   </div>
 </div><!-- /desktop-view -->
 
-<!-- ══ MOBILE ══ -->
+<!-- MOBILE -->
 <div class="frame mobile view active" id="mobile-view">
   <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
     <div class="mob-topbar">
@@ -181,31 +181,32 @@
             <div class="pdf-line" style="width:80%"></div>
           </div>
           <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
-          <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago · Classic</div>
-          <div style="font-size:10px;color:var(--accent);margin-top:6px;cursor:pointer">Open editor →</div>
+          <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago &middot; Classic</div>
+          <div style="font-size:10px;color:var(--accent);margin-top:6px;cursor:pointer">Open editor &rarr;</div>
         </div>
       </div>
       <div class="mob-section-label">QUICK ACTIONS</div>
       <div class="mob-dash-actions-scroll">
         <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('editor')">
-          <div class="dash-action-icon">≡</div>
+          <div class="dash-action-icon">&#8801;</div>
           <div class="dash-action-name">Open Editor</div>
         </div>
-        <div class="dash-action-item" style="min-width:120px;flex-shrink:0">
-          <div class="dash-action-icon">◎</div>
+        <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="openATS()">
+          <div class="dash-action-icon">&#9678;</div>
           <div class="dash-action-name">ATS Score</div>
         </div>
         <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('jds')">
-          <div class="dash-action-icon">⊙</div>
+          <div class="dash-action-icon">&#8857;</div>
           <div class="dash-action-name">JD Match</div>
         </div>
       </div>
       <div style="padding:0 12px 12px">
-        <div class="dash-jd-card" style="padding:12px">
-          <div class="dash-jd-icon">☰</div>
+        <div class="dash-jd-card" style="padding:12px;cursor:pointer" onclick="mobShowPage('jds')">
+          <div class="dash-jd-icon">&#9784;</div>
           <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">ACTIVE JD</div>
           <div class="dash-jd-name">Software Engineer II</div>
-          <div class="dash-jd-co">Google · Full-time</div>
+          <div style="font-size:10px;color:var(--accent);margin-bottom:3px">View JD analysis</div>
+          <div class="dash-jd-co">Google &middot; Full-time</div>
         </div>
       </div>
       <div style="padding:0 12px 12px">
@@ -219,10 +220,10 @@
       </div>
     </div>
     <div class="mob-bottombar">
-      <div class="mob-tab active" onclick="mobShowPage('dash')"><div class="mob-tab-icon">⊞</div><span>Dashboard</span></div>
-      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">☰</div><span>Resumes</span></div>
-      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">⊙</div><span>JDs</span></div>
-      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">○</div><span>Profile</span></div>
+      <div class="mob-tab active" onclick="mobShowPage('dash')"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></div>
+      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">&#9776;</div><span>Resumes</span></div>
+      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></div>
+      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></div>
     </div>
   </div>
 </div><!-- /mobile-view -->
@@ -230,16 +231,16 @@
 <!-- CREATE NEW RESUME MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">×</button>
+    <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-title">Create new resume</div>
     <div class="modal-desc">Choose how you'd like to start. You can always switch methods later in the editor.</div>
     <div class="modal-options">
       <div class="modal-option" onclick="setModalMode('upload')">
-        <div class="modal-option-icon">↑</div>
+        <div class="modal-option-icon">&#8593;</div>
         <div><div class="modal-option-name">Upload a file</div><div class="modal-option-desc">Upload a PDF or .tex file. We'll parse it and drop you into the editor.</div></div>
       </div>
       <div class="modal-option" onclick="setModalMode('paste')">
-        <div class="modal-option-icon">⎘</div>
+        <div class="modal-option-icon">&#9112;</div>
         <div><div class="modal-option-name">Paste resume text</div><div class="modal-option-desc">Copy-paste your resume content for quick import.</div></div>
       </div>
       <div class="modal-option" onclick="startBlankResume()">
@@ -248,13 +249,13 @@
       </div>
     </div>
     <div class="modal-upload-zone" id="modal-upload-zone">
-      <div class="modal-upload-icon">☁</div>
-      <div class="modal-upload-text">Drag & drop your file here, or click to browse</div>
-      <div class="modal-upload-sub">Supports .pdf, .tex, .docx · Max 5 MB</div>
+      <div class="modal-upload-icon">&#9729;</div>
+      <div class="modal-upload-text">Drag &amp; drop your file here, or click to browse</div>
+      <div class="modal-upload-sub">Supports .pdf, .tex, .docx &middot; Max 5 MB</div>
     </div>
-    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse & open in editor →</button>
+    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse &amp; open in editor &rarr;</button>
     <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Paste your resume text here..."></textarea>
-    <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import & open in editor →</button>
+    <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import &amp; open in editor &rarr;</button>
   </div>
 </div>
 
