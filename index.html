@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai — full prototype</title>
+<!-- CSS Modules -->
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/resumes.css">
+<link rel="stylesheet" href="css/editor.css">
+<link rel="stylesheet" href="css/jds.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+
+<!-- DEVICE TOGGLE -->
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- DESKTOP VIEW -->
+<!-- ══════════════════════════════════════════ -->
+<div class="frame desktop view" id="desktop-view">
+
+  <!-- Global Navbar -->
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <button class="gnav-link" onclick="showPage('dash')">Dashboard</button>
+      <button class="gnav-link active" id="nav-resumes" onclick="showPage('resumes')">Resumes</button>
+      <button class="gnav-link" onclick="showPage('jds')">JDs</button>
+    </div>
+    <div class="gnav-right">
+      <div class="avatar" onclick="showPage('profile')">AK</div>
+    </div>
+  </nav>
+
+  <!-- ── DASHBOARD PAGE ── -->
+  <div class="page" id="page-dash">
+    <div class="dash-body">
+      <div class="dash-greeting-label">WELCOME BACK</div>
+      <div class="dash-greeting-name">Good afternoon, Arjun Kumar!</div>
+      <div class="dash-stats-row">
+        <div class="dash-stat-big">
+          <div class="dash-stat-icon">◎</div>
+          <div class="dash-stat-label">Average ATS Score</div>
+          <div class="dash-stat-num">74%</div>
+          <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:74%"></div></div>
+        </div>
+        <div class="dash-stat-big">
+          <div class="dash-stat-icon">◈</div>
+          <div class="dash-stat-label">Resume Strength</div>
+          <div class="dash-stat-num">79%</div>
+          <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:79%"></div></div>
+        </div>
+        <div class="dash-stat-big">
+          <div class="dash-stat-icon">⊕</div>
+          <div class="dash-stat-label">JD Match Success</div>
+          <div class="dash-stat-num">18%</div>
+          <div class="dash-stat-bar"><div class="dash-stat-fill warn" style="width:18%"></div></div>
+        </div>
+      </div>
+      <div class="dash-hero-row">
+        <div class="dash-create-card" onclick="showModal('upload')">
+          <div class="dash-create-plus">+</div>
+          <div class="dash-create-label">CREATE NEW RESUME</div>
+          <div class="dash-create-title">Start from scratch or upload</div>
+          <div class="dash-create-desc">Open the modal flow, then either upload an existing resume or begin with a blank editor.</div>
+        </div>
+        <div class="dash-preview-card">
+          <div class="dash-preview-thumb">
+            <div class="pdf-name" style="font-size:11px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:55%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+            <div class="pdf-line" style="width:80%"></div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:50%"></div>
+            <div class="pdf-line" style="width:60%"></div>
+          </div>
+          <div class="dash-preview-chips">
+            <span class="chip">B&W</span>
+            <span class="chip">Classic</span>
+            <span class="chip">1 page</span>
+          </div>
+        </div>
+        <div class="dash-recent-card">
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+            <span class="badge-accent">MOST RECENT</span>
+            <span class="badge-info">UPDATED 2H AGO</span>
+          </div>
+          <div class="dash-recent-name">resume_v3.tex</div>
+          <div class="dash-recent-sub">Resume Workspace</div>
+          <div class="dash-recent-desc">Open the latest saved resume directly in the editor and continue from where you left off.</div>
+          <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap">
+            <span class="badge-outline">1 SAVED RESUME</span>
+            <span class="badge-outline">EDITOR READY</span>
+          </div>
+          <div class="dash-recent-link" onclick="openEditor()">Open editor →</div>
+        </div>
+      </div>
+      <div class="dash-bottom-row">
+        <div class="dash-actions-card">
+          <div class="section-label">QUICK ACTIONS</div>
+          <div class="dash-actions-title">Move faster</div>
+          <div class="dash-actions-grid">
+            <div class="dash-action-item" onclick="openEditor()">
+              <div class="dash-action-icon">≡</div>
+              <div class="dash-action-name">Open Editor</div>
+              <div class="dash-action-desc">Jump back into the latest resume.</div>
+            </div>
+            <div class="dash-action-item" onclick="openATS()">
+              <div class="dash-action-icon">◎</div>
+              <div class="dash-action-name">Calculate ATS Score</div>
+              <div class="dash-action-desc">Run a formatting and content scan.</div>
+            </div>
+            <div class="dash-action-item" onclick="showPage('jds')">
+              <div class="dash-action-icon">⊙</div>
+              <div class="dash-action-name">Calculate JD Match</div>
+              <div class="dash-action-desc">Compare resume against a target role.</div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-jd-card">
+          <div class="dash-jd-icon">☰</div>
+          <div class="section-label">ACTIVE JD</div>
+          <div class="dash-jd-name">Software Engineer II</div>
+          <div class="dash-jd-co">Google · Full-time</div>
+          <div class="dash-jd-link" onclick="showPage('jds')">View JD analysis →</div>
+        </div>
+      </div>
+      <div class="dash-tips-card">
+        <div class="section-label">TIPS</div>
+        <div class="dash-tips-title">One good reminder at a time</div>
+        <div class="dash-tip-content" id="dash-tip-text">Use numbers when they clarify scale, speed, quality, or reach.</div>
+        <div class="dash-tip-dots" id="dash-tip-dots">
+          <span class="tip-dot active"></span>
+          <span class="tip-dot"></span>
+          <span class="tip-dot"></span>
+          <span class="tip-dot"></span>
+          <span class="tip-dot"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RESUMES LIST PAGE ── -->
+  <div class="page active" id="page-resumes">
+    <div class="res-page-body">
+      <div class="res-page-header">
+        <div style="display:flex;gap:5px;margin-bottom:8px">
+          <span class="badge-accent">RESUME LIBRARY</span>
+          <span class="badge-info">5 RESUMES</span>
+        </div>
+        <div class="res-page-title">All your resumes</div>
+        <div class="res-page-desc">Create a new resume first, then keep the rest of your saved versions ready for editing, downloading, or removing.</div>
+      </div>
+      <div class="res-cards-grid">
+        <div class="res-new-card" onclick="showModal('upload')">
+          <div class="res-new-plus">+</div>
+          <div class="section-label">CREATE NEW RESUME</div>
+          <div class="res-new-title">Upload or start blank</div>
+          <div class="res-new-desc">Open the modal, upload an existing resume, or create a new one from scratch.</div>
+        </div>
+        <div class="res-visual-card" onclick="openEditor()">
+          <div class="res-visual-thumb">
+            <span class="badge-accent" style="position:absolute;top:8px;right:8px;font-size:8px">MOST RECENT</span>
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:55%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+            <div class="pdf-line" style="width:80%"></div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:50%"></div>
+            <div class="pdf-line" style="width:60%"></div>
+          </div>
+          <div class="res-visual-name">resume_v3.tex</div>
+          <div class="res-visual-meta">Last updated 2h ago · Classic</div>
+          <div class="res-visual-actions">
+            <button class="r-action primary" onclick="openEditor(event)">✏</button>
+            <button class="r-action">⬇</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+          </div>
+        </div>
+        <div class="res-visual-card">
+          <div class="res-visual-thumb">
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:60%"></div>
+            <div class="pdf-line" style="width:85%"></div>
+            <div class="pdf-line" style="width:75%"></div>
+          </div>
+          <div class="res-visual-name">resume_sde.tex</div>
+          <div class="res-visual-meta">Last updated yesterday · Sidebar</div>
+          <div class="res-visual-actions">
+            <button class="r-action primary">✏</button>
+            <button class="r-action">⬇</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+          </div>
+        </div>
+        <div class="res-visual-card">
+          <div class="res-visual-thumb">
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:50%"></div>
+            <div class="pdf-line" style="width:70%"></div>
+          </div>
+          <div class="res-visual-name">resume_pm.tex</div>
+          <div class="res-visual-meta">Last updated 3d ago · Classic</div>
+          <div class="res-visual-actions">
+            <button class="r-action primary">✏</button>
+            <button class="r-action">⬇</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+          </div>
+        </div>
+        <div class="res-visual-card">
+          <div class="res-visual-thumb">
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:45%"></div>
+            <div class="pdf-line" style="width:80%"></div>
+            <div class="pdf-line" style="width:65%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+          </div>
+          <div class="res-visual-name">resume_ds.tex</div>
+          <div class="res-visual-meta">Last updated 5d ago · Minimal</div>
+          <div class="res-visual-actions">
+            <button class="r-action primary">✏</button>
+            <button class="r-action">⬇</button>
+            <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EDITOR PAGE ── -->
+  <div class="page" id="page-editor">
+    <div class="bcrumb">
+      <span class="bc-link" onclick="showPage('resumes')">Resumes</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-link">resume_v3.tex</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-cur" id="bc-mode">Editor</span>
+      <div class="ed-segs">
+        <button class="ed-seg active" onclick="setEdMode('editor')">Editor</button>
+        <button class="ed-seg" onclick="setEdMode('ats')">ATS Score</button>
+      </div>
+    </div>
+    <div id="ed-mode-editor">
+      <div class="editor-workspace">
+        <div class="ed-left">
+          <div class="left-tabs">
+            <div class="ltab active" onclick="setLTab(0,this)">Sections</div>
+            <div class="ltab" onclick="setLTab(1,this)">Template</div>
+            <div class="ltab" onclick="setLTab(2,this)">Toolbar</div>
+          </div>
+          <!-- SECTIONS TAB -->
+          <div class="sec-pane" id="ltab-0">
+            <div class="sec-nav">
+              <div class="snl">Sections</div>
+              <div class="snav active done" onclick="setSection(this,'sec-contact')"><span class="sdot"></span>Contact</div>
+              <div class="snav done" onclick="setSection(this,'sec-summary')"><span class="sdot"></span>Summary</div>
+              <div class="snav done" onclick="setSection(this,'sec-exp')"><span class="sdot"></span>Experience</div>
+              <div class="snav done" onclick="setSection(this,'sec-edu')"><span class="sdot"></span>Education</div>
+              <div class="snav done" onclick="setSection(this,'sec-skills')"><span class="sdot"></span>Skills</div>
+              <div class="snav" onclick="setSection(this,'sec-proj')"><span class="sdot"></span>Projects</div>
+              <div class="snav" style="margin-top:8px;font-size:10px;color:var(--txt2)">+ Add</div>
+            </div>
+            <div class="form-area">
+              <div id="sec-contact">
+                <div class="fl">Full name</div>
+                <input class="fi" value="Arjun Kumar" />
+                <div class="fl" style="margin-top:8px">Email</div>
+                <input class="fi" value="arjun@email.com" />
+                <div class="fl" style="margin-top:8px">Phone</div>
+                <input class="fi" value="+91 98765 43210" />
+                <div class="fl" style="margin-top:8px">Location</div>
+                <input class="fi" value="Karnal, Haryana" />
+                <div class="fl" style="margin-top:8px">LinkedIn</div>
+                <input class="fi" value="linkedin.com/in/arjun" />
+              </div>
+              <div id="sec-summary" class="hidden">
+                <div class="fl">Professional summary</div>
+                <textarea class="fi" style="height:80px;resize:none;line-height:1.5">Software engineer with 3 years of experience in full-stack development...</textarea>
+              </div>
+              <div id="sec-exp" class="hidden">
+                <div class="fl">Company</div>
+                <input class="fi" value="Acme Corp" />
+                <div class="fl" style="margin-top:8px">Role</div>
+                <input class="fi" value="Software Engineer" />
+                <div class="fl" style="margin-top:8px">Duration</div>
+                <input class="fi" value="Jun 2022 – Present" />
+                <div class="fl" style="margin-top:8px">Bullets</div>
+                <textarea class="fi" style="height:60px;resize:none;line-height:1.5">Built REST APIs serving 100k+ users
+Reduced latency by 40%</textarea>
+                <button class="fi-add">+ Add experience</button>
+              </div>
+              <div id="sec-edu" class="hidden">
+                <div class="fl">Institution</div>
+                <input class="fi" value="IIT Delhi" />
+                <div class="fl" style="margin-top:8px">Degree</div>
+                <input class="fi" value="B.Tech Computer Science" />
+                <div class="fl" style="margin-top:8px">Year</div>
+                <input class="fi" value="2018 – 2022" />
+              </div>
+              <div id="sec-skills" class="hidden">
+                <div class="fl">Skills (comma separated)</div>
+                <textarea class="fi" style="height:60px;resize:none;line-height:1.5">Python, React, Node.js, AWS, Docker, PostgreSQL</textarea>
+              </div>
+              <div id="sec-proj" class="hidden">
+                <div class="fl">Project name</div>
+                <input class="fi" placeholder="e.g. OpenResume" />
+                <div class="fl" style="margin-top:8px">Description</div>
+                <textarea class="fi" style="height:60px;resize:none;line-height:1.5" placeholder="What did you build?"></textarea>
+                <button class="fi-add">+ Add project</button>
+              </div>
+            </div>
+          </div>
+          <!-- TEMPLATE TAB -->
+          <div class="tmpl-pane hidden" id="ltab-1">
+            <div class="tmpl-label">Choose a template</div>
+            <div class="tmpl-grid">
+              <div class="tmpl-card sel" onclick="selectTmpl(this)">
+                <div class="tmpl-thumb">
+                  <div class="tl h"></div><div class="tl s"></div>
+                  <div style="height:0.5px;background:var(--border1);margin:3px 0"></div>
+                  <div class="tl"></div><div class="tl"></div><div class="tl s"></div>
+                  <div class="tl"></div><div class="tl"></div>
+                </div>
+                <div class="tmpl-name">Classic</div>
+              </div>
+              <div class="tmpl-card" onclick="selectTmpl(this)">
+                <div class="tmpl-thumb" style="display:flex;gap:3px">
+                  <div style="width:35%;background:var(--bg3);border-radius:1px;padding:3px 2px;display:flex;flex-direction:column;gap:2px">
+                    <div class="tl s"></div><div class="tl"></div><div class="tl s"></div>
+                  </div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                    <div class="tl h"></div><div class="tl"></div><div class="tl s"></div><div class="tl"></div>
+                  </div>
+                </div>
+                <div class="tmpl-name">Sidebar</div>
+              </div>
+              <div class="tmpl-card" onclick="selectTmpl(this)">
+                <div class="tmpl-thumb">
+                  <div class="tl h" style="width:60%;margin:0 auto"></div>
+                  <div class="tl s" style="width:80%;margin:2px auto 4px"></div>
+                  <div style="height:0.5px;background:var(--border1);margin:2px 0"></div>
+                  <div class="tl"></div><div class="tl"></div><div class="tl s"></div>
+                </div>
+                <div class="tmpl-name">Centered</div>
+              </div>
+              <div class="tmpl-card" onclick="selectTmpl(this)">
+                <div class="tmpl-thumb">
+                  <div style="display:flex;gap:2px;margin-bottom:3px">
+                    <div style="width:8px;height:8px;border-radius:50%;background:var(--border2)"></div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center">
+                      <div class="tl h" style="height:3px"></div><div class="tl s"></div>
+                    </div>
+                  </div>
+                  <div class="tl"></div><div class="tl"></div><div class="tl s"></div>
+                </div>
+                <div class="tmpl-name">Modern</div>
+              </div>
+              <div class="tmpl-card" onclick="selectTmpl(this)">
+                <div class="tmpl-thumb">
+                  <div style="border-left:2px solid var(--accent-dim);padding-left:4px;display:flex;flex-direction:column;gap:2px">
+                    <div class="tl h"></div><div class="tl"></div><div class="tl s"></div>
+                    <div class="tl"></div><div class="tl"></div>
+                  </div>
+                </div>
+                <div class="tmpl-name">Accent</div>
+              </div>
+              <div class="tmpl-card" onclick="selectTmpl(this)">
+                <div class="tmpl-thumb">
+                  <div class="tl h"></div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3px">
+                    <div style="display:flex;flex-direction:column;gap:2px"><div class="tl s"></div><div class="tl"></div></div>
+                    <div style="display:flex;flex-direction:column;gap:2px"><div class="tl s"></div><div class="tl"></div></div>
+                  </div>
+                </div>
+                <div class="tmpl-name">Grid</div>
+              </div>
+            </div>
+          </div>
+          <!-- TOOLBAR TAB -->
+          <div class="toolbar-pane hidden" id="ltab-2">
+            <div class="toolbar-section">
+              <div class="toolbar-section-label">Typography &amp; Spacing</div>
+              <div class="fl">Font</div>
+              <select class="font-select">
+                <option>TeX Gyre Termes</option>
+                <option>Computer Modern</option>
+                <option>Palatino</option>
+                <option>Helvetica</option>
+                <option>Libertine</option>
+              </select>
+              <div class="slider-row">
+                <div class="slider-label"><span>Font size</span><span class="slider-val" id="fs-val">11pt</span></div>
+                <input type="range" min="9" max="13" value="11" oninput="document.getElementById('fs-val').textContent=this.value+'pt'">
+              </div>
+              <div class="slider-row">
+                <div class="slider-label"><span>Line spacing</span><span class="slider-val" id="ls-val">1.15</span></div>
+                <input type="range" min="100" max="150" value="115" oninput="document.getElementById('ls-val').textContent=(this.value/100).toFixed(2)">
+              </div>
+              <div class="slider-row">
+                <div class="slider-label"><span>Margins</span><span class="slider-val" id="mg-val">1.5cm</span></div>
+                <input type="range" min="10" max="30" value="15" oninput="document.getElementById('mg-val').textContent=(this.value/10).toFixed(1)+'cm'">
+              </div>
+            </div>
+            <div class="toolbar-section">
+              <div class="toolbar-section-label">Colors</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <div style="width:20px;height:20px;border-radius:50%;background:#000;border:2px solid var(--accent-dim);cursor:pointer"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#1a365d;cursor:pointer;border:1.5px solid var(--border1)"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#2d3748;cursor:pointer;border:1.5px solid var(--border1)"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#1a4731;cursor:pointer;border:1.5px solid var(--border1)"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#4a1942;cursor:pointer;border:1.5px solid var(--border1)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT: Preview -->
+        <div class="ed-right">
+          <div class="prev-bar">
+            <div class="sync-row">
+              <span class="sync-dot"></span>
+              <span>compiled · 0.8s ago</span>
+            </div>
+            <button class="analyze-btn" onclick="toggleDrawer()">Analyze ↗</button>
+          </div>
+          <div class="pdf-area">
+            <div class="pdf-doc">
+              <div class="pdf-name">Arjun Kumar</div>
+              <div class="pdf-contact">arjun@email.com · +91 98765 43210 · Karnal, Haryana · linkedin.com/in/arjun</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-section-h">Experience</div>
+              <div class="pdf-line d" style="width:55%"></div>
+              <div class="pdf-line" style="width:90%"></div>
+              <div class="pdf-line" style="width:80%"></div>
+              <div class="pdf-line" style="width:70%"></div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-section-h">Education</div>
+              <div class="pdf-line d" style="width:50%"></div>
+              <div class="pdf-line" style="width:60%"></div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-section-h">Skills</div>
+              <div class="pdf-tags">
+                <span class="pdf-tag">Python</span>
+                <span class="pdf-tag">React</span>
+                <span class="pdf-tag">Node.js</span>
+                <span class="pdf-tag">AWS</span>
+                <span class="pdf-tag">Docker</span>
+              </div>
+            </div>
+          </div>
+          <!-- ATS Drawer -->
+          <div class="ats-drawer" id="ats-drawer">
+            <div class="drawer-head">
+              <span>ATS Report</span>
+              <button class="close-x" onclick="toggleDrawer()">×</button>
+            </div>
+            <div class="score-big">
+              <div class="score-num">74</div>
+              <div class="score-sub">out of 100 · Good — a few fixes needed</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>Keywords</span><span class="bar-val">82%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>Formatting</span><span class="bar-val">90%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>Section structure</span><span class="bar-val">65%</span></div>
+              <div class="bar-track"><div class="bar-fill warn" style="width:65%"></div></div>
+            </div>
+            <div class="audit">
+              <div class="audit-head">Checklist</div>
+              <div class="audit-row"><span class="abadge bp">✓</span>File format readable</div>
+              <div class="audit-row"><span class="abadge bp">✓</span>Contact info present</div>
+              <div class="audit-row"><span class="abadge bw">!</span>Add measurable impact</div>
+              <div class="audit-row"><span class="abadge bf">✗</span>Missing summary section</div>
+              <div class="audit-row"><span class="abadge bw">!</span>Quantify skills section</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ATS SCORE MODE (full) -->
+    <div id="ed-mode-ats" class="hidden">
+      <div class="ats-full">
+        <div class="ats-score-card">
+          <div class="ats-score-num">74</div>
+          <div class="ats-score-info">
+            <div class="ats-score-label">Good — a few fixes needed</div>
+            <div class="ats-score-desc">resume_v3.tex · Analyzed just now</div>
+          </div>
+          <button class="analyze-btn" onclick="setEdMode('editor')">← Back to Editor</button>
+        </div>
+        <div class="ats-bars">
+          <div class="ats-bar-item">
+            <div class="ats-bar-label"><span>Keywords</span><span style="font-family:var(--font);color:var(--accent)">82%</span></div>
+            <div class="ats-bar-track"><div class="ats-bar-fill" style="width:82%"></div></div>
+          </div>
+          <div class="ats-bar-item">
+            <div class="ats-bar-label"><span>Formatting</span><span style="font-family:var(--font);color:var(--accent)">90%</span></div>
+            <div class="ats-bar-track"><div class="ats-bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="ats-bar-item">
+            <div class="ats-bar-label"><span>Section structure</span><span style="font-family:var(--font);color:var(--warn)">65%</span></div>
+            <div class="ats-bar-track"><div class="ats-bar-fill warn" style="width:65%"></div></div>
+          </div>
+          <div class="ats-bar-item">
+            <div class="ats-bar-label"><span>Length &amp; density</span><span style="font-family:var(--font);color:var(--accent)">88%</span></div>
+            <div class="ats-bar-track"><div class="ats-bar-fill" style="width:88%"></div></div>
+          </div>
+        </div>
+        <div class="ats-checklist">
+          <div class="ats-check-row"><span class="check-ico" style="background:var(--accent-bg);color:var(--accent)">✓</span>File format is ATS-readable (PDF via LaTeX)</div>
+          <div class="ats-check-row"><span class="check-ico" style="background:var(--accent-bg);color:var(--accent)">✓</span>Contact information is complete</div>
+          <div class="ats-check-row"><span class="check-ico" style="background:var(--accent-bg);color:var(--accent)">✓</span>Standard section headings detected</div>
+          <div class="ats-check-row"><span class="check-ico" style="background:var(--warn-bg);color:var(--warn)">!</span>Add measurable impact to experience bullets</div>
+          <div class="ats-check-row"><span class="check-ico" style="background:var(--warn-bg);color:var(--warn)">!</span>Skills section lacks proficiency context</div>
+          <div class="ats-check-row"><span class="check-ico" style="background:var(--err-bg);color:var(--err)">✗</span>Missing professional summary / objective</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JDs PAGE ── -->
+  <div class="page" id="page-jds">
+    <div class="jd-page-body">
+      <div class="jd-list-pane">
+        <div class="jd-list-head">
+          <div class="jd-list-title">Saved JDs</div>
+          <button class="btn-new" style="font-size:10px">+ Add JD</button>
+        </div>
+        <div class="jd-cards">
+          <div class="jd-card active" onclick="selectJD(this)">
+            <div class="jd-card-title">Software Engineer II</div>
+            <div class="jd-card-co">Google · Full-time</div>
+            <span class="jd-card-badge">2 resumes matched</span>
+          </div>
+          <div class="jd-card" onclick="selectJD(this)">
+            <div class="jd-card-title">Senior Frontend Dev</div>
+            <div class="jd-card-co">Razorpay · Full-time</div>
+            <span class="jd-card-badge">Not analyzed yet</span>
+          </div>
+          <div class="jd-card" onclick="selectJD(this)">
+            <div class="jd-card-title">ML Engineer</div>
+            <div class="jd-card-co">OpenAI · Remote</div>
+            <span class="jd-card-badge">1 resume matched</span>
+          </div>
+        </div>
+        <div class="jd-upload-section">
+          <div class="jd-upload-label">Paste or upload JD</div>
+          <textarea class="jd-paste-area" placeholder="Paste job description text here…"></textarea>
+        </div>
+      </div>
+      <div class="jd-analyze-pane">
+        <div class="jd-analyze-head">
+          <div class="jd-analyze-title">Software Engineer II — Google</div>
+          <button class="run-btn" onclick="runJDAnalysis()">Run Analysis ↗</button>
+        </div>
+        <div class="jd-split">
+          <div class="jd-select-col">
+            <div class="jd-select-head">Select Resumes</div>
+            <div class="jd-resume-items">
+              <div class="jd-res-item checked" onclick="toggleCheck(this)">
+                <input type="checkbox" checked onclick="event.stopPropagation()">
+                <span class="jd-res-label">resume_v3</span>
+              </div>
+              <div class="jd-res-item checked" onclick="toggleCheck(this)">
+                <input type="checkbox" checked onclick="event.stopPropagation()">
+                <span class="jd-res-label">resume_sde</span>
+              </div>
+              <div class="jd-res-item" onclick="toggleCheck(this)">
+                <input type="checkbox" onclick="event.stopPropagation()">
+                <span class="jd-res-label">resume_pm</span>
+              </div>
+              <div class="jd-res-item" onclick="toggleCheck(this)">
+                <input type="checkbox" onclick="event.stopPropagation()">
+                <span class="jd-res-label">resume_ds</span>
+              </div>
+              <div class="jd-res-item" onclick="toggleCheck(this)">
+                <input type="checkbox" onclick="event.stopPropagation()">
+                <span class="jd-res-label">resume_ml</span>
+              </div>
+            </div>
+          </div>
+          <div class="jd-result-col" id="jd-results">
+            <div class="jd-no-result" id="jd-no-result">
+              <div class="jd-no-result-icon">◎</div>
+              <div class="jd-no-result-txt">Select resumes and click<br>"Run Analysis" to see match scores</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROFILE PAGE ── -->
+  <div class="page" id="page-profile">
+    <div class="profile-body" style="flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="profile-avatar-big">AK</div>
+        <div style="flex:1">
+          <div style="display:flex;gap:5px;margin-bottom:4px">
+            <span class="badge-accent">PRO PLAN</span>
+            <span class="badge-info">MEMBER SINCE JAN 2026</span>
+          </div>
+          <div class="profile-name" style="font-size:16px">Arjun Kumar</div>
+          <div class="profile-email">arjun@email.com</div>
+        </div>
+        <button class="r-action primary" style="padding:6px 14px;font-size:11px">Edit profile</button>
+        <button class="r-action" style="padding:6px 14px;font-size:11px;border-color:var(--err);color:var(--err)" onclick="window.location.href='landing.html'">Logout</button>
+      </div>
+      <div style="display:flex;gap:12px">
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+          <div class="profile-section">
+            <div class="profile-section-title">Account details</div>
+            <div class="profile-field"><div class="pfl">Full name</div><input class="pfi" value="Arjun Kumar"></div>
+            <div class="profile-field"><div class="pfl">Email</div><input class="pfi" value="arjun@email.com"></div>
+            <div class="profile-field"><div class="pfl">Phone</div><input class="pfi" value="+91 98765 43210" placeholder="Add phone number"></div>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">Preferences</div>
+            <div class="profile-field"><div class="pfl">Default template</div><div class="pfi" style="cursor:pointer">Classic (B&W) ▾</div></div>
+            <div class="profile-field"><div class="pfl">Export format</div><div class="pfi" style="cursor:pointer">PDF ▾</div></div>
+            <div class="profile-field" style="display:flex;align-items:center;justify-content:space-between">
+              <div class="pfl" style="margin-bottom:0">Auto-compile on save</div>
+              <div style="width:32px;height:18px;border-radius:9px;background:var(--accent);cursor:pointer;position:relative">
+                <div style="width:14px;height:14px;border-radius:50%;background:white;position:absolute;top:2px;right:2px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+          <div class="profile-section">
+            <div class="profile-section-title">Profile completeness</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+              <div style="font-size:22px;font-weight:600;font-family:var(--font);color:var(--accent)">70%</div>
+              <div style="flex:1"><div class="usage-track"><div class="usage-fill" style="width:70%"></div></div></div>
+            </div>
+            <div class="audit-row"><span class="abadge bp">✓</span>Contact information added</div>
+            <div class="audit-row"><span class="abadge bp">✓</span>Email verified</div>
+            <div class="audit-row"><span class="abadge bw">!</span>Add a profile summary</div>
+            <div class="audit-row"><span class="abadge bf">✗</span>Connect LinkedIn profile</div>
+            <div class="audit-row"><span class="abadge bf">✗</span>Set up GitHub link</div>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">Usage this month</div>
+            <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
+            <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
+            <div class="usage-row" style="margin-top:10px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
+            <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
+            <div class="usage-row" style="margin-top:10px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
+            <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /desktop-view -->
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- MOBILE VIEW -->
+<!-- ══════════════════════════════════════════ -->
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+
+    <div class="mob-topbar" id="mob-topbar-default">
+      <span class="mob-topbar-logo">resumeai</span>
+      <div class="avatar" style="margin-left:auto" onclick="mobShowPage('profile')">AK</div>
+    </div>
+    <div class="mob-topbar hidden" id="mob-topbar-editor">
+      <span class="mob-back" onclick="mobShowPage('resumes')">←</span>
+      <span class="mob-topbar-title">resume_v3</span>
+      <button class="mob-analyze-btn" onclick="toggleMobSheet()">Analyze ↗</button>
+      <div class="avatar" style="margin-left:8px">AK</div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto" id="mob-page-container">
+
+      <!-- MOBILE DASHBOARD -->
+      <div class="mob-page active" id="mob-page-dash">
+        <div class="mob-dash-greeting">
+          <div class="dash-greeting-label">WELCOME BACK</div>
+          <div style="font-size:16px;font-weight:600;color:var(--txt0)">Good afternoon, Arjun!</div>
+        </div>
+        <div class="mob-dash-stats" style="overflow-x:auto">
+          <div class="mob-stat"><div class="mob-stat-n">74%</div><div class="mob-stat-l">ATS Score</div></div>
+          <div class="mob-stat"><div class="mob-stat-n">79%</div><div class="mob-stat-l">Strength</div></div>
+          <div class="mob-stat"><div class="mob-stat-n">18%</div><div class="mob-stat-l">JD Match</div></div>
+        </div>
+        <div class="mob-dash-hero">
+          <div class="dash-create-card" onclick="showModal('upload')" style="padding:16px 14px">
+            <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
+            <div class="dash-create-label">CREATE NEW RESUME</div>
+            <div class="dash-create-title">Start from scratch or upload</div>
+          </div>
+          <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
+            <div class="mob-res-visual-thumb">
+              <span class="badge-accent" style="position:absolute;top:6px;right:6px;font-size:7px">MOST RECENT</span>
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:55%"></div>
+              <div class="pdf-line" style="width:90%"></div>
+              <div class="pdf-line" style="width:80%"></div>
+            </div>
+            <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
+            <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago · Classic</div>
+            <div style="font-size:10px;color:var(--accent);margin-top:6px;cursor:pointer">Open editor →</div>
+          </div>
+        </div>
+        <div class="mob-section-label">QUICK ACTIONS</div>
+        <div class="mob-dash-actions-scroll">
+          <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('editor')">
+            <div class="dash-action-icon">≡</div>
+            <div class="dash-action-name">Open Editor</div>
+          </div>
+          <div class="dash-action-item" style="min-width:120px;flex-shrink:0">
+            <div class="dash-action-icon">◎</div>
+            <div class="dash-action-name">ATS Score</div>
+          </div>
+          <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('jds')">
+            <div class="dash-action-icon">⊙</div>
+            <div class="dash-action-name">JD Match</div>
+          </div>
+        </div>
+        <div style="padding:0 12px 12px">
+          <div class="dash-jd-card" style="padding:12px">
+            <div class="dash-jd-icon">☰</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">ACTIVE JD</div>
+            <div class="dash-jd-name">Software Engineer II</div>
+            <div class="dash-jd-co">Google · Full-time</div>
+          </div>
+        </div>
+        <div style="padding:0 12px 12px">
+          <div class="dash-tips-card" style="padding:12px">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">TIPS</div>
+            <div class="dash-tip-content" id="mob-tip-text" style="font-size:10px">Use numbers when they clarify scale, speed, quality, or reach.</div>
+            <div class="dash-tip-dots" id="mob-tip-dots">
+              <span class="tip-dot active"></span><span class="tip-dot"></span><span class="tip-dot"></span><span class="tip-dot"></span><span class="tip-dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE RESUMES -->
+      <div class="mob-page" id="mob-page-resumes">
+        <div style="padding:12px">
+          <div style="display:flex;gap:5px;margin-bottom:6px">
+            <span class="badge-accent" style="font-size:8px">RESUME LIBRARY</span>
+            <span class="badge-info" style="font-size:8px">5 RESUMES</span>
+          </div>
+          <div style="font-size:15px;font-weight:600;color:var(--txt0)">All your resumes</div>
+        </div>
+        <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px">
+          <div class="dash-create-card" onclick="showModal('upload')" style="padding:16px 14px">
+            <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
+            <div class="dash-create-label">CREATE NEW RESUME</div>
+            <div class="dash-create-title">Upload or start blank</div>
+          </div>
+          <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
+            <div class="mob-res-visual-thumb">
+              <span class="badge-accent" style="position:absolute;top:6px;right:6px;font-size:7px">MOST RECENT</span>
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:55%"></div>
+              <div class="pdf-line" style="width:90%"></div>
+              <div class="pdf-line" style="width:80%"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
+                <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago · Classic</div>
+              </div>
+              <div style="display:flex;gap:5px">
+                <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">✏</button>
+                <button class="r-action">⬇</button>
+                <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+              </div>
+            </div>
+          </div>
+          <div class="mob-res-visual-card">
+            <div class="mob-res-visual-thumb">
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:60%"></div>
+              <div class="pdf-line" style="width:85%"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_sde.tex</div>
+                <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated yesterday · Sidebar</div>
+              </div>
+              <div style="display:flex;gap:5px">
+                <button class="r-action primary">✏</button>
+                <button class="r-action">⬇</button>
+                <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+              </div>
+            </div>
+          </div>
+          <div class="mob-res-visual-card">
+            <div class="mob-res-visual-thumb">
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:50%"></div>
+              <div class="pdf-line" style="width:70%"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_pm.tex</div>
+                <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 3d ago · Classic</div>
+              </div>
+              <div style="display:flex;gap:5px">
+                <button class="r-action primary">✏</button>
+                <button class="r-action">⬇</button>
+                <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE EDITOR -->
+      <div class="mob-page" id="mob-page-editor">
+        <div class="mob-edit-toggle">
+          <button class="mob-et-btn active" id="mob-et-edit" onclick="setMobEdView('edit')">Edit</button>
+          <button class="mob-et-btn" id="mob-et-prev" onclick="setMobEdView('preview')">Preview</button>
+        </div>
+        <div id="mob-edit-mode">
+          <div class="mob-section-pills">
+            <button class="mob-pill active">Contact</button>
+            <button class="mob-pill">Summary</button>
+            <button class="mob-pill">Experience</button>
+            <button class="mob-pill">Education</button>
+            <button class="mob-pill">Skills</button>
+            <button class="mob-pill">Projects</button>
+          </div>
+          <div class="mob-form">
+            <div><div class="fl">Full name</div><input class="fi" value="Arjun Kumar"></div>
+            <div><div class="fl">Email</div><input class="fi" value="arjun@email.com"></div>
+            <div><div class="fl">Phone</div><input class="fi" value="+91 98765 43210"></div>
+            <div><div class="fl">LinkedIn / Portfolio</div><input class="fi" value="linkedin.com/in/arjun"></div>
+          </div>
+        </div>
+        <div id="mob-prev-mode" class="hidden">
+          <div class="compiled-bar"><span class="sync-dot"></span>compiled · 0.8s ago</div>
+          <div class="mob-preview-pane">
+            <div class="mob-pdf-doc">
+              <div class="pdf-name">Arjun Kumar</div>
+              <div class="pdf-contact">arjun@email.com · Karnal, Haryana</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-section-h">Experience</div>
+              <div class="pdf-line d" style="width:55%"></div>
+              <div class="pdf-line" style="width:90%"></div>
+              <div class="pdf-line" style="width:80%"></div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-section-h">Education</div>
+              <div class="pdf-line d" style="width:50%"></div>
+              <div class="pdf-line" style="width:60%"></div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-section-h">Skills</div>
+              <div class="pdf-tags">
+                <span class="pdf-tag">Python</span>
+                <span class="pdf-tag">React</span>
+                <span class="pdf-tag">Node.js</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE JDs -->
+      <div class="mob-page" id="mob-page-jds">
+        <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border0)">
+          <span style="font-size:11px;font-weight:500">Saved JDs</span>
+          <button class="btn-new" style="font-size:10px">+ Add JD</button>
+        </div>
+        <div class="mob-jd-list">
+          <div class="mob-jd-card">
+            <div class="mob-jd-title">Software Engineer II</div>
+            <div class="mob-jd-co">Google · Full-time</div>
+            <div class="mob-jd-action">
+              <button class="r-action primary">Analyze Match</button>
+              <button class="r-action">Edit</button>
+            </div>
+          </div>
+          <div class="mob-jd-card">
+            <div class="mob-jd-title">Senior Frontend Dev</div>
+            <div class="mob-jd-co">Razorpay · Full-time</div>
+            <div class="mob-jd-action">
+              <button class="r-action primary">Analyze Match</button>
+              <button class="r-action">Edit</button>
+            </div>
+          </div>
+          <div class="mob-jd-card">
+            <div class="mob-jd-title">ML Engineer</div>
+            <div class="mob-jd-co">OpenAI · Remote</div>
+            <div class="mob-jd-action">
+              <button class="r-action primary">Analyze Match</button>
+              <button class="r-action">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE PROFILE -->
+      <div class="mob-page" id="mob-page-profile">
+        <div style="padding:16px 14px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid var(--border0)">
+          <div class="profile-avatar-big" style="width:44px;height:44px;font-size:16px">AK</div>
+          <div style="flex:1">
+            <div style="display:flex;gap:4px;margin-bottom:3px">
+              <span class="badge-accent" style="font-size:7px">PRO PLAN</span>
+            </div>
+            <div style="font-size:13px;font-weight:500">Arjun Kumar</div>
+            <div style="font-size:10px;color:var(--txt2);margin-top:2px">arjun@email.com</div>
+          </div>
+        </div>
+        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+          <div class="profile-section">
+            <div class="profile-section-title">Profile completeness</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="font-size:18px;font-weight:600;font-family:var(--font);color:var(--accent)">70%</div>
+              <div style="flex:1"><div class="usage-track"><div class="usage-fill" style="width:70%"></div></div></div>
+            </div>
+            <div class="audit-row" style="font-size:10px"><span class="abadge bp" style="font-size:8px">✓</span>Contact info</div>
+            <div class="audit-row" style="font-size:10px"><span class="abadge bw" style="font-size:8px">!</span>Add summary</div>
+            <div class="audit-row" style="font-size:10px"><span class="abadge bf" style="font-size:8px">✗</span>LinkedIn</div>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">Usage this month</div>
+            <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
+            <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
+            <div class="usage-row" style="margin-top:8px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
+            <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">Preferences</div>
+            <div class="profile-field"><div class="pfl">Default template</div><div class="pfi" style="cursor:pointer;font-size:10px">Classic (B&W) ▾</div></div>
+            <div class="profile-field" style="display:flex;align-items:center;justify-content:space-between">
+              <div class="pfl" style="margin-bottom:0;font-size:10px">Auto-compile</div>
+              <div style="width:28px;height:16px;border-radius:8px;background:var(--accent);cursor:pointer;position:relative">
+                <div style="width:12px;height:12px;border-radius:50%;background:white;position:absolute;top:2px;right:2px"></div>
+              </div>
+            </div>
+          </div>
+          <button class="r-action" style="width:100%;padding:10px;font-size:11px;border-color:var(--err);color:var(--err);text-align:center;margin-top:4px" onclick="window.location.href='landing.html'">Logout</button>
+        </div>
+      </div>
+
+    </div><!-- /mob-page-container -->
+
+    <!-- MOBILE BOTTOM BAR -->
+    <div class="mob-bottombar" id="mob-bottombar">
+      <div class="mob-tab active" id="mob-tab-dash" onclick="mobShowPage('dash')">
+        <div class="mob-tab-icon">⊞</div><span>Dashboard</span>
+      </div>
+      <div class="mob-tab" id="mob-tab-resumes" onclick="mobShowPage('resumes')">
+        <div class="mob-tab-icon">☰</div><span>Resumes</span>
+      </div>
+      <div class="mob-tab" id="mob-tab-jds" onclick="mobShowPage('jds')">
+        <div class="mob-tab-icon">⊙</div><span>JDs</span>
+      </div>
+      <div class="mob-tab" id="mob-tab-profile" onclick="mobShowPage('profile')">
+        <div class="mob-tab-icon">○</div><span>Profile</span>
+      </div>
+    </div>
+
+    <!-- MOBILE BOTTOM SHEET (ATS Report) -->
+    <div class="mob-bottom-sheet" id="mob-sheet">
+      <div class="mob-sheet-handle" onclick="toggleMobSheet()"></div>
+      <div class="mob-sheet-head">
+        <span>ATS Report</span>
+        <button class="close-x" onclick="toggleMobSheet()">×</button>
+      </div>
+      <div class="mob-sheet-body">
+        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+          <span style="font-size:32px;font-weight:600;font-family:var(--font)">74</span>
+          <span style="font-size:10px;color:var(--txt2)">out of 100</span>
+        </div>
+        <div style="font-size:11px;color:var(--txt1);margin-bottom:12px">Good — a few fixes needed</div>
+        <div class="ats-bar-item" style="margin-bottom:8px">
+          <div class="ats-bar-label"><span>Keywords</span><span style="font-family:var(--font);color:var(--accent)">82%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:82%"></div></div>
+        </div>
+        <div class="ats-bar-item" style="margin-bottom:8px">
+          <div class="ats-bar-label"><span>Formatting</span><span style="font-family:var(--font);color:var(--accent)">90%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="ats-bar-item" style="margin-bottom:14px">
+          <div class="ats-bar-label"><span>Section structure</span><span style="font-family:var(--font);color:var(--warn)">65%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill warn" style="width:65%"></div></div>
+        </div>
+        <div class="audit-head" style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt2);margin-bottom:6px">Checklist</div>
+        <div class="audit-row"><span class="abadge bp">✓</span>File format readable</div>
+        <div class="audit-row"><span class="abadge bp">✓</span>Contact info complete</div>
+        <div class="audit-row"><span class="abadge bw">!</span>Add measurable impact</div>
+        <div class="audit-row"><span class="abadge bf">✗</span>Missing summary section</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /mobile-view -->
+
+<!-- ══ CREATE NEW RESUME MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Create new resume</div>
+    <div class="modal-desc">Choose how you'd like to start. You can always switch methods later in the editor.</div>
+    <div class="modal-options">
+      <div class="modal-option" onclick="setModalMode('upload')">
+        <div class="modal-option-icon">↑</div>
+        <div>
+          <div class="modal-option-name">Upload a file</div>
+          <div class="modal-option-desc">Upload a PDF or .tex file. We'll parse it and drop you into the editor.</div>
+        </div>
+      </div>
+      <div class="modal-option" onclick="setModalMode('paste')">
+        <div class="modal-option-icon">⎘</div>
+        <div>
+          <div class="modal-option-name">Paste resume text</div>
+          <div class="modal-option-desc">Copy-paste the text content of your resume. Great for quick edits.</div>
+        </div>
+      </div>
+      <div class="modal-option" onclick="startBlankResume()">
+        <div class="modal-option-icon">+</div>
+        <div>
+          <div class="modal-option-name">Start from blank</div>
+          <div class="modal-option-desc">Open a completely empty editor with a fresh template selected.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-upload-zone" id="modal-upload-zone">
+      <div class="modal-upload-icon">☁</div>
+      <div class="modal-upload-text">Drag & drop your file here, or click to browse</div>
+      <div class="modal-upload-sub">Supports .pdf, .tex, .docx · Max 5 MB</div>
+    </div>
+    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse & open in editor →</button>
+    <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Paste your resume text here..."></textarea>
+    <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import & open in editor →</button>
+  </div>
+</div>
+
+<!-- Info bar -->
+<div style="margin-top:14px;font-size:10px;color:#444;text-align:center;max-width:860px;line-height:1.6">
+  Desktop: Navbar · Resumes (carousel strip + list) · Editor (Sections/Template/Toolbar tabs + ATS drawer) · ATS Score mode · JDs (dual-select analyze) · Profile<br>
+  Mobile: Dashboard · Resumes (carousel + list) · Editor (Edit/Preview toggle + bottom sheet) · JDs · Profile
+</div>
+
+<!-- JS Modules -->
+<script src="js/app.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/jds.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/tips.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

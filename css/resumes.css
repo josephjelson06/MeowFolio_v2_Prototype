@@ -1,0 +1,45 @@
+/* ── RESUMES LIST PAGE ── */
+.list-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 12px; border-bottom: 0.5px solid var(--border0); }
+.list-title { font-size: 13px; font-weight: 500; }
+.list-body { padding: 14px 20px; }
+.r-card-list { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 12px; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.r-card-list:hover { border-color: var(--border2); }
+.r-thumb { width: 28px; height: 36px; background: var(--bg4); border-radius: 3px; border: 0.5px solid var(--border1); flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; padding: 4px 3px; }
+.r-thumb-line { height: 2px; border-radius: 1px; background: var(--border2); }
+.r-thumb-line.d { background: var(--border1); width: 70%; }
+.r-list-info { flex: 1; }
+.r-list-name { font-size: 12px; font-weight: 500; font-family: var(--font); color: var(--txt0); }
+.r-list-sub { font-size: 10px; color: var(--txt2); margin-top: 2px; }
+.r-list-score { font-size: 12px; font-weight: 500; font-family: var(--font); }
+.r-list-actions { display: flex; gap: 4px; }
+
+/* ── RESUMES CARD LAYOUT ── */
+.res-page-body { padding: 20px; }
+.res-page-header { margin-bottom: 16px; }
+.res-page-title { font-size: 18px; font-weight: 600; color: var(--txt0); margin-bottom: 4px; }
+.res-page-desc { font-size: 11px; color: var(--txt2); line-height: 1.5; }
+.res-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.res-new-card { background: var(--bg2); border: 1px dashed var(--border2); border-radius: var(--r-md); padding: 20px 16px; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; transition: all .15s; min-height: 220px; }
+.res-new-card:hover { border-color: var(--accent-dim); background: var(--accent-bg); }
+.res-new-plus { font-size: 32px; color: var(--txt2); margin-bottom: 12px; font-weight: 300; }
+.res-new-title { font-size: 13px; font-weight: 500; color: var(--txt0); margin-bottom: 4px; }
+.res-new-desc { font-size: 10px; color: var(--txt2); line-height: 1.5; }
+.res-visual-card { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 10px; cursor: pointer; transition: all .15s; }
+.res-visual-card:hover { border-color: var(--border2); background: var(--bg3); }
+.res-visual-thumb { position: relative; background: var(--bg3); border: 0.5px solid var(--border1); border-radius: 3px; padding: 12px; margin-bottom: 8px; min-height: 140px; }
+.res-visual-name { font-size: 12px; font-weight: 500; font-family: var(--font); color: var(--txt0); margin-bottom: 2px; }
+.res-visual-meta { font-size: 10px; color: var(--txt2); margin-bottom: 8px; }
+.res-visual-actions { display: flex; gap: 5px; }
+
+/* ── CAROUSEL STRIP ── */
+.carousel-strip { padding: 12px 20px; border-bottom: 0.5px solid var(--border0); display: flex; gap: 8px; align-items: center; overflow-x: auto; }
+.carousel-strip::-webkit-scrollbar { display: none; }
+.car-res { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.5; transition: all .15s; flex-shrink: 0; }
+.car-res.active { opacity: 1; }
+.car-res-thumb { width: 36px; height: 48px; background: var(--bg3); border: 1.5px solid var(--border0); border-radius: 3px; display: flex; flex-direction: column; gap: 2px; padding: 5px 4px; transition: all .15s; }
+.car-res.active .car-res-thumb { border-color: var(--accent-dim); background: var(--accent-bg); }
+.car-res-name { font-size: 8px; color: var(--txt2); font-family: var(--font); }
+.car-res.active .car-res-name { color: var(--accent); }
+.car-arrow { width: 24px; height: 24px; border-radius: 50%; border: 0.5px solid var(--border1); background: var(--bg3); color: var(--txt1); font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .12s; }
+.car-arrow:hover { border-color: var(--border2); color: var(--txt0); }
+.car-analyze { padding: 5px 12px; border-radius: var(--r-md); border: 0.5px solid var(--accent-dim); background: var(--accent-bg); color: var(--accent); font-size: 11px; cursor: pointer; font-family: var(--sans); font-weight: 500; margin-left: auto; flex-shrink: 0; }

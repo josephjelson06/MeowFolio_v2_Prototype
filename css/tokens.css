@@ -1,0 +1,32 @@
+/* ── TOKENS ── */
+:root {
+  --bg0: #0e0e0f;
+  --bg1: #141415;
+  --bg2: #1a1a1c;
+  --bg3: #222224;
+  --bg4: #2a2a2d;
+  --border0: #2a2a2d;
+  --border1: #333336;
+  --border2: #3f3f43;
+  --txt0: #f0f0f0;
+  --txt1: #a8a8b0;
+  --txt2: #666670;
+  --accent: #7fba3c;
+  --accent-dim: #3B6D11;
+  --accent-bg: #1a2410;
+  --warn: #e8a030;
+  --warn-bg: #251a08;
+  --err: #e05050;
+  --err-bg: #250f0f;
+  --info: #5b9cf6;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --font: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --sans: -apple-system, 'Helvetica Neue', sans-serif;
+}
+
+/* ── RESET ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #080809; font-family: var(--sans); font-size: 13px; color: var(--txt0); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px 16px 40px; }

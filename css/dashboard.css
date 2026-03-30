@@ -1,0 +1,70 @@
+/* ── DASHBOARD ── */
+.dash-body { padding: 20px 20px; }
+.dash-stats { display: flex; gap: 8px; margin-bottom: 20px; }
+.stat-card { flex: 1; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 12px 14px; }
+.stat-n { font-size: 22px; font-weight: 500; color: var(--txt0); font-family: var(--font); }
+.stat-l { font-size: 11px; color: var(--txt2); margin-top: 2px; }
+.resume-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.r-card { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 12px; cursor: pointer; transition: all .15s; position: relative; }
+.r-card:hover { border-color: var(--border2); background: var(--bg3); }
+.r-card-name { font-size: 12px; font-weight: 500; color: var(--txt0); font-family: var(--font); margin-bottom: 3px; }
+.r-card-meta { font-size: 10px; color: var(--txt2); }
+.r-card-score { position: absolute; top: 10px; right: 10px; font-size: 11px; font-weight: 500; color: var(--accent); font-family: var(--font); }
+.r-card-score.warn { color: var(--warn); }
+.r-card-score.none { color: var(--txt2); }
+.r-card-actions { display: flex; gap: 5px; margin-top: 10px; }
+
+/* ── DASHBOARD REDESIGN ── */
+.dash-greeting-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--txt2); margin-bottom: 4px; }
+.dash-greeting-name { font-size: 18px; font-weight: 600; color: var(--txt0); margin-bottom: 16px; }
+.dash-stats-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.dash-stat-big { flex: 1; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; }
+.dash-stat-icon { font-size: 16px; margin-bottom: 6px; color: var(--txt2); }
+.dash-stat-label { font-size: 10px; color: var(--txt2); margin-bottom: 4px; }
+.dash-stat-num { font-size: 24px; font-weight: 600; font-family: var(--font); color: var(--txt0); margin-bottom: 6px; }
+.dash-stat-bar { height: 3px; border-radius: 2px; background: var(--bg4); }
+.dash-stat-fill { height: 3px; border-radius: 2px; background: var(--accent); }
+.dash-stat-fill.warn { background: var(--warn); }
+
+/* Hero row */
+.dash-hero-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.dash-create-card { flex: 1; background: var(--bg2); border: 1px dashed var(--border2); border-radius: var(--r-md); padding: 20px 16px; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; transition: all .15s; }
+.dash-create-card:hover { border-color: var(--accent-dim); background: var(--accent-bg); }
+.dash-create-plus { font-size: 28px; color: var(--txt2); margin-bottom: 10px; font-weight: 300; }
+.dash-create-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); margin-bottom: 4px; }
+.dash-create-title { font-size: 13px; font-weight: 500; color: var(--txt0); margin-bottom: 4px; }
+.dash-create-desc { font-size: 10px; color: var(--txt2); line-height: 1.5; }
+.dash-preview-card { flex: 1.2; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 12px; display: flex; flex-direction: column; }
+.dash-preview-thumb { flex: 1; background: var(--bg3); border: 0.5px solid var(--border1); border-radius: 3px; padding: 12px; margin-bottom: 8px; }
+.dash-preview-chips { display: flex; gap: 4px; }
+.dash-recent-card { flex: 1.2; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 16px; display: flex; flex-direction: column; }
+.dash-recent-name { font-size: 14px; font-weight: 600; color: var(--txt0); margin-bottom: 2px; }
+.dash-recent-sub { font-size: 10px; color: var(--txt2); margin-bottom: 8px; }
+.dash-recent-desc { font-size: 10px; color: var(--txt2); line-height: 1.5; }
+.dash-recent-link { font-size: 11px; color: var(--accent); cursor: pointer; margin-top: auto; padding-top: 8px; }
+.dash-recent-link:hover { text-decoration: underline; }
+
+/* Quick Actions + JD */
+.dash-bottom-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.dash-actions-card { flex: 2; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; }
+.dash-actions-title { font-size: 13px; font-weight: 500; color: var(--txt0); margin-bottom: 10px; }
+.dash-actions-grid { display: flex; gap: 6px; }
+.dash-action-item { flex: 1; background: var(--bg3); border: 0.5px solid var(--border1); border-radius: var(--r-sm); padding: 10px; cursor: pointer; transition: all .12s; }
+.dash-action-item:hover { border-color: var(--border2); background: var(--bg4); }
+.dash-action-icon { font-size: 16px; color: var(--txt2); margin-bottom: 6px; }
+.dash-action-name { font-size: 11px; font-weight: 500; color: var(--txt0); margin-bottom: 3px; }
+.dash-action-desc { font-size: 9px; color: var(--txt2); line-height: 1.4; }
+.dash-jd-card { flex: 1; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; display: flex; flex-direction: column; }
+.dash-jd-icon { font-size: 18px; color: var(--txt2); margin-bottom: 6px; }
+.dash-jd-name { font-size: 13px; font-weight: 500; color: var(--txt0); margin-bottom: 2px; }
+.dash-jd-co { font-size: 10px; color: var(--txt2); }
+.dash-jd-link { font-size: 10px; color: var(--accent); cursor: pointer; margin-top: auto; padding-top: 8px; }
+.dash-jd-link:hover { text-decoration: underline; }
+
+/* Tips */
+.dash-tips-card { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; }
+.dash-tips-title { font-size: 13px; font-weight: 500; color: var(--txt0); margin-bottom: 10px; }
+.dash-tip-content { background: var(--bg3); border: 0.5px solid var(--border1); border-radius: var(--r-sm); padding: 10px 12px; font-size: 11px; color: var(--txt1); line-height: 1.5; margin-bottom: 10px; min-height: 36px; }
+.dash-tip-dots { display: flex; gap: 5px; align-items: center; }
+.tip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border1); transition: all .2s; }
+.tip-dot.active { width: 16px; border-radius: 3px; background: var(--accent); }

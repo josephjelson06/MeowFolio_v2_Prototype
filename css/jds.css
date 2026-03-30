@@ -1,0 +1,53 @@
+/* ── JDs PAGE ── */
+.jd-page-body { display: flex; height: 488px; }
+.jd-list-pane { width: 280px; border-right: 0.5px solid var(--border0); display: flex; flex-direction: column; }
+.jd-list-head { padding: 12px 14px; border-bottom: 0.5px solid var(--border0); display: flex; align-items: center; justify-content: space-between; }
+.jd-list-title { font-size: 11px; font-weight: 500; }
+.jd-cards { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+.jd-card { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 10px 12px; cursor: pointer; transition: all .12s; }
+.jd-card:hover, .jd-card.active { border-color: var(--border2); background: var(--bg3); }
+.jd-card.active { border-color: var(--accent-dim); }
+.jd-card-title { font-size: 11px; font-weight: 500; color: var(--txt0); margin-bottom: 2px; }
+.jd-card-co { font-size: 10px; color: var(--txt2); }
+.jd-card-badge { display: inline-block; margin-top: 6px; padding: 2px 7px; border-radius: 3px; font-size: 9px; background: var(--bg4); color: var(--txt2); border: 0.5px solid var(--border1); }
+
+/* JD Analyze pane */
+.jd-analyze-pane { flex: 1; display: flex; flex-direction: column; }
+.jd-analyze-head { padding: 10px 14px; border-bottom: 0.5px solid var(--border0); display: flex; align-items: center; justify-content: space-between; background: var(--bg0); }
+.jd-analyze-title { font-size: 11px; font-weight: 500; }
+.run-btn { padding: 5px 14px; border-radius: var(--r-md); border: 0.5px solid var(--accent-dim); background: var(--accent-bg); color: var(--accent); font-size: 11px; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all .15s; }
+.run-btn:hover { background: var(--accent-dim); color: var(--txt0); }
+.jd-split { display: flex; flex: 1; overflow: hidden; }
+.jd-select-col { width: 160px; border-right: 0.5px solid var(--border0); display: flex; flex-direction: column; }
+.jd-select-head { padding: 8px 10px; border-bottom: 0.5px solid var(--border0); font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); }
+.jd-resume-items { flex: 1; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+.jd-res-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: var(--r-sm); border: 0.5px solid var(--border0); cursor: pointer; background: var(--bg2); transition: all .12s; }
+.jd-res-item:hover { border-color: var(--border2); }
+.jd-res-item.checked { border-color: var(--accent-dim); background: var(--accent-bg); }
+.jd-res-item input[type=checkbox] { accent-color: var(--accent); width: 11px; height: 11px; cursor: pointer; }
+.jd-res-label { font-size: 10px; color: var(--txt1); font-family: var(--font); }
+.jd-res-item.checked .jd-res-label { color: var(--accent); }
+.jd-result-col { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.jd-no-result { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 20px; text-align: center; }
+.jd-no-result-icon { font-size: 24px; color: var(--txt2); }
+.jd-no-result-txt { font-size: 11px; color: var(--txt2); }
+
+/* Match results */
+.match-result-card { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 12px; }
+.match-res-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.match-res-name { font-size: 11px; font-weight: 500; font-family: var(--font); color: var(--txt0); }
+.match-score { font-size: 16px; font-weight: 600; font-family: var(--font); }
+.match-score.high { color: var(--accent); }
+.match-score.mid { color: var(--warn); }
+.match-score.low { color: var(--err); }
+.match-bar-track { height: 3px; border-radius: 2px; background: var(--bg4); margin-bottom: 8px; }
+.match-bar-fill { height: 3px; border-radius: 2px; }
+.match-kw { display: flex; gap: 3px; flex-wrap: wrap; }
+.match-kw-tag { padding: 2px 7px; border-radius: 3px; font-size: 9px; }
+.match-kw-tag.found { background: var(--accent-bg); color: var(--accent); border: 0.5px solid var(--accent-dim); }
+.match-kw-tag.miss { background: var(--err-bg); color: var(--err); border: 0.5px solid var(--err); opacity: 0.7; }
+
+/* JD upload */
+.jd-upload-section { padding: 12px; border-top: 0.5px solid var(--border0); }
+.jd-upload-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); margin-bottom: 6px; }
+.jd-paste-area { width: 100%; height: 64px; background: var(--bg2); border: 0.5px solid var(--border1); border-radius: var(--r-sm); padding: 7px 8px; color: var(--txt1); font-size: 10px; font-family: var(--font); resize: none; outline: none; }

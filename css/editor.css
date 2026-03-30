@@ -1,0 +1,73 @@
+/* ── EDITOR WORKSPACE ── */
+.editor-workspace { display: flex; height: 488px; background: var(--bg1); }
+.ed-left { width: 50%; border-right: 0.5px solid var(--border0); display: flex; flex-direction: column; }
+.ed-right { flex: 1; display: flex; flex-direction: column; position: relative; }
+
+/* Left tabs */
+.left-tabs { display: flex; border-bottom: 0.5px solid var(--border0); background: var(--bg0); padding: 0 14px; }
+.ltab { padding: 8px 11px; font-size: 11px; color: var(--txt2); cursor: pointer; border-bottom: 2px solid transparent; transition: all .12s; }
+.ltab.active { color: var(--txt0); border-bottom-color: var(--txt0); font-weight: 500; }
+
+/* Sections tab */
+.sec-pane { display: flex; flex: 1; overflow: hidden; }
+.sec-nav { width: 100px; border-right: 0.5px solid var(--border0); padding: 8px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1px; }
+.snl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); padding: 4px 8px; }
+.snav { padding: 5px 8px; border-radius: var(--r-sm); font-size: 11px; cursor: pointer; color: var(--txt1); display: flex; align-items: center; gap: 6px; transition: all .12s; }
+.snav.active { background: var(--bg3); color: var(--txt0); }
+.sdot { width: 5px; height: 5px; border-radius: 50%; background: var(--border1); flex-shrink: 0; }
+.snav.done .sdot { background: var(--accent); }
+.form-area { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 9px; }
+
+/* Template tab */
+.tmpl-pane { flex: 1; padding: 12px; overflow-y: auto; }
+.tmpl-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); margin-bottom: 8px; }
+.tmpl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.tmpl-card { border: 1.5px solid var(--border0); border-radius: var(--r-sm); padding: 8px 6px; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; align-items: center; gap: 5px; background: var(--bg2); }
+.tmpl-card:hover { border-color: var(--border2); background: var(--bg3); }
+.tmpl-card.sel { border-color: var(--accent-dim); background: var(--accent-bg); }
+.tmpl-thumb { width: 100%; aspect-ratio: 0.707; background: var(--bg4); border-radius: 2px; padding: 5px 4px; display: flex; flex-direction: column; gap: 2px; }
+.tl { height: 2px; border-radius: 1px; background: var(--border2); }
+.tl.h { background: var(--border1); height: 3px; }
+.tl.s { width: 40%; background: var(--border2); }
+.tmpl-name { font-size: 9px; color: var(--txt1); text-align: center; }
+.tmpl-card.sel .tmpl-name { color: var(--accent); }
+
+/* Toolbar tab */
+.toolbar-pane { flex: 1; padding: 12px; overflow-y: auto; }
+.toolbar-section { margin-bottom: 14px; }
+.toolbar-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); margin-bottom: 8px; }
+.font-select { width: 100%; padding: 6px 8px; border: 0.5px solid var(--border1); border-radius: var(--r-sm); background: var(--bg2); color: var(--txt1); font-size: 11px; font-family: var(--font); margin-bottom: 8px; }
+.slider-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.slider-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--txt2); }
+.slider-val { font-family: var(--font); color: var(--txt1); }
+input[type=range] { width: 100%; accent-color: var(--accent); height: 2px; }
+
+/* Preview pane */
+.prev-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-bottom: 0.5px solid var(--border0); background: var(--bg0); }
+.pdf-area { flex: 1; padding: 12px; display: flex; justify-content: center; overflow-y: auto; background: var(--bg1); }
+
+/* ATS Score drawer */
+.ats-drawer { position: absolute; top: 0; right: -100%; width: 36%; height: 100%; background: var(--bg0); border-left: 0.5px solid var(--border0); transition: right .25s; display: flex; flex-direction: column; z-index: 10; }
+.ats-drawer.open { right: 0; }
+.drawer-head { padding: 10px 12px; border-bottom: 0.5px solid var(--border0); display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 500; }
+.score-big { text-align: center; padding: 14px; }
+.score-num { font-size: 36px; font-weight: 600; color: var(--txt0); font-family: var(--font); }
+.score-sub { font-size: 10px; color: var(--txt2); margin-top: 1px; }
+
+/* ── ATS SCORE FULL MODE ── */
+.ats-full { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.ats-header { display: flex; align-items: flex-start; justify-content: space-between; }
+.ats-score-card { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+.ats-score-num { font-size: 48px; font-weight: 600; font-family: var(--font); color: var(--txt0); line-height: 1; }
+.ats-score-info { flex: 1; }
+.ats-score-label { font-size: 12px; color: var(--txt1); margin-bottom: 4px; }
+.ats-score-desc { font-size: 11px; color: var(--txt2); }
+.ats-bars { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.ats-bar-item { display: flex; flex-direction: column; gap: 4px; }
+.ats-bar-label { display: flex; justify-content: space-between; font-size: 11px; }
+.ats-bar-track { height: 4px; border-radius: 2px; background: var(--bg4); }
+.ats-bar-fill { height: 4px; border-radius: 2px; background: var(--accent); }
+.ats-bar-fill.warn { background: var(--warn); }
+.ats-checklist { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); overflow: hidden; }
+.ats-check-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 0.5px solid var(--border0); font-size: 11px; }
+.ats-check-row:last-child { border-bottom: none; }
