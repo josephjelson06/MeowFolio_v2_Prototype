@@ -550,17 +550,17 @@ Reduced latency by 40%</textarea>
           <button class="btn-new" style="font-size:10px">+ Add JD</button>
         </div>
         <div class="jd-cards">
-          <div class="jd-card active" onclick="selectJD(this)">
+          <div class="jd-card active" onclick="selectJD(0)">
             <div class="jd-card-title">Software Engineer II</div>
             <div class="jd-card-co">Google · Full-time</div>
             <span class="jd-card-badge">2 resumes matched</span>
           </div>
-          <div class="jd-card" onclick="selectJD(this)">
+          <div class="jd-card" onclick="selectJD(1)">
             <div class="jd-card-title">Senior Frontend Dev</div>
             <div class="jd-card-co">Razorpay · Full-time</div>
             <span class="jd-card-badge">Not analyzed yet</span>
           </div>
-          <div class="jd-card" onclick="selectJD(this)">
+          <div class="jd-card" onclick="selectJD(2)">
             <div class="jd-card-title">ML Engineer</div>
             <div class="jd-card-co">OpenAI · Remote</div>
             <span class="jd-card-badge">1 resume matched</span>
@@ -574,36 +574,38 @@ Reduced latency by 40%</textarea>
       <div class="jd-analyze-pane">
         <div class="jd-analyze-head">
           <div class="jd-analyze-title">Software Engineer II — Google</div>
-          <button class="run-btn" onclick="runJDAnalysis()">Run Analysis ↗</button>
+          <button class="run-btn" id="jd-run-btn" onclick="runJDAnalysis()" disabled>Run Analysis ↗</button>
         </div>
-        <div class="jd-split">
-          <div class="jd-select-col">
-            <div class="jd-select-head">Select Resumes</div>
-            <div class="jd-resume-items">
-              <div class="jd-res-item checked" onclick="toggleCheck(this)">
-                <input type="checkbox" checked onclick="event.stopPropagation()">
-                <span class="jd-res-label">resume_v3</span>
+        <div class="jd-analyze-body">
+          <!-- RESUME PICKER (radio) -->
+          <div class="jd-pick-col">
+            <div class="jd-pick-head">Select Resume</div>
+            <div class="jd-pick-list">
+              <div class="jd-pick-item" data-resume="resume_v3" onclick="selectResume('resume_v3')">
+                <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
+                <span class="jd-pick-label">resume_v3</span>
               </div>
-              <div class="jd-res-item checked" onclick="toggleCheck(this)">
-                <input type="checkbox" checked onclick="event.stopPropagation()">
-                <span class="jd-res-label">resume_sde</span>
+              <div class="jd-pick-item" data-resume="resume_sde" onclick="selectResume('resume_sde')">
+                <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
+                <span class="jd-pick-label">resume_sde</span>
               </div>
-              <div class="jd-res-item" onclick="toggleCheck(this)">
-                <input type="checkbox" onclick="event.stopPropagation()">
-                <span class="jd-res-label">resume_pm</span>
+              <div class="jd-pick-item" data-resume="resume_pm" onclick="selectResume('resume_pm')">
+                <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
+                <span class="jd-pick-label">resume_pm</span>
               </div>
-              <div class="jd-res-item" onclick="toggleCheck(this)">
-                <input type="checkbox" onclick="event.stopPropagation()">
-                <span class="jd-res-label">resume_ds</span>
+              <div class="jd-pick-item" data-resume="resume_ds" onclick="selectResume('resume_ds')">
+                <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
+                <span class="jd-pick-label">resume_ds</span>
               </div>
-              <div class="jd-res-item" onclick="toggleCheck(this)">
-                <input type="checkbox" onclick="event.stopPropagation()">
-                <span class="jd-res-label">resume_ml</span>
+              <div class="jd-pick-item" data-resume="resume_ml" onclick="selectResume('resume_ml')">
+                <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
+                <span class="jd-pick-label">resume_ml</span>
               </div>
             </div>
           </div>
+          <!-- RESULTS -->
           <div class="jd-result-col" id="jd-results">
-            <div class="jd-no-result" id="jd-no-result">
+            <div class="jd-no-result">
               <div class="jd-no-result-icon">◎</div>
               <div class="jd-no-result-txt">Select resumes and click<br>"Run Analysis" to see match scores</div>
             </div>
