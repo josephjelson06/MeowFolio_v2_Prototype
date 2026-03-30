@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai — Editor</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/resumes.css">
+<link rel="stylesheet" href="css/editor.css">
+<link rel="stylesheet" href="css/jds.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
+</div>
+
+<!-- ══ DESKTOP ══ -->
+<div class="frame desktop view" id="desktop-view">
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <button class="gnav-link" onclick="showPage('dash')">Dashboard</button>
+      <button class="gnav-link active" onclick="showPage('resumes')">Resumes</button>
+      <button class="gnav-link" onclick="showPage('jds')">JDs</button>
+    </div>
+    <div class="gnav-right">
+      <div class="avatar" onclick="showPage('profile')">AK</div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb + mode toggle -->
+  <div class="bcrumb">
+    <span class="bc-link" onclick="showPage('resumes')">Resumes</span>
+    <span class="bc-sep">/</span>
+    <span class="bc-link">resume_v3.tex</span>
+    <span class="bc-sep">/</span>
+    <span class="bc-cur" id="bc-mode">Editor</span>
+    <div class="ed-segs">
+      <button class="ed-seg active" onclick="setEdMode('editor')">Editor</button>
+      <button class="ed-seg" onclick="setEdMode('ats')">ATS Score</button>
+    </div>
+  </div>
+
+  <!-- EDITOR MODE -->
+  <div id="ed-mode-editor">
+    <div class="editor-workspace">
+      <!-- LEFT: tabs -->
+      <div class="ed-left">
+        <div class="left-tabs">
+          <div class="ltab active" onclick="setLTab(0,this)">Sections</div>
+          <div class="ltab" onclick="setLTab(1,this)">Template</div>
+          <div class="ltab" onclick="setLTab(2,this)">Toolbar</div>
+        </div>
+
+        <!-- SECTIONS TAB -->
+        <div class="sec-pane" id="ltab-0">
+          <div class="sec-nav">
+            <div class="snl">Sections</div>
+            <div class="snav active done" onclick="setSection(this,'sec-contact')"><span class="sdot"></span>Contact</div>
+            <div class="snav done" onclick="setSection(this,'sec-summary')"><span class="sdot"></span>Summary</div>
+            <div class="snav done" onclick="setSection(this,'sec-exp')"><span class="sdot"></span>Experience</div>
+            <div class="snav done" onclick="setSection(this,'sec-edu')"><span class="sdot"></span>Education</div>
+            <div class="snav done" onclick="setSection(this,'sec-skills')"><span class="sdot"></span>Skills</div>
+            <div class="snav" onclick="setSection(this,'sec-proj')"><span class="sdot"></span>Projects</div>
+            <div class="snav" style="margin-top:8px;font-size:10px;color:var(--txt2)">+ Add</div>
+          </div>
+          <div class="form-area">
+            <div id="sec-contact">
+              <div class="fl">Full name</div><input class="fi" value="Arjun Kumar" />
+              <div class="fl" style="margin-top:8px">Email</div><input class="fi" value="arjun@email.com" />
+              <div class="fl" style="margin-top:8px">Phone</div><input class="fi" value="+91 98765 43210" />
+              <div class="fl" style="margin-top:8px">Location</div><input class="fi" value="Karnal, Haryana" />
+              <div class="fl" style="margin-top:8px">LinkedIn</div><input class="fi" value="linkedin.com/in/arjun" />
+            </div>
+            <div id="sec-summary" class="hidden">
+              <div class="fl">Professional summary</div>
+              <textarea class="fi" style="height:80px;resize:none;line-height:1.5">Software engineer with 3 years of experience in full-stack development...</textarea>
+            </div>
+            <div id="sec-exp" class="hidden">
+              <div class="fl">Company</div><input class="fi" value="Acme Corp" />
+              <div class="fl" style="margin-top:8px">Role</div><input class="fi" value="Software Engineer" />
+              <div class="fl" style="margin-top:8px">Duration</div><input class="fi" value="Jun 2022 – Present" />
+              <div class="fl" style="margin-top:8px">Bullets</div>
+              <textarea class="fi" style="height:60px;resize:none;line-height:1.5">Built REST APIs serving 100k+ users
+Reduced latency by 40%</textarea>
+              <button class="fi-add">+ Add experience</button>
+            </div>
+            <div id="sec-edu" class="hidden">
+              <div class="fl">Institution</div><input class="fi" value="IIT Delhi" />
+              <div class="fl" style="margin-top:8px">Degree</div><input class="fi" value="B.Tech Computer Science" />
+              <div class="fl" style="margin-top:8px">Year</div><input class="fi" value="2018 – 2022" />
+            </div>
+            <div id="sec-skills" class="hidden">
+              <div class="fl">Skills (comma separated)</div>
+              <textarea class="fi" style="height:60px;resize:none;line-height:1.5">Python, React, Node.js, AWS, Docker, PostgreSQL</textarea>
+            </div>
+            <div id="sec-proj" class="hidden">
+              <div class="fl">Project name</div><input class="fi" placeholder="e.g. OpenResume" />
+              <div class="fl" style="margin-top:8px">Description</div>
+              <textarea class="fi" style="height:60px;resize:none;line-height:1.5" placeholder="What did you build?"></textarea>
+              <button class="fi-add">+ Add project</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEMPLATE TAB -->
+        <div class="tmpl-pane hidden" id="ltab-1">
+          <div class="tmpl-label">Choose a template</div>
+          <div class="tmpl-grid">
+            <div class="tmpl-card sel" onclick="selectTmpl(this)">
+              <div class="tmpl-thumb"><div class="tl h"></div><div class="tl s"></div><div style="height:0.5px;background:var(--border1);margin:3px 0"></div><div class="tl"></div><div class="tl"></div><div class="tl s"></div></div>
+              <div class="tmpl-name">Classic</div>
+            </div>
+            <div class="tmpl-card" onclick="selectTmpl(this)">
+              <div class="tmpl-thumb" style="display:flex;gap:3px">
+                <div style="width:35%;background:var(--bg3);border-radius:1px;padding:3px 2px;display:flex;flex-direction:column;gap:2px"><div class="tl s"></div><div class="tl"></div><div class="tl s"></div></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div class="tl h"></div><div class="tl"></div><div class="tl s"></div></div>
+              </div>
+              <div class="tmpl-name">Sidebar</div>
+            </div>
+            <div class="tmpl-card" onclick="selectTmpl(this)">
+              <div class="tmpl-thumb"><div class="tl h" style="width:60%;margin:0 auto"></div><div class="tl s" style="width:80%;margin:2px auto 4px"></div><div style="height:0.5px;background:var(--border1);margin:2px 0"></div><div class="tl"></div><div class="tl"></div></div>
+              <div class="tmpl-name">Centered</div>
+            </div>
+            <div class="tmpl-card" onclick="selectTmpl(this)">
+              <div class="tmpl-thumb"><div style="display:flex;gap:2px;margin-bottom:3px"><div style="width:8px;height:8px;border-radius:50%;background:var(--border2)"></div><div style="flex:1;display:flex;flex-direction:column;gap:2px;justify-content:center"><div class="tl h" style="height:3px"></div><div class="tl s"></div></div></div><div class="tl"></div><div class="tl"></div></div>
+              <div class="tmpl-name">Modern</div>
+            </div>
+            <div class="tmpl-card" onclick="selectTmpl(this)">
+              <div class="tmpl-thumb"><div style="border-left:2px solid var(--accent-dim);padding-left:4px;display:flex;flex-direction:column;gap:2px"><div class="tl h"></div><div class="tl"></div><div class="tl s"></div><div class="tl"></div></div></div>
+              <div class="tmpl-name">Accent</div>
+            </div>
+            <div class="tmpl-card" onclick="selectTmpl(this)">
+              <div class="tmpl-thumb"><div class="tl h"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3px"><div style="display:flex;flex-direction:column;gap:2px"><div class="tl s"></div><div class="tl"></div></div><div style="display:flex;flex-direction:column;gap:2px"><div class="tl s"></div><div class="tl"></div></div></div></div>
+              <div class="tmpl-name">Grid</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOOLBAR TAB -->
+        <div class="toolbar-pane hidden" id="ltab-2">
+          <div class="toolbar-section">
+            <div class="toolbar-section-label">Typography &amp; Spacing</div>
+            <div class="fl">Font</div>
+            <select class="font-select">
+              <option>TeX Gyre Termes</option>
+              <option>Computer Modern</option>
+              <option>Palatino</option>
+              <option>Helvetica</option>
+              <option>Libertine</option>
+            </select>
+            <div class="slider-row">
+              <div class="slider-label"><span>Font size</span><span class="slider-val" id="fs-val">11pt</span></div>
+              <input type="range" min="9" max="13" value="11" oninput="document.getElementById('fs-val').textContent=this.value+'pt'">
+            </div>
+            <div class="slider-row">
+              <div class="slider-label"><span>Line spacing</span><span class="slider-val" id="ls-val">1.15</span></div>
+              <input type="range" min="100" max="150" value="115" oninput="document.getElementById('ls-val').textContent=(this.value/100).toFixed(2)">
+            </div>
+            <div class="slider-row">
+              <div class="slider-label"><span>Margins</span><span class="slider-val" id="mg-val">1.5cm</span></div>
+              <input type="range" min="10" max="30" value="15" oninput="document.getElementById('mg-val').textContent=(this.value/10).toFixed(1)+'cm'">
+            </div>
+          </div>
+          <div class="toolbar-section">
+            <div class="toolbar-section-label">Colors</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div style="width:20px;height:20px;border-radius:50%;background:#000;border:2px solid var(--accent-dim);cursor:pointer"></div>
+              <div style="width:20px;height:20px;border-radius:50%;background:#1a365d;cursor:pointer;border:1.5px solid var(--border1)"></div>
+              <div style="width:20px;height:20px;border-radius:50%;background:#2d3748;cursor:pointer;border:1.5px solid var(--border1)"></div>
+              <div style="width:20px;height:20px;border-radius:50%;background:#1a4731;cursor:pointer;border:1.5px solid var(--border1)"></div>
+              <div style="width:20px;height:20px;border-radius:50%;background:#4a1942;cursor:pointer;border:1.5px solid var(--border1)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Preview + ATS Drawer -->
+      <div class="ed-right">
+        <div class="prev-bar">
+          <div class="sync-row"><span class="sync-dot"></span><span>compiled · 0.8s ago</span></div>
+          <button class="analyze-btn" onclick="toggleDrawer()">Analyze ↗</button>
+        </div>
+        <div class="pdf-area">
+          <div class="pdf-doc">
+            <div class="pdf-name">Arjun Kumar</div>
+            <div class="pdf-contact">arjun@email.com · +91 98765 43210 · Karnal, Haryana · linkedin.com/in/arjun</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-h">Experience</div>
+            <div class="pdf-line d" style="width:55%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+            <div class="pdf-line" style="width:80%"></div>
+            <div class="pdf-line" style="width:70%"></div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-h">Education</div>
+            <div class="pdf-line d" style="width:50%"></div>
+            <div class="pdf-line" style="width:60%"></div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-h">Skills</div>
+            <div class="pdf-tags">
+              <span class="pdf-tag">Python</span>
+              <span class="pdf-tag">React</span>
+              <span class="pdf-tag">Node.js</span>
+              <span class="pdf-tag">AWS</span>
+              <span class="pdf-tag">Docker</span>
+            </div>
+          </div>
+        </div>
+        <!-- ATS Drawer (slide-in panel) -->
+        <div class="ats-drawer" id="ats-drawer">
+          <div class="drawer-head">
+            <span>ATS Report</span>
+            <button class="close-x" onclick="toggleDrawer()">×</button>
+          </div>
+          <div class="score-big">
+            <div class="score-num">74</div>
+            <div class="score-sub">out of 100 · Good — a few fixes needed</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label"><span>Keywords</span><span class="bar-val">82%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label"><span>Formatting</span><span class="bar-val">90%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label"><span>Section structure</span><span class="bar-val">65%</span></div>
+            <div class="bar-track"><div class="bar-fill warn" style="width:65%"></div></div>
+          </div>
+          <div class="audit">
+            <div class="audit-head">Checklist</div>
+            <div class="audit-row"><span class="abadge bp">✓</span>File format readable</div>
+            <div class="audit-row"><span class="abadge bp">✓</span>Contact info present</div>
+            <div class="audit-row"><span class="abadge bw">!</span>Add measurable impact</div>
+            <div class="audit-row"><span class="abadge bf">✗</span>Missing summary section</div>
+            <div class="audit-row"><span class="abadge bw">!</span>Quantify skills section</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATS SCORE (full-page mode) -->
+  <div id="ed-mode-ats" class="hidden">
+    <div class="ats-full">
+      <div class="ats-score-card">
+        <div class="ats-score-num">74</div>
+        <div class="ats-score-info">
+          <div class="ats-score-label">Good — a few fixes needed</div>
+          <div class="ats-score-desc">resume_v3.tex · Analyzed just now</div>
+        </div>
+        <button class="analyze-btn" onclick="setEdMode('editor')">← Back to Editor</button>
+      </div>
+      <div class="ats-bars">
+        <div class="ats-bar-item">
+          <div class="ats-bar-label"><span>Keywords</span><span style="font-family:var(--font);color:var(--accent)">82%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:82%"></div></div>
+        </div>
+        <div class="ats-bar-item">
+          <div class="ats-bar-label"><span>Formatting</span><span style="font-family:var(--font);color:var(--accent)">90%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="ats-bar-item">
+          <div class="ats-bar-label"><span>Section structure</span><span style="font-family:var(--font);color:var(--warn)">65%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill warn" style="width:65%"></div></div>
+        </div>
+        <div class="ats-bar-item">
+          <div class="ats-bar-label"><span>Length &amp; density</span><span style="font-family:var(--font);color:var(--accent)">88%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:88%"></div></div>
+        </div>
+      </div>
+      <div class="ats-checklist">
+        <div class="ats-check-row"><span class="check-ico" style="background:var(--accent-bg);color:var(--accent)">✓</span>File format is ATS-readable (PDF via LaTeX)</div>
+        <div class="ats-check-row"><span class="check-ico" style="background:var(--accent-bg);color:var(--accent)">✓</span>Contact information is complete</div>
+        <div class="ats-check-row"><span class="check-ico" style="background:var(--accent-bg);color:var(--accent)">✓</span>Standard section headings detected</div>
+        <div class="ats-check-row"><span class="check-ico" style="background:var(--warn-bg);color:var(--warn)">!</span>Add measurable impact to experience bullets</div>
+        <div class="ats-check-row"><span class="check-ico" style="background:var(--warn-bg);color:var(--warn)">!</span>Skills section lacks proficiency context</div>
+        <div class="ats-check-row"><span class="check-ico" style="background:var(--err-bg);color:var(--err)">✗</span>Missing professional summary / objective</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /desktop-view -->
+
+<!-- ══ MOBILE ══ -->
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+    <!-- Editor-specific topbar -->
+    <div class="mob-topbar">
+      <span class="mob-back" onclick="mobShowPage('resumes')">←</span>
+      <span class="mob-topbar-title">resume_v3</span>
+      <button class="mob-analyze-btn" onclick="toggleMobSheet()">Analyze ↗</button>
+      <div class="avatar" style="margin-left:8px">AK</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
+      <!-- Toggle: Edit / Preview -->
+      <div class="mob-edit-toggle">
+        <button class="mob-et-btn active" id="mob-et-edit" onclick="setMobEdView('edit')">Edit</button>
+        <button class="mob-et-btn" id="mob-et-prev" onclick="setMobEdView('preview')">Preview</button>
+      </div>
+      <!-- Edit mode -->
+      <div id="mob-edit-mode">
+        <div class="mob-section-pills">
+          <button class="mob-pill active">Contact</button>
+          <button class="mob-pill">Summary</button>
+          <button class="mob-pill">Experience</button>
+          <button class="mob-pill">Education</button>
+          <button class="mob-pill">Skills</button>
+          <button class="mob-pill">Projects</button>
+        </div>
+        <div class="mob-form">
+          <div><div class="fl">Full name</div><input class="fi" value="Arjun Kumar"></div>
+          <div><div class="fl">Email</div><input class="fi" value="arjun@email.com"></div>
+          <div><div class="fl">Phone</div><input class="fi" value="+91 98765 43210"></div>
+          <div><div class="fl">LinkedIn / Portfolio</div><input class="fi" value="linkedin.com/in/arjun"></div>
+        </div>
+      </div>
+      <!-- Preview mode -->
+      <div id="mob-prev-mode" class="hidden">
+        <div class="compiled-bar"><span class="sync-dot"></span>compiled · 0.8s ago</div>
+        <div class="mob-preview-pane">
+          <div class="mob-pdf-doc">
+            <div class="pdf-name">Arjun Kumar</div>
+            <div class="pdf-contact">arjun@email.com · Karnal, Haryana</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-h">Experience</div>
+            <div class="pdf-line d" style="width:55%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+            <div class="pdf-line" style="width:80%"></div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-h">Education</div>
+            <div class="pdf-line d" style="width:50%"></div>
+            <div class="pdf-line" style="width:60%"></div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-section-h">Skills</div>
+            <div class="pdf-tags">
+              <span class="pdf-tag">Python</span>
+              <span class="pdf-tag">React</span>
+              <span class="pdf-tag">Node.js</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom bar (no active tab — editor is a sub-page of resumes) -->
+    <div class="mob-bottombar">
+      <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">⊞</div><span>Dashboard</span></div>
+      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">☰</div><span>Resumes</span></div>
+      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">⊙</div><span>JDs</span></div>
+      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">○</div><span>Profile</span></div>
+    </div>
+    <!-- ATS Bottom Sheet -->
+    <div class="mob-bottom-sheet" id="mob-sheet">
+      <div class="mob-sheet-handle" onclick="toggleMobSheet()"></div>
+      <div class="mob-sheet-head">
+        <span>ATS Report</span>
+        <button class="close-x" onclick="toggleMobSheet()">×</button>
+      </div>
+      <div class="mob-sheet-body">
+        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+          <span style="font-size:32px;font-weight:600;font-family:var(--font)">74</span>
+          <span style="font-size:10px;color:var(--txt2)">out of 100</span>
+        </div>
+        <div style="font-size:11px;color:var(--txt1);margin-bottom:12px">Good — a few fixes needed</div>
+        <div class="ats-bar-item" style="margin-bottom:8px">
+          <div class="ats-bar-label"><span>Keywords</span><span style="font-family:var(--font);color:var(--accent)">82%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:82%"></div></div>
+        </div>
+        <div class="ats-bar-item" style="margin-bottom:8px">
+          <div class="ats-bar-label"><span>Formatting</span><span style="font-family:var(--font);color:var(--accent)">90%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="ats-bar-item" style="margin-bottom:14px">
+          <div class="ats-bar-label"><span>Section structure</span><span style="font-family:var(--font);color:var(--warn)">65%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill warn" style="width:65%"></div></div>
+        </div>
+        <div class="audit-head" style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt2);margin-bottom:6px">Checklist</div>
+        <div class="audit-row"><span class="abadge bp">✓</span>File format readable</div>
+        <div class="audit-row"><span class="abadge bp">✓</span>Contact info complete</div>
+        <div class="audit-row"><span class="abadge bw">!</span>Add measurable impact</div>
+        <div class="audit-row"><span class="abadge bf">✗</span>Missing summary section</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /mobile-view -->
+
+<script src="js/app.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/jds.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/tips.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

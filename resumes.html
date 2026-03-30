@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai — Resumes</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/resumes.css">
+<link rel="stylesheet" href="css/editor.css">
+<link rel="stylesheet" href="css/jds.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
+</div>
+
+<!-- ══ DESKTOP ══ -->
+<div class="frame desktop view" id="desktop-view">
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <button class="gnav-link" onclick="showPage('dash')">Dashboard</button>
+      <button class="gnav-link active" onclick="showPage('resumes')">Resumes</button>
+      <button class="gnav-link" onclick="showPage('jds')">JDs</button>
+    </div>
+    <div class="gnav-right">
+      <div class="avatar" onclick="showPage('profile')">AK</div>
+    </div>
+  </nav>
+
+  <div class="res-page-body">
+    <div class="res-page-header">
+      <div style="display:flex;gap:5px;margin-bottom:8px">
+        <span class="badge-accent">RESUME LIBRARY</span>
+        <span class="badge-info">5 RESUMES</span>
+      </div>
+      <div class="res-page-title">All your resumes</div>
+      <div class="res-page-desc">Create a new resume, then keep the rest of your saved versions ready for editing, downloading, or removing.</div>
+    </div>
+    <div class="res-cards-grid">
+      <!-- Create New -->
+      <div class="res-new-card" onclick="showModal()">
+        <div class="res-new-plus">+</div>
+        <div class="section-label">CREATE NEW RESUME</div>
+        <div class="res-new-title">Upload or start blank</div>
+        <div class="res-new-desc">Open the modal, upload an existing resume, or create a new one from scratch.</div>
+      </div>
+      <!-- resume_v3 -->
+      <div class="res-visual-card" onclick="openEditor()">
+        <div class="res-visual-thumb">
+          <span class="badge-accent" style="position:absolute;top:8px;right:8px;font-size:8px">MOST RECENT</span>
+          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:55%"></div>
+          <div class="pdf-line" style="width:90%"></div>
+          <div class="pdf-line" style="width:80%"></div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:50%"></div>
+          <div class="pdf-line" style="width:60%"></div>
+        </div>
+        <div class="res-visual-name">resume_v3.tex</div>
+        <div class="res-visual-meta">Last updated 2h ago · Classic</div>
+        <div class="res-visual-actions">
+          <button class="r-action primary" onclick="openEditor(event)">✏</button>
+          <button class="r-action">⬇</button>
+          <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+        </div>
+      </div>
+      <!-- resume_sde -->
+      <div class="res-visual-card">
+        <div class="res-visual-thumb">
+          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:60%"></div>
+          <div class="pdf-line" style="width:85%"></div>
+          <div class="pdf-line" style="width:75%"></div>
+        </div>
+        <div class="res-visual-name">resume_sde.tex</div>
+        <div class="res-visual-meta">Last updated yesterday · Sidebar</div>
+        <div class="res-visual-actions">
+          <button class="r-action primary">✏</button>
+          <button class="r-action">⬇</button>
+          <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+        </div>
+      </div>
+      <!-- resume_pm -->
+      <div class="res-visual-card">
+        <div class="res-visual-thumb">
+          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:50%"></div>
+          <div class="pdf-line" style="width:70%"></div>
+        </div>
+        <div class="res-visual-name">resume_pm.tex</div>
+        <div class="res-visual-meta">Last updated 3d ago · Classic</div>
+        <div class="res-visual-actions">
+          <button class="r-action primary">✏</button>
+          <button class="r-action">⬇</button>
+          <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+        </div>
+      </div>
+      <!-- resume_ds -->
+      <div class="res-visual-card">
+        <div class="res-visual-thumb">
+          <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:45%"></div>
+          <div class="pdf-line" style="width:80%"></div>
+          <div class="pdf-line" style="width:65%"></div>
+          <div class="pdf-line" style="width:90%"></div>
+        </div>
+        <div class="res-visual-name">resume_ds.tex</div>
+        <div class="res-visual-meta">Last updated 5d ago · Minimal</div>
+        <div class="res-visual-actions">
+          <button class="r-action primary">✏</button>
+          <button class="r-action">⬇</button>
+          <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /desktop-view -->
+
+<!-- ══ MOBILE ══ -->
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+    <div class="mob-topbar">
+      <span class="mob-topbar-logo">resumeai</span>
+      <div class="avatar" style="margin-left:auto" onclick="mobShowPage('profile')">AK</div>
+    </div>
+    <div style="flex:1;overflow-y:auto">
+      <div style="padding:12px">
+        <div style="display:flex;gap:5px;margin-bottom:6px">
+          <span class="badge-accent" style="font-size:8px">RESUME LIBRARY</span>
+          <span class="badge-info" style="font-size:8px">5 RESUMES</span>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--txt0)">All your resumes</div>
+      </div>
+      <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px">
+        <div class="dash-create-card" onclick="showModal()" style="padding:16px 14px">
+          <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
+          <div class="dash-create-label">CREATE NEW RESUME</div>
+          <div class="dash-create-title">Upload or start blank</div>
+        </div>
+        <!-- resume_v3 -->
+        <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
+          <div class="mob-res-visual-thumb">
+            <span class="badge-accent" style="position:absolute;top:6px;right:6px;font-size:7px">MOST RECENT</span>
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:55%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
+              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago · Classic</div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">✏</button>
+              <button class="r-action">⬇</button>
+              <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+            </div>
+          </div>
+        </div>
+        <!-- resume_sde -->
+        <div class="mob-res-visual-card">
+          <div class="mob-res-visual-thumb">
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:60%"></div>
+            <div class="pdf-line" style="width:85%"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_sde.tex</div>
+              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated yesterday · Sidebar</div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <button class="r-action primary">✏</button>
+              <button class="r-action">⬇</button>
+              <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+            </div>
+          </div>
+        </div>
+        <!-- resume_pm -->
+        <div class="mob-res-visual-card">
+          <div class="mob-res-visual-thumb">
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:50%"></div>
+            <div class="pdf-line" style="width:70%"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_pm.tex</div>
+              <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 3d ago · Classic</div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <button class="r-action primary">✏</button>
+              <button class="r-action">⬇</button>
+              <button class="r-action" style="border-color:var(--err);color:var(--err)">🗑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mob-bottombar">
+      <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">⊞</div><span>Dashboard</span></div>
+      <div class="mob-tab active" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">☰</div><span>Resumes</span></div>
+      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">⊙</div><span>JDs</span></div>
+      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">○</div><span>Profile</span></div>
+    </div>
+  </div>
+</div><!-- /mobile-view -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Create new resume</div>
+    <div class="modal-desc">Choose how you'd like to start.</div>
+    <div class="modal-options">
+      <div class="modal-option" onclick="setModalMode('upload')">
+        <div class="modal-option-icon">↑</div>
+        <div><div class="modal-option-name">Upload a file</div><div class="modal-option-desc">Upload a PDF or .tex file and open in editor.</div></div>
+      </div>
+      <div class="modal-option" onclick="setModalMode('paste')">
+        <div class="modal-option-icon">⎘</div>
+        <div><div class="modal-option-name">Paste resume text</div><div class="modal-option-desc">Copy-paste your resume content for quick import.</div></div>
+      </div>
+      <div class="modal-option" onclick="startBlankResume()">
+        <div class="modal-option-icon">+</div>
+        <div><div class="modal-option-name">Start from blank</div><div class="modal-option-desc">Open an empty editor with a fresh template.</div></div>
+      </div>
+    </div>
+    <div class="modal-upload-zone" id="modal-upload-zone">
+      <div class="modal-upload-icon">☁</div>
+      <div class="modal-upload-text">Drag & drop your file here, or click to browse</div>
+      <div class="modal-upload-sub">Supports .pdf, .tex, .docx · Max 5 MB</div>
+    </div>
+    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse & open in editor →</button>
+    <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Paste your resume text here..."></textarea>
+    <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import & open in editor →</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/jds.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/tips.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

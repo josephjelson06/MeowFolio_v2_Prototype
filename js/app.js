@@ -1,31 +1,29 @@
 /* ── DEVICE SWITCH ── */
 function setDevice(d) {
-  document.querySelectorAll('.dev-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  document.getElementById('desktop-view').classList.toggle('active', d==='desktop');
-  document.getElementById('mobile-view').classList.toggle('active', d==='mobile');
+  document.getElementById('desktop-view').classList.toggle('active', d === 'desktop');
+  document.getElementById('mobile-view').classList.toggle('active', d === 'mobile');
 }
 
-/* ── DESKTOP NAV ── */
+/* ── DESKTOP NAVIGATION ── */
 function showPage(p) {
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.gnav-link').forEach(l=>l.classList.remove('active'));
-  const navMap = {dash:'Dashboard',resumes:'Resumes',jds:'JDs'};
-  document.querySelectorAll('.gnav-link').forEach(l=>{
-    if(navMap[p] && l.textContent===navMap[p]) l.classList.add('active');
-  });
+  const pages = {
+    dash:    'dashboard.html',
+    resumes: 'resumes.html',
+    jds:     'jds.html',
+    profile: 'profile.html',
+    editor:  'editor.html',
+  };
+  if (pages[p]) window.location.href = pages[p];
 }
 
 function openEditor(e) {
-  if(e) e.stopPropagation();
-  showPage('editor');
-  document.querySelectorAll('.gnav-link').forEach(l=>l.classList.remove('active'));
-  document.querySelectorAll('.gnav-link').forEach(l=>{if(l.textContent==='Resumes') l.classList.add('active');});
+  if (e) e.stopPropagation();
+  window.location.href = 'editor.html';
 }
 
 function openATS(e) {
-  if(e) e.stopPropagation();
-  showPage('editor');
-  setEdMode('ats');
+  if (e) e.stopPropagation();
+  window.location.href = 'editor.html?mode=ats';
 }

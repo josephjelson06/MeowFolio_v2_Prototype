@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resumeai — Dashboard</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/resumes.css">
+<link rel="stylesheet" href="css/editor.css">
+<link rel="stylesheet" href="css/jds.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
+</div>
+
+<!-- ══ DESKTOP ══ -->
+<div class="frame desktop view" id="desktop-view">
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <button class="gnav-link active" onclick="showPage('dash')">Dashboard</button>
+      <button class="gnav-link" onclick="showPage('resumes')">Resumes</button>
+      <button class="gnav-link" onclick="showPage('jds')">JDs</button>
+    </div>
+    <div class="gnav-right">
+      <div class="avatar" onclick="showPage('profile')">AK</div>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+    <div class="dash-greeting-label">WELCOME BACK</div>
+    <div class="dash-greeting-name">Good afternoon, Arjun Kumar!</div>
+    <div class="dash-stats-row">
+      <div class="dash-stat-big">
+        <div class="dash-stat-icon">◎</div>
+        <div class="dash-stat-label">Average ATS Score</div>
+        <div class="dash-stat-num">74%</div>
+        <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:74%"></div></div>
+      </div>
+      <div class="dash-stat-big">
+        <div class="dash-stat-icon">◈</div>
+        <div class="dash-stat-label">Resume Strength</div>
+        <div class="dash-stat-num">79%</div>
+        <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:79%"></div></div>
+      </div>
+      <div class="dash-stat-big">
+        <div class="dash-stat-icon">⊕</div>
+        <div class="dash-stat-label">JD Match Success</div>
+        <div class="dash-stat-num">18%</div>
+        <div class="dash-stat-bar"><div class="dash-stat-fill warn" style="width:18%"></div></div>
+      </div>
+    </div>
+
+    <div class="dash-hero-row">
+      <div class="dash-create-card" onclick="showModal()">
+        <div class="dash-create-plus">+</div>
+        <div class="dash-create-label">CREATE NEW RESUME</div>
+        <div class="dash-create-title">Start from scratch or upload</div>
+        <div class="dash-create-desc">Open the modal flow, then either upload an existing resume or begin with a blank editor.</div>
+      </div>
+      <div class="dash-preview-card">
+        <div class="dash-preview-thumb">
+          <div class="pdf-name" style="font-size:11px">Arjun Kumar</div>
+          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:55%"></div>
+          <div class="pdf-line" style="width:90%"></div>
+          <div class="pdf-line" style="width:80%"></div>
+          <div class="pdf-divider"></div>
+          <div class="pdf-line d" style="width:50%"></div>
+          <div class="pdf-line" style="width:60%"></div>
+        </div>
+        <div class="dash-preview-chips">
+          <span class="chip">B&W</span>
+          <span class="chip">Classic</span>
+          <span class="chip">1 page</span>
+        </div>
+      </div>
+      <div class="dash-recent-card">
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+          <span class="badge-accent">MOST RECENT</span>
+          <span class="badge-info">UPDATED 2H AGO</span>
+        </div>
+        <div class="dash-recent-name">resume_v3.tex</div>
+        <div class="dash-recent-sub">Resume Workspace</div>
+        <div class="dash-recent-desc">Open the latest saved resume directly in the editor and continue from where you left off.</div>
+        <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap">
+          <span class="badge-outline">1 SAVED RESUME</span>
+          <span class="badge-outline">EDITOR READY</span>
+        </div>
+        <div class="dash-recent-link" onclick="openEditor()">Open editor →</div>
+      </div>
+    </div>
+
+    <div class="dash-bottom-row">
+      <div class="dash-actions-card">
+        <div class="section-label">QUICK ACTIONS</div>
+        <div class="dash-actions-title">Move faster</div>
+        <div class="dash-actions-grid">
+          <div class="dash-action-item" onclick="openEditor()">
+            <div class="dash-action-icon">≡</div>
+            <div class="dash-action-name">Open Editor</div>
+            <div class="dash-action-desc">Jump back into the latest resume.</div>
+          </div>
+          <div class="dash-action-item" onclick="openATS()">
+            <div class="dash-action-icon">◎</div>
+            <div class="dash-action-name">Calculate ATS Score</div>
+            <div class="dash-action-desc">Run a formatting and content scan.</div>
+          </div>
+          <div class="dash-action-item" onclick="showPage('jds')">
+            <div class="dash-action-icon">⊙</div>
+            <div class="dash-action-name">Calculate JD Match</div>
+            <div class="dash-action-desc">Compare resume against a target role.</div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-jd-card">
+        <div class="dash-jd-icon">☰</div>
+        <div class="section-label">ACTIVE JD</div>
+        <div class="dash-jd-name">Software Engineer II</div>
+        <div class="dash-jd-co">Google · Full-time</div>
+        <div class="dash-jd-link" onclick="showPage('jds')">View JD analysis →</div>
+      </div>
+    </div>
+
+    <div class="dash-tips-card">
+      <div class="section-label">TIPS</div>
+      <div class="dash-tips-title">One good reminder at a time</div>
+      <div class="dash-tip-content" id="dash-tip-text">Use numbers when they clarify scale, speed, quality, or reach.</div>
+      <div class="dash-tip-dots" id="dash-tip-dots">
+        <span class="tip-dot active"></span>
+        <span class="tip-dot"></span>
+        <span class="tip-dot"></span>
+        <span class="tip-dot"></span>
+        <span class="tip-dot"></span>
+      </div>
+    </div>
+  </div>
+</div><!-- /desktop-view -->
+
+<!-- ══ MOBILE ══ -->
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+    <div class="mob-topbar">
+      <span class="mob-topbar-logo">resumeai</span>
+      <div class="avatar" style="margin-left:auto" onclick="mobShowPage('profile')">AK</div>
+    </div>
+    <div style="flex:1;overflow-y:auto">
+      <div class="mob-dash-greeting">
+        <div class="dash-greeting-label">WELCOME BACK</div>
+        <div style="font-size:16px;font-weight:600;color:var(--txt0)">Good afternoon, Arjun!</div>
+      </div>
+      <div class="mob-dash-stats">
+        <div class="mob-stat"><div class="mob-stat-n">74%</div><div class="mob-stat-l">ATS Score</div></div>
+        <div class="mob-stat"><div class="mob-stat-n">79%</div><div class="mob-stat-l">Strength</div></div>
+        <div class="mob-stat"><div class="mob-stat-n">18%</div><div class="mob-stat-l">JD Match</div></div>
+      </div>
+      <div class="mob-dash-hero">
+        <div class="dash-create-card" onclick="showModal()" style="padding:16px 14px">
+          <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
+          <div class="dash-create-label">CREATE NEW RESUME</div>
+          <div class="dash-create-title">Start from scratch or upload</div>
+        </div>
+        <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
+          <div class="mob-res-visual-thumb">
+            <span class="badge-accent" style="position:absolute;top:6px;right:6px;font-size:7px">MOST RECENT</span>
+            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+            <div class="pdf-divider"></div>
+            <div class="pdf-line d" style="width:55%"></div>
+            <div class="pdf-line" style="width:90%"></div>
+            <div class="pdf-line" style="width:80%"></div>
+          </div>
+          <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
+          <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago · Classic</div>
+          <div style="font-size:10px;color:var(--accent);margin-top:6px;cursor:pointer">Open editor →</div>
+        </div>
+      </div>
+      <div class="mob-section-label">QUICK ACTIONS</div>
+      <div class="mob-dash-actions-scroll">
+        <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('editor')">
+          <div class="dash-action-icon">≡</div>
+          <div class="dash-action-name">Open Editor</div>
+        </div>
+        <div class="dash-action-item" style="min-width:120px;flex-shrink:0">
+          <div class="dash-action-icon">◎</div>
+          <div class="dash-action-name">ATS Score</div>
+        </div>
+        <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('jds')">
+          <div class="dash-action-icon">⊙</div>
+          <div class="dash-action-name">JD Match</div>
+        </div>
+      </div>
+      <div style="padding:0 12px 12px">
+        <div class="dash-jd-card" style="padding:12px">
+          <div class="dash-jd-icon">☰</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">ACTIVE JD</div>
+          <div class="dash-jd-name">Software Engineer II</div>
+          <div class="dash-jd-co">Google · Full-time</div>
+        </div>
+      </div>
+      <div style="padding:0 12px 12px">
+        <div class="dash-tips-card" style="padding:12px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">TIPS</div>
+          <div class="dash-tip-content" id="mob-tip-text" style="font-size:10px">Use numbers when they clarify scale, speed, quality, or reach.</div>
+          <div class="dash-tip-dots" id="mob-tip-dots">
+            <span class="tip-dot active"></span><span class="tip-dot"></span><span class="tip-dot"></span><span class="tip-dot"></span><span class="tip-dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mob-bottombar">
+      <div class="mob-tab active" onclick="mobShowPage('dash')"><div class="mob-tab-icon">⊞</div><span>Dashboard</span></div>
+      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">☰</div><span>Resumes</span></div>
+      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">⊙</div><span>JDs</span></div>
+      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">○</div><span>Profile</span></div>
+    </div>
+  </div>
+</div><!-- /mobile-view -->
+
+<!-- CREATE NEW RESUME MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Create new resume</div>
+    <div class="modal-desc">Choose how you'd like to start. You can always switch methods later in the editor.</div>
+    <div class="modal-options">
+      <div class="modal-option" onclick="setModalMode('upload')">
+        <div class="modal-option-icon">↑</div>
+        <div><div class="modal-option-name">Upload a file</div><div class="modal-option-desc">Upload a PDF or .tex file. We'll parse it and drop you into the editor.</div></div>
+      </div>
+      <div class="modal-option" onclick="setModalMode('paste')">
+        <div class="modal-option-icon">⎘</div>
+        <div><div class="modal-option-name">Paste resume text</div><div class="modal-option-desc">Copy-paste your resume content for quick import.</div></div>
+      </div>
+      <div class="modal-option" onclick="startBlankResume()">
+        <div class="modal-option-icon">+</div>
+        <div><div class="modal-option-name">Start from blank</div><div class="modal-option-desc">Open an empty editor with a fresh template.</div></div>
+      </div>
+    </div>
+    <div class="modal-upload-zone" id="modal-upload-zone">
+      <div class="modal-upload-icon">☁</div>
+      <div class="modal-upload-text">Drag & drop your file here, or click to browse</div>
+      <div class="modal-upload-sub">Supports .pdf, .tex, .docx · Max 5 MB</div>
+    </div>
+    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse & open in editor →</button>
+    <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Paste your resume text here..."></textarea>
+    <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import & open in editor →</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/jds.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/tips.js"></script>
+<script src="js/modal.js"></script>
+</body>
+</html>

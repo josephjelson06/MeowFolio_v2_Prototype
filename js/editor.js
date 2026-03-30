@@ -51,3 +51,9 @@ function selectTmpl(el) {
 function setCarousel(i) {
   document.querySelectorAll('.car-res').forEach((c,idx)=>c.classList.toggle('active',idx===i));
 }
+
+/* ── INIT: check URL params ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'ats') setEdMode('ats');
+});
