@@ -10,52 +10,137 @@
 <body class="public-body">
 <div class="public-page">
   <header class="site-nav">
-    <a class="site-brand" href="index.html">resumeai</a>
-    <nav class="site-links">
-      <a href="about.html">About</a>
-      <button type="button" class="nav-link-btn" onclick="showAuthModal()">Login</button>
+    <a class="site-brand" href="index.html">
+      <span class="brand-mark">RA</span>
+      <span class="brand-copy">resumeai</span>
+    </a>
+    <nav class="site-menu" aria-label="Primary">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link active" href="about.html" aria-current="page">About</a>
     </nav>
+    <button class="nav-pill" type="button" onclick="showAuthModal()">Login / Signup</button>
   </header>
 
-  <main class="content-page">
-    <section class="page-hero">
-      <div class="hero-kicker">ABOUT RESUMEAI</div>
-      <h1 class="page-title">A lightweight resume workflow built for repeated applications, not one-off uploads.</h1>
-      <p class="page-text">This prototype separates the public entry experience from the authenticated workspace. The goal is simple: make parsing, versioning, ATS review, and JD matching feel like one continuous loop.</p>
-    </section>
-
-    <section class="about-grid">
-      <article class="about-panel">
-        <h2>What the free plan keeps visible</h2>
-        <p>Profile essentials, usage details, limited daily parsing, and rule-based ATS/JD checks so the core loop is still understandable without paid complexity.</p>
-      </article>
-      <article class="about-panel">
-        <h2>What the workspace is optimized for</h2>
-        <p>Resume version libraries, saved JDs, quick comparisons, and focused reports that help you decide what to rewrite next.</p>
-      </article>
-      <article class="about-panel">
-        <h2>How auth works here</h2>
-        <p>The public surface exposes a Google-only sign in modal. Entering the workspace takes you directly to the existing post-auth dashboard flow.</p>
-      </article>
-      <article class="about-panel">
-        <h2>Where this prototype is opinionated</h2>
-        <p>It favors visible structure over hidden automation: paginated lists, editable names, parsed-text previews, and reports you can inspect before acting.</p>
-      </article>
-    </section>
-
-    <section class="about-band">
+  <main>
+    <section class="public-section about-hero">
       <div>
-        <div class="story-label">System split</div>
-        <h3>Pre-auth for trust. Post-auth for work.</h3>
+        <div class="eyebrow-pill lilac">The story behind resumeai</div>
+        <h1 class="about-title">Built with a student mindset. Designed for real applications.</h1>
+        <p class="about-copy">resumeai started from a familiar frustration: strong work experience trapped inside bad tools, fragile formatting, and resume workflows that split writing, exporting, ATS checks, and JD matching into separate chores.</p>
+        <div class="hero-chip-row">
+          <span class="eyebrow-pill compact mint">TeX-backed output</span>
+          <span class="eyebrow-pill compact clay">Student-first workflow</span>
+          <span class="eyebrow-pill compact olive">Shared editor + ATS + JD</span>
+        </div>
       </div>
-      <p>The landing and about pages explain the product and access path, while dashboard, resumes, JDs, editor, and profile remain the working app once the user continues with Google.</p>
+
+      <article class="origin-card">
+        <div class="origin-image-wrap">
+          <img class="origin-image" src="Images/Graduation_Day.png" alt="Graduation day illustration with builder and Mochii">
+        </div>
+        <div class="origin-head">
+          <div>
+            <div class="origin-kicker">Origin story</div>
+            <strong>Make resume tooling feel calmer, sharper, and more usable.</strong>
+          </div>
+          <div class="origin-badge">RA</div>
+        </div>
+        <p style="margin-top:20px">The product direction is intentionally pragmatic: keep the resume loop coherent first, then grow the surface around it. That means the public pages explain one simple promise, while the workspace does the real editing, parsing, scoring, and matching.</p>
+        <div class="origin-quote">"Resume building should not require design hacks, broken Word files, or a dozen disconnected tools."</div>
+      </article>
+    </section>
+
+    <section class="public-section section-rule">
+      <div>
+        <div class="section-kicker">Mission</div>
+        <h2 class="section-title">Make powerful resume tooling feel approachable.</h2>
+        <p class="section-copy">The product tries to keep the serious parts serious and the intimidating parts softer. That means real structure, real output quality, and a friendlier public-facing surface.</p>
+      </div>
+
+      <div class="principles-grid" style="margin-top:30px">
+        <article class="mission-card">
+          <div class="about-icon clay">FR</div>
+          <h3>Always free</h3>
+          <p>The entry path stays focused on low-friction resume building instead of pushing people through paywall anxiety.</p>
+        </article>
+
+        <article class="mission-card">
+          <div class="about-icon mint">ST</div>
+          <h3>Student-first</h3>
+          <p>The writing guidance, structure, and workflow decisions are tuned for early-career users who need clarity more than complexity.</p>
+        </article>
+
+        <article class="mission-card">
+          <div class="about-icon lilac">OK</div>
+          <h3>Honest by default</h3>
+          <p>The product aims to make resumes clearer and stronger without pretending keyword spam or fake experience is the right answer.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="public-section section-rule">
+      <div>
+        <div class="section-kicker">Why TeX</div>
+        <h2 class="section-title">Serious output without making users think like typesetters.</h2>
+        <p class="section-copy">TeX stays under the hood. The user works with structured resume data, templates, and output controls instead of wrestling a document editor into behaving.</p>
+      </div>
+
+      <div class="why-grid" style="margin-top:30px">
+        <article class="why-card">
+          <div class="about-icon lilac">PX</div>
+          <h3>Pixel-stable output</h3>
+          <p>Reliable typography, consistent spacing, and fewer layout surprises than ad hoc document editing.</p>
+        </article>
+
+        <article class="why-card">
+          <div class="about-icon lilac">AT</div>
+          <h3>ATS-safe structure</h3>
+          <p>The app keeps resume content in a canonical schema so analysis and PDF generation stay aligned.</p>
+        </article>
+
+        <article class="why-card">
+          <div class="about-icon lilac">LP</div>
+          <h3>Shared product loop</h3>
+          <p>The same resume flows through editor, ATS, and JD instead of fragmenting into separate tools and data shapes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="tint-band">
+      <div class="public-section">
+        <div class="builder-shell">
+          <div class="builder-profile">
+            <div class="builder-avatar-wrap">
+              <img class="builder-avatar" src="Images/DP.jpg" alt="Profile photo of the builder" loading="lazy">
+            </div>
+            <div class="builder-mini">Builder profile</div>
+            <div class="section-kicker">Builder</div>
+            <h3>Solo builder, product-first mindset.</h3>
+            <p>The product direction is intentionally practical: build the real resume loop first, then grow the surrounding account and marketing surfaces around it.</p>
+          </div>
+
+          <div class="builder-copy">
+            <div>
+              <div class="section-kicker">Product point of view</div>
+              <h2 class="section-title" style="font-size:clamp(38px, 4.8vw, 56px);max-width:12ch">One important workflow should feel coherent from end to end.</h2>
+            </div>
+            <p>resumeai is not trying to be every job tool at once. It is trying to make one important workflow feel connected: write a better resume, render it well, understand how it performs, and refine it against a target role.</p>
+            <p>That is why the editor, ATS checks, and JD matching stay tied to the same shared resume state instead of turning into disconnected screens with different assumptions.</p>
+            <button class="public-button" type="button" onclick="showAuthModal()">
+              <span>&#8594;</span>
+              <span>Start with Google</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <span>resumeai prototype</span>
-    <div>
+    <span>&copy; 2026 resumeai</span>
+    <div class="site-footer-links">
       <a href="index.html">Home</a>
+      <a href="about.html">About</a>
       <a href="404.html">404</a>
       <a href="500.html">500</a>
     </div>
@@ -65,13 +150,19 @@
 <div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
   <div class="auth-modal">
     <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="auth-eyebrow">SIGN IN / SIGN UP</div>
-    <h2>Continue with Google</h2>
-    <p>Use your Google account to enter the resumeai workspace. This prototype only supports Google auth.</p>
+    <div class="auth-eyebrow">Sign in / Sign up</div>
+    <h2>Continue with Google.</h2>
+    <p class="auth-support">The public surface uses one simple auth path. Continue with Google and move directly into the working dashboard, resumes, editor, JD, and profile flow.</p>
+    <div class="auth-badges">
+      <span class="eyebrow-pill compact lilac">Google only</span>
+      <span class="eyebrow-pill compact mint">Same dashboard</span>
+      <span class="eyebrow-pill compact olive">No extra setup</span>
+    </div>
     <button class="google-cta" type="button" onclick="continueWithGoogle()">
       <span class="google-badge">G</span>
       <span>Continue with Google</span>
     </button>
+    <div class="auth-note">This modal is shared across the public pages for a consistent entry path.</div>
   </div>
 </div>
 

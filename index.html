@@ -10,109 +10,335 @@
 <body class="public-body">
 <div class="public-page">
   <header class="site-nav">
-    <a class="site-brand" href="index.html">resumeai</a>
-    <nav class="site-links">
-      <a href="about.html">About</a>
-      <button type="button" class="nav-link-btn" onclick="showAuthModal()">Login</button>
+    <a class="site-brand" href="index.html">
+      <span class="brand-mark">RA</span>
+      <span class="brand-copy">resumeai</span>
+    </a>
+    <nav class="site-menu" aria-label="Primary">
+      <a class="nav-link active" href="index.html" aria-current="page">Home</a>
+      <a class="nav-link" href="about.html">About</a>
     </nav>
+    <button class="nav-pill" type="button" onclick="showAuthModal()">Login / Signup</button>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="hero-kicker">PRE-AUTH EXPERIENCE</div>
-        <h1 class="hero-title">Tailor every resume without rebuilding your story from scratch.</h1>
-        <p class="hero-text">Upload once, match faster, and keep your best versions organized across ATS checks, JD comparisons, and exports.</p>
+    <section class="public-section hero-grid">
+      <div>
+        <div class="eyebrow-pill lilac">Free forever. No watermarks.</div>
+        <h1 class="hero-title">Build resumes that <span class="hero-accent">actually get matched.</span></h1>
+        <p class="hero-lead">Write the resume in one workspace, generate TeX-backed PDFs, and carry the same structured profile into ATS and JD analysis without bouncing between disconnected tools.</p>
         <div class="hero-actions">
-          <button class="primary-cta" type="button" onclick="showAuthModal()">Start with Google</button>
-          <a class="secondary-cta" href="about.html">See how it works</a>
+          <button class="public-button" type="button" onclick="showAuthModal()">
+            <span>&#8594;</span>
+            <span>Get Started</span>
+          </button>
+          <a class="ghost-button" href="about.html">Read the story</a>
         </div>
-        <div class="hero-meta">
-          <span>3 parses per day on Free Plan</span>
-          <span>Rule-based ATS + JD matching</span>
+        <div class="hero-chip-row">
+          <span class="hero-chip">TeX-backed PDFs</span>
+          <span class="hero-chip">ATS + JD analysis</span>
+          <span class="hero-chip">Import or start blank</span>
         </div>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <div class="visual-board">
-          <div class="visual-topline">
-            <span class="visual-pill">Most recent</span>
-            <span class="visual-pill muted">Google-ready</span>
-          </div>
-          <div class="visual-doc">
-            <div class="visual-doc-head">
-              <div class="visual-name">Arjun Kumar</div>
-              <div class="visual-sub">Backend-focused resume</div>
-            </div>
-            <div class="visual-lines">
-              <span style="width:78%"></span>
-              <span style="width:92%"></span>
-              <span style="width:66%"></span>
-              <span style="width:88%"></span>
-            </div>
-          </div>
-          <div class="visual-report">
-            <div class="visual-report-num">87</div>
-            <div class="visual-report-copy">
-              <div>Strong ATS signal</div>
-              <small>5 matched keywords surfaced for the role</small>
-            </div>
-          </div>
+      <div class="hero-stage">
+        <div class="hero-glow"></div>
+        <div class="hero-photo-panel">
+          <div class="eyebrow-pill compact mint" style="align-self:flex-end">Meet Mochii</div>
+          <img class="hero-mascot" src="Images/Mochii.png" alt="Mochii mascot illustration">
+          <div class="hero-photo-note">The public side is now guided by Mochii instead of a placeholder mockup.</div>
         </div>
-        <div class="visual-shadow"></div>
       </div>
     </section>
 
-    <section class="feature-strip">
-      <article>
-        <h2>Versioned resume workspace</h2>
-        <p>Keep targeted versions for SDE, PM, data, and ML applications without losing the master source.</p>
-      </article>
-      <article>
-        <h2>Fast JD matching</h2>
-        <p>Compare one resume against a saved job description and see where the language still misses.</p>
-      </article>
-      <article>
-        <h2>Practical free plan</h2>
-        <p>Start lightweight with daily parsing limits and usage tracking before expanding the workflow.</p>
-      </article>
+    <section class="public-section section-rule">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Workflow</div>
+          <h2 class="section-title">How one cat changes everything.</h2>
+        </div>
+        <div class="rail-meta">
+          <span>Swipe through Mochii's journey</span>
+          <div class="rail-buttons">
+            <button class="rail-button" type="button" onclick="scrollPublicRail('story-rail', -1)">&larr;</button>
+            <button class="rail-button" type="button" onclick="scrollPublicRail('story-rail', 1)">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-rail" id="story-rail">
+        <article class="story-card">
+          <div class="story-media">
+            <img src="Images/Scene1.jpg" alt="Scene 1: Mochii starts the job search journey" loading="lazy">
+          </div>
+          <h3>Mochii starts the job search journey.</h3>
+          <p>The first step is simple: sit down, open the workspace, and begin the resume loop with a real draft.</p>
+        </article>
+
+        <article class="story-card">
+          <div class="story-media">
+            <img src="Images/Scene2.jpg" alt="Scene 2: Mochii sends 47 resumes" loading="lazy">
+          </div>
+          <h3>47 resumes sent to top tech companies.</h3>
+          <p>Application volume goes up fast when the process is repetitive, scattered, and hard to refine between attempts.</p>
+        </article>
+
+        <article class="story-card">
+          <div class="story-media">
+            <img src="Images/Scene3.png" alt="Scene 3: Mochii receives rejections" loading="lazy">
+          </div>
+          <h3>47 rejections. Not enough experience in napping.</h3>
+          <p>Bad tooling makes every weak application feel worse, especially when the feedback loop is vague and slow.</p>
+        </article>
+
+        <article class="story-card">
+          <div class="story-media">
+            <img src="Images/Scene4.jpg" alt="Scene 4: Mochii discovers a better workflow" loading="lazy">
+          </div>
+          <h3>A glimmer of hope. A better workflow appears.</h3>
+          <p>That is the public-side promise of resumeai: one calmer, more coherent path from resume draft to targeted application.</p>
+        </article>
+
+        <article class="story-card">
+          <div class="story-media">
+            <img src="Images/Scene5.jpg" alt="Scene 5: Mochii builds a strong resume" loading="lazy">
+          </div>
+          <h3>Builds a purr-fect resume.</h3>
+          <p>Import, edit, preview, and refine the same structured resume instead of losing momentum between tools.</p>
+        </article>
+
+        <article class="story-card">
+          <div class="story-media">
+            <img src="Images/Scene6.jpg" alt="Scene 6: Mochii gets hired" loading="lazy">
+          </div>
+          <h3>Hired as Senior Treat Officer.</h3>
+          <p>Better structure, better clarity, and better feedback make the outcome feel a little less random.</p>
+        </article>
+
+        <article class="story-cta-card">
+          <div>
+            <div class="section-kicker" style="color:#fff7f1">Workspace</div>
+            <h3>One place to write, export, and check performance.</h3>
+            <p>The public site explains the product. The dashboard is where the actual application work begins.</p>
+          </div>
+          <button class="public-button" type="button" onclick="showAuthModal()">Start with Google</button>
+        </article>
+      </div>
     </section>
 
-    <section class="split-story">
-      <div class="story-card">
-        <div class="story-label">Workflow</div>
-        <h3>Upload, parse, refine, export.</h3>
-        <p>resumeai is designed for iterative application work. Parse a PDF, inspect the text, tune it for a role, then export the improved version.</p>
+    <section class="public-section section-rule">
+      <div class="section-head centered">
+        <div>
+          <h2 class="section-title">Everything you need.</h2>
+          <div class="tag-row">
+            <span class="eyebrow-pill compact lilac">Free forever</span>
+            <span class="eyebrow-pill compact mint">Parsed imports</span>
+            <span class="eyebrow-pill compact clay">ATS + JD ready</span>
+          </div>
+        </div>
       </div>
-      <div class="story-steps">
-        <div class="story-step">
-          <span>01</span>
-          <div>
-            <h4>Bring in your resume</h4>
-            <p>Import from PDF or paste raw text when you need to start quickly.</p>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon clay">NEW</div>
+          <h3>Build from scratch</h3>
+          <p>The editor writes into the same resume structure that powers preview, ATS scoring, and JD matching.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon mint">IN</div>
+          <h3>Import and refine</h3>
+          <p>Paste resume text or parse PDF, DOCX, and text files into an editable draft before you save the final version.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon lilac">PDF</div>
+          <h3>Compile, match, and score</h3>
+          <p>Generate TeX-backed output, inspect ATS feedback, and compare the same resume against a saved JD from one loop.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="public-section section-rule">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Templates</div>
+          <h2 class="section-title">Pick your vibe.</h2>
+          <p class="section-copy">Different templates. Same resume schema. The content stays stable while the presentation changes.</p>
+        </div>
+        <div class="rail-meta">
+          <span>Browse the set</span>
+          <div class="rail-buttons">
+            <button class="rail-button" type="button" onclick="scrollPublicRail('template-rail', -1)">&larr;</button>
+            <button class="rail-button" type="button" onclick="scrollPublicRail('template-rail', 1)">&rarr;</button>
           </div>
         </div>
-        <div class="story-step">
-          <span>02</span>
-          <div>
-            <h4>Run ATS and JD checks</h4>
-            <p>See score summaries, missing keywords, and a detailed report without leaving the page.</p>
+      </div>
+
+      <div class="template-rail" id="template-rail">
+        <article class="template-card">
+          <div class="template-preview">
+            <div class="template-preview-sheet">
+              <div class="template-preview-head"></div>
+              <div class="template-preview-lines">
+                <span></span>
+                <span style="width:62%"></span>
+                <span></span>
+                <span style="width:84%"></span>
+                <span style="width:72%"></span>
+                <span style="width:68%"></span>
+              </div>
+            </div>
+            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="template-footer">
+            <h3>Classic</h3>
+            <p class="template-copy">Balanced spacing and a calm structure for general applications.</p>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-preview">
+            <div class="template-preview-sheet">
+              <div class="template-preview-head" style="width:54%"></div>
+              <div class="template-preview-lines">
+                <span></span>
+                <span style="width:58%"></span>
+                <span style="width:92%"></span>
+                <span style="width:78%"></span>
+                <span style="width:70%"></span>
+                <span style="width:60%"></span>
+              </div>
+            </div>
+            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="template-footer">
+            <h3>Sidebar</h3>
+            <p class="template-copy">A stronger split layout for resumes that need faster scanning.</p>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-preview">
+            <div class="template-preview-sheet">
+              <div class="template-preview-head" style="width:60%"></div>
+              <div class="template-preview-lines">
+                <span style="width:76%"></span>
+                <span style="width:52%"></span>
+                <span></span>
+                <span style="width:82%"></span>
+                <span style="width:66%"></span>
+                <span style="width:74%"></span>
+              </div>
+            </div>
+            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="template-footer">
+            <h3>Structured</h3>
+            <p class="template-copy">A more formal layout for technical or operations-heavy applications.</p>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-preview">
+            <div class="template-preview-sheet">
+              <div class="template-preview-head" style="width:50%"></div>
+              <div class="template-preview-lines">
+                <span style="width:70%"></span>
+                <span style="width:56%"></span>
+                <span style="width:94%"></span>
+                <span style="width:80%"></span>
+                <span style="width:72%"></span>
+                <span style="width:66%"></span>
+              </div>
+            </div>
+            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="template-footer">
+            <h3>Minimal</h3>
+            <p class="template-copy">Less chrome, tighter rhythm, and a more editorial feel.</p>
+          </div>
+        </article>
+
+        <article class="template-card">
+          <div class="template-preview">
+            <div class="template-preview-sheet">
+              <div class="template-preview-head" style="width:64%"></div>
+              <div class="template-preview-lines">
+                <span style="width:84%"></span>
+                <span style="width:62%"></span>
+                <span style="width:90%"></span>
+                <span style="width:76%"></span>
+                <span style="width:68%"></span>
+                <span style="width:58%"></span>
+              </div>
+            </div>
+            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="template-footer">
+            <h3>Bold</h3>
+            <p class="template-copy">A louder hierarchy for candidates who want a slightly stronger first impression.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="public-section section-rule">
+      <div class="faq-grid">
+        <div class="quote-panel">
+          <div class="quote-figure">
+            <img class="faq-mascot" src="Images/Prof_Mochii.png" alt="Professor Mochii illustration" loading="lazy">
+          </div>
+          <div class="quote-card">
+            <p>"Curious about something? I've got the answers right here, human."</p>
+            <span>- Professor Mochii</span>
           </div>
         </div>
-        <div class="story-step">
-          <span>03</span>
-          <div>
-            <h4>Manage versions</h4>
-            <p>Rename, page through, and maintain separate resumes and saved JDs as your applications grow.</p>
-          </div>
+
+        <div class="faq-stack">
+          <div class="section-kicker">FAQ</div>
+          <h2 class="section-title">Got questions?</h2>
+
+          <details class="faq-item">
+            <summary>
+              <span>Is it really free?</span>
+              <span class="faq-plus"></span>
+            </summary>
+            <div class="faq-answer">The current prototype keeps the public promise simple: the free plan stays visible, parsing is capped daily, and there is no paywall layer on these entry pages.</div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Does it actually generate PDFs now?</span>
+              <span class="faq-plus"></span>
+            </summary>
+            <div class="faq-answer">Inside the workspace, the flow is already built around TeX-backed output, preview, and ATS/JD checks. The public pages are explaining that same loop rather than pretending it is a separate tool.</div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Why keep the split workspace?</span>
+              <span class="faq-plus"></span>
+            </summary>
+            <div class="faq-answer">The landing and about pages are for trust, orientation, and sign-in. The dashboard, resumes, editor, JDs, and profile pages remain the actual working product once the user continues with Google.</div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>What carries across the app?</span>
+              <span class="faq-plus"></span>
+            </summary>
+            <div class="faq-answer">The same resume content flows through editing, preview, ATS scoring, JD analysis, saved libraries, and exports. That shared state is the core product decision behind resumeai.</div>
+          </details>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <span>resumeai prototype</span>
-    <div>
+    <span>&copy; 2026 resumeai</span>
+    <div class="site-footer-links">
+      <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="404.html">404</a>
       <a href="500.html">500</a>
@@ -123,13 +349,19 @@
 <div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
   <div class="auth-modal">
     <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="auth-eyebrow">SIGN IN / SIGN UP</div>
-    <h2>Continue with Google</h2>
-    <p>Use your Google account to enter the resumeai workspace. This prototype only supports Google auth.</p>
+    <div class="auth-eyebrow">Sign in / Sign up</div>
+    <h2>Continue with Google.</h2>
+    <p class="auth-support">Google is the only auth path in this prototype. Once you continue, you enter the existing resumeai dashboard and pick up the full resume workflow there.</p>
+    <div class="auth-badges">
+      <span class="eyebrow-pill compact lilac">Google only</span>
+      <span class="eyebrow-pill compact mint">Dashboard ready</span>
+      <span class="eyebrow-pill compact olive">Free plan visible</span>
+    </div>
     <button class="google-cta" type="button" onclick="continueWithGoogle()">
       <span class="google-badge">G</span>
       <span>Continue with Google</span>
     </button>
+    <div class="auth-note">No extra signup fields on this prototype surface.</div>
   </div>
 </div>
 

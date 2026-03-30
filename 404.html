@@ -8,28 +8,73 @@
 <link rel="stylesheet" href="css/public.css">
 </head>
 <body class="public-body">
-<div class="public-page error-page">
-  <div class="error-shell">
-    <div class="error-code">404</div>
-    <h1>That page wandered off.</h1>
-    <p>The link may be outdated, mistyped, or unavailable in this prototype state.</p>
-    <div class="hero-actions">
-      <a class="primary-cta link-cta" href="index.html">Back home</a>
-      <button class="secondary-cta" type="button" onclick="showAuthModal()">Open Google sign in</button>
+<div class="public-page">
+  <header class="site-nav">
+    <a class="site-brand" href="index.html">
+      <span class="brand-mark">RA</span>
+      <span class="brand-copy">resumeai</span>
+    </a>
+    <nav class="site-menu" aria-label="Primary">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="about.html">About</a>
+    </nav>
+    <button class="nav-pill" type="button" onclick="showAuthModal()">Login / Signup</button>
+  </header>
+
+  <main class="error-main">
+    <section class="public-section">
+      <div class="error-panel">
+        <div class="error-visual" aria-hidden="true">
+          <div class="error-orb">404</div>
+          <div class="error-stack">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div>
+          <div class="error-code-pill">Page missing</div>
+          <h1 class="error-title">That page wandered off.</h1>
+          <p class="error-copy">The link may be outdated, mistyped, or part of an earlier prototype path. The public entry pages are still available, and the product workspace is waiting on the other side of Google sign-in.</p>
+          <div class="error-actions">
+            <a class="public-button" href="index.html">
+              <span>&larr;</span>
+              <span>Back home</span>
+            </a>
+            <button class="ghost-button" type="button" onclick="showAuthModal()">Open Google sign in</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>&copy; 2026 resumeai</span>
+    <div class="site-footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="500.html">500</a>
     </div>
-  </div>
+  </footer>
 </div>
 
 <div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
   <div class="auth-modal">
     <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="auth-eyebrow">SIGN IN / SIGN UP</div>
-    <h2>Continue with Google</h2>
-    <p>Use your Google account to enter the resumeai workspace. This prototype only supports Google auth.</p>
+    <div class="auth-eyebrow">Sign in / Sign up</div>
+    <h2>Continue with Google.</h2>
+    <p class="auth-support">The error state still uses the same entry system as the rest of the public surface. Sign in with Google and jump directly into the dashboard workflow.</p>
+    <div class="auth-badges">
+      <span class="eyebrow-pill compact lilac">Google only</span>
+      <span class="eyebrow-pill compact mint">Shared entry</span>
+      <span class="eyebrow-pill compact olive">Dashboard ready</span>
+    </div>
     <button class="google-cta" type="button" onclick="continueWithGoogle()">
       <span class="google-badge">G</span>
       <span>Continue with Google</span>
     </button>
+    <div class="auth-note">If you came from an old bookmark, start again from Home and continue from there.</div>
   </div>
 </div>
 
