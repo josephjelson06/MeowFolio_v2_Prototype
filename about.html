@@ -5,167 +5,270 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>resumeai &mdash; About</title>
 <link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/public.css">
 </head>
-<body class="public-body">
-<div class="public-page">
-  <header class="site-nav">
-    <a class="site-brand" href="index.html">
-      <span class="brand-mark">RA</span>
-      <span class="brand-copy">resumeai</span>
-    </a>
-    <nav class="site-menu" aria-label="Primary">
-      <a class="nav-link" href="index.html">Home</a>
-      <a class="nav-link active" href="about.html" aria-current="page">About</a>
-    </nav>
-    <button class="nav-pill" type="button" onclick="showAuthModal()">Login / Signup</button>
-  </header>
+<body>
 
-  <main>
-    <section class="public-section about-hero">
-      <div>
-        <div class="eyebrow-pill lilac">The story behind resumeai</div>
-        <h1 class="about-title">Built with a student mindset. Designed for real applications.</h1>
-        <p class="about-copy">resumeai started from a familiar frustration: strong work experience trapped inside bad tools, fragile formatting, and resume workflows that split writing, exporting, ATS checks, and JD matching into separate chores.</p>
-        <div class="hero-chip-row">
-          <span class="eyebrow-pill compact mint">TeX-backed output</span>
-          <span class="eyebrow-pill compact clay">Student-first workflow</span>
-          <span class="eyebrow-pill compact olive">Shared editor + ATS + JD</span>
-        </div>
-      </div>
-
-      <article class="origin-card">
-        <div class="origin-image-wrap">
-          <img class="origin-image" src="Images/Graduation_Day.png" alt="Graduation day illustration with builder and Mochii">
-        </div>
-        <div class="origin-head">
-          <div>
-            <div class="origin-kicker">Origin story</div>
-            <strong>Make resume tooling feel calmer, sharper, and more usable.</strong>
-          </div>
-          <div class="origin-badge">RA</div>
-        </div>
-        <p style="margin-top:20px">The product direction is intentionally pragmatic: keep the resume loop coherent first, then grow the surface around it. That means the public pages explain one simple promise, while the workspace does the real editing, parsing, scoring, and matching.</p>
-        <div class="origin-quote">"Resume building should not require design hacks, broken Word files, or a dozen disconnected tools."</div>
-      </article>
-    </section>
-
-    <section class="public-section section-rule">
-      <div>
-        <div class="section-kicker">Mission</div>
-        <h2 class="section-title">Make powerful resume tooling feel approachable.</h2>
-        <p class="section-copy">The product tries to keep the serious parts serious and the intimidating parts softer. That means real structure, real output quality, and a friendlier public-facing surface.</p>
-      </div>
-
-      <div class="principles-grid" style="margin-top:30px">
-        <article class="mission-card">
-          <div class="about-icon clay">FR</div>
-          <h3>Always free</h3>
-          <p>The entry path stays focused on low-friction resume building instead of pushing people through paywall anxiety.</p>
-        </article>
-
-        <article class="mission-card">
-          <div class="about-icon mint">ST</div>
-          <h3>Student-first</h3>
-          <p>The writing guidance, structure, and workflow decisions are tuned for early-career users who need clarity more than complexity.</p>
-        </article>
-
-        <article class="mission-card">
-          <div class="about-icon lilac">OK</div>
-          <h3>Honest by default</h3>
-          <p>The product aims to make resumes clearer and stronger without pretending keyword spam or fake experience is the right answer.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="public-section section-rule">
-      <div>
-        <div class="section-kicker">Why TeX</div>
-        <h2 class="section-title">Serious output without making users think like typesetters.</h2>
-        <p class="section-copy">TeX stays under the hood. The user works with structured resume data, templates, and output controls instead of wrestling a document editor into behaving.</p>
-      </div>
-
-      <div class="why-grid" style="margin-top:30px">
-        <article class="why-card">
-          <div class="about-icon lilac">PX</div>
-          <h3>Pixel-stable output</h3>
-          <p>Reliable typography, consistent spacing, and fewer layout surprises than ad hoc document editing.</p>
-        </article>
-
-        <article class="why-card">
-          <div class="about-icon lilac">AT</div>
-          <h3>ATS-safe structure</h3>
-          <p>The app keeps resume content in a canonical schema so analysis and PDF generation stay aligned.</p>
-        </article>
-
-        <article class="why-card">
-          <div class="about-icon lilac">LP</div>
-          <h3>Shared product loop</h3>
-          <p>The same resume flows through editor, ATS, and JD instead of fragmenting into separate tools and data shapes.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="tint-band">
-      <div class="public-section">
-        <div class="builder-shell">
-          <div class="builder-profile">
-            <div class="builder-avatar-wrap">
-              <img class="builder-avatar" src="Images/DP.jpg" alt="Profile photo of the builder" loading="lazy">
-            </div>
-            <div class="builder-mini">Builder profile</div>
-            <div class="section-kicker">Builder</div>
-            <h3>Solo builder, product-first mindset.</h3>
-            <p>The product direction is intentionally practical: build the real resume loop first, then grow the surrounding account and marketing surfaces around it.</p>
-          </div>
-
-          <div class="builder-copy">
-            <div>
-              <div class="section-kicker">Product point of view</div>
-              <h2 class="section-title" style="font-size:clamp(38px, 4.8vw, 56px);max-width:12ch">One important workflow should feel coherent from end to end.</h2>
-            </div>
-            <p>resumeai is not trying to be every job tool at once. It is trying to make one important workflow feel connected: write a better resume, render it well, understand how it performs, and refine it against a target role.</p>
-            <p>That is why the editor, ATS checks, and JD matching stay tied to the same shared resume state instead of turning into disconnected screens with different assumptions.</p>
-            <button class="public-button" type="button" onclick="showAuthModal()">
-              <span>&#8594;</span>
-              <span>Start with Google</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <span>&copy; 2026 resumeai</span>
-    <div class="site-footer-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="404.html">404</a>
-      <a href="500.html">500</a>
-    </div>
-  </footer>
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
 </div>
 
-<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
-  <div class="auth-modal">
-    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="auth-eyebrow">Sign in / Sign up</div>
-    <h2>Continue with Google.</h2>
-    <p class="auth-support">The public surface uses one simple auth path. Continue with Google and move directly into the working dashboard, resumes, editor, JD, and profile flow.</p>
-    <div class="auth-badges">
-      <span class="eyebrow-pill compact lilac">Google only</span>
-      <span class="eyebrow-pill compact mint">Same dashboard</span>
-      <span class="eyebrow-pill compact olive">No extra setup</span>
+<div class="frame desktop view" id="desktop-view">
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <a class="gnav-link" href="index.html">Home</a>
+      <a class="gnav-link active" href="about.html">About</a>
     </div>
-    <button class="google-cta" type="button" onclick="continueWithGoogle()">
-      <span class="google-badge">G</span>
-      <span>Continue with Google</span>
-    </button>
-    <div class="auth-note">This modal is shared across the public pages for a consistent entry path.</div>
+    <div class="gnav-right">
+      <button class="btn-new" type="button" onclick="showAuthModal()">Login / Signup</button>
+    </div>
+  </nav>
+
+  <div class="pub-desktop-body">
+    <section class="pub-panel pub-about-grid">
+      <div>
+        <div class="pub-copy-badges">
+          <span class="badge-accent">ABOUT THE PRODUCT</span>
+          <span class="badge-info">SAME WORKSPACE DNA</span>
+          <span class="badge-outline">STUDENT-FIRST</span>
+        </div>
+        <div class="pub-headline">Built with a student mindset for a <span class="accent">real resume loop.</span></div>
+        <div class="pub-text" style="margin-top:10px">resumeai is meant to feel like one product from first visit to final export. The public side explains the promise. The dashboard, resumes, editor, ATS checks, and JD matching deliver the actual workflow.</div>
+        <div class="pub-text">That is why this page now uses the exact same shell language as the logged-in prototype instead of a detached marketing layout.</div>
+        <div class="pub-chip-row">
+          <span class="badge-outline">TeX-backed output</span>
+          <span class="badge-outline">Shared resume state</span>
+          <span class="badge-outline">Calmer first-time UX</span>
+        </div>
+        <div class="pub-action-row">
+          <button class="btn-new" type="button" onclick="showAuthModal()">Start with Google</button>
+          <a class="pub-link-btn" href="index.html">Back to Home</a>
+        </div>
+      </div>
+
+      <div class="pub-image-panel">
+        <img src="Images/Graduation_Day.png" alt="Graduation day image representing the builder journey">
+        <div class="pub-image-note">Graduation Day now anchors the public story inside the same product shell.</div>
+      </div>
+    </section>
+
+    <section class="pub-panel">
+      <div class="pub-section-head">
+        <div>
+          <div class="section-label" style="margin-bottom:6px">MISSION</div>
+          <div class="pub-section-title">Make resume tooling feel more approachable without watering it down.</div>
+          <div class="pub-section-desc">The product keeps the serious parts serious: cleaner output, stronger structure, and a shared loop between editing, analysis, and export.</div>
+        </div>
+      </div>
+      <div class="pub-grid-3">
+        <article class="pub-feature-card">
+          <div class="pub-icon">FR</div>
+          <div class="pub-card-title">Always free</div>
+          <div class="pub-card-copy">The public entry stays lightweight so early-career users can get into the real workflow without pricing friction in the prototype.</div>
+        </article>
+        <article class="pub-feature-card">
+          <div class="pub-icon">ST</div>
+          <div class="pub-card-title">Student-first</div>
+          <div class="pub-card-copy">Copy, pacing, and product surfaces are tuned for users who need structure and confidence more than complexity.</div>
+        </article>
+        <article class="pub-feature-card">
+          <div class="pub-icon">OK</div>
+          <div class="pub-card-title">Honest by default</div>
+          <div class="pub-card-copy">The workflow is designed to improve clarity and fit, not to encourage keyword stuffing or fake polish.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pub-panel">
+      <div class="pub-section-head">
+        <div>
+          <div class="section-label" style="margin-bottom:6px">WHY TEX</div>
+          <div class="pub-section-title">Serious output without asking users to think like typesetters.</div>
+          <div class="pub-section-desc">TeX stays behind the curtain. Users work with structured content, template choices, and analysis, not brittle document formatting.</div>
+        </div>
+      </div>
+      <div class="pub-grid-3">
+        <article class="pub-feature-card">
+          <div class="pub-icon">PX</div>
+          <div class="pub-card-title">Pixel-stable output</div>
+          <div class="pub-card-copy">Typography, spacing, and layout stay more predictable than ad hoc Word editing.</div>
+        </article>
+        <article class="pub-feature-card">
+          <div class="pub-icon">AT</div>
+          <div class="pub-card-title">ATS-safe structure</div>
+          <div class="pub-card-copy">The app keeps resume content in one schema, so preview, ATS, JD matching, and output stay aligned.</div>
+        </article>
+        <article class="pub-feature-card">
+          <div class="pub-icon">LP</div>
+          <div class="pub-card-title">Shared product loop</div>
+          <div class="pub-card-copy">The same resume follows the user across the editor, matching, score views, and saved libraries.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pub-panel pub-builder-grid">
+      <article class="pub-quote-card">
+        <div class="pub-builder-photo">
+          <img src="Images/DP.jpg" alt="Profile photo of the builder" loading="lazy">
+        </div>
+        <div class="section-label">BUILDER</div>
+        <div class="pub-card-title">The human behind the prototype.</div>
+        <div class="pub-card-copy">The direction here is intentionally practical: build the actual resume loop first, then grow the public-facing pages so they feel like the same product, not a different site.</div>
+      </article>
+
+      <div>
+        <div class="pub-copy-badges">
+          <span class="badge-accent">SOLO BUILD</span>
+          <span class="badge-info">PRODUCT-FIRST</span>
+        </div>
+        <div class="pub-section-title" style="font-size:24px;line-height:1.15;max-width:14ch">One important workflow should feel coherent from end to end.</div>
+        <div class="pub-text" style="margin-top:10px">resumeai is not trying to be every job tool at once. It is trying to make one high-friction path feel connected: write a stronger resume, preview it clearly, inspect ATS feedback, compare it with a JD, and keep iterating without losing context.</div>
+        <div class="pub-text">That is why the About page now sits inside the same frame system as the workspace instead of breaking away into a separate visual language.</div>
+        <div class="pub-action-row">
+          <button class="btn-new" type="button" onclick="showAuthModal()">Enter the Workspace</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="pub-footer-row">
+      <span>&copy; 2026 resumeai</span>
+      <div class="pub-footer-links">
+        <a href="index.html">Home</a>
+        <a href="404.html">404</a>
+        <a href="500.html">500</a>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+    <div class="mob-topbar">
+      <span class="mob-topbar-logo">resumeai</span>
+      <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
+    </div>
+    <div class="mob-edit-toggle">
+      <a class="mob-et-btn" href="index.html">Home</a>
+      <a class="mob-et-btn active" href="about.html">About</a>
+    </div>
+
+    <div class="pub-mobile-scroll">
+      <section class="pub-mob-panel">
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge-accent" style="font-size:8px">ABOUT</span>
+          <span class="badge-info" style="font-size:8px">SAME PRODUCT</span>
+        </div>
+        <div class="pub-mob-headline">Built with a student mindset for a real resume loop.</div>
+        <div class="pub-mob-text">This page now uses the same mobile shell as the logged-in prototype, so the public and private sides feel connected from the first tap.</div>
+        <div class="pub-image-panel" style="min-height:220px">
+          <img src="Images/Graduation_Day.png" alt="Graduation day image representing the builder journey">
+        </div>
+        <div class="pub-mob-top-actions">
+          <button class="btn-new" type="button" onclick="showAuthModal()">Start with Google</button>
+          <a class="pub-link-btn" href="index.html">Home</a>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-title">Mission</div>
+        <div class="pub-mob-grid">
+          <article class="pub-feature-card">
+            <div class="pub-icon">FR</div>
+            <div class="pub-card-title">Always free</div>
+            <div class="pub-card-copy">A low-friction path into the same workspace flow.</div>
+          </article>
+          <article class="pub-feature-card">
+            <div class="pub-icon">ST</div>
+            <div class="pub-card-title">Student-first</div>
+            <div class="pub-card-copy">Calmer language and clearer steps for early-career users.</div>
+          </article>
+          <article class="pub-feature-card">
+            <div class="pub-icon">OK</div>
+            <div class="pub-card-title">Honest by default</div>
+            <div class="pub-card-copy">Focused on stronger communication, not fake polish.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-title">Why TeX</div>
+        <div class="pub-mob-grid">
+          <article class="pub-feature-card">
+            <div class="pub-icon">PX</div>
+            <div class="pub-card-title">Stable output</div>
+            <div class="pub-card-copy">Reliable spacing and cleaner final PDFs.</div>
+          </article>
+          <article class="pub-feature-card">
+            <div class="pub-icon">AT</div>
+            <div class="pub-card-title">Shared structure</div>
+            <div class="pub-card-copy">Preview, ATS, and JD checks stay tied to one resume state.</div>
+          </article>
+          <article class="pub-feature-card">
+            <div class="pub-icon">LP</div>
+            <div class="pub-card-title">Shared product loop</div>
+            <div class="pub-card-copy">The same resume follows the user across edit, analysis, saved libraries, and final export.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge-accent" style="font-size:8px">SOLO BUILD</span>
+          <span class="badge-info" style="font-size:8px">PRODUCT-FIRST</span>
+        </div>
+        <div class="pub-section-title">Builder</div>
+        <div class="pub-builder-photo" style="min-height:200px;margin-bottom:0">
+          <img src="Images/DP.jpg" alt="Profile photo of the builder" loading="lazy">
+        </div>
+        <div class="pub-card-title">One important workflow should feel coherent from end to end.</div>
+        <div class="pub-mob-text">resumeai is not trying to be every job tool at once. It is trying to make one high-friction path feel connected: write a stronger resume, preview it clearly, inspect ATS feedback, compare it with a JD, and keep iterating without losing context.</div>
+        <div class="pub-mob-text">That same product logic now shapes the About page too, so the public side feels like the same system as the workspace.</div>
+        <div class="pub-mob-top-actions">
+          <button class="btn-new" type="button" onclick="showAuthModal()">Enter the Workspace</button>
+        </div>
+      </section>
+
+      <div class="pub-footer-row">
+        <span>&copy; 2026 resumeai</span>
+        <div class="pub-footer-links">
+          <a href="index.html">Home</a>
+          <a href="404.html">404</a>
+          <a href="500.html">500</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal-box">
+    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
+    <div class="section-label" style="margin-bottom:8px">SIGN IN / SIGN UP</div>
+    <div class="auth-title">Continue with Google</div>
+    <div class="auth-copy">The About page now lives inside the same prototype system as the rest of resumeai. Sign in here and continue directly into the workspace flow.</div>
+    <div class="auth-highlights">
+      <span class="badge-accent">GOOGLE ONLY</span>
+      <span class="badge-info">SAME PRODUCT</span>
+      <span class="badge-outline">DASHBOARD READY</span>
+    </div>
+    <div class="auth-preview">
+      <div class="pub-card-title">One product, one path</div>
+      <div class="pub-card-copy">Home, About, 404, 500, and the auth modal now share the same frame logic, mobile treatment, and dark token system as the workspace.</div>
+    </div>
+    <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
+      <span>G</span>
+      <span>Continue with Google</span>
+    </button>
+    <div class="auth-note">No separate signup form on this prototype.</div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>

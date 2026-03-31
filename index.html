@@ -3,368 +3,521 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>resumeai &mdash; Smarter resume tailoring</title>
+<title>resumeai &mdash; Home</title>
 <link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/public.css">
 </head>
-<body class="public-body">
-<div class="public-page">
-  <header class="site-nav">
-    <a class="site-brand" href="index.html">
-      <span class="brand-mark">RA</span>
-      <span class="brand-copy">resumeai</span>
-    </a>
-    <nav class="site-menu" aria-label="Primary">
-      <a class="nav-link active" href="index.html" aria-current="page">Home</a>
-      <a class="nav-link" href="about.html">About</a>
-    </nav>
-    <button class="nav-pill" type="button" onclick="showAuthModal()">Login / Signup</button>
-  </header>
+<body>
 
-  <main>
-    <section class="public-section hero-grid">
-      <div>
-        <div class="eyebrow-pill lilac">Free forever. No watermarks.</div>
-        <h1 class="hero-title">Build resumes that <span class="hero-accent">actually get matched.</span></h1>
-        <p class="hero-lead">Write the resume in one workspace, generate TeX-backed PDFs, and carry the same structured profile into ATS and JD analysis without bouncing between disconnected tools.</p>
-        <div class="hero-actions">
-          <button class="public-button" type="button" onclick="showAuthModal()">
-            <span>&#8594;</span>
-            <span>Get Started</span>
-          </button>
-          <a class="ghost-button" href="about.html">Read the story</a>
-        </div>
-        <div class="hero-chip-row">
-          <span class="hero-chip">TeX-backed PDFs</span>
-          <span class="hero-chip">ATS + JD analysis</span>
-          <span class="hero-chip">Import or start blank</span>
-        </div>
-      </div>
-
-      <div class="hero-stage">
-        <div class="hero-glow"></div>
-        <div class="hero-photo-panel">
-          <div class="eyebrow-pill compact mint" style="align-self:flex-end">Meet Mochii</div>
-          <img class="hero-mascot" src="Images/Mochii.png" alt="Mochii mascot illustration">
-          <div class="hero-photo-note">The public side is now guided by Mochii instead of a placeholder mockup.</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="public-section section-rule">
-      <div class="section-head">
-        <div>
-          <div class="section-kicker">Workflow</div>
-          <h2 class="section-title">How one cat changes everything.</h2>
-        </div>
-        <div class="rail-meta">
-          <span>Swipe through Mochii's journey</span>
-          <div class="rail-buttons">
-            <button class="rail-button" type="button" onclick="scrollPublicRail('story-rail', -1)">&larr;</button>
-            <button class="rail-button" type="button" onclick="scrollPublicRail('story-rail', 1)">&rarr;</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="story-rail" id="story-rail">
-        <article class="story-card">
-          <div class="story-media">
-            <img src="Images/Scene1.jpg" alt="Scene 1: Mochii starts the job search journey" loading="lazy">
-          </div>
-          <h3>Mochii starts the job search journey.</h3>
-          <p>The first step is simple: sit down, open the workspace, and begin the resume loop with a real draft.</p>
-        </article>
-
-        <article class="story-card">
-          <div class="story-media">
-            <img src="Images/Scene2.jpg" alt="Scene 2: Mochii sends 47 resumes" loading="lazy">
-          </div>
-          <h3>47 resumes sent to top tech companies.</h3>
-          <p>Application volume goes up fast when the process is repetitive, scattered, and hard to refine between attempts.</p>
-        </article>
-
-        <article class="story-card">
-          <div class="story-media">
-            <img src="Images/Scene3.png" alt="Scene 3: Mochii receives rejections" loading="lazy">
-          </div>
-          <h3>47 rejections. Not enough experience in napping.</h3>
-          <p>Bad tooling makes every weak application feel worse, especially when the feedback loop is vague and slow.</p>
-        </article>
-
-        <article class="story-card">
-          <div class="story-media">
-            <img src="Images/Scene4.jpg" alt="Scene 4: Mochii discovers a better workflow" loading="lazy">
-          </div>
-          <h3>A glimmer of hope. A better workflow appears.</h3>
-          <p>That is the public-side promise of resumeai: one calmer, more coherent path from resume draft to targeted application.</p>
-        </article>
-
-        <article class="story-card">
-          <div class="story-media">
-            <img src="Images/Scene5.jpg" alt="Scene 5: Mochii builds a strong resume" loading="lazy">
-          </div>
-          <h3>Builds a purr-fect resume.</h3>
-          <p>Import, edit, preview, and refine the same structured resume instead of losing momentum between tools.</p>
-        </article>
-
-        <article class="story-card">
-          <div class="story-media">
-            <img src="Images/Scene6.jpg" alt="Scene 6: Mochii gets hired" loading="lazy">
-          </div>
-          <h3>Hired as Senior Treat Officer.</h3>
-          <p>Better structure, better clarity, and better feedback make the outcome feel a little less random.</p>
-        </article>
-
-        <article class="story-cta-card">
-          <div>
-            <div class="section-kicker" style="color:#fff7f1">Workspace</div>
-            <h3>One place to write, export, and check performance.</h3>
-            <p>The public site explains the product. The dashboard is where the actual application work begins.</p>
-          </div>
-          <button class="public-button" type="button" onclick="showAuthModal()">Start with Google</button>
-        </article>
-      </div>
-    </section>
-
-    <section class="public-section section-rule">
-      <div class="section-head centered">
-        <div>
-          <h2 class="section-title">Everything you need.</h2>
-          <div class="tag-row">
-            <span class="eyebrow-pill compact lilac">Free forever</span>
-            <span class="eyebrow-pill compact mint">Parsed imports</span>
-            <span class="eyebrow-pill compact clay">ATS + JD ready</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="feature-grid">
-        <article class="feature-card">
-          <div class="feature-icon clay">NEW</div>
-          <h3>Build from scratch</h3>
-          <p>The editor writes into the same resume structure that powers preview, ATS scoring, and JD matching.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon mint">IN</div>
-          <h3>Import and refine</h3>
-          <p>Paste resume text or parse PDF, DOCX, and text files into an editable draft before you save the final version.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon lilac">PDF</div>
-          <h3>Compile, match, and score</h3>
-          <p>Generate TeX-backed output, inspect ATS feedback, and compare the same resume against a saved JD from one loop.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="public-section section-rule">
-      <div class="section-head">
-        <div>
-          <div class="section-kicker">Templates</div>
-          <h2 class="section-title">Pick your vibe.</h2>
-          <p class="section-copy">Different templates. Same resume schema. The content stays stable while the presentation changes.</p>
-        </div>
-        <div class="rail-meta">
-          <span>Browse the set</span>
-          <div class="rail-buttons">
-            <button class="rail-button" type="button" onclick="scrollPublicRail('template-rail', -1)">&larr;</button>
-            <button class="rail-button" type="button" onclick="scrollPublicRail('template-rail', 1)">&rarr;</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="template-rail" id="template-rail">
-        <article class="template-card">
-          <div class="template-preview">
-            <div class="template-preview-sheet">
-              <div class="template-preview-head"></div>
-              <div class="template-preview-lines">
-                <span></span>
-                <span style="width:62%"></span>
-                <span></span>
-                <span style="width:84%"></span>
-                <span style="width:72%"></span>
-                <span style="width:68%"></span>
-              </div>
-            </div>
-            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
-          </div>
-          <div class="template-footer">
-            <h3>Classic</h3>
-            <p class="template-copy">Balanced spacing and a calm structure for general applications.</p>
-          </div>
-        </article>
-
-        <article class="template-card">
-          <div class="template-preview">
-            <div class="template-preview-sheet">
-              <div class="template-preview-head" style="width:54%"></div>
-              <div class="template-preview-lines">
-                <span></span>
-                <span style="width:58%"></span>
-                <span style="width:92%"></span>
-                <span style="width:78%"></span>
-                <span style="width:70%"></span>
-                <span style="width:60%"></span>
-              </div>
-            </div>
-            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
-          </div>
-          <div class="template-footer">
-            <h3>Sidebar</h3>
-            <p class="template-copy">A stronger split layout for resumes that need faster scanning.</p>
-          </div>
-        </article>
-
-        <article class="template-card">
-          <div class="template-preview">
-            <div class="template-preview-sheet">
-              <div class="template-preview-head" style="width:60%"></div>
-              <div class="template-preview-lines">
-                <span style="width:76%"></span>
-                <span style="width:52%"></span>
-                <span></span>
-                <span style="width:82%"></span>
-                <span style="width:66%"></span>
-                <span style="width:74%"></span>
-              </div>
-            </div>
-            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
-          </div>
-          <div class="template-footer">
-            <h3>Structured</h3>
-            <p class="template-copy">A more formal layout for technical or operations-heavy applications.</p>
-          </div>
-        </article>
-
-        <article class="template-card">
-          <div class="template-preview">
-            <div class="template-preview-sheet">
-              <div class="template-preview-head" style="width:50%"></div>
-              <div class="template-preview-lines">
-                <span style="width:70%"></span>
-                <span style="width:56%"></span>
-                <span style="width:94%"></span>
-                <span style="width:80%"></span>
-                <span style="width:72%"></span>
-                <span style="width:66%"></span>
-              </div>
-            </div>
-            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
-          </div>
-          <div class="template-footer">
-            <h3>Minimal</h3>
-            <p class="template-copy">Less chrome, tighter rhythm, and a more editorial feel.</p>
-          </div>
-        </article>
-
-        <article class="template-card">
-          <div class="template-preview">
-            <div class="template-preview-sheet">
-              <div class="template-preview-head" style="width:64%"></div>
-              <div class="template-preview-lines">
-                <span style="width:84%"></span>
-                <span style="width:62%"></span>
-                <span style="width:90%"></span>
-                <span style="width:76%"></span>
-                <span style="width:68%"></span>
-                <span style="width:58%"></span>
-              </div>
-            </div>
-            <button class="template-button" type="button" onclick="showAuthModal()">Use this template</button>
-          </div>
-          <div class="template-footer">
-            <h3>Bold</h3>
-            <p class="template-copy">A louder hierarchy for candidates who want a slightly stronger first impression.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="public-section section-rule">
-      <div class="faq-grid">
-        <div class="quote-panel">
-          <div class="quote-figure">
-            <img class="faq-mascot" src="Images/Prof_Mochii.png" alt="Professor Mochii illustration" loading="lazy">
-          </div>
-          <div class="quote-card">
-            <p>"Curious about something? I've got the answers right here, human."</p>
-            <span>- Professor Mochii</span>
-          </div>
-        </div>
-
-        <div class="faq-stack">
-          <div class="section-kicker">FAQ</div>
-          <h2 class="section-title">Got questions?</h2>
-
-          <details class="faq-item">
-            <summary>
-              <span>Is it really free?</span>
-              <span class="faq-plus"></span>
-            </summary>
-            <div class="faq-answer">The current prototype keeps the public promise simple: the free plan stays visible, parsing is capped daily, and there is no paywall layer on these entry pages.</div>
-          </details>
-
-          <details class="faq-item">
-            <summary>
-              <span>Does it actually generate PDFs now?</span>
-              <span class="faq-plus"></span>
-            </summary>
-            <div class="faq-answer">Inside the workspace, the flow is already built around TeX-backed output, preview, and ATS/JD checks. The public pages are explaining that same loop rather than pretending it is a separate tool.</div>
-          </details>
-
-          <details class="faq-item">
-            <summary>
-              <span>Why keep the split workspace?</span>
-              <span class="faq-plus"></span>
-            </summary>
-            <div class="faq-answer">The landing and about pages are for trust, orientation, and sign-in. The dashboard, resumes, editor, JDs, and profile pages remain the actual working product once the user continues with Google.</div>
-          </details>
-
-          <details class="faq-item">
-            <summary>
-              <span>What carries across the app?</span>
-              <span class="faq-plus"></span>
-            </summary>
-            <div class="faq-answer">The same resume content flows through editing, preview, ATS scoring, JD analysis, saved libraries, and exports. That shared state is the core product decision behind resumeai.</div>
-          </details>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <span>&copy; 2026 resumeai</span>
-    <div class="site-footer-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="404.html">404</a>
-      <a href="500.html">500</a>
-    </div>
-  </footer>
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
 </div>
 
-<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
-  <div class="auth-modal">
-    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="auth-eyebrow">Sign in / Sign up</div>
-    <h2>Continue with Google.</h2>
-    <p class="auth-support">Google is the only auth path in this prototype. Once you continue, you enter the existing resumeai dashboard and pick up the full resume workflow there.</p>
-    <div class="auth-badges">
-      <span class="eyebrow-pill compact lilac">Google only</span>
-      <span class="eyebrow-pill compact mint">Dashboard ready</span>
-      <span class="eyebrow-pill compact olive">Free plan visible</span>
+<div class="frame desktop view" id="desktop-view">
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <a class="gnav-link active" href="index.html">Home</a>
+      <a class="gnav-link" href="about.html">About</a>
     </div>
-    <button class="google-cta" type="button" onclick="continueWithGoogle()">
-      <span class="google-badge">G</span>
-      <span>Continue with Google</span>
-    </button>
-    <div class="auth-note">No extra signup fields on this prototype surface.</div>
+    <div class="gnav-right">
+      <button class="btn-new" type="button" onclick="showAuthModal()">Login / Signup</button>
+    </div>
+  </nav>
+
+  <div class="pub-desktop-body">
+    <section class="pub-panel pub-hero-grid">
+      <div>
+        <div class="pub-copy-badges">
+          <span class="badge-accent">PUBLIC ENTRY</span>
+          <span class="badge-info">GOOGLE ONLY AUTH</span>
+          <span class="badge-outline">FREE PLAN VISIBLE</span>
+        </div>
+        <div class="pub-headline">Build resumes that <span class="accent">actually get matched.</span></div>
+        <div class="pub-text" style="margin-top:10px">resumeai now sits inside the same product language as the dashboard, editor, resumes, JD matching, and profile flow. The public pages explain the loop. The workspace does the work.</div>
+        <div class="pub-action-row">
+          <button class="btn-new" type="button" onclick="showAuthModal()">Get Started</button>
+          <a class="pub-link-btn" href="about.html">Read the story</a>
+        </div>
+        <div class="pub-chip-row">
+          <span class="badge-outline">TeX-backed PDFs</span>
+          <span class="badge-outline">ATS + JD analysis</span>
+          <span class="badge-outline">Import or start blank</span>
+        </div>
+      </div>
+
+      <div class="pub-image-panel hero">
+        <img src="Images/Mochii.png" alt="Mochii mascot illustration">
+        <div class="pub-image-note">Mochii now anchors the same product family as the rest of the prototype.</div>
+      </div>
+    </section>
+
+    <section class="pub-panel">
+      <div class="pub-section-head">
+        <div>
+          <div class="section-label" style="margin-bottom:6px">MOCHII'S JOURNEY</div>
+          <div class="pub-section-title">How one cat changes everything.</div>
+          <div class="pub-section-desc">The six scene cards now sit directly inside the same dark workspace language as the rest of the app.</div>
+        </div>
+        <div class="pub-rail-actions">
+          <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-story-rail', -1)">&larr;</button>
+          <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-story-rail', 1)">&rarr;</button>
+        </div>
+      </div>
+
+      <div class="pub-hscroll" id="landing-story-rail">
+        <article class="pub-story-card">
+          <div class="pub-story-media"><img src="Images/Scene1.jpg" alt="Scene 1" loading="lazy"></div>
+          <div class="pub-story-title">Mochii starts the job search journey.</div>
+          <div class="pub-story-copy">Every resume process starts with a first draft and a lot of unknowns.</div>
+        </article>
+
+        <article class="pub-story-card">
+          <div class="pub-story-media"><img src="Images/Scene2.jpg" alt="Scene 2" loading="lazy"></div>
+          <div class="pub-story-title">47 resumes sent to top tech companies.</div>
+          <div class="pub-story-copy">Volume is easy. Useful feedback and clean iteration are the hard part.</div>
+        </article>
+
+        <article class="pub-story-card">
+          <div class="pub-story-media"><img src="Images/Scene3.png" alt="Scene 3" loading="lazy"></div>
+          <div class="pub-story-title">47 rejections. Not enough experience in napping.</div>
+          <div class="pub-story-copy">Bad formatting and weak signal make every rejection feel heavier.</div>
+        </article>
+
+        <article class="pub-story-card">
+          <div class="pub-story-media"><img src="Images/Scene4.jpg" alt="Scene 4" loading="lazy"></div>
+          <div class="pub-story-title">A glimmer of hope appears.</div>
+          <div class="pub-story-copy">The public side now leads users into the same product loop instead of a disconnected landing page.</div>
+        </article>
+
+        <article class="pub-story-card">
+          <div class="pub-story-media"><img src="Images/Scene5.jpg" alt="Scene 5" loading="lazy"></div>
+          <div class="pub-story-title">Builds a purr-fect resume.</div>
+          <div class="pub-story-copy">Import, refine, preview, and export from one coherent workspace.</div>
+        </article>
+
+        <article class="pub-story-card">
+          <div class="pub-story-media"><img src="Images/Scene6.jpg" alt="Scene 6" loading="lazy"></div>
+          <div class="pub-story-title">Hired as Senior Treat Officer.</div>
+          <div class="pub-story-copy">A better system does not guarantee outcomes, but it gives the work a fairer shot.</div>
+        </article>
+
+        <article class="pub-story-card cta">
+          <div class="pub-story-title">Move from public surface to real workspace.</div>
+          <div class="pub-story-copy">The dashboard, editor, resumes, JD tools, and profile pages are still the main product. This page just gets you there cleanly.</div>
+          <div class="pub-action-row" style="margin-top:12px">
+            <button class="btn-new" type="button" onclick="showAuthModal()">Start with Google</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pub-panel">
+      <div class="pub-section-head">
+        <div>
+          <div class="section-label" style="margin-bottom:6px">CAPABILITIES</div>
+          <div class="pub-section-title">Everything you need.</div>
+        </div>
+      </div>
+      <div class="pub-grid-3">
+        <article class="pub-feature-card">
+          <div class="pub-icon">NEW</div>
+          <div class="pub-card-title">Build from scratch</div>
+          <div class="pub-card-copy">The editor writes into the same resume schema that powers preview, ATS scoring, and JD matching.</div>
+        </article>
+        <article class="pub-feature-card">
+          <div class="pub-icon">IN</div>
+          <div class="pub-card-title">Import and refine</div>
+          <div class="pub-card-copy">Paste resume text or upload PDF and DOCX files, then clean everything up in one place.</div>
+        </article>
+        <article class="pub-feature-card">
+          <div class="pub-icon">OUT</div>
+          <div class="pub-card-title">Compile, match, and score</div>
+          <div class="pub-card-copy">Generate output, inspect ATS feedback, and compare against a saved JD without leaving the product loop.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pub-panel">
+      <div class="pub-section-head">
+        <div>
+          <div class="section-label" style="margin-bottom:6px">TEMPLATES</div>
+          <div class="pub-section-title">Pick your vibe.</div>
+        </div>
+        <div class="pub-rail-actions">
+          <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-template-rail', -1)">&larr;</button>
+          <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-template-rail', 1)">&rarr;</button>
+        </div>
+      </div>
+
+      <div class="pub-hscroll" id="landing-template-rail">
+        <article class="pub-template-card">
+          <div class="pub-template-preview">
+            <div class="pub-template-doc">
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">Template 1</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:60%"></div>
+              <div class="pdf-line" style="width:88%"></div>
+              <div class="pdf-line" style="width:72%"></div>
+            </div>
+          </div>
+          <div class="pub-template-actions">
+            <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="pub-card-title" style="margin-top:10px">Classic</div>
+          <div class="pub-template-copy">A calm, balanced format for most applications.</div>
+        </article>
+
+        <article class="pub-template-card">
+          <div class="pub-template-preview">
+            <div class="pub-template-doc">
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">Template 2</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:52%"></div>
+              <div class="pdf-line" style="width:82%"></div>
+              <div class="pdf-line" style="width:65%"></div>
+            </div>
+          </div>
+          <div class="pub-template-actions">
+            <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="pub-card-title" style="margin-top:10px">Sidebar</div>
+          <div class="pub-template-copy">A stronger information hierarchy with faster scanning.</div>
+        </article>
+
+        <article class="pub-template-card">
+          <div class="pub-template-preview">
+            <div class="pub-template-doc">
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">Template 3</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:56%"></div>
+              <div class="pdf-line" style="width:86%"></div>
+              <div class="pdf-line" style="width:78%"></div>
+            </div>
+          </div>
+          <div class="pub-template-actions">
+            <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="pub-card-title" style="margin-top:10px">Structured</div>
+          <div class="pub-template-copy">Useful when you want the layout to feel more formal.</div>
+        </article>
+
+        <article class="pub-template-card">
+          <div class="pub-template-preview">
+            <div class="pub-template-doc">
+              <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+              <div class="pdf-contact" style="font-size:7px">Template 4</div>
+              <div class="pdf-divider"></div>
+              <div class="pdf-line d" style="width:48%"></div>
+              <div class="pdf-line" style="width:80%"></div>
+              <div class="pdf-line" style="width:69%"></div>
+            </div>
+          </div>
+          <div class="pub-template-actions">
+            <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          </div>
+          <div class="pub-card-title" style="margin-top:10px">Minimal</div>
+          <div class="pub-template-copy">Less chrome, tighter spacing, and a leaner preview.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pub-panel pub-faq-grid">
+      <article class="pub-quote-card">
+        <div class="pub-quote-media">
+          <img src="Images/Prof_Mochii.png" alt="Professor Mochii illustration" loading="lazy">
+        </div>
+        <div class="pub-quote-text">"Curious about something? I've got the answers right here, human."</div>
+        <div class="badge-outline" style="width:max-content">Professor Mochii</div>
+      </article>
+
+      <div>
+        <div class="section-label" style="margin-bottom:8px">FAQ</div>
+        <div class="pub-section-title" style="margin-bottom:10px">Got questions?</div>
+        <div class="pub-faq-list">
+          <details class="pub-faq-item">
+            <summary><span>Is it really free?</span><span>+</span></summary>
+            <div>The free plan remains visible on the public side, and the product still shows usage-based limits inside the profile page.</div>
+          </details>
+          <details class="pub-faq-item">
+            <summary><span>Does it generate PDFs now?</span><span>+</span></summary>
+            <div>The working prototype already orients itself around TeX-backed output, preview, ATS scoring, and JD analysis once you enter the workspace.</div>
+          </details>
+          <details class="pub-faq-item">
+            <summary><span>Why keep a split public/workspace setup?</span><span>+</span></summary>
+            <div>The public pages build trust and orientation. The dashboard, resumes, editor, JDs, and profile remain the actual product surfaces after sign-in.</div>
+          </details>
+          <details class="pub-faq-item">
+            <summary><span>What stays connected across the app?</span><span>+</span></summary>
+            <div>The same resume state flows through edit, preview, ATS, JD analysis, saved libraries, and export actions.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <div class="pub-footer-row">
+      <span>&copy; 2026 resumeai</span>
+      <div class="pub-footer-links">
+        <a href="about.html">About</a>
+        <a href="404.html">404</a>
+        <a href="500.html">500</a>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+    <div class="mob-topbar">
+      <span class="mob-topbar-logo">resumeai</span>
+      <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
+    </div>
+    <div class="mob-edit-toggle">
+      <a class="mob-et-btn active" href="index.html">Home</a>
+      <a class="mob-et-btn" href="about.html">About</a>
+    </div>
+
+    <div class="pub-mobile-scroll">
+      <section class="pub-mob-panel">
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge-accent" style="font-size:8px">PUBLIC ENTRY</span>
+          <span class="badge-info" style="font-size:8px">GOOGLE ONLY</span>
+        </div>
+        <div class="pub-mob-headline">Build resumes that actually get matched.</div>
+        <div class="pub-mob-text">The public surface now shares the same dark prototype language as the rest of the app instead of feeling like a separate product.</div>
+        <div class="pub-image-panel" style="min-height:220px">
+          <img src="Images/Mochii.png" alt="Mochii mascot illustration">
+        </div>
+        <div class="pub-mob-top-actions">
+          <button class="btn-new" type="button" onclick="showAuthModal()">Get Started</button>
+          <a class="pub-link-btn" href="about.html">Read story</a>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-head" style="margin-bottom:0">
+          <div>
+            <div class="section-label" style="margin-bottom:6px">STORY ARC</div>
+            <div class="pub-section-title">Mochii's journey</div>
+            <div class="pub-section-desc">Swipe through the six steps from first draft panic to a better workflow.</div>
+          </div>
+          <span class="badge-outline">6 scenes</span>
+        </div>
+        <div class="pub-mob-scroll-row pub-mob-story-rail">
+          <article class="pub-story-card pub-mob-story-card">
+            <div class="pub-story-media"><img src="Images/Scene1.jpg" alt="Scene 1" loading="lazy"></div>
+            <div class="pub-story-step">01</div>
+            <div class="pub-story-title">Starts the search.</div>
+            <div class="pub-story-copy">The first step into the resume loop.</div>
+          </article>
+          <article class="pub-story-card pub-mob-story-card">
+            <div class="pub-story-media"><img src="Images/Scene2.jpg" alt="Scene 2" loading="lazy"></div>
+            <div class="pub-story-step">02</div>
+            <div class="pub-story-title">47 resumes sent.</div>
+            <div class="pub-story-copy">Volume is easy. Iteration is harder.</div>
+          </article>
+          <article class="pub-story-card pub-mob-story-card">
+            <div class="pub-story-media"><img src="Images/Scene3.png" alt="Scene 3" loading="lazy"></div>
+            <div class="pub-story-step">03</div>
+            <div class="pub-story-title">47 rejections later.</div>
+            <div class="pub-story-copy">Weak loops make every rejection sting more.</div>
+          </article>
+          <article class="pub-story-card pub-mob-story-card">
+            <div class="pub-story-media"><img src="Images/Scene4.jpg" alt="Scene 4" loading="lazy"></div>
+            <div class="pub-story-step">04</div>
+            <div class="pub-story-title">Finds a better system.</div>
+            <div class="pub-story-copy">The public site now leads into the real product.</div>
+          </article>
+          <article class="pub-story-card pub-mob-story-card">
+            <div class="pub-story-media"><img src="Images/Scene5.jpg" alt="Scene 5" loading="lazy"></div>
+            <div class="pub-story-step">05</div>
+            <div class="pub-story-title">Builds a better resume.</div>
+            <div class="pub-story-copy">Import, refine, preview, and improve.</div>
+          </article>
+          <article class="pub-story-card pub-mob-story-card">
+            <div class="pub-story-media"><img src="Images/Scene6.jpg" alt="Scene 6" loading="lazy"></div>
+            <div class="pub-story-step">06</div>
+            <div class="pub-story-title">Gets hired.</div>
+            <div class="pub-story-copy">A better workflow gives the work a fair shot.</div>
+          </article>
+          <article class="pub-story-card pub-mob-story-card cta">
+            <div class="pub-story-step">07</div>
+            <div class="pub-story-title">Move into the real workspace.</div>
+            <div class="pub-story-copy">The public side explains the loop. The dashboard, editor, resumes, JD tools, and profile pages do the actual work.</div>
+            <div class="pub-action-row" style="margin-top:8px">
+              <button class="btn-new" type="button" onclick="showAuthModal()">Start with Google</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-title">Everything you need</div>
+        <div class="pub-mob-grid">
+          <article class="pub-feature-card">
+            <div class="pub-icon">NEW</div>
+            <div class="pub-card-title">Build from scratch</div>
+            <div class="pub-card-copy">Write into the same resume structure the rest of the app uses.</div>
+          </article>
+          <article class="pub-feature-card">
+            <div class="pub-icon">IN</div>
+            <div class="pub-card-title">Import and refine</div>
+            <div class="pub-card-copy">Bring in existing resume text and clean it up inside one flow.</div>
+          </article>
+          <article class="pub-feature-card">
+            <div class="pub-icon">OUT</div>
+            <div class="pub-card-title">Compile and score</div>
+            <div class="pub-card-copy">Preview the PDF, check ATS, and compare against a JD.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-head" style="margin-bottom:0">
+          <div>
+            <div class="section-label" style="margin-bottom:6px">TEMPLATES</div>
+            <div class="pub-section-title">Pick your vibe.</div>
+            <div class="pub-section-desc">The same four starting points from desktop, adapted into a swipeable mobile rail.</div>
+          </div>
+        </div>
+        <div class="pub-mob-scroll-row">
+          <article class="pub-template-card">
+            <div class="pub-template-preview">
+              <div class="pub-template-doc">
+                <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+                <div class="pdf-contact" style="font-size:7px">Classic</div>
+                <div class="pdf-divider"></div>
+                <div class="pdf-line d" style="width:60%"></div>
+                <div class="pdf-line" style="width:88%"></div>
+                <div class="pdf-line" style="width:72%"></div>
+              </div>
+            </div>
+            <div class="pub-template-actions">
+              <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+            </div>
+            <div class="pub-card-title" style="margin-top:8px">Classic</div>
+            <div class="pub-template-copy">Balanced and familiar.</div>
+          </article>
+          <article class="pub-template-card">
+            <div class="pub-template-preview">
+              <div class="pub-template-doc">
+                <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+                <div class="pdf-contact" style="font-size:7px">Sidebar</div>
+                <div class="pdf-divider"></div>
+                <div class="pdf-line d" style="width:52%"></div>
+                <div class="pdf-line" style="width:82%"></div>
+                <div class="pdf-line" style="width:65%"></div>
+              </div>
+            </div>
+            <div class="pub-template-actions">
+              <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+            </div>
+            <div class="pub-card-title" style="margin-top:8px">Sidebar</div>
+            <div class="pub-template-copy">Stronger hierarchy and quicker scanning.</div>
+          </article>
+          <article class="pub-template-card">
+            <div class="pub-template-preview">
+              <div class="pub-template-doc">
+                <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+                <div class="pdf-contact" style="font-size:7px">Structured</div>
+                <div class="pdf-divider"></div>
+                <div class="pdf-line d" style="width:56%"></div>
+                <div class="pdf-line" style="width:86%"></div>
+                <div class="pdf-line" style="width:78%"></div>
+              </div>
+            </div>
+            <div class="pub-template-actions">
+              <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+            </div>
+            <div class="pub-card-title" style="margin-top:8px">Structured</div>
+            <div class="pub-template-copy">A more formal, organized feel.</div>
+          </article>
+          <article class="pub-template-card">
+            <div class="pub-template-preview">
+              <div class="pub-template-doc">
+                <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
+                <div class="pdf-contact" style="font-size:7px">Minimal</div>
+                <div class="pdf-divider"></div>
+                <div class="pdf-line d" style="width:48%"></div>
+                <div class="pdf-line" style="width:80%"></div>
+                <div class="pdf-line" style="width:69%"></div>
+              </div>
+            </div>
+            <div class="pub-template-actions">
+              <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+            </div>
+            <div class="pub-card-title" style="margin-top:8px">Minimal</div>
+            <div class="pub-template-copy">Cleaner chrome and tighter spacing.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-title">Professor Mochii</div>
+        <div class="pub-quote-media" style="min-height:180px">
+          <img src="Images/Prof_Mochii.png" alt="Professor Mochii illustration" loading="lazy">
+        </div>
+        <details class="pub-faq-item">
+          <summary><span>Is it really free?</span><span>+</span></summary>
+          <div>The free plan stays visible, and the workspace still shows usage details once you sign in.</div>
+        </details>
+        <details class="pub-faq-item">
+          <summary><span>Does it generate PDFs?</span><span>+</span></summary>
+          <div>Yes. The working loop is already built around output, preview, ATS, and JD checks.</div>
+        </details>
+        <details class="pub-faq-item">
+          <summary><span>Why keep a split public/workspace setup?</span><span>+</span></summary>
+          <div>The public pages orient the user first. The dashboard, resumes, editor, JDs, and profile remain the actual working product after sign-in.</div>
+        </details>
+        <details class="pub-faq-item">
+          <summary><span>What stays connected across the app?</span><span>+</span></summary>
+          <div>The same resume state flows through editing, preview, ATS checks, JD analysis, saved libraries, and export actions.</div>
+        </details>
+      </section>
+
+      <div class="pub-footer-row">
+        <span>&copy; 2026 resumeai</span>
+        <div class="pub-footer-links">
+          <a href="about.html">About</a>
+          <a href="404.html">404</a>
+          <a href="500.html">500</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal-box">
+    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
+    <div class="section-label" style="margin-bottom:8px">SIGN IN / SIGN UP</div>
+    <div class="auth-title">Continue with Google</div>
+    <div class="auth-copy">The public pages now live inside the same prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.</div>
+    <div class="auth-highlights">
+      <span class="badge-accent">GOOGLE ONLY</span>
+      <span class="badge-info">SAME PRODUCT</span>
+      <span class="badge-outline">DASHBOARD READY</span>
+    </div>
+    <div class="auth-preview">
+      <div class="pub-card-title">One product, one path</div>
+      <div class="pub-card-copy">Home, About, 404, 500, and the auth modal now share the same frame logic, dark tokens, and component language as the logged-in screens.</div>
+    </div>
+    <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
+      <span>G</span>
+      <span>Continue with Google</span>
+    </button>
+    <div class="auth-note">No extra signup form on this prototype.</div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>

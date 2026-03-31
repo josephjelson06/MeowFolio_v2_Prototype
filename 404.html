@@ -5,79 +5,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>resumeai &mdash; 404</title>
 <link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/public.css">
 </head>
-<body class="public-body">
-<div class="public-page">
-  <header class="site-nav">
-    <a class="site-brand" href="index.html">
-      <span class="brand-mark">RA</span>
-      <span class="brand-copy">resumeai</span>
-    </a>
-    <nav class="site-menu" aria-label="Primary">
-      <a class="nav-link" href="index.html">Home</a>
-      <a class="nav-link" href="about.html">About</a>
-    </nav>
-    <button class="nav-pill" type="button" onclick="showAuthModal()">Login / Signup</button>
-  </header>
+<body>
 
-  <main class="error-main">
-    <section class="public-section">
-      <div class="error-panel">
-        <div class="error-visual" aria-hidden="true">
-          <div class="error-orb">404</div>
-          <div class="error-stack">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-
-        <div>
-          <div class="error-code-pill">Page missing</div>
-          <h1 class="error-title">That page wandered off.</h1>
-          <p class="error-copy">The link may be outdated, mistyped, or part of an earlier prototype path. The public entry pages are still available, and the product workspace is waiting on the other side of Google sign-in.</p>
-          <div class="error-actions">
-            <a class="public-button" href="index.html">
-              <span>&larr;</span>
-              <span>Back home</span>
-            </a>
-            <button class="ghost-button" type="button" onclick="showAuthModal()">Open Google sign in</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <span>&copy; 2026 resumeai</span>
-    <div class="site-footer-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="500.html">500</a>
-    </div>
-  </footer>
+<div class="dev-toggle">
+  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
+  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
 </div>
 
-<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
-  <div class="auth-modal">
-    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="auth-eyebrow">Sign in / Sign up</div>
-    <h2>Continue with Google.</h2>
-    <p class="auth-support">The error state still uses the same entry system as the rest of the public surface. Sign in with Google and jump directly into the dashboard workflow.</p>
-    <div class="auth-badges">
-      <span class="eyebrow-pill compact lilac">Google only</span>
-      <span class="eyebrow-pill compact mint">Shared entry</span>
-      <span class="eyebrow-pill compact olive">Dashboard ready</span>
+<div class="frame desktop view" id="desktop-view">
+  <nav class="gnav">
+    <span class="gnav-logo">resumeai</span>
+    <div class="gnav-links">
+      <a class="gnav-link" href="index.html">Home</a>
+      <a class="gnav-link" href="about.html">About</a>
     </div>
-    <button class="google-cta" type="button" onclick="continueWithGoogle()">
-      <span class="google-badge">G</span>
-      <span>Continue with Google</span>
-    </button>
-    <div class="auth-note">If you came from an old bookmark, start again from Home and continue from there.</div>
+    <div class="gnav-right">
+      <button class="btn-new" type="button" onclick="showAuthModal()">Login / Signup</button>
+    </div>
+  </nav>
+
+  <div class="pub-desktop-body">
+    <section class="pub-panel pub-error-grid">
+      <article class="pub-error-card">
+        <div class="pub-copy-badges">
+          <span class="badge-accent">404</span>
+          <span class="badge-outline">MISSING PAGE</span>
+        </div>
+        <div class="pub-error-code">404</div>
+        <div class="pub-section-title" style="margin-top:12px">That page wandered off.</div>
+        <div class="pub-text" style="margin-top:8px">The route may be outdated, mistyped, or part of an earlier prototype pass. The important part is that this error page now still feels like the same product family as the dashboard and public pages.</div>
+        <div class="pub-error-actions">
+          <a class="btn-new" href="index.html">Back Home</a>
+          <a class="pub-link-btn" href="about.html">Open About</a>
+          <button class="pub-link-btn" type="button" onclick="showAuthModal()">Sign in</button>
+        </div>
+      </article>
+
+      <article class="pub-panel">
+        <div class="section-label" style="margin-bottom:8px">NEXT STEP</div>
+        <div class="pub-section-title">The workspace is still one click away.</div>
+        <div class="pub-text" style="margin-top:8px">If you landed here from an old link, return to Home or continue with Google. The rest of the prototype still uses the same shell, same tokens, and same navigation rhythm.</div>
+        <div class="pub-chip-row">
+          <span class="badge-outline">Home</span>
+          <span class="badge-outline">About</span>
+          <span class="badge-outline">Dashboard</span>
+        </div>
+      </article>
+    </section>
+
+    <div class="pub-footer-row">
+      <span>&copy; 2026 resumeai</span>
+      <div class="pub-footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="500.html">500</a>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="frame mobile view active" id="mobile-view">
+  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+    <div class="mob-topbar">
+      <span class="mob-topbar-logo">resumeai</span>
+      <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
+    </div>
+    <div class="mob-edit-toggle">
+      <a class="mob-et-btn" href="index.html">Home</a>
+      <a class="mob-et-btn" href="about.html">About</a>
+    </div>
+
+    <div class="pub-mobile-scroll">
+      <section class="pub-mob-panel">
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge-accent" style="font-size:8px">404</span>
+          <span class="badge-outline" style="font-size:8px">PAGE MISSING</span>
+        </div>
+        <div class="pub-error-code" style="margin:0 auto">404</div>
+        <div class="pub-mob-headline">That page wandered off.</div>
+        <div class="pub-mob-text">This fallback now uses the same mobile shell as the rest of resumeai, so the error state still feels connected to the product.</div>
+        <div class="pub-mob-top-actions">
+          <a class="btn-new" href="index.html">Back Home</a>
+          <button class="pub-link-btn" type="button" onclick="showAuthModal()">Sign in</button>
+        </div>
+      </section>
+
+      <section class="pub-mob-panel">
+        <div class="pub-section-title">Where to go next</div>
+        <div class="pub-mob-text">Try the Home page, the About page, or continue with Google to enter the prototype dashboard.</div>
+      </section>
+
+      <div class="pub-footer-row">
+        <span>&copy; 2026 resumeai</span>
+        <div class="pub-footer-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="500.html">500</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal-box">
+    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
+    <div class="section-label" style="margin-bottom:8px">SIGN IN / SIGN UP</div>
+    <div class="auth-title">Continue with Google</div>
+    <div class="auth-copy">Even the 404 page now uses the same entry pattern as the rest of resumeai, so the public fallback still leads back into the same workspace.</div>
+    <div class="auth-highlights">
+      <span class="badge-accent">GOOGLE ONLY</span>
+      <span class="badge-info">SHARED ENTRY</span>
+      <span class="badge-outline">RETURN TO FLOW</span>
+    </div>
+    <div class="auth-preview">
+      <div class="pub-card-title">Same product language</div>
+      <div class="pub-card-copy">The missing-page fallback now shares the same frame, mobile layout, and component treatment as Home, About, and the logged-in prototype.</div>
+    </div>
+    <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
+      <span>G</span>
+      <span>Continue with Google</span>
+    </button>
+    <div class="auth-note">If this was an old bookmark, start from Home and continue from there.</div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>
