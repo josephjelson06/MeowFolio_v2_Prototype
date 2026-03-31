@@ -125,3 +125,10 @@ function handlePaste() {
     mobShowPage('editor');
   }
 }
+
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+
+  closeModal();
+  if (typeof closeJDModal === 'function') closeJDModal();
+});

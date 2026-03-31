@@ -1,5 +1,5 @@
 /* ── JDs PAGE ── */
-.jd-page-body { display: flex; height: 488px; }
+.jd-page-body { display: flex; height: calc(100dvh - 60px); min-height: 400px; }
 
 /* Left: JD list */
 .jd-list-pane { width: 240px; border-right: 0.5px solid var(--border0); display: flex; flex-direction: column; flex-shrink: 0; }

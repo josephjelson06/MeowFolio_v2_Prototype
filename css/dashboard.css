@@ -17,7 +17,7 @@
 /* ── DASHBOARD REDESIGN ── */
 .dash-greeting-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--txt2); margin-bottom: 4px; }
 .dash-greeting-name { font-size: 18px; font-weight: 600; color: var(--txt0); margin-bottom: 16px; }
-.dash-stats-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.dash-stats-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .dash-stat-big { flex: 1; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; }
 .dash-stat-icon { font-size: 16px; margin-bottom: 6px; color: var(--txt2); }
 .dash-stat-label { font-size: 10px; color: var(--txt2); margin-bottom: 4px; }
@@ -27,7 +27,7 @@
 .dash-stat-fill.warn { background: var(--warn); }
 
 /* Hero row */
-.dash-hero-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.dash-hero-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .dash-create-card { flex: 1; background: var(--bg2); border: 1px dashed var(--border2); border-radius: var(--r-md); padding: 20px 16px; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; transition: all .15s; }
 .dash-create-card:hover { border-color: var(--accent-dim); background: var(--accent-bg); }
 .dash-create-plus { font-size: 28px; color: var(--txt2); margin-bottom: 10px; font-weight: 300; }
@@ -45,7 +45,7 @@
 .dash-recent-link:hover { text-decoration: underline; }
 
 /* Quick Actions + JD */
-.dash-bottom-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.dash-bottom-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .dash-actions-card { flex: 2; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: var(--r-md); padding: 14px; }
 .dash-actions-title { font-size: 13px; font-weight: 500; color: var(--txt0); margin-bottom: 10px; }
 .dash-actions-grid { display: flex; gap: 6px; }
@@ -68,3 +68,22 @@
 .dash-tip-dots { display: flex; gap: 5px; align-items: center; }
 .tip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border1); transition: all .2s; }
 .tip-dot.active { width: 16px; border-radius: 3px; background: var(--accent); }
+
+@media (max-width: 1024px) {
+  .dash-stat-big,
+  .dash-create-card,
+  .dash-preview-card,
+  .dash-recent-card,
+  .dash-actions-card,
+  .dash-jd-card {
+    min-width: 220px;
+  }
+
+  .dash-actions-grid {
+    flex-wrap: wrap;
+  }
+
+  .dash-action-item {
+    min-width: 180px;
+  }
+}

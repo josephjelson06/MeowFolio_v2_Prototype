@@ -19,7 +19,7 @@ body {
     radial-gradient(rgba(220, 193, 184, 0.72) 1px, transparent 1px),
     linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 38%);
   background-size: 24px 24px, 100% 100%;
-  color: var(--color-text);
+  color: var(--color-on-surface);
 }
 
 a {

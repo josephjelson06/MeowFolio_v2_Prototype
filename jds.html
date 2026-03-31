@@ -8,11 +8,7 @@
 <link rel="stylesheet" href="css/globals.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/resumes.css">
-<link rel="stylesheet" href="css/editor.css">
 <link rel="stylesheet" href="css/jds.css">
-<link rel="stylesheet" href="css/profile.css">
 <link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/modal.css">
 </head>
@@ -22,12 +18,12 @@
   <nav class="gnav">
     <a class="gnav-logo" href="dashboard.html">resumeai</a>
     <div class="gnav-links">
-      <button class="gnav-link" onclick="showPage('dash')">Dashboard</button>
-      <button class="gnav-link" onclick="showPage('resumes')">Resumes</button>
-      <button class="gnav-link active" onclick="showPage('jds')">JDs</button>
+      <a class="gnav-link" href="dashboard.html">Dashboard</a>
+      <a class="gnav-link" href="resumes.html">Resumes</a>
+      <a class="gnav-link active" href="jds.html">JDs</a>
     </div>
     <div class="gnav-right">
-      <div class="avatar" onclick="showPage('profile')">AK</div>
+      <a class="avatar" href="profile.html">AK</a>
     </div>
   </nav>
 
@@ -66,11 +62,11 @@
   </div>
 </div><!-- /desktop-view -->
 
-<div class="frame mobile view active" id="mobile-view">
+<div class="frame mobile view" id="mobile-view">
   <div class="mob-frame">
     <div class="mob-topbar">
       <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
-      <div class="avatar" style="margin-left:auto" onclick="mobShowPage('profile')">AK</div>
+      <a class="avatar" style="margin-left:auto" href="profile.html">AK</a>
     </div>
     <div class="mob-edit-toggle">
       <button class="mob-et-btn active" id="mob-jd-tab-workspace" onclick="setMobJDView('workspace')">Workspace</button>
@@ -171,7 +167,6 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
 <script src="js/mobile.js"></script>
 <script src="js/jds.js"></script>
 </body>

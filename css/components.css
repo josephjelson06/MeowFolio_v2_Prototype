@@ -7,18 +7,30 @@
 
 /* ── BUTTONS ── */
 .btn-new { padding: 5px 12px; border-radius: var(--r-md); border: 0.5px solid var(--border2); background: var(--bg3); color: var(--txt0); font-size: 11px; cursor: pointer; font-family: var(--sans); display: flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
+.btn-new:hover { background: var(--bg4); border-color: var(--accent-dim); color: var(--accent); }
+.btn-new:focus-visible { outline: 2px solid var(--accent-dim); outline-offset: 2px; }
+.btn-new:active { transform: scale(0.97); }
 .r-action { padding: 4px 9px; border-radius: var(--r-sm); border: 0.5px solid var(--border1); background: none; color: var(--txt1); font-size: 10px; cursor: pointer; font-family: var(--sans); transition: all .12s; }
 .r-action:hover { background: var(--bg4); color: var(--txt0); }
 .r-action.primary { border-color: var(--accent-dim); color: var(--accent); }
 .r-action.primary:hover { background: var(--accent-bg); }
+.r-action:disabled,
+.r-action[disabled] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 .close-x { width: 20px; height: 20px; border-radius: var(--r-sm); border: 0.5px solid var(--border1); background: none; cursor: pointer; font-size: 12px; color: var(--txt1); display: flex; align-items: center; justify-content: center; }
 .analyze-btn { padding: 5px 11px; border-radius: var(--r-md); border: 0.5px solid var(--border2); background: var(--bg3); color: var(--txt0); font-size: 11px; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all .15s; }
 .analyze-btn:hover { border-color: var(--accent-dim); color: var(--accent); background: var(--accent-bg); }
+
+/* Shared pagination */
+.list-pagination { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+.page-status { font-size: 10px; color: var(--txt2); }
+.page-controls { display: flex; gap: 6px; }
 
 /* ── FORM ELEMENTS ── */
 .fl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); margin-bottom: 3px; }
 .fi { width: 100%; padding: 6px 8px; border: 0.5px solid var(--border1); border-radius: var(--r-sm); background: var(--bg2); color: var(--txt1); font-size: 11px; font-family: var(--font); outline: none; transition: border-color .12s; }
 .fi:focus { border-color: var(--border2); color: var(--txt0); }
+.fi:disabled { opacity: 0.55; cursor: not-allowed; background: var(--bg3); }
+.fi.error { border-color: var(--err); background: var(--err-bg); }
 .fi-add { color: var(--txt2); cursor: pointer; font-size: 10px; padding: 4px 8px; border: 0.5px dashed var(--border1); border-radius: var(--r-sm); display: flex; align-items: center; gap: 5px; background: none; width: 100%; text-align: left; font-family: var(--sans); margin-top: 2px; transition: all .12s; }
 .fi-add:hover { border-color: var(--border2); color: var(--txt1); background: var(--bg2); }
 

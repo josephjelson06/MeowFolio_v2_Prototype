@@ -8,30 +8,25 @@
 <link rel="stylesheet" href="css/globals.css">
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/resumes.css">
 <link rel="stylesheet" href="css/editor.css">
-<link rel="stylesheet" href="css/jds.css">
-<link rel="stylesheet" href="css/profile.css">
 <link rel="stylesheet" href="css/mobile.css">
-<link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
     <a class="gnav-logo" href="dashboard.html">resumeai</a>
     <div class="gnav-links">
-      <button class="gnav-link" onclick="showPage('dash')">Dashboard</button>
-      <button class="gnav-link active" onclick="showPage('resumes')">Resumes</button>
-      <button class="gnav-link" onclick="showPage('jds')">JDs</button>
+      <a class="gnav-link" href="dashboard.html">Dashboard</a>
+      <a class="gnav-link active" href="resumes.html">Resumes</a>
+      <a class="gnav-link" href="jds.html">JDs</a>
     </div>
     <div class="gnav-right">
-      <div class="avatar" onclick="showPage('profile')">AK</div>
+      <a class="avatar" href="profile.html">AK</a>
     </div>
   </nav>
 
   <div class="bcrumb">
-    <span class="bc-link" onclick="showPage('resumes')">Resumes</span>
+    <a class="bc-link" href="resumes.html">Resumes</a>
     <span class="bc-sep">/</span>
     <span class="bc-link">resume_v3.tex</span>
     <span class="bc-sep">/</span>
@@ -275,13 +270,13 @@ Reduced latency by 40%</textarea>
   </div>
 </div><!-- /desktop-view -->
 
-<div class="frame mobile view active" id="mobile-view">
+<div class="frame mobile view" id="mobile-view">
   <div class="mob-frame">
     <div class="mob-topbar">
       <span class="mob-back" onclick="mobShowPage('resumes')">&larr;</span>
       <span class="mob-topbar-title">resume_v3</span>
       <button class="mob-analyze-btn" onclick="toggleMobSheet()">Analyze</button>
-      <div class="avatar" style="margin-left:8px" onclick="mobShowPage('profile')">AK</div>
+      <a class="avatar" style="margin-left:8px" href="profile.html">AK</a>
     </div>
     <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column">
       <div class="mob-edit-toggle">
@@ -529,11 +524,7 @@ Reduced latency by 40%</textarea>
   </div>
 </div><!-- /mobile-view -->
 
-<script src="js/app.js"></script>
 <script src="js/editor.js"></script>
-<script src="js/jds.js"></script>
 <script src="js/mobile.js"></script>
-<script src="js/tips.js"></script>
-<script src="js/modal.js"></script>
 </body>
 </html>

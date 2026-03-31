@@ -111,10 +111,10 @@ function renderResumeLibrary() {
 
   if (mobileList) {
     mobileList.innerHTML = `
-      <div class="dash-create-card" onclick="showModal()" style="padding:16px 14px">
-        <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
-        <div class="dash-create-label">CREATE NEW RESUME</div>
-        <div class="dash-create-title">Upload or start blank</div>
+      <div class="mob-res-create-card" onclick="showModal()">
+        <div class="mob-res-create-plus">+</div>
+        <div class="mob-res-create-label">CREATE NEW RESUME</div>
+        <div class="mob-res-create-title">Upload or start blank</div>
       </div>
       ${pageItems.map(renderMobileResumeCard).join('')}
     `;
