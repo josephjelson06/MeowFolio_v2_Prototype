@@ -151,6 +151,18 @@
   background: var(--accent);
 }
 
+.dash-stat-fill-74 {
+  width: 74%;
+}
+
+.dash-stat-fill-79 {
+  width: 79%;
+}
+
+.dash-stat-fill-18 {
+  width: 18%;
+}
+
 .dash-stat-fill.warn {
   background: var(--warn);
 }
@@ -227,6 +239,34 @@
   border-radius: 3px;
   padding: 12px;
   margin-bottom: 8px;
+}
+
+.dash-preview-name {
+  font-size: 11px;
+}
+
+.dash-preview-contact {
+  font-size: 7px;
+}
+
+.dash-preview-line-a {
+  width: 55%;
+}
+
+.dash-preview-line-b {
+  width: 90%;
+}
+
+.dash-preview-line-c {
+  width: 80%;
+}
+
+.dash-preview-line-d {
+  width: 50%;
+}
+
+.dash-preview-line-e {
+  width: 60%;
 }
 
 .dash-preview-chips {

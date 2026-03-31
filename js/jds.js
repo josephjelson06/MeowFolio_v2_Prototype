@@ -160,12 +160,12 @@ function getJDReportModel(resumeKey, jdId) {
     resumeKey,
     resume,
     verdict,
-    scoreColor,
+    scoreTone: resume.cls,
     metrics: [
-      { label: 'Keyword coverage', value: keywordCoverage, tone: keywordCoverage >= 70 ? 'var(--accent)' : 'var(--warn)' },
-      { label: 'Role alignment', value: roleAlignment, tone: roleAlignment >= 70 ? 'var(--accent)' : 'var(--warn)' },
-      { label: 'Seniority fit', value: seniorityFit, tone: seniorityFit >= 70 ? 'var(--accent)' : 'var(--warn)' },
-      { label: 'Impact readiness', value: impactReadiness, tone: impactReadiness >= 70 ? 'var(--accent)' : 'var(--warn)' },
+      { label: 'Keyword coverage', value: keywordCoverage, tone: keywordCoverage >= 70 ? 'accent' : 'warn' },
+      { label: 'Role alignment', value: roleAlignment, tone: roleAlignment >= 70 ? 'accent' : 'warn' },
+      { label: 'Seniority fit', value: seniorityFit, tone: seniorityFit >= 70 ? 'accent' : 'warn' },
+      { label: 'Impact readiness', value: impactReadiness, tone: impactReadiness >= 70 ? 'accent' : 'warn' },
     ],
     checks: [
       { tone: 'ok', text: `Matched ${resume.found.length} high-signal keywords from the JD` },
@@ -191,7 +191,7 @@ function renderJDResultCard(model) {
         </div>
       </div>
       <div class="match-bar-track">
-        <div class="match-bar-fill" style="width:${model.resume.score}%;background:${model.scoreColor}"></div>
+        <div class="match-bar-fill ${model.scoreTone}" style="width:${model.resume.score}%"></div>
       </div>
       <div class="match-kw-section">
         <div class="match-kw-heading">&#10003; Keywords found (${model.resume.found.length})</div>
@@ -219,7 +219,7 @@ function renderMobileReportEmpty() {
 
 function renderMobileSheetEmpty() {
   return `
-    <div class="jd-no-result" style="min-height:180px">
+    <div class="jd-no-result jd-sheet-empty">
       <div class="jd-no-result-icon">&#9678;</div>
       <div class="jd-no-result-txt">Run a JD analysis to preview the report summary here.</div>
     </div>
@@ -228,49 +228,49 @@ function renderMobileSheetEmpty() {
 
 function renderMobileSheetSummary(model) {
   return `
-    <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
-      <span style="font-size:32px;font-weight:600;font-family:var(--font);color:${model.scoreColor}">${model.resume.score}</span>
-      <span style="font-size:10px;color:var(--txt2)">match score</span>
+    <div class="jd-sheet-score-row">
+      <span class="jd-sheet-score-num ${model.scoreTone}">${model.resume.score}</span>
+      <span class="jd-sheet-score-label">match score</span>
     </div>
-    <div style="font-size:11px;color:var(--txt1);margin-bottom:12px">${model.verdict}</div>
+    <div class="jd-sheet-verdict">${model.verdict}</div>
     <div class="mob-jd-sheet-metrics">
       ${model.metrics.slice(0, 3).map(metric => `
         <div class="ats-bar-item">
-          <div class="ats-bar-label"><span>${metric.label}</span><span style="font-family:var(--font);color:${metric.tone}">${metric.value}%</span></div>
-          <div class="ats-bar-track"><div class="ats-bar-fill${metric.tone === 'var(--warn)' ? ' warn' : ''}" style="width:${metric.value}%"></div></div>
+          <div class="ats-bar-label"><span>${metric.label}</span><span class="jd-metric-val ${metric.tone}">${metric.value}%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill${metric.tone === 'warn' ? ' warn' : ''}" style="width:${metric.value}%"></div></div>
         </div>
       `).join('')}
     </div>
-    <div class="audit-head" style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--txt2);margin:14px 0 6px">Top matched keywords</div>
+    <div class="audit-head jd-sheet-headline">Top matched keywords</div>
     <div class="mob-jd-sheet-tags">
       ${model.resume.found.slice(0, 4).map(keyword => `<span class="match-kw-tag found">${keyword}</span>`).join('')}
     </div>
-    <button class="analyze-btn" style="width:100%;margin-top:14px" type="button" data-jd-report-open>Open detailed JD report</button>
+    <button class="analyze-btn jd-sheet-report-btn" type="button" data-jd-report-open>Open detailed JD report</button>
   `;
 }
 
 function renderMobileDetailedReport(model) {
   return `
     <div class="ats-score-card mob-ats-score-card">
-      <div class="ats-score-num" style="color:${model.scoreColor}">${model.resume.score}</div>
-    <div class="ats-score-info">
-      <div class="ats-score-label">${model.verdict}</div>
-      <div class="ats-score-desc">${model.resumeKey} &middot; ${model.jd.title} &middot; ${model.jd.company}</div>
+      <div class="ats-score-num ${model.scoreTone}">${model.resume.score}</div>
+      <div class="ats-score-info">
+        <div class="ats-score-label">${model.verdict}</div>
+        <div class="ats-score-desc">${model.resumeKey} &middot; ${model.jd.title} &middot; ${model.jd.company}</div>
+      </div>
+      <button class="analyze-btn" type="button" data-jd-view="workspace">Back to Workspace</button>
     </div>
-    <button class="analyze-btn" type="button" data-jd-view="workspace">Back to Workspace</button>
-  </div>
     <div class="ats-bars">
       ${model.metrics.map(metric => `
         <div class="ats-bar-item">
-          <div class="ats-bar-label"><span>${metric.label}</span><span style="font-family:var(--font);color:${metric.tone}">${metric.value}%</span></div>
-          <div class="ats-bar-track"><div class="ats-bar-fill${metric.tone === 'var(--warn)' ? ' warn' : ''}" style="width:${metric.value}%"></div></div>
+          <div class="ats-bar-label"><span>${metric.label}</span><span class="jd-metric-val ${metric.tone}">${metric.value}%</span></div>
+          <div class="ats-bar-track"><div class="ats-bar-fill${metric.tone === 'warn' ? ' warn' : ''}" style="width:${metric.value}%"></div></div>
         </div>
       `).join('')}
     </div>
     <div class="ats-checklist">
       ${model.checks.map(check => `
         <div class="ats-check-row">
-          <span class="check-ico" style="background:${check.tone === 'ok' ? 'var(--accent-bg)' : check.tone === 'warn' ? 'var(--warn-bg)' : 'var(--err-bg)'};color:${check.tone === 'ok' ? 'var(--accent)' : check.tone === 'warn' ? 'var(--warn)' : 'var(--err)'}">${check.tone === 'ok' ? '&#10003;' : check.tone === 'warn' ? '!' : '&#10007;'}</span>${check.text}
+          <span class="check-ico jd-check-tone-${check.tone}">${check.tone === 'ok' ? '&#10003;' : check.tone === 'warn' ? '!' : '&#10007;'}</span>${check.text}
         </div>
       `).join('')}
     </div>
@@ -300,7 +300,7 @@ function renderResultState() {
 
   if (!lastJDAnalysis || !getJDById(lastJDAnalysis.jdId)) {
     resultHost.innerHTML = getJDById(selectedJDId)
-      ? renderEmptyState('Select a resume, then click <strong style="color:var(--txt1)">Run Analysis</strong>.')
+      ? renderEmptyState('Select a resume, then click <strong class="jd-inline-emphasis">Run Analysis</strong>.')
       : renderEmptyState('Add a JD to start matching resumes.');
     mobileReportHost.innerHTML = renderMobileReportEmpty();
     sheetBody.innerHTML = renderMobileSheetEmpty();

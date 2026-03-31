@@ -1,7 +1,8 @@
 /* Shared editor tabs */
-function setLTab(i, el) {
-  document.querySelectorAll('.ltab').forEach(tab => tab.classList.remove('active'));
-  if (el) el.classList.add('active');
+function setLTab(i) {
+  document.querySelectorAll('[data-ltab-index]').forEach(tab => {
+    tab.classList.toggle('active', Number(tab.dataset.ltabIndex) === i);
+  });
 
   ['ltab-0', 'ltab-1', 'ltab-2'].forEach((id, idx) => {
     const pane = document.getElementById(id);
@@ -10,9 +11,10 @@ function setLTab(i, el) {
 }
 
 /* Shared editor sections */
-function setSection(el, secId) {
-  document.querySelectorAll('.snav').forEach(section => section.classList.remove('active'));
-  if (el) el.classList.add('active');
+function setSection(secId) {
+  document.querySelectorAll('[data-section-target]').forEach(section => {
+    section.classList.toggle('active', section.dataset.sectionTarget === secId);
+  });
 
   ['sec-contact', 'sec-summary', 'sec-exp', 'sec-edu', 'sec-skills', 'sec-proj'].forEach(id => {
     const section = document.getElementById(id);
@@ -27,22 +29,22 @@ function setEdMode(mode) {
   const editorPane = document.getElementById('ed-mode-editor');
   const atsPane = document.getElementById('ed-mode-ats');
   const crumb = document.getElementById('bc-mode');
-  const segments = document.querySelectorAll('.ed-seg');
+  const segments = document.querySelectorAll('[data-ed-mode]');
 
   if (!editorPane || !atsPane) return;
 
-  segments.forEach(seg => seg.classList.remove('active'));
+  segments.forEach(seg => {
+    seg.classList.toggle('active', seg.dataset.edMode === mode);
+  });
 
   if (mode === 'ats') {
     editorPane.classList.add('hidden');
     atsPane.classList.remove('hidden');
     if (crumb) crumb.textContent = 'ATS Score';
-    if (segments[1]) segments[1].classList.add('active');
   } else {
     editorPane.classList.remove('hidden');
     atsPane.classList.add('hidden');
     if (crumb) crumb.textContent = 'Editor';
-    if (segments[0]) segments[0].classList.add('active');
   }
 }
 
@@ -52,7 +54,7 @@ function toggleDrawer() {
 }
 
 function selectTmpl(el) {
-  document.querySelectorAll('#ltab-1 .tmpl-card').forEach(card => card.classList.remove('sel'));
+  document.querySelectorAll('[data-template-card]').forEach(card => card.classList.remove('sel'));
   if (el) el.classList.add('sel');
 }
 
@@ -112,7 +114,91 @@ function setCarousel(i) {
   });
 }
 
+function updateToolbarSlider(input) {
+  const outputId = input.dataset.outputId;
+  const output = outputId ? document.getElementById(outputId) : null;
+  if (!output) return;
+
+  switch (input.dataset.outputFormat) {
+    case 'pt':
+      output.textContent = `${input.value}pt`;
+      break;
+    case 'ratio':
+      output.textContent = (Number(input.value) / 100).toFixed(2);
+      break;
+    case 'cm':
+      output.textContent = `${(Number(input.value) / 10).toFixed(1)}cm`;
+      break;
+    default:
+      output.textContent = input.value;
+      break;
+  }
+}
+
+function bindEditorEvents() {
+  document.addEventListener('click', event => {
+    const mobView = event.target.closest('[data-mob-view]');
+    if (mobView) {
+      setMobEdView(mobView.dataset.mobView);
+      return;
+    }
+
+    const modeButton = event.target.closest('[data-ed-mode]');
+    if (modeButton) {
+      setEdMode(modeButton.dataset.edMode);
+      return;
+    }
+
+    const tab = event.target.closest('[data-ltab-index]');
+    if (tab) {
+      setLTab(Number(tab.dataset.ltabIndex));
+      return;
+    }
+
+    const section = event.target.closest('[data-section-target]');
+    if (section) {
+      setSection(section.dataset.sectionTarget);
+      return;
+    }
+
+    const templateCard = event.target.closest('[data-template-card]');
+    if (templateCard) {
+      selectTmpl(templateCard);
+      return;
+    }
+
+    const editorAction = event.target.closest('[data-editor-action]');
+    if (editorAction) {
+      switch (editorAction.dataset.editorAction) {
+        case 'toggle-drawer':
+          toggleDrawer();
+          break;
+        case 'toggle-sheet':
+          toggleMobSheet();
+          break;
+        case 'open-mob-ats':
+          openMobATSReport();
+          break;
+        case 'back-to-editor':
+          backToEditor();
+          break;
+        default:
+          break;
+      }
+    }
+  });
+
+  document.addEventListener('input', event => {
+    if (event.target.matches('[data-editor-slider]')) {
+      updateToolbarSlider(event.target);
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  bindEditorEvents();
+  document.querySelectorAll('[data-editor-slider]').forEach(updateToolbarSlider);
+
   const params = new URLSearchParams(window.location.search);
   const wantsATS = params.get('mode') === 'ats';
   const isMobile = window.matchMedia('(max-width: 768px)').matches;

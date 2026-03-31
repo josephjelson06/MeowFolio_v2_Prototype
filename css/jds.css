@@ -304,6 +304,10 @@
   text-align: center;
 }
 
+.jd-sheet-empty {
+  min-height: 180px;
+}
+
 .jd-no-result-icon {
   font-size: 28px;
   color: var(--border2);
@@ -401,6 +405,18 @@
   transition: width .4s ease;
 }
 
+.match-bar-fill.high {
+  background: var(--accent);
+}
+
+.match-bar-fill.mid {
+  background: var(--warn);
+}
+
+.match-bar-fill.low {
+  background: var(--err);
+}
+
 .match-kw-section {
   display: flex;
   flex-direction: column;
@@ -494,6 +510,18 @@
   font-size: 11px;
 }
 
+.jd-metric-val {
+  font-family: var(--font);
+}
+
+.jd-metric-val.accent {
+  color: var(--accent);
+}
+
+.jd-metric-val.warn {
+  color: var(--warn);
+}
+
 .ats-bar-track {
   height: 4px;
   border-radius: 2px;
@@ -528,6 +556,74 @@
 
 .ats-check-row:last-child {
   border-bottom: none;
+}
+
+.jd-sheet-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.jd-sheet-score-num {
+  font-size: 32px;
+  font-weight: 600;
+  font-family: var(--font);
+}
+
+.jd-sheet-score-num.high {
+  color: var(--accent);
+}
+
+.jd-sheet-score-num.mid {
+  color: var(--warn);
+}
+
+.jd-sheet-score-num.low {
+  color: var(--err);
+}
+
+.jd-sheet-score-label {
+  font-size: 10px;
+  color: var(--txt2);
+}
+
+.jd-sheet-verdict {
+  font-size: 11px;
+  color: var(--txt1);
+  margin-bottom: 12px;
+}
+
+.jd-sheet-headline {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--txt2);
+  margin: 14px 0 6px;
+}
+
+.jd-sheet-report-btn {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.jd-check-tone-ok {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.jd-check-tone-warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.jd-check-tone-bad {
+  background: var(--err-bg);
+  color: var(--err);
+}
+
+.jd-inline-emphasis {
+  color: var(--txt1);
 }
 
 @media (max-width: 768px) {

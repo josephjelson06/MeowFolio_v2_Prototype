@@ -106,7 +106,7 @@ function buildAuthModalMarkup() {
     <div class="auth-modal-overlay" id="auth-modal" aria-hidden="true">
       <div class="auth-modal-box" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
         <button class="auth-close" type="button" data-auth-close>&times;</button>
-        <div class="section-label" style="margin-bottom:8px">SIGN IN / SIGN UP</div>
+        <div class="section-label auth-section-label">SIGN IN / SIGN UP</div>
         <div class="auth-title" id="auth-modal-title">Continue with Google</div>
         <div class="auth-copy">${escapeHtml(config.copy)}</div>
         <div class="auth-highlights">

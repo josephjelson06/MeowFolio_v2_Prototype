@@ -46,6 +46,12 @@ function getWorkspaceChromeConfig() {
       barClass: 'jd-mobile-bar',
       title: 'JD Match',
     },
+    editor: {
+      desktopClass: 'editor-desktop-nav',
+      mobileClass: 'editor-mobile-nav',
+      barClass: 'editor-mobile-bar',
+      title: 'resume_v3',
+    },
     profile: {
       desktopClass: 'profile-desktop-nav',
       mobileClass: 'profile-mobile-nav',
@@ -63,8 +69,25 @@ function buildWorkspaceHeaderMarkup() {
   if (!config) return '';
 
   const dashActive = page === 'dashboard' ? ' active' : '';
-  const resumesActive = page === 'resumes' ? ' active' : '';
+  const resumesActive = page === 'resumes' || page === 'editor' ? ' active' : '';
   const jdsActive = page === 'jds' ? ' active' : '';
+
+  const mobileTopbar = page === 'editor'
+    ? `
+      <div class="mob-topbar ${config.mobileClass}">
+        <a class="mob-back editor-back-link" href="resumes.html">&larr;</a>
+        <span class="mob-topbar-title">${config.title}</span>
+        <button class="mob-analyze-btn" type="button" data-editor-action="toggle-sheet">Analyze</button>
+        <a class="avatar" href="profile.html">AK</a>
+      </div>
+    `
+    : `
+      <div class="mob-topbar ${config.mobileClass}">
+        <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
+        <span class="mob-topbar-title">${config.title}</span>
+        <a class="avatar${page === 'profile' ? ' profile-avatar-link' : ''}" href="profile.html">AK</a>
+      </div>
+    `;
 
   return `
     <nav class="gnav ${config.desktopClass}">
@@ -79,11 +102,7 @@ function buildWorkspaceHeaderMarkup() {
       </div>
     </nav>
 
-    <div class="mob-topbar ${config.mobileClass}">
-      <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
-      <span class="mob-topbar-title">${config.title}</span>
-      <a class="avatar${page === 'profile' ? ' profile-avatar-link' : ''}" href="profile.html">AK</a>
-    </div>
+    ${mobileTopbar}
   `;
 }
 
@@ -93,7 +112,7 @@ function buildWorkspaceMobileBarMarkup() {
   if (!config) return '';
 
   const dashActive = page === 'dashboard' ? ' active' : '';
-  const resumesActive = page === 'resumes' ? ' active' : '';
+  const resumesActive = page === 'resumes' || page === 'editor' ? ' active' : '';
   const jdsActive = page === 'jds' ? ' active' : '';
   const profileActive = page === 'profile' ? ' active' : '';
 

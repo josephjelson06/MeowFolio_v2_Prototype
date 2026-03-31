@@ -88,6 +88,22 @@
   font-family: var(--font);
 }
 
+.profile-usage-fill-16 {
+  width: 16%;
+}
+
+.profile-usage-fill-15 {
+  width: 15%;
+}
+
+.profile-usage-fill-2 {
+  width: 2%;
+}
+
+.profile-usage-fill-100 {
+  width: 100%;
+}
+
 .profile-logout {
   border-color: var(--err);
   color: var(--err);

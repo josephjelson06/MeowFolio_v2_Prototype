@@ -11,31 +11,12 @@
 <link rel="stylesheet" href="css/editor.css">
 <link rel="stylesheet" href="css/mobile.css">
 </head>
-<body>
-
-<nav class="gnav editor-desktop-nav">
-  <a class="gnav-logo" href="dashboard.html">resumeai</a>
-  <div class="gnav-links">
-    <a class="gnav-link" href="dashboard.html">Dashboard</a>
-    <a class="gnav-link active" href="resumes.html">Resumes</a>
-    <a class="gnav-link" href="jds.html">JDs</a>
-  </div>
-  <div class="gnav-right">
-    <a class="avatar" href="profile.html">AK</a>
-  </div>
-</nav>
-
-<div class="mob-topbar editor-mobile-nav">
-  <a class="mob-back editor-back-link" href="resumes.html">&larr;</a>
-  <span class="mob-topbar-title">resume_v3</span>
-  <button class="mob-analyze-btn" type="button" onclick="toggleMobSheet()">Analyze</button>
-  <a class="avatar" href="profile.html">AK</a>
-</div>
+<body data-workspace-page="editor">
 
 <div class="mob-edit-toggle editor-mobile-toggle">
-  <button class="mob-et-btn active" id="mob-et-edit" type="button" onclick="setMobEdView('edit')">Edit</button>
-  <button class="mob-et-btn" id="mob-et-prev" type="button" onclick="setMobEdView('preview')">Preview</button>
-  <button class="mob-et-btn" id="mob-et-ats" type="button" onclick="setMobEdView('ats')">ATS</button>
+  <button class="mob-et-btn active" id="mob-et-edit" type="button" data-mob-view="edit">Edit</button>
+  <button class="mob-et-btn" id="mob-et-prev" type="button" data-mob-view="preview">Preview</button>
+  <button class="mob-et-btn" id="mob-et-ats" type="button" data-mob-view="ats">ATS</button>
 </div>
 
 <div class="bcrumb editor-bcrumb">
@@ -45,8 +26,8 @@
   <span class="bc-sep">/</span>
   <span class="bc-cur" id="bc-mode">Editor</span>
   <div class="ed-segs">
-    <button class="ed-seg active" type="button" onclick="setEdMode('editor')">Editor</button>
-    <button class="ed-seg" type="button" onclick="setEdMode('ats')">ATS Score</button>
+    <button class="ed-seg active" type="button" data-ed-mode="editor">Editor</button>
+    <button class="ed-seg" type="button" data-ed-mode="ats">ATS Score</button>
   </div>
 </div>
 
@@ -54,20 +35,20 @@
   <div class="editor-workspace">
     <div class="ed-left">
       <div class="left-tabs">
-        <div class="ltab active" onclick="setLTab(0,this)">Sections</div>
-        <div class="ltab" onclick="setLTab(1,this)">Template</div>
-        <div class="ltab" onclick="setLTab(2,this)">Toolbar</div>
+        <div class="ltab active" data-ltab-index="0">Sections</div>
+        <div class="ltab" data-ltab-index="1">Template</div>
+        <div class="ltab" data-ltab-index="2">Toolbar</div>
       </div>
 
       <div class="sec-pane" id="ltab-0">
         <div class="sec-nav">
           <div class="snl">Sections</div>
-          <div class="snav active done" onclick="setSection(this,'sec-contact')"><span class="sdot"></span>Contact</div>
-          <div class="snav done" onclick="setSection(this,'sec-summary')"><span class="sdot"></span>Summary</div>
-          <div class="snav done" onclick="setSection(this,'sec-exp')"><span class="sdot"></span>Experience</div>
-          <div class="snav done" onclick="setSection(this,'sec-edu')"><span class="sdot"></span>Education</div>
-          <div class="snav done" onclick="setSection(this,'sec-skills')"><span class="sdot"></span>Skills</div>
-          <div class="snav" onclick="setSection(this,'sec-proj')"><span class="sdot"></span>Projects</div>
+          <div class="snav active done" data-section-target="sec-contact"><span class="sdot"></span>Contact</div>
+          <div class="snav done" data-section-target="sec-summary"><span class="sdot"></span>Summary</div>
+          <div class="snav done" data-section-target="sec-exp"><span class="sdot"></span>Experience</div>
+          <div class="snav done" data-section-target="sec-edu"><span class="sdot"></span>Education</div>
+          <div class="snav done" data-section-target="sec-skills"><span class="sdot"></span>Skills</div>
+          <div class="snav" data-section-target="sec-proj"><span class="sdot"></span>Projects</div>
           <div class="snav editor-add-row">+ Add</div>
         </div>
         <div class="form-area">
@@ -112,30 +93,30 @@ Reduced latency by 40%</textarea>
       <div class="tmpl-pane hidden" id="ltab-1">
         <div class="tmpl-label">Choose a template</div>
         <div class="tmpl-grid">
-          <div class="tmpl-card sel" onclick="selectTmpl(this)">
+          <div class="tmpl-card sel" data-template-card>
             <div class="tmpl-thumb"><div class="tl h"></div><div class="tl s"></div><div class="editor-mini-divider"></div><div class="tl"></div><div class="tl"></div><div class="tl s"></div></div>
             <div class="tmpl-name">Classic</div>
           </div>
-          <div class="tmpl-card" onclick="selectTmpl(this)">
+          <div class="tmpl-card" data-template-card>
             <div class="tmpl-thumb editor-tmpl-split">
               <div class="editor-tmpl-split-left"><div class="tl s"></div><div class="tl"></div><div class="tl s"></div></div>
               <div class="editor-tmpl-split-right"><div class="tl h"></div><div class="tl"></div><div class="tl s"></div></div>
             </div>
             <div class="tmpl-name">Sidebar</div>
           </div>
-          <div class="tmpl-card" onclick="selectTmpl(this)">
+          <div class="tmpl-card" data-template-card>
             <div class="tmpl-thumb"><div class="tl h editor-center-head"></div><div class="tl s editor-center-sub"></div><div class="editor-mini-divider"></div><div class="tl"></div><div class="tl"></div></div>
             <div class="tmpl-name">Centered</div>
           </div>
-          <div class="tmpl-card" onclick="selectTmpl(this)">
+          <div class="tmpl-card" data-template-card>
             <div class="tmpl-thumb"><div class="editor-modern-head"><div class="editor-modern-dot"></div><div class="editor-modern-lines"><div class="tl h editor-modern-h"></div><div class="tl s"></div></div></div><div class="tl"></div><div class="tl"></div></div>
             <div class="tmpl-name">Modern</div>
           </div>
-          <div class="tmpl-card" onclick="selectTmpl(this)">
+          <div class="tmpl-card" data-template-card>
             <div class="tmpl-thumb"><div class="editor-accent-col"><div class="tl h"></div><div class="tl"></div><div class="tl s"></div><div class="tl"></div></div></div>
             <div class="tmpl-name">Accent</div>
           </div>
-          <div class="tmpl-card" onclick="selectTmpl(this)">
+          <div class="tmpl-card" data-template-card>
             <div class="tmpl-thumb"><div class="tl h"></div><div class="editor-grid-mini"><div class="editor-grid-col"><div class="tl s"></div><div class="tl"></div></div><div class="editor-grid-col"><div class="tl s"></div><div class="tl"></div></div></div></div>
             <div class="tmpl-name">Grid</div>
           </div>
@@ -155,15 +136,15 @@ Reduced latency by 40%</textarea>
           </select>
           <div class="slider-row">
             <div class="slider-label"><span>Font size</span><span class="slider-val" id="fs-val">11pt</span></div>
-            <input type="range" min="9" max="13" value="11" oninput="document.getElementById('fs-val').textContent=this.value+'pt'">
+            <input type="range" min="9" max="13" value="11" data-editor-slider data-output-id="fs-val" data-output-format="pt">
           </div>
           <div class="slider-row">
             <div class="slider-label"><span>Line spacing</span><span class="slider-val" id="ls-val">1.15</span></div>
-            <input type="range" min="100" max="150" value="115" oninput="document.getElementById('ls-val').textContent=(this.value/100).toFixed(2)">
+            <input type="range" min="100" max="150" value="115" data-editor-slider data-output-id="ls-val" data-output-format="ratio">
           </div>
           <div class="slider-row">
             <div class="slider-label"><span>Margins</span><span class="slider-val" id="mg-val">1.5cm</span></div>
-            <input type="range" min="10" max="30" value="15" oninput="document.getElementById('mg-val').textContent=(this.value/10).toFixed(1)+'cm'">
+            <input type="range" min="10" max="30" value="15" data-editor-slider data-output-id="mg-val" data-output-format="cm">
           </div>
         </div>
         <div class="toolbar-section">
@@ -182,7 +163,7 @@ Reduced latency by 40%</textarea>
     <div class="ed-right">
       <div class="prev-bar">
         <div class="sync-row"><span class="sync-dot"></span><span>compiled &middot; 0.8s ago</span></div>
-        <button class="analyze-btn" type="button" onclick="toggleDrawer()">Analyze &rarr;</button>
+        <button class="analyze-btn" type="button" data-editor-action="toggle-drawer">Analyze &rarr;</button>
       </div>
       <div class="pdf-area">
         <div class="pdf-doc">
@@ -212,7 +193,7 @@ Reduced latency by 40%</textarea>
       <div class="ats-drawer" id="ats-drawer">
         <div class="drawer-head">
           <span>ATS Report</span>
-          <button class="close-x" type="button" onclick="toggleDrawer()">&times;</button>
+          <button class="close-x" type="button" data-editor-action="toggle-drawer">&times;</button>
         </div>
         <div class="score-big">
           <div class="score-num">74</div>
@@ -251,7 +232,7 @@ Reduced latency by 40%</textarea>
         <div class="ats-score-label">Good - a few fixes needed</div>
         <div class="ats-score-desc">resume_v3.tex &middot; Analyzed just now</div>
       </div>
-      <button class="analyze-btn" type="button" onclick="backToEditor()">&larr; Back to Editor</button>
+      <button class="analyze-btn" type="button" data-editor-action="back-to-editor">&larr; Back to Editor</button>
     </div>
     <div class="ats-bars">
       <div class="ats-bar-item">
@@ -282,18 +263,11 @@ Reduced latency by 40%</textarea>
   </div>
 </div>
 
-<nav class="mob-bottombar editor-mobile-bar" aria-label="Mobile navigation">
-  <a class="mob-tab" href="dashboard.html"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></a>
-  <a class="mob-tab active" href="resumes.html"><div class="mob-tab-icon">&#9776;</div><span>Resumes</span></a>
-  <a class="mob-tab" href="jds.html"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></a>
-  <a class="mob-tab" href="profile.html"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></a>
-</nav>
-
 <div class="mob-bottom-sheet editor-mobile-sheet" id="mob-sheet">
-  <div class="mob-sheet-handle" onclick="toggleMobSheet()"></div>
+  <div class="mob-sheet-handle" data-editor-action="toggle-sheet"></div>
   <div class="mob-sheet-head">
     <span>ATS Report</span>
-    <button class="close-x" type="button" onclick="toggleMobSheet()">&times;</button>
+    <button class="close-x" type="button" data-editor-action="toggle-sheet">&times;</button>
   </div>
   <div class="mob-sheet-body">
     <div class="editor-sheet-score">
@@ -318,10 +292,11 @@ Reduced latency by 40%</textarea>
     <div class="audit-row"><span class="abadge bp">&#10003;</span>Contact info complete</div>
     <div class="audit-row"><span class="abadge bw">!</span>Add measurable impact</div>
     <div class="audit-row"><span class="abadge bf">&#10007;</span>Missing summary section</div>
-    <button class="analyze-btn editor-sheet-btn" type="button" onclick="openMobATSReport()">Open full ATS report</button>
+    <button class="analyze-btn editor-sheet-btn" type="button" data-editor-action="open-mob-ats">Open full ATS report</button>
   </div>
 </div>
 
+<script src="js/app.js"></script>
 <script src="js/editor.js"></script>
 </body>
 </html>

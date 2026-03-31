@@ -629,6 +629,10 @@
   color: var(--txt1);
 }
 
+.auth-section-label {
+  margin-bottom: 8px;
+}
+
 .auth-preview {
   margin-top: 14px;
   background: var(--bg1);
