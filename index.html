@@ -33,7 +33,7 @@
       <div class="pub-headline">Build resumes that <span class="accent">actually get matched.</span></div>
       <div class="pub-text pub-home-hero-copy">resumeai now sits inside the same product language as the dashboard, editor, resumes, JD matching, and profile flow. The public pages explain the loop. The workspace does the work.</div>
       <div class="pub-action-row">
-        <button class="btn-new" type="button" onclick="showAuthModal()">Get Started</button>
+        <button class="btn-new" type="button" data-auth-open>Get Started</button>
         <a class="pub-link-btn" href="about.html">Read the story</a>
       </div>
       <div class="pub-chip-row">
@@ -57,8 +57,8 @@
         <div class="pub-section-desc">The six scene cards now sit directly inside the same product language as the rest of the app, from first-draft panic to a better workflow.</div>
       </div>
       <div class="pub-rail-actions">
-        <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-story-rail', -1)">&larr;</button>
-        <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-story-rail', 1)">&rarr;</button>
+        <button class="pub-rail-btn" type="button" data-public-rail-id="landing-story-rail" data-public-rail-dir="-1">&larr;</button>
+        <button class="pub-rail-btn" type="button" data-public-rail-id="landing-story-rail" data-public-rail-dir="1">&rarr;</button>
       </div>
     </div>
 
@@ -110,7 +110,7 @@
         <div class="pub-story-title">Move from public surface to real workspace.</div>
         <div class="pub-story-copy">The dashboard, editor, resumes, JD tools, and profile pages are still the main product. This page just gets you there cleanly.</div>
         <div class="pub-action-row pub-story-cta-actions">
-          <button class="btn-new" type="button" onclick="showAuthModal()">Start with Google</button>
+          <button class="btn-new" type="button" data-auth-open>Start with Google</button>
         </div>
       </article>
     </div>
@@ -149,8 +149,8 @@
         <div class="pub-section-title">Pick your vibe.</div>
       </div>
       <div class="pub-rail-actions">
-        <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-template-rail', -1)">&larr;</button>
-        <button class="pub-rail-btn" type="button" onclick="scrollPublicRail('landing-template-rail', 1)">&rarr;</button>
+        <button class="pub-rail-btn" type="button" data-public-rail-id="landing-template-rail" data-public-rail-dir="-1">&larr;</button>
+        <button class="pub-rail-btn" type="button" data-public-rail-id="landing-template-rail" data-public-rail-dir="1">&rarr;</button>
       </div>
     </div>
 
@@ -167,7 +167,7 @@
           </div>
         </div>
         <div class="pub-template-actions">
-          <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          <button class="r-action primary" type="button" data-auth-open>Use this template</button>
         </div>
         <div class="pub-card-title pub-template-title">Classic</div>
         <div class="pub-template-copy">A calm, balanced format for most applications.</div>
@@ -185,7 +185,7 @@
           </div>
         </div>
         <div class="pub-template-actions">
-          <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          <button class="r-action primary" type="button" data-auth-open>Use this template</button>
         </div>
         <div class="pub-card-title pub-template-title">Sidebar</div>
         <div class="pub-template-copy">A stronger information hierarchy with faster scanning.</div>
@@ -203,7 +203,7 @@
           </div>
         </div>
         <div class="pub-template-actions">
-          <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          <button class="r-action primary" type="button" data-auth-open>Use this template</button>
         </div>
         <div class="pub-card-title pub-template-title">Structured</div>
         <div class="pub-template-copy">Useful when you want the layout to feel more formal.</div>
@@ -221,7 +221,7 @@
           </div>
         </div>
         <div class="pub-template-actions">
-          <button class="r-action primary" type="button" onclick="showAuthModal()">Use this template</button>
+          <button class="r-action primary" type="button" data-auth-open>Use this template</button>
         </div>
         <div class="pub-card-title pub-template-title">Minimal</div>
         <div class="pub-template-copy">Less chrome, tighter spacing, and a leaner preview.</div>

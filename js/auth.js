@@ -87,19 +87,12 @@ function buildPublicFooterMarkup() {
   `;
 }
 
-function wireAuthTriggers(scope) {
-  scope.querySelectorAll('[data-auth-open]').forEach(node => {
-    node.addEventListener('click', showAuthModal);
-  });
-}
-
 function ensurePublicChrome() {
   const page = document.querySelector('.pub-page');
   if (!page) return;
 
   if (!document.querySelector('.pub-desktop-nav')) {
     document.body.insertAdjacentHTML('afterbegin', buildPublicHeaderMarkup());
-    wireAuthTriggers(document.body);
   }
 
   if (!page.querySelector('.pub-footer-row')) {
@@ -185,6 +178,21 @@ function scrollPublicRail(id, direction) {
 
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') closeAuthModal();
+});
+
+document.addEventListener('click', event => {
+  if (event.target.closest('[data-auth-open]')) {
+    showAuthModal();
+    return;
+  }
+
+  const railTrigger = event.target.closest('[data-public-rail-id]');
+  if (railTrigger) {
+    scrollPublicRail(
+      railTrigger.dataset.publicRailId,
+      Number(railTrigger.dataset.publicRailDir || 0),
+    );
+  }
 });
 
 document.addEventListener('DOMContentLoaded', () => {

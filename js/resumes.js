@@ -46,7 +46,7 @@ function renderResumeThumb() {
 
 function renderResumeCard(item) {
   return `
-    <article class="res-card" onclick="goToResumeEditor()">
+    <article class="res-card" data-resume-open>
       ${renderResumeThumb()}
       <div class="res-card-body">
         <div class="res-card-top">
@@ -57,10 +57,10 @@ function renderResumeCard(item) {
           ${item.recent ? '<span class="badge-outline">MOST RECENT</span>' : ''}
         </div>
         <div class="res-card-actions">
-          <button class="r-action primary" type="button" onclick="goToResumeEditor(event)">&#9998;</button>
-          <button class="r-action" type="button" onclick="renameResume('${item.id}', event)">Rename</button>
-          <button class="r-action" type="button" onclick="downloadResume('${item.id}', event)">&#11015;</button>
-          <button class="r-action res-delete-action" type="button" onclick="deleteResume('${item.id}', event)">&#128465;</button>
+          <button class="r-action primary" type="button" data-resume-action="open">&#9998;</button>
+          <button class="r-action" type="button" data-resume-action="rename" data-resume-id="${item.id}">Rename</button>
+          <button class="r-action" type="button" data-resume-action="download" data-resume-id="${item.id}">&#11015;</button>
+          <button class="r-action res-delete-action" type="button" data-resume-action="delete" data-resume-id="${item.id}">&#128465;</button>
         </div>
       </div>
     </article>
@@ -81,7 +81,7 @@ function renderResumeLibrary() {
 
   if (grid) {
     grid.innerHTML = `
-      <button class="res-new-card" type="button" onclick="showModal()">
+      <button class="res-new-card" type="button" data-open-resume-modal>
         <div class="res-new-plus">+</div>
         <div class="section-label">CREATE NEW RESUME</div>
         <div class="res-new-title">Upload or start blank</div>
@@ -148,5 +148,43 @@ function deleteResume(id, e) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('resume-grid');
+  const prev = document.getElementById('resume-prev');
+  const next = document.getElementById('resume-next');
+
+  if (grid) {
+    grid.addEventListener('click', event => {
+      const action = event.target.closest('[data-resume-action]');
+      if (action) {
+        event.stopPropagation();
+        const id = action.dataset.resumeId;
+        switch (action.dataset.resumeAction) {
+          case 'open':
+            goToResumeEditor();
+            break;
+          case 'rename':
+            renameResume(id);
+            break;
+          case 'download':
+            downloadResume(id);
+            break;
+          case 'delete':
+            deleteResume(id);
+            break;
+          default:
+            break;
+        }
+        return;
+      }
+
+      if (event.target.closest('[data-resume-open]')) {
+        goToResumeEditor();
+      }
+    });
+  }
+
+  if (prev) prev.addEventListener('click', () => changeResumePage(-1));
+  if (next) next.addEventListener('click', () => changeResumePage(1));
+
   renderResumeLibrary();
 });

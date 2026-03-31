@@ -40,7 +40,7 @@
   </section>
 
   <section class="dash-hero-row">
-    <button class="dash-create-card" type="button" onclick="showModal()">
+    <button class="dash-create-card" type="button" data-open-resume-modal>
       <div class="dash-create-plus">+</div>
       <div class="dash-create-label">CREATE NEW RESUME</div>
       <div class="dash-create-title">Start from scratch or upload</div>
@@ -127,37 +127,6 @@
     </div>
   </section>
 </main>
-
-<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">&times;</button>
-    <div class="modal-title">Create new resume</div>
-    <div class="modal-desc">Upload a file, preview the parsed text, or start with a blank editor.</div>
-    <div class="modal-options">
-      <div class="modal-option" onclick="setModalMode('upload')">
-        <div class="modal-option-icon">&#8593;</div>
-        <div><div class="modal-option-name">Upload a file</div><div class="modal-option-desc">Parse a PDF or document and preview the text before importing.</div></div>
-      </div>
-      <div class="modal-option" onclick="setModalMode('paste')">
-        <div class="modal-option-icon">&#9112;</div>
-        <div><div class="modal-option-name">Paste resume text</div><div class="modal-option-desc">Copy-paste your resume content for quick import.</div></div>
-      </div>
-      <div class="modal-option" onclick="startBlankResume()">
-        <div class="modal-option-icon">+</div>
-        <div><div class="modal-option-name">Start from blank</div><div class="modal-option-desc">Open an empty editor with a fresh template.</div></div>
-      </div>
-    </div>
-    <input type="file" id="modal-upload-input" accept=".pdf,application/pdf,.tex,.docx,.txt" hidden onchange="handleResumeFileSelect()">
-    <div class="modal-upload-zone" id="modal-upload-zone" onclick="document.getElementById('modal-upload-input').click()">
-      <div class="modal-upload-icon">&#9729;</div>
-      <div class="modal-upload-text">Drag &amp; drop your file here, or click to browse</div>
-      <div class="modal-upload-sub">Supports .pdf, .tex, .docx &middot; Max 5 MB</div>
-    </div>
-    <button class="modal-btn" id="modal-upload-btn" onclick="handleUpload()">Parse PDF into text box &rarr;</button>
-    <textarea class="modal-paste-area" id="modal-paste-area" placeholder="Pasted or parsed resume text will appear here..."></textarea>
-    <button class="modal-btn" id="modal-paste-btn" onclick="handlePaste()">Import &amp; open in editor &rarr;</button>
-  </div>
-</div>
 
 <script src="js/app.js"></script>
 <script src="js/tips.js"></script>

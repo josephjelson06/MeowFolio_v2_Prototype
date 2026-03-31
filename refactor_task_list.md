@@ -39,12 +39,24 @@ Last updated: 2026-03-31
   - desktop nav for Dashboard, Resumes, JDs, and Profile
   - mobile topbar for Dashboard, Resumes, JDs, and Profile
   - mobile bottom bar for Dashboard, Resumes, JDs, and Profile
+- [x] Centralize the shared resume modal shell in [js/modal.js](./js/modal.js) for:
+  - [dashboard.html](./dashboard.html)
+  - [resumes.html](./resumes.html)
+- [x] Remove inline `onclick` / `onchange` handlers from active pages outside the editor:
+  - dashboard
+  - resumes
+  - JDs
+  - profile
+  - home
+  - about
+  - 404
+  - 500
 
 ## In Progress
 
 - [ ] Reduce remaining page-specific chrome duplication where it is still workflow-specific:
   - [ ] editor-specific header / mobile controls
-  - [ ] shared modal shell patterns
+  - [ ] editor ATS / bottom-sheet controls
 
 ## Remaining Structural Work
 
@@ -58,4 +70,5 @@ Last updated: 2026-03-31
 
 - All active pages now use the single-DOM responsive pattern.
 - Standard public chrome and standard workspace chrome are now shared.
-- The next biggest cleanup target before a cleaner React/Next migration is the remaining inline handlers/styles plus a few workflow-specific shells.
+- Inline DOM event handlers are now mostly concentrated in [editor.html](./editor.html).
+- The next biggest cleanup target before a cleaner React/Next migration is the editor interaction layer, remaining inline styles, and a thin data/service layer.

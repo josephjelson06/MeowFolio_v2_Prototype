@@ -65,15 +65,15 @@ function renderEmptyState(message) {
 
 function renderJDCard(jd) {
   return `
-    <article class="jd-card${jd.id === selectedJDId ? ' active' : ''}" data-jd="${jd.id}" onclick="selectJD(${jd.id})">
+    <article class="jd-card${jd.id === selectedJDId ? ' active' : ''}" data-jd-card data-jd-id="${jd.id}">
       <div class="jd-card-title">${jd.title}</div>
       <div class="jd-card-sub">${jd.company} &middot; ${jd.type}</div>
       <div class="jd-card-foot">
         <span class="jd-card-badge">${jd.badge}</span>
         <div class="jd-card-actions">
-          <button class="r-action" type="button" onclick="renameJD(${jd.id}, event)">Rename</button>
-          <button class="r-action" type="button" onclick="downloadJD(${jd.id}, event)">&#11015;</button>
-          <button class="r-action jd-delete-action" type="button" onclick="deleteJD(${jd.id}, event)">&#128465;</button>
+          <button class="r-action" type="button" data-jd-action="rename" data-jd-id="${jd.id}">Rename</button>
+          <button class="r-action" type="button" data-jd-action="download" data-jd-id="${jd.id}">&#11015;</button>
+          <button class="r-action jd-delete-action" type="button" data-jd-action="delete" data-jd-id="${jd.id}">&#128465;</button>
         </div>
       </div>
     </article>
@@ -116,7 +116,7 @@ function renderResumePicker() {
 
   const keys = Object.keys(RESUME_DATA);
   list.innerHTML = keys.map(key => `
-    <div class="jd-pick-item${selectedResume === key ? ' selected' : ''}" data-resume="${key}" onclick="selectResume('${key}')">
+    <div class="jd-pick-item${selectedResume === key ? ' selected' : ''}" data-resume-choice="${key}">
       <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
       <span class="jd-pick-label">${key}</span>
     </div>
@@ -245,7 +245,7 @@ function renderMobileSheetSummary(model) {
     <div class="mob-jd-sheet-tags">
       ${model.resume.found.slice(0, 4).map(keyword => `<span class="match-kw-tag found">${keyword}</span>`).join('')}
     </div>
-    <button class="analyze-btn" style="width:100%;margin-top:14px" onclick="openMobJDReport()">Open detailed JD report</button>
+    <button class="analyze-btn" style="width:100%;margin-top:14px" type="button" data-jd-report-open>Open detailed JD report</button>
   `;
 }
 
@@ -253,12 +253,12 @@ function renderMobileDetailedReport(model) {
   return `
     <div class="ats-score-card mob-ats-score-card">
       <div class="ats-score-num" style="color:${model.scoreColor}">${model.resume.score}</div>
-      <div class="ats-score-info">
-        <div class="ats-score-label">${model.verdict}</div>
-        <div class="ats-score-desc">${model.resumeKey} &middot; ${model.jd.title} &middot; ${model.jd.company}</div>
-      </div>
-      <button class="analyze-btn" type="button" onclick="setMobJDView('workspace')">Back to Workspace</button>
+    <div class="ats-score-info">
+      <div class="ats-score-label">${model.verdict}</div>
+      <div class="ats-score-desc">${model.resumeKey} &middot; ${model.jd.title} &middot; ${model.jd.company}</div>
     </div>
+    <button class="analyze-btn" type="button" data-jd-view="workspace">Back to Workspace</button>
+  </div>
     <div class="ats-bars">
       ${model.metrics.map(metric => `
         <div class="ats-bar-item">
@@ -380,8 +380,7 @@ function changeJDPage(delta) {
   renderJDLists();
 }
 
-function renameJD(id, e) {
-  if (e) e.stopPropagation();
+function renameJD(id) {
   const jd = getJDById(id);
   if (!jd) return;
 
@@ -393,8 +392,7 @@ function renameJD(id, e) {
   renderResultState();
 }
 
-function downloadJD(id, e) {
-  if (e) e.stopPropagation();
+function downloadJD(id) {
   const jd = getJDById(id);
   if (!jd) return;
 
@@ -409,8 +407,7 @@ function downloadJD(id, e) {
   URL.revokeObjectURL(url);
 }
 
-function deleteJD(id, e) {
-  if (e) e.stopPropagation();
+function deleteJD(id) {
   JD_DATA = JD_DATA.filter(jd => jd.id !== id);
 
   if (lastJDAnalysis && lastJDAnalysis.jdId === id) lastJDAnalysis = null;
@@ -567,7 +564,102 @@ function handleJDPaste() {
   clearJDAnalysis();
 }
 
+function bindJDPageEvents() {
+  const cards = document.getElementById('jd-cards');
+  const resumeList = document.getElementById('jd-resume-list');
+  const prev = document.getElementById('jd-prev');
+  const next = document.getElementById('jd-next');
+  const run = document.getElementById('jd-run-btn');
+  const add = document.getElementById('jd-add-btn');
+  const uploadInput = document.getElementById('jd-upload-input');
+  const uploadButton = document.getElementById('jd-modal-upload-btn');
+  const pasteButton = document.getElementById('jd-modal-paste-btn');
+
+  if (cards) {
+    cards.addEventListener('click', event => {
+      const action = event.target.closest('[data-jd-action]');
+      if (action) {
+        event.stopPropagation();
+        const id = Number(action.dataset.jdId);
+        switch (action.dataset.jdAction) {
+          case 'rename':
+            renameJD(id);
+            break;
+          case 'download':
+            downloadJD(id);
+            break;
+          case 'delete':
+            deleteJD(id);
+            break;
+          default:
+            break;
+        }
+        return;
+      }
+
+      const card = event.target.closest('[data-jd-card]');
+      if (card) selectJD(Number(card.dataset.jdId));
+    });
+  }
+
+  if (resumeList) {
+    resumeList.addEventListener('click', event => {
+      const choice = event.target.closest('[data-resume-choice]');
+      if (choice) selectResume(choice.dataset.resumeChoice);
+    });
+  }
+
+  if (prev) prev.addEventListener('click', () => changeJDPage(-1));
+  if (next) next.addEventListener('click', () => changeJDPage(1));
+  if (run) run.addEventListener('click', runJDAnalysis);
+  if (add) add.addEventListener('click', () => showJDModal());
+  if (uploadInput) uploadInput.addEventListener('change', handleJDFileSelect);
+  if (uploadButton) uploadButton.addEventListener('click', handleJDUpload);
+  if (pasteButton) pasteButton.addEventListener('click', handleJDPaste);
+
+  document.addEventListener('click', event => {
+    const viewTrigger = event.target.closest('[data-jd-view]');
+    if (viewTrigger) {
+      setMobJDView(viewTrigger.dataset.jdView);
+      return;
+    }
+
+    if (event.target.closest('[data-jd-sheet-toggle]')) {
+      toggleMobJDSheet();
+      return;
+    }
+
+    if (event.target.closest('#jd-modal-close')) {
+      closeJDModal();
+      return;
+    }
+
+    const modalMode = event.target.closest('[data-jd-modal-mode]');
+    if (modalMode) {
+      setJDModalMode(modalMode.dataset.jdModalMode);
+      return;
+    }
+
+    if (event.target.closest('[data-jd-upload-zone]')) {
+      const input = document.getElementById('jd-upload-input');
+      if (input) input.click();
+      return;
+    }
+
+    if (event.target.closest('[data-jd-report-open]')) {
+      openMobJDReport();
+      return;
+    }
+
+    const overlay = document.getElementById('jd-modal-overlay');
+    if (overlay && event.target === overlay) {
+      closeJDModal();
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  bindJDPageEvents();
   renderJDLists();
   renderResumePicker();
   updateRunButton();
