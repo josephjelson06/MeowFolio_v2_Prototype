@@ -15,14 +15,20 @@
 .jd-page-body {
   display: flex;
   min-height: calc(100dvh - 60px);
+  max-width: 1320px;
+  margin: 0 auto;
+  background: var(--bg1);
+  border-left: 0.5px solid var(--border0);
+  border-right: 0.5px solid var(--border0);
 }
 
 .jd-list-pane {
-  width: 260px;
+  width: 292px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   border-right: 0.5px solid var(--border0);
+  background: var(--bg2);
 }
 
 .jd-list-head {
@@ -35,7 +41,7 @@
 }
 
 .jd-list-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--txt0);
 }
@@ -58,7 +64,7 @@
 }
 
 .jd-card {
-  padding: 10px 12px;
+  padding: 11px 12px;
   background: var(--bg2);
   border: 0.5px solid var(--border0);
   border-radius: var(--r-md);
@@ -78,13 +84,13 @@
 
 .jd-card-title {
   margin-bottom: 2px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--txt0);
 }
 
 .jd-card-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--txt2);
 }
 
@@ -135,10 +141,11 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--bg1);
 }
 
 .jd-analyze-head {
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-bottom: 0.5px solid var(--border0);
   display: flex;
   align-items: center;
@@ -148,14 +155,14 @@
 }
 
 .jd-analyze-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--txt0);
 }
 
 .jd-analyze-sub {
   margin-top: 3px;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--txt2);
 }
 
@@ -194,15 +201,16 @@
 }
 
 .jd-pick-col {
-  width: 190px;
+  width: 220px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   border-right: 0.5px solid var(--border0);
+  background: var(--bg2);
 }
 
 .jd-pick-head {
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-bottom: 0.5px solid var(--border0);
   font-size: 9px;
   text-transform: uppercase;
@@ -213,17 +221,17 @@
 .jd-pick-list {
   flex: 1;
   overflow-y: auto;
-  padding: 6px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .jd-pick-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 9px;
+  padding: 8px 10px;
   border-radius: var(--r-sm);
   border: 0.5px solid var(--border0);
   cursor: pointer;
@@ -271,7 +279,7 @@
 }
 
 .jd-pick-label {
-  font-size: 10px;
+  font-size: 11px;
   font-family: var(--font);
   color: var(--txt1);
 }
@@ -283,10 +291,11 @@
 .jd-result-col {
   flex: 1;
   overflow-y: auto;
-  padding: 14px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background: var(--bg1);
 }
 
 .jd-mobile-report-content {
@@ -645,6 +654,9 @@
   .jd-page-body {
     min-height: calc(100dvh - 94px);
     flex-direction: column;
+    max-width: none;
+    border-left: none;
+    border-right: none;
   }
 
   .jd-list-pane {

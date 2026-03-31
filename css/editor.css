@@ -4,13 +4,18 @@
   height: calc(100dvh - 100px);
   min-height: 420px;
   background: var(--bg1);
+  max-width: 1320px;
+  margin: 0 auto;
+  border-left: 0.5px solid var(--border0);
+  border-right: 0.5px solid var(--border0);
 }
 
 .ed-left {
-  width: 50%;
+  width: 540px;
   border-right: 0.5px solid var(--border0);
   display: flex;
   flex-direction: column;
+  background: var(--bg2);
 }
 
 .ed-right {
@@ -18,6 +23,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  min-width: 0;
+  background: var(--bg1);
 }
 
 /* Left tabs */
@@ -29,8 +36,8 @@
 }
 
 .ltab {
-  padding: 8px 11px;
-  font-size: 11px;
+  padding: 10px 12px;
+  font-size: 12px;
   color: var(--txt2);
   cursor: pointer;
   border-bottom: 2px solid transparent;
@@ -51,7 +58,7 @@
 }
 
 .sec-nav {
-  width: 110px;
+  width: 128px;
   border-right: 0.5px solid var(--border0);
   padding: 8px;
   flex-shrink: 0;
@@ -69,9 +76,9 @@
 }
 
 .snav {
-  padding: 5px 8px;
+  padding: 7px 9px;
   border-radius: var(--r-sm);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   color: var(--txt1);
   display: flex;
@@ -99,17 +106,30 @@
 
 .form-area {
   flex: 1;
-  padding: 12px;
+  padding: 14px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 10px;
+}
+
+.editor-workspace .fl {
+  font-size: 10px;
+}
+
+.editor-workspace .fi {
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+.editor-workspace .fi-add {
+  font-size: 11px;
 }
 
 /* Template tab */
 .tmpl-pane {
   flex: 1;
-  padding: 12px;
+  padding: 14px;
   overflow-y: auto;
 }
 
@@ -190,7 +210,7 @@
 /* Toolbar tab */
 .toolbar-pane {
   flex: 1;
-  padding: 12px;
+  padding: 14px;
   overflow-y: auto;
 }
 
@@ -253,14 +273,14 @@ input[type=range] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-bottom: 0.5px solid var(--border0);
   background: var(--bg0);
 }
 
 .pdf-area {
   flex: 1;
-  padding: 12px;
+  padding: 16px;
   display: flex;
   justify-content: center;
   overflow-y: auto;
@@ -317,6 +337,8 @@ input[type=range] {
 
 /* ── ATS SCORE FULL MODE ── */
 .ats-full {
+  max-width: 1320px;
+  margin: 0 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -705,6 +727,9 @@ input[type=range] {
     display: block;
     height: auto;
     min-height: calc(100dvh - 104px);
+    max-width: none;
+    border-left: none;
+    border-right: none;
   }
 
   .ed-left,

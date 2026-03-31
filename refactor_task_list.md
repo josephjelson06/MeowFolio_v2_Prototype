@@ -57,17 +57,21 @@ Last updated: 2026-03-31
   - 404
   - 500
 - [x] Remove inline `style=` attributes from the active page HTML files.
+- [x] Introduce a thin shared mock data layer in [js/data.js](./js/data.js) for:
+  - resume library seeds
+  - JD library seeds
+  - resume match profiles
+  - dashboard tips
 
 ## In Progress
 
-- [ ] Reduce remaining inline style clusters and decorative hardcoded values.
+- [x] Reduce remaining inline style clusters and decorative hardcoded values.
 
 ## Remaining Structural Work
 
-- [ ] Replace large inline style clusters with CSS classes.
-- [ ] Introduce a thin data/service layer in front of mock data files.
-- [ ] Do a browser-based responsive QA pass after the first single-DOM conversions land.
-- [ ] Archive or remove [resumeai_full_prototype.html](./resumeai_full_prototype.html) once the split app no longer needs it for reference.
+- [x] Replace large inline style clusters with CSS classes.
+- [x] Do a browser-based responsive QA pass after the first single-DOM conversions land.
+- [x] Archive or remove the old monolithic prototype file once the split app no longer needs it for reference.
 
 ## Notes
 
@@ -75,5 +79,6 @@ Last updated: 2026-03-31
 - Standard public chrome and standard workspace chrome are now shared.
 - Inline DOM event handlers are now removed from the active split pages.
 - Active page HTML files no longer use inline `style=` attributes.
-- Remaining inline style usage is narrowed to a few data-driven progress widths in [js/jds.js](./js/jds.js).
-- The main remaining cleanup target before a cleaner React/Next migration is inline style reduction, a thin data/service layer, and browser QA.
+- Resume library, JD library, resume match profiles, and dashboard tips now come from a shared mock data source in [js/data.js](./js/data.js).
+- Screenshot-based QA was run across the active desktop/mobile pages using a headless local browser, followed by desktop containment/scale fixes on the editor and JD pages.
+- The old monolithic `resumeai_full_prototype.html` file has been removed so the split app is the only active source of truth.
