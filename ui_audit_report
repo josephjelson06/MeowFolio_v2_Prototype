@@ -1,0 +1,747 @@
+# resumeai Prototype_v2 — UI Audit Report
+
+> **Scope**: Pure visual & structural audit — all `.html`, `.css`, `.js` files  
+> **Files audited**: 8 HTML pages, 12 CSS files, 8 JS files  
+> **Date**: 2026-03-31
+
+---
+
+## Table of Contents
+
+1. [Layout & Structure](#1-layout--structure)
+2. [Responsive Design](#2-responsive-design)
+3. [Typography](#3-typography)
+4. [Spacing & Alignment](#4-spacing--alignment)
+5. [Buttons & Links](#5-buttons--links)
+6. [Images & Icons](#6-images--icons)
+7. [Forms & Inputs](#7-forms--inputs)
+8. [Navigation](#8-navigation)
+9. [CSS Issues](#9-css-issues)
+10. [JS-Driven UI](#10-js-driven-ui)
+11. [Prioritized Fix List](#prioritized-fix-list)
+
+---
+
+## 1. Layout & Structure
+
+### 1.1 — [BOTH VIEWS] Editor workspace fixed height clips content
+
+| Detail | |
+|---|---|
+| **File** | [editor.css:2](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/css/editor.css#L2) |
+| **What is broken** | `.editor-workspace` has `height: 488px` — a hardcoded pixel value. On shorter screens (<900px tall) content overflows without scrolling; on larger screens it leaves dead space. |
+| **Why** | Fixed height doesn't adapt to viewport. There's no `overflow` set on the container itself, only on child panes. |
+| **Fix** | Change to viewport-relative height with a minimum: |
+
+```diff
+-.editor-workspace { display: flex; height: 488px; background: var(--bg1); }
++.editor-workspace { display: flex; height: calc(100dvh - 100px); min-height: 400px; background: var(--bg1); }
+```
+
+---
+
+### 1.2 — [BOTH VIEWS] JD page body has fixed height
+
+| Detail | |
+|---|---|
+| **File** | [jds.css:2](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/css/jds.css#L2) |
+| **What is broken** | `.jd-page-body` has `height: 488px`, same hardcoded height issue as the editor. Content can clip or leave empty space. |
+| **Why** | Fixed pixel height doesn't account for different viewport heights. |
+| **Fix** | |
+
+```diff
+-.jd-page-body { display: flex; height: 488px; }
++.jd-page-body { display: flex; height: calc(100dvh - 100px); min-height: 400px; }
+```
+
+---
+
+### 1.3 — [DESKTOP ONLY] ATS drawer slides off-screen with `right: -100%`
+
+| Detail | |
+|---|---|
+| **File** | [editor.css:50](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/css/editor.css#L50) |
+| **What is broken** | `.ats-drawer` uses `right: -100%` which moves it relative to its *parent width*, not its own 36% width. This means when closed, the element still generates a large invisible area, potentially causing horizontal scrollbar flicker. |
+| **Why** | `right: -100%` references the containing block's width, not the drawer's width. Since the drawer is 36% wide, it only needs to move 36% to hide. |
+| **Fix** | Use `transform: translateX(100%)` pattern instead: |
+
+```diff
+-.ats-drawer { position: absolute; top: 0; right: -100%; width: 36%; ... transition: right .25s; ... }
+-.ats-drawer.open { right: 0; }
++.ats-drawer { position: absolute; top: 0; right: 0; width: 36%; ... transition: transform .25s; transform: translateX(100%); ... }
++.ats-drawer.open { transform: translateX(0); }
+```
+
+---
+
+### 1.4 — [BOTH VIEWS] Desktop and mobile views both render in the DOM
+
+| Detail | |
+|---|---|
+| **File** | [layout.css:19-26](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/css/layout.css#L19-L26) |
+| **What is broken** | Both desktop and mobile views are present in the DOM simultaneously. The `active` class is hardcoded on `.frame.mobile.view` in every HTML file, and the media queries in layout.css override visibility. This means **on initial load before CSS parses**, the mobile view flashes briefly on desktop. Also, both remain in the DOM bloating memory and allowing duplicate ID conflicts (e.g. multiple `modal-overlay` targets). |
+| **Why** | The architecture uses a dual-frame approach (two complete UIs in one page) instead of responsive CSS on a single DOM. The `.view` class hides by default (`display:none`), but `.view.active` shows each, and media queries use `!important` to force visibility. |
+| **Fix** | This is architectural. Short-term: remove the hardcoded `active` class from mobile frames and let media queries alone control visibility. The `active` class on `.frame.mobile.view` is overridden by `@media` anyway: |
+
+```diff
+ <!-- In every HTML file, change: -->
+-<div class="frame mobile view active" id="mobile-view">
++<div class="frame mobile view" id="mobile-view">
+```
+
+Since the media queries already use `!important` to control which frame shows, the `active` class on mobile is redundant and causes the flash of unstyled content.
+
+---
+
+### 1.5 — [DESKTOP ONLY] Profile page has conflicting flex direction
+
+| Detail | |
+|---|---|
+| **File** | [profile.html:34](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/profile.html#L34) + [profile.css:2](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/css/profile.css#L2) |
+| **What is broken** | CSS `.profile-body` sets `display: flex; gap: 16px` (default `flex-direction: row`). But the inline style on the HTML element overrides with `flex-direction: column`. The CSS also defines `.profile-left` (width:200px) and `.profile-right` (flex:1) which expect a **row** layout. The inline column override makes these width declarations meaningless. |
+| **Why** | Inline style `flex-direction:column` conflicts with CSS that was designed for a two-column side-by-side layout. |
+| **Fix** | Remove the inline style override and restructure to use the CSS-defined row layout, or update the CSS to match the column intent: |
+
+```diff
+ <!-- profile.html line 34 -->
+-<div class="profile-body" style="flex-direction:column;gap:16px">
++<div class="profile-body">
+```
+
+Then reorganize children to use `.profile-left` and `.profile-right` wrappers per the CSS expectation.
+
+---
+
+## 2. Responsive Design
+
+### 2.1 — [MOBILE ONLY] No font import — Plus Jakarta Sans and Inter not loaded
+
+| Detail | |
+|---|---|
+| **File** | All HTML `<head>` sections + [tokens.css:4-6](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/tokens.css#L4-L6) |
+| **What is broken** | `--font-headline: "Plus Jakarta Sans"` and `--font-body: "Inter"` are declared as CSS variables but **no Google Fonts `<link>` or `@import`** is included anywhere. On systems without these fonts installed locally, the browser falls back to generic `sans-serif`, causing inconsistent typography across devices—most noticeable on mobile. |
+| **Why** | Font declarations exist in tokens.css but the actual font files are never loaded. |
+| **Fix** | Add to every HTML `<head>` (or at the top of tokens.css): |
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+```
+
+---
+
+### 2.2 — [MOBILE ONLY] 404 and 500 pages have no `active` tab in nav toggle
+
+| Detail | |
+|---|---|
+| **Files** | [404.html:74-76](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/404.html#L74-L76), [500.html:73-75](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/500.html#L73-L75) |
+| **What is broken** | The mobile nav toggle shows "Home" and "About" buttons but neither has the `active` class. The user has no visual indication of which page they're on. |
+| **Why** | The error pages are standalone and don't represent either of the two nav items. |
+| **Fix** | This is minor but can be addressed by adding a disabled/current indicator: keep no `active` class (acceptable) or add a subtle "404" / "500" indicator label. Low priority. |
+
+---
+
+### 2.3 — [MOBILE ONLY] Mobile bottom sheet width inconsistency
+
+| Detail | |
+|---|---|
+| **File** | [mobile.css:312-327](file:///c:/Users/josep/Desktop/Resume_Project/Prototype_v2/css/mobile.css#L312-L327) vs [mobile.css:561-563](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/mobile.css#L561-L563) |
+| **What is broken** | Default `.mob-bottom-sheet` uses `left:12px; right:12px; width:auto`. But the `@media (max-width:640px)` override sets `width: calc(100vw - 16px)` **without resetting left/right**, creating conflicting constraints. On 640px screens, the sheet is 16px narrower than the `left+right` inset would produce, causing a slight misalignment on the right edge. |
+| **Why** | The media query override mixes `width` with `left/right` positioning. |
+| **Fix** | |
+
+```diff
+ @media (max-width: 640px) {
+   .mob-bottom-sheet {
+-    width: calc(100vw - 16px);
++    left: 8px;
++    right: 8px;
+   }
+ }
+```
+
+---
+
+### 2.4 — [DESKTOP ONLY] Grid collapses at 900px breakpoint but navbar doesn't match
+
+| Detail | |
+|---|---|
+| **File** | [public.css:665-673](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/public.css#L665-L673) vs [layout.css:180-201](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/layout.css#L180-L201) |
+| **What is broken** | Public grids collapse to `1fr` at `max-width: 900px`, but the desktop↔mobile visibility switch happens at `768px`. Between 769px-900px, the user sees the **desktop** frame with all grids collapsed to single-column—an awkward hybrid state with content that's too wide for single-column but shown in the desktop nav. |
+| **Why** | Breakpoint mismatch between layout.css (768px) and public.css (900px). |
+| **Fix** | Either: (a) Align the public grid collapse to 768px to match the visibility switch, or (b) move the desktop↔mobile switch up to 900px. Option (a) is simpler: |
+
+```diff
+-@media (max-width: 900px) {
++@media (max-width: 768px) {
+   .pub-hero-grid, .pub-about-grid, .pub-builder-grid, .pub-faq-grid, .pub-error-grid, .pub-grid-3 {
+     grid-template-columns: 1fr;
+   }
+ }
+```
+
+---
+
+### 2.5 — [BOTH VIEWS] Dashboard stat cards and hero row don't stack on narrow desktops
+
+| Detail | |
+|---|---|
+| **File** | [dashboard.css:20,30,48](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/dashboard.css#L20) |
+| **What is broken** | `.dash-stats-row`, `.dash-hero-row`, and `.dash-bottom-row` use `display:flex` with no `flex-wrap`. Between 769px-1024px, cards get severely squeezed with text overflowing. |
+| **Why** | No wrapping or responsive rules for the dashboard's flex rows. |
+| **Fix** | Add `flex-wrap: wrap` and minimum widths: |
+
+```css
+.dash-stats-row,
+.dash-hero-row,
+.dash-bottom-row {
+  flex-wrap: wrap;
+}
+
+.dash-stat-big,
+.dash-create-card,
+.dash-preview-card,
+.dash-recent-card {
+  min-width: 200px;
+}
+```
+
+---
+
+## 3. Typography
+
+### 3.1 — [BOTH VIEWS] Undefined `--color-text` variable used in globals.css
+
+| Detail | |
+|---|---|
+| **File** | [globals.css:22](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/globals.css#L22) |
+| **What is broken** | `color: var(--color-text)` is set on `body`, but `--color-text` is **never defined** in tokens.css or anywhere else. This means body text color fallback becomes the browser default (black), which works by accident but is fragile. |
+| **Why** | The variable was likely renamed to `--color-on-surface` during the token migration but this reference was missed. |
+| **Fix** | |
+
+```diff
+-  color: var(--color-text);
++  color: var(--color-on-surface);
+```
+
+---
+
+### 3.2 — [BOTH VIEWS] Double body style declarations create confusion
+
+| Detail | |
+|---|---|
+| **File** | [tokens.css:114-120](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/tokens.css#L114-L120) + [globals.css:1-23](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/globals.css#L1-L23) |
+| **What is broken** | `body` is styled in both tokens.css and globals.css with overlapping properties. tokens.css sets `background: var(--bg1); font-size: 13px; color: var(--txt0)`. globals.css sets `background-color: var(--color-background); color: var(--color-text)`. Since globals.css loads after tokens.css, it overrides background and color — but with a broken variable (`--color-text`). |
+| **Why** | Leftover from migration; two files both claim ownership of body styles. |
+| **Fix** | Consolidate body styles into one location (globals.css) and remove the duplicate from tokens.css lines 114-120, keeping only the reset rules there. |
+
+---
+
+### 3.3 — [MOBILE ONLY] Headline text can overflow on very narrow screens
+
+| Detail | |
+|---|---|
+| **File** | [public.css:98-105](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/public.css#L98-L105) |
+| **What is broken** | `.pub-headline` uses `max-width: 8.5ch` which constrains width, but on mobile the `clamp(48px, 6vw, 90px)` font-size combined with long words like "actually" can cause horizontal overflow on screens < 360px. |
+| **Why** | No `overflow-wrap: break-word` safety net. |
+| **Fix** | |
+
+```diff
+ .pub-headline {
+   font-size: clamp(48px, 6vw, 90px);
+   line-height: 0.96;
+   letter-spacing: -0.04em;
+   color: var(--txt0);
+   font-weight: 600;
+   max-width: 8.5ch;
++  overflow-wrap: break-word;
+ }
+```
+
+---
+
+## 4. Spacing & Alignment
+
+### 4.1 — [BOTH VIEWS] Resume cards grid has only 3 columns with no responsive fallback
+
+| Detail | |
+|---|---|
+| **File** | [resumes.css:21](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/resumes.css#L21) |
+| **What is broken** | `.res-cards-grid` uses `grid-template-columns: repeat(3, 1fr)` with no media query adaptation. On narrower desktop widths (769-900px), cards become extremely compressed. |
+| **Why** | No responsive grid rules for the resume cards. |
+| **Fix** | |
+
+```css
+@media (max-width: 1024px) {
+  .res-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+```
+
+---
+
+### 4.2 — [MOBILE ONLY] Dashboard body content touches bottom bar
+
+| Detail | |
+|---|---|
+| **File** | [dashboard.html:153](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/dashboard.html#L153) |
+| **What is broken** | The scrollable area `div style="flex:1;overflow-y:auto"` has no bottom padding. When the user scrolls to the bottom, the last content item (tips card) sits flush against the bottom navigation bar with no breathing room. |
+| **Why** | No bottom padding on the scroll container. |
+| **Fix** | Add `padding-bottom: 16px` to the inline styled scroll container, or better, extract into a class: |
+
+```html
+<div style="flex:1;overflow-y:auto;padding-bottom:16px">
+```
+
+---
+
+### 4.3 — [DESKTOP ONLY] Editor section nav is too narrow at 100px
+
+| Detail | |
+|---|---|
+| **File** | [editor.css:13](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/editor.css#L13) |
+| **What is broken** | `.sec-nav` is fixed at `width: 100px`. Section names like "Experience" and "Education" may be slightly truncated on some font implementations. The "Projects" label is borderline. |
+| **Why** | Fixed pixel width without accounting for font variability. |
+| **Fix** | Increase to `width: 110px` or use `min-width: 100px; width: max-content`. |
+
+---
+
+## 5. Buttons & Links
+
+### 5.1 — [BOTH VIEWS] `btn-new` has no hover/focus/active states
+
+| Detail | |
+|---|---|
+| **File** | [components.css:9](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/components.css#L9) |
+| **What is broken** | `.btn-new` (the primary CTA used across all pages) defines no `:hover`, `:focus`, or `:active` pseudo-classes. The button feels dead on interaction — no visual feedback at all. |
+| **Why** | Only the base state was styled. |
+| **Fix** | |
+
+```css
+.btn-new:hover {
+  background: var(--bg4);
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+.btn-new:focus-visible {
+  outline: 2px solid var(--accent-dim);
+  outline-offset: 2px;
+}
+.btn-new:active {
+  transform: scale(0.97);
+}
+```
+
+---
+
+### 5.2 — [BOTH VIEWS] Pagination buttons have no disabled styling
+
+| Detail | |
+|---|---|
+| **File** | [components.css:10](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/components.css#L10) |
+| **What is broken** | The `.r-action` button class is used for pagination (Previous/Next) but has no `:disabled` styles. When JS disables these buttons, they still look fully clickable — same opacity, same cursor. |
+| **Why** | No disabled state definition for `.r-action`. |
+| **Fix** | |
+
+```css
+.r-action:disabled,
+.r-action[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+```
+
+---
+
+### 5.3 — [BOTH VIEWS] Inline `onclick` navigation buttons are `<button>` but styled as links
+
+| Detail | |
+|---|---|
+| **Files** | [dashboard.html:26-28](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/dashboard.html#L26-L28) (and similar across all workspace pages) |
+| **What is broken** | `.gnav-link` elements in workspace pages are `<button>` elements but function as navigation links. This works visually but lacks semantic correctness and keyboard nav behavior (no `href`, no browser history integration). On the public pages they're `<a>` tags, creating an inconsistency. |
+| **Why** | Refactoring from SPA to multi-page left buttons instead of converting to `<a>` tags. |
+| **Fix** | Convert workspace nav buttons to `<a>` tags: |
+
+```diff
+-<button class="gnav-link active" onclick="showPage('dash')">Dashboard</button>
++<a class="gnav-link active" href="dashboard.html">Dashboard</a>
+```
+
+---
+
+### 5.4 — [MOBILE ONLY] Touch targets undersized on mobile action buttons
+
+| Detail | |
+|---|---|
+| **File** | [components.css:10](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/components.css#L10) |
+| **What is broken** | `.r-action` buttons have `padding: 4px 9px` which creates a touch target of approximately 24×20px — well below the recommended 44×44px minimum for mobile. The rename/download/delete buttons on resume and JD cards are difficult to tap. |
+| **Why** | Padding is designed for desktop density. |
+| **Fix** | Add mobile-specific sizing in mobile.css: |
+
+```css
+@media (max-width: 768px) {
+  .r-action {
+    padding: 8px 12px;
+    min-height: 36px;
+    min-width: 36px;
+  }
+}
+```
+
+---
+
+## 6. Images & Icons
+
+### 6.1 — [BOTH VIEWS] Images missing explicit width/height causing layout shift
+
+| Detail | |
+|---|---|
+| **Files** | All `<img>` tags across index.html, about.html |
+| **What is broken** | None of the `<img>` elements specify `width` and `height` attributes. As images load, they cause Cumulative Layout Shift (CLS) as the browser doesn't know the dimensions ahead of time. |
+| **Why** | No intrinsic sizing declared on image elements. |
+| **Fix** | Add `width` and `height` attributes to all images (matching their natural dimensions) or use `aspect-ratio` in CSS on the container. |
+
+---
+
+### 6.2 — [BOTH VIEWS] Builder photo in about page uses `min-height` without aspect ratio control
+
+| Detail | |
+|---|---|
+| **File** | [public.css:327-334](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/public.css#L327-L334) |
+| **What is broken** | `.pub-builder-photo` and its `img` both have `min-height: 300px`. If the image is shorter than 300px, it gets stretched. If it's much taller, there's no max-height constraint. |
+| **Why** | Using `min-height` on both container and image without `object-fit` or aspect-ratio prevents proper image scaling. |
+| **Fix** | Add `max-height` and rely on object-fit: |
+
+```css
+.pub-builder-photo {
+  min-height: 200px;
+  max-height: 400px;
+  margin-bottom: 10px;
+}
+.pub-builder-photo img {
+  min-height: 0;
+  max-height: 100%;
+  object-fit: cover;
+}
+```
+
+---
+
+## 7. Forms & Inputs
+
+### 7.1 — [BOTH VIEWS] Form inputs lack error and disabled states
+
+| Detail | |
+|---|---|
+| **File** | [components.css:20-21](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/components.css#L20-L21) |
+| **What is broken** | `.fi` inputs only define base and `:focus` states. There are no `:disabled` or `.error` states defined. If any form validation or disabled logic is later added, inputs will have no visual differentiation. |
+| **Why** | Only two states were designed. |
+| **Fix** | |
+
+```css
+.fi:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--bg3);
+}
+.fi.error {
+  border-color: var(--err);
+  background: var(--err-bg);
+}
+```
+
+---
+
+### 7.2 — [BOTH VIEWS] `<select>` in toolbar has no custom appearance
+
+| Detail | |
+|---|---|
+| **File** | [editor.css:39](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/editor.css#L39) |
+| **What is broken** | `.font-select` styles the select dropdown but doesn't reset `appearance` or add a custom dropdown arrow. The default browser chrome (blue highlight, system-rendered dropdown) clashes with the dark, refined aesthetic of the rest of the UI. |
+| **Why** | No `appearance: none` or custom dropdown indicator. |
+| **Fix** | |
+
+```css
+.font-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a625b' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+}
+```
+
+---
+
+### 7.3 — [BOTH VIEWS] Range inputs have minimal custom styling
+
+| Detail | |
+|---|---|
+| **File** | [editor.css:43](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/editor.css#L43) |
+| **What is broken** | `input[type=range]` only sets `accent-color` and `height: 2px`. The track/thumb rendering varies wildly across browsers (Chrome vs Firefox vs Safari). The `height: 2px` applies to the input element, not the track itself, causing inconsistent rendering. |
+| **Why** | Cross-browser range input styling requires vendor-prefixed pseudo-elements. |
+| **Fix** | Add cross-browser track/thumb styles, or accept the current minimal styling as intentional. |
+
+---
+
+## 8. Navigation
+
+### 8.1 — [DESKTOP ONLY] `showPage()` navigates via URL but nav active state is hardcoded
+
+| Detail | |
+|---|---|
+| **Files** | [app.js:2-12](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/js/app.js#L2-L12) + all workspace HTML files |
+| **What is broken** | Each workspace HTML page hardcodes `class="gnav-link active"` on its own nav item. This works because each page is a separate file. However, `showPage()` still navigates via `window.location.href`, meaning the button click triggers a full page navigation but the onclick still fires JS first. This is redundant and could cause brief flicker. |
+| **Why** | Transition from SPA to multi-page architecture left `onclick` JS navigation on `<button>` elements. |
+| **Fix** | Convert to `<a>` tags as noted in 5.3, which eliminates the JS navigation indirection. |
+
+---
+
+### 8.2 — [MOBILE ONLY] Mobile bottom bar has no safe-area consideration for notched iPhones
+
+| Detail | |
+|---|---|
+| **File** | [mobile.css:64-70](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/mobile.css#L64-L70) |
+| **What is broken** | `.mob-bottombar` has `padding-bottom: env(safe-area-inset-bottom)` which is correct, but `min-height: 58px` doesn't include the safe area. On iPhone with a home indicator, the total bar height may feel cramped because the 58px includes the safe area inset rather than adding to it. |
+| **Why** | `min-height` should be `calc(58px + env(safe-area-inset-bottom))` to ensure the content area is always 58px *plus* the safe area. |
+| **Fix** | |
+
+```diff
+ .mob-bottombar {
+-  min-height: 58px;
++  min-height: calc(58px + env(safe-area-inset-bottom));
+   display: flex;
+-  padding-bottom: env(safe-area-inset-bottom);
++  padding-bottom: env(safe-area-inset-bottom);
+   ...
+ }
+```
+
+---
+
+### 8.3 — [BOTH VIEWS] Editor breadcrumb `showPage('resumes')` should be `<a>` tag
+
+| Detail | |
+|---|---|
+| **File** | [editor.html:34](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/editor.html#L34) |
+| **What is broken** | The breadcrumb "Resumes" link is a `<span>` with inline `onclick`. It has no native link behavior (no right-click → open in new tab, no link preview, etc). |
+| **Why** | Using span+onclick instead of a proper `<a>` tag. |
+| **Fix** | |
+
+```diff
+-<span class="bc-link" onclick="showPage('resumes')">Resumes</span>
++<a class="bc-link" href="resumes.html">Resumes</a>
+```
+
+---
+
+## 9. CSS Issues
+
+### 9.1 — [BOTH VIEWS] Undefined CSS variable `--color-text`
+
+| Detail | |
+|---|---|
+| **File** | [globals.css:22](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/globals.css#L22) |
+| **What is broken** | `color: var(--color-text)` — this variable is undefined. See section 3.1 for details and fix. |
+| **Priority** | **P2** — works by accident (undefined var falls through to tokens.css body color), but could break unpredictably. |
+
+---
+
+### 9.2 — [BOTH VIEWS] Duplicate body styling across two files
+
+| Detail | |
+|---|---|
+| **Files** | [tokens.css:114-120](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/tokens.css#L114-L120), [globals.css:11-23](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/globals.css#L11-L23) |
+| **What is broken** | `body` is styled in both files. globals.css wins due to load order and specificity tie-breaking, overriding tokens.css background. See 3.2 for details. |
+
+---
+
+### 9.3 — [BOTH VIEWS] `!important` overuse in layout.css media queries
+
+| Detail | |
+|---|---|
+| **File** | [layout.css:203-222](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/layout.css#L203-L222) |
+| **What is broken** | Media queries use `display: block !important` and `display: none !important` to toggle desktop/mobile frames. While functional, `!important` makes it impossible to programmatically hide a frame via JS if needed (e.g., for transitions or conditional logic). |
+| **Why** | The dual-frame architecture requires forced visibility control. |
+| **Fix** | Long-term: move to a single responsive DOM. Short-term: acceptable but be aware of the constraint. |
+
+---
+
+### 9.4 — [BOTH VIEWS] Over-applying all CSS to all pages (unnecessary bloat)
+
+| Detail | |
+|---|---|
+| **Files** | [dashboard.html:7-17](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/dashboard.html#L7-L17) (and similar in resumes.html, jds.html, profile.html, editor.html) |
+| **What is broken** | Every workspace page loads **all** CSS files (dashboard.css, resumes.css, editor.css, jds.css, profile.css) even when only one page is active. This means unused CSS rules are parsed and held in memory on every page load. |
+| **Why** | Simplified approach during modularization — include everything everywhere. |
+| **Fix** | Each page should only include its own CSS plus shared files. For example, `dashboard.html` doesn't need `editor.css`, `jds.css`, or `profile.css`. |
+
+---
+
+### 9.5 — [BOTH VIEWS] Missing `text-align: center` on `.mob-et-btn` for anchor tags
+
+| Detail | |
+|---|---|
+| **File** | [public.css:533-538](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/public.css#L533-L538) |
+| **What is broken** | The public pages use `<a class="mob-et-btn">` while workspace pages use `<button class="mob-et-btn">`. Public.css adds a rule `mob-edit-toggle a.mob-et-btn { text-decoration: none; display: flex; align-items: center; justify-content: center }` to compensate. This works but is a specificity workaround — the base `.mob-et-btn` class in mobile.css doesn't center text for `<a>` tags naturally because `<a>` doesn't have `display: flex` by default. |
+| **Why** | Class was designed for `<button>` which centers text by default. |
+| **Fix** | Add `text-align: center` to the base `.mob-et-btn` rule in mobile.css: |
+
+```diff
+ .mob-et-btn {
+   flex: 1;
+   padding: 6px;
++  text-align: center;
+ ```
+
+---
+
+## 10. JS-Driven UI
+
+### 10.1 — [BOTH VIEWS] `resumes.js` referenced functions not available on dashboard.html
+
+| Detail | |
+|---|---|
+| **File** | [dashboard.html:264-269](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/dashboard.html#L264-L269) |
+| **What is broken** | `dashboard.html` does not include `resumes.js`, but the "Create New Resume" card calls `showModal()` and the modal calls `handleResumeFileSelect()`, `handleUpload()`, `handlePaste()`, `startBlankResume()`. These are defined in `modal.js` which IS included. However, `openEditor()` is also called from dashboard context, and is in `app.js`, so that's fine. The resume library data and rendering aren't needed on the dashboard, so this is actually *correct* — but worth noting for future development. |
+| **Priority** | N/A (informational, currently working correctly) |
+
+---
+
+### 10.2 — [BOTH VIEWS] `editor.js` and `jds.js` are loaded on dashboard.html unnecessarily
+
+| Detail | |
+|---|---|
+| **File** | [dashboard.html:265-266](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/dashboard.html#L265-L266) |
+| **What is broken** | `editor.js` (582 lines) and `jds.js` (656 lines) are loaded on the dashboard page where they're not needed. editor.js runs `renderAllSectionDetails()` on DOMContentLoaded, which silently fails because the editor DOM elements don't exist. jds.js runs `renderJDLists()` which also silently fails. No errors, but unnecessary JS parsing. |
+| **Why** | Legacy from SPA architecture. |
+| **Fix** | Remove scripts not needed on each page: |
+
+```diff
+ <!-- dashboard.html -->
+ <script src="js/app.js"></script>
+-<script src="js/editor.js"></script>
+-<script src="js/jds.js"></script>
+ <script src="js/mobile.js"></script>
+ <script src="js/tips.js"></script>
+ <script src="js/modal.js"></script>
+```
+
+---
+
+### 10.3 — [BOTH VIEWS] `profile.html` loads unnecessary scripts
+
+| Detail | |
+|---|---|
+| **File** | [profile.html:104-108](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/profile.html#L104-L108) |
+| **What is broken** | Profile page includes `editor.js`, `jds.js`, and `tips.js` — none of which have any relevance to the profile page. |
+| **Fix** | |
+
+```diff
+ <!-- profile.html -->
+ <script src="js/app.js"></script>
+-<script src="js/editor.js"></script>
+-<script src="js/jds.js"></script>
+ <script src="js/mobile.js"></script>
+-<script src="js/tips.js"></script>
+```
+
+---
+
+### 10.4 — [MOBILE ONLY] `mob-bottom-sheet` bottom position depends on bottombar height
+
+| Detail | |
+|---|---|
+| **File** | [mobile.css:316](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/css/mobile.css#L316) |
+| **What is broken** | `.mob-bottom-sheet` positions itself with `bottom: calc(58px + env(safe-area-inset-bottom))` to sit above the bottom bar. But if the bottom bar height changes (e.g. text wraps, font loading changes size), the sheet may overlap or leave a gap. |
+| **Why** | Hardcoded 58px doesn't dynamically link to the actual bottom bar height. |
+| **Fix** | Acceptable for now since the bottombar height is consistently 58px. Add a CSS custom property for maintainability: |
+
+```css
+:root {
+  --bottombar-height: 58px;
+}
+```
+
+---
+
+### 10.5 — [BOTH VIEWS] No keyboard escape handler for workspace modals
+
+| Detail | |
+|---|---|
+| **File** | [modal.js](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/js/modal.js) |
+| **What is broken** | `modal.js` has no Escape key listener for closing the "Create Resume" modal. The auth modal in `auth.js` does have one (line 30-32), but the workspace modal and JD modal do not. |
+| **Why** | Escape handler was only added to the auth flow, not the workspace modals. |
+| **Fix** | Add to modal.js: |
+
+```js
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    closeModal();
+    if (typeof closeJDModal === 'function') closeJDModal();
+  }
+});
+```
+
+---
+
+### 10.6 — [MOBILE ONLY] JD workspace mode uses inline `style="flex:1;overflow-y:auto"` that collides
+
+| Detail | |
+|---|---|
+| **File** | [jds.html:80](file:///c:/Users/Josep/Desktop/Resume_Project/Prototype_v2/jds.html#L80) |
+| **What is broken** | The workspace container has `style="flex:1;overflow-y:auto"` but it's a sibling of `.mob-bottombar` and `.mob-bottom-sheet`. When the bottom sheet is open, the workspace scrolls independently behind it, and the sheet's `position:fixed` with bottom offset can still allow user interaction with the scrolling content below. |
+| **Why** | No scroll-lock when bottom sheet is open. |
+| **Fix** | When the bottom sheet opens, add `overflow:hidden` to the workspace container via JS, or add a backdrop overlay. |
+
+---
+
+## Prioritized Fix List
+
+### P1 — Layout Completely Broken / Unusable
+
+| # | Issue | Section | Files |
+|---|---|---|---|
+| 1 | Missing font imports (Plus Jakarta Sans, Inter) | 2.1 | All HTML heads + tokens.css |
+| 2 | Undefined `--color-text` variable | 3.1 / 9.1 | globals.css:22 |
+| 3 | Editor & JD page fixed 488px height | 1.1, 1.2 | editor.css:2, jds.css:2 |
+| 4 | Dashboard flex rows don't wrap on narrow desktops (769-1024px) | 2.5 | dashboard.css |
+| 5 | Resume grid 3-column with no responsive fallback | 4.1 | resumes.css:21 |
+
+### P2 — Visually Wrong but Functional
+
+| # | Issue | Section | Files |
+|---|---|---|---|
+| 6 | `btn-new` has no hover/focus/active states | 5.1 | components.css:9 |
+| 7 | Pagination `.r-action` buttons have no disabled styling | 5.2 | components.css:10 |
+| 8 | Breakpoint mismatch: public grids collapse at 900px, views switch at 768px | 2.4 | public.css, layout.css |
+| 9 | ATS drawer uses `right:-100%` instead of transform | 1.3 | editor.css:50-51 |
+| 10 | Profile page flex-direction inline style conflicts with CSS | 1.5 | profile.html:34, profile.css:2 |
+| 11 | Duplicate body styles in tokens.css and globals.css | 3.2 / 9.2 | tokens.css, globals.css |
+| 12 | Form inputs missing disabled and error states | 7.1 | components.css |
+| 13 | Select dropdown not custom-styled | 7.2 | editor.css:39 |
+| 14 | Mobile touch targets undersized | 5.4 | components.css:10 |
+| 15 | Mobile bottom sheet width inconsistency at 640px | 2.3 | mobile.css |
+| 16 | Breadcrumb and navbar use `<span>`/`<button>` instead of `<a>` tags | 5.3, 8.3 | editor.html, all workspace pages |
+| 17 | No escape-key handler for workspace/JD modals | 10.5 | modal.js |
+
+### P3 — Polish / Minor Inconsistencies
+
+| # | Issue | Section | Files |
+|---|---|---|---|
+| 18 | Redundant `active` class on mobile frames | 1.4 | All HTML files |
+| 19 | Images missing width/height (CLS) | 6.1 | index.html, about.html |
+| 20 | Builder photo min-height without max-height | 6.2 | public.css |
+| 21 | Headline overflow-wrap missing for narrow screens | 3.3 | public.css |
+| 22 | Over-loading all CSS on every page | 9.4 | All workspace HTML |
+| 23 | Unnecessary JS scripts on dashboard/profile | 10.2, 10.3 | dashboard.html, profile.html |
+| 24 | mobile.css safe-area calculation for bottom bar | 8.2 | mobile.css |
+| 25 | No scroll lock when bottom sheet opens | 10.6 | jds.html, mobile.css |
+| 26 | Editor sec-nav too narrow at 100px | 4.3 | editor.css:13 |
+| 27 | 404/500 mobile nav has no active state | 2.2 | 404.html, 500.html |
+| 28 | `!important` overuse in layout media queries | 9.3 | layout.css |
+| 29 | `.mob-et-btn` missing `text-align: center` for `<a>` usage | 9.5 | mobile.css, public.css |
