@@ -1,16 +1,3 @@
-/* DEVICE SWITCH */
-function setDevice(d) {
-  document.querySelectorAll('.dev-btn').forEach(btn => {
-    const wantsDesktop = btn.textContent.includes('Desktop');
-    btn.classList.toggle('active', (d === 'desktop') === wantsDesktop);
-  });
-
-  const desktopView = document.getElementById('desktop-view');
-  const mobileView = document.getElementById('mobile-view');
-  if (desktopView) desktopView.classList.toggle('active', d === 'desktop');
-  if (mobileView) mobileView.classList.toggle('active', d === 'mobile');
-}
-
 /* DESKTOP NAVIGATION */
 function showPage(p) {
   const pages = {

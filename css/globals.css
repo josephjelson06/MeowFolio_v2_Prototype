@@ -9,6 +9,11 @@ html {
 }
 
 body {
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
   background-color: var(--color-background);
   background-image:
     radial-gradient(rgba(220, 193, 184, 0.72) 1px, transparent 1px),
@@ -32,10 +37,6 @@ select {
 ::selection {
   background: var(--accent-bg);
   color: var(--accent);
-}
-
-.frame {
-  box-shadow: var(--shadow-tactile);
 }
 
 .modal-box,
@@ -138,4 +139,10 @@ select {
     linear-gradient(rgba(137, 114, 107, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(137, 114, 107, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 0;
+  }
 }

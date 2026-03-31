@@ -13,14 +13,9 @@
 </head>
 <body>
 
-<div class="dev-toggle">
-  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
-  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
-</div>
-
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
-    <span class="gnav-logo">resumeai</span>
+    <a class="gnav-logo" href="index.html">resumeai</a>
     <div class="gnav-links">
       <a class="gnav-link active" href="index.html">Home</a>
       <a class="gnav-link" href="about.html">About</a>
@@ -275,9 +270,9 @@
 </div>
 
 <div class="frame mobile view active" id="mobile-view">
-  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+  <div class="mob-frame">
     <div class="mob-topbar">
-      <span class="mob-topbar-logo">resumeai</span>
+      <a class="mob-topbar-logo" href="index.html">resumeai</a>
       <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
     </div>
     <div class="mob-edit-toggle">
@@ -508,7 +503,7 @@
     </div>
     <div class="auth-preview">
       <div class="pub-card-title">One product, one path</div>
-      <div class="pub-card-copy">Home, About, 404, 500, and the auth modal now share the same frame logic, dark tokens, and component language as the logged-in screens.</div>
+      <div class="pub-card-copy">Home, About, 404, 500, and the auth modal now share the same tokens, navigation rhythm, and component language as the logged-in screens.</div>
     </div>
     <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
       <span>G</span>
@@ -518,7 +513,6 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>

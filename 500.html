@@ -13,14 +13,9 @@
 </head>
 <body>
 
-<div class="dev-toggle">
-  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
-  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
-</div>
-
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
-    <span class="gnav-logo">resumeai</span>
+    <a class="gnav-logo" href="index.html">resumeai</a>
     <div class="gnav-links">
       <a class="gnav-link" href="index.html">Home</a>
       <a class="gnav-link" href="about.html">About</a>
@@ -39,7 +34,7 @@
         </div>
         <div class="pub-error-code warn">500</div>
         <div class="pub-section-title" style="margin-top:12px">The workspace hit a temporary snag.</div>
-        <div class="pub-text" style="margin-top:8px">This state stands in for a failed render, parse, or analysis request. It still lives inside the same product shell, so the fallback feels like a part of resumeai instead of a disconnected dead-end page.</div>
+        <div class="pub-text" style="margin-top:8px">This state stands in for a failed render, parse, or analysis request. It still lives inside the same product family, so the fallback feels like a part of resumeai instead of a disconnected dead-end page.</div>
         <div class="pub-error-actions">
           <a class="btn-new" href="index.html">Return Home</a>
           <a class="pub-link-btn" href="about.html">Read About</a>
@@ -70,9 +65,9 @@
 </div>
 
 <div class="frame mobile view active" id="mobile-view">
-  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+  <div class="mob-frame">
     <div class="mob-topbar">
-      <span class="mob-topbar-logo">resumeai</span>
+      <a class="mob-topbar-logo" href="index.html">resumeai</a>
       <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
     </div>
     <div class="mob-edit-toggle">
@@ -88,7 +83,7 @@
         </div>
         <div class="pub-error-code warn" style="margin:0 auto">500</div>
         <div class="pub-mob-headline">The workspace hit a temporary snag.</div>
-        <div class="pub-mob-text">The error state now uses the same mobile shell as the rest of the product, so it still feels like one system while the workflow is unavailable.</div>
+        <div class="pub-mob-text">The error state now uses the same mobile design language as the rest of the product, so it still feels like one system while the workflow is unavailable.</div>
         <div class="pub-mob-top-actions">
           <a class="btn-new" href="index.html">Return Home</a>
           <a class="pub-link-btn" href="about.html">About</a>
@@ -125,7 +120,7 @@
     </div>
     <div class="auth-preview">
       <div class="pub-card-title">A connected fallback</div>
-      <div class="pub-card-copy">Even the error handling pages now share the same desktop and mobile shell as the rest of resumeai, so the public layer feels fully incorporated.</div>
+      <div class="pub-card-copy">Even the error handling pages now share the same desktop and mobile design system as the rest of resumeai, so the public layer feels fully incorporated.</div>
     </div>
     <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
       <span>G</span>
@@ -135,7 +130,6 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>

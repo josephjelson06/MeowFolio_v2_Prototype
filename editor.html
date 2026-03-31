@@ -17,14 +17,9 @@
 <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
-<div class="dev-toggle">
-  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
-  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
-</div>
-
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
-    <span class="gnav-logo">resumeai</span>
+    <a class="gnav-logo" href="dashboard.html">resumeai</a>
     <div class="gnav-links">
       <button class="gnav-link" onclick="showPage('dash')">Dashboard</button>
       <button class="gnav-link active" onclick="showPage('resumes')">Resumes</button>
@@ -281,7 +276,7 @@ Reduced latency by 40%</textarea>
 </div><!-- /desktop-view -->
 
 <div class="frame mobile view active" id="mobile-view">
-  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+  <div class="mob-frame">
     <div class="mob-topbar">
       <span class="mob-back" onclick="mobShowPage('resumes')">&larr;</span>
       <span class="mob-topbar-title">resume_v3</span>

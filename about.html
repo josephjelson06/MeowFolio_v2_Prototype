@@ -13,14 +13,9 @@
 </head>
 <body>
 
-<div class="dev-toggle">
-  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
-  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
-</div>
-
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
-    <span class="gnav-logo">resumeai</span>
+    <a class="gnav-logo" href="index.html">resumeai</a>
     <div class="gnav-links">
       <a class="gnav-link" href="index.html">Home</a>
       <a class="gnav-link active" href="about.html">About</a>
@@ -40,7 +35,7 @@
         </div>
         <div class="pub-headline">Built with a student mindset for a <span class="accent">real resume loop.</span></div>
         <div class="pub-text" style="margin-top:10px">resumeai is meant to feel like one product from first visit to final export. The public side explains the promise. The dashboard, resumes, editor, ATS checks, and JD matching deliver the actual workflow.</div>
-        <div class="pub-text">That is why this page now uses the exact same shell language as the logged-in prototype instead of a detached marketing layout.</div>
+        <div class="pub-text">That is why this page now uses the same product language as the logged-in prototype instead of drifting into a detached marketing layout.</div>
         <div class="pub-chip-row">
           <span class="badge-outline">TeX-backed output</span>
           <span class="badge-outline">Shared resume state</span>
@@ -54,7 +49,7 @@
 
       <div class="pub-image-panel">
         <img src="Images/Graduation_Day.png" alt="Graduation day image representing the builder journey">
-        <div class="pub-image-note">Graduation Day now anchors the public story inside the same product shell.</div>
+        <div class="pub-image-note">Graduation Day now anchors the public story inside the same product family.</div>
       </div>
     </section>
 
@@ -129,7 +124,7 @@
         </div>
         <div class="pub-section-title" style="font-size:24px;line-height:1.15;max-width:14ch">One important workflow should feel coherent from end to end.</div>
         <div class="pub-text" style="margin-top:10px">resumeai is not trying to be every job tool at once. It is trying to make one high-friction path feel connected: write a stronger resume, preview it clearly, inspect ATS feedback, compare it with a JD, and keep iterating without losing context.</div>
-        <div class="pub-text">That is why the About page now sits inside the same frame system as the workspace instead of breaking away into a separate visual language.</div>
+        <div class="pub-text">That is why the About page now sits inside the same visual system as the workspace instead of breaking away into a separate language.</div>
         <div class="pub-action-row">
           <button class="btn-new" type="button" onclick="showAuthModal()">Enter the Workspace</button>
         </div>
@@ -148,9 +143,9 @@
 </div>
 
 <div class="frame mobile view active" id="mobile-view">
-  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+  <div class="mob-frame">
     <div class="mob-topbar">
-      <span class="mob-topbar-logo">resumeai</span>
+      <a class="mob-topbar-logo" href="index.html">resumeai</a>
       <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
     </div>
     <div class="mob-edit-toggle">
@@ -165,7 +160,7 @@
           <span class="badge-info" style="font-size:8px">SAME PRODUCT</span>
         </div>
         <div class="pub-mob-headline">Built with a student mindset for a real resume loop.</div>
-        <div class="pub-mob-text">This page now uses the same mobile shell as the logged-in prototype, so the public and private sides feel connected from the first tap.</div>
+        <div class="pub-mob-text">This page now uses the same mobile design system as the logged-in prototype, so the public and private sides feel connected from the first tap.</div>
         <div class="pub-image-panel" style="min-height:220px">
           <img src="Images/Graduation_Day.png" alt="Graduation day image representing the builder journey">
         </div>
@@ -259,7 +254,7 @@
     </div>
     <div class="auth-preview">
       <div class="pub-card-title">One product, one path</div>
-      <div class="pub-card-copy">Home, About, 404, 500, and the auth modal now share the same frame logic, mobile treatment, and dark token system as the workspace.</div>
+      <div class="pub-card-copy">Home, About, 404, 500, and the auth modal now share the same navigation, mobile treatment, and token system as the workspace.</div>
     </div>
     <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
       <span>G</span>
@@ -269,7 +264,6 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>

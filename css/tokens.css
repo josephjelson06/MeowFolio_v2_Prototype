@@ -1,61 +1,99 @@
-/* Tokens */
+/* Tokens sourced from old_tailwind.config.ts */
 :root {
-  --font-headline: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Typography */
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Plus Jakarta Sans", sans-serif;
 
+  /* Full theme palette */
   --color-background: #fdf9f3;
   --color-surface: #fdf9f3;
-  --color-surface-low: #f7f3ed;
-  --color-surface-base: #f1ede7;
-  --color-surface-high: #ebe8e2;
-  --color-surface-highest: #e6e2dc;
-  --color-card: #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #e6e2dc;
+  --color-surface-container-high: #ebe8e2;
+  --color-surface-container: #f1ede7;
+  --color-surface-container-low: #f7f3ed;
+  --color-surface-variant: #e6e2dc;
+  --color-surface-bright: #fdf9f3;
+  --color-surface-dim: #dddad4;
+  --color-surface-tint: #9d4223;
+  --color-on-surface: #1c1c18;
+  --color-on-surface-variant: #56423c;
+  --color-on-background: #1c1c18;
+  --color-inverse-surface: #31302d;
+  --color-inverse-on-surface: #f4f0ea;
 
-  --color-text: #1c1c18;
-  --color-text-muted: #56423c;
-  --color-text-soft: #8d746c;
   --color-primary: #9d4223;
-  --color-primary-soft: #f4845f;
+  --color-primary-container: #f4845f;
   --color-primary-fixed: #ffdbd0;
+  --color-primary-fixed-dim: #ffb59d;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #6c1e02;
+  --color-on-primary-fixed: #390b00;
+  --color-on-primary-fixed-variant: #7e2b0d;
+
   --color-secondary: #655781;
-  --color-secondary-soft: #deccfd;
+  --color-secondary-container: #deccfd;
+  --color-secondary-fixed: #eaddff;
+  --color-secondary-fixed-dim: #d0bfef;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #62547e;
+  --color-on-secondary-fixed: #21143a;
+  --color-on-secondary-fixed-variant: #4d4068;
+
   --color-tertiary: #3d6751;
-  --color-tertiary-soft: #bfedd1;
-  --color-warning: #b87525;
-  --color-warning-soft: #f6e4bf;
-  --color-danger: #c1554d;
-  --color-danger-soft: #f8ddd9;
-  --color-outline: #dcc1b8;
-  --color-outline-strong: #c79e91;
+  --color-tertiary-container: #81ad94;
+  --color-tertiary-fixed: #bfedd1;
+  --color-tertiary-fixed-dim: #a4d1b6;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #17412d;
+  --color-on-tertiary-fixed: #002113;
+  --color-on-tertiary-fixed-variant: #254f3a;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-outline: #89726b;
+  --color-outline-variant: #dcc1b8;
   --color-charcoal: #2d2d2d;
+  --color-coral: #f4845f;
   --color-lavender: #c9b8e8;
   --color-mint: #a8d5ba;
-  --color-coral: #f4845f;
+  --color-cream: #fdf9f3;
 
-  /* Compatibility aliases used by the existing app CSS */
-  --bg0: var(--color-card);
-  --bg1: var(--color-surface-low);
+  /* Tailwind extension equivalents */
+  --radius-card: 1.5rem;
+  --radius-shell: 2rem;
+  --shadow-tactile: 4px 4px 0 0 #2d2d2d;
+  --shadow-tactile-sm: 2px 2px 0 0 #2d2d2d;
+  --shadow-tactile-lg: 8px 8px 0 0 #2d2d2d;
+  --shadow-ambient: 0 12px 32px rgba(28, 28, 24, 0.08);
+
+  /* Compatibility aliases for existing CSS app */
+  --bg0: var(--color-surface-container-lowest);
+  --bg1: var(--color-surface-container-low);
   --bg2: var(--color-surface);
-  --bg3: var(--color-surface-base);
-  --bg4: var(--color-surface-high);
-  --border0: var(--color-surface-highest);
-  --border1: var(--color-outline);
-  --border2: var(--color-outline-strong);
-  --txt0: var(--color-text);
-  --txt1: var(--color-text-muted);
-  --txt2: var(--color-text-soft);
+  --bg3: var(--color-surface-container);
+  --bg4: var(--color-surface-container-high);
+  --border0: var(--color-surface-container-highest);
+  --border1: var(--color-outline-variant);
+  --border2: var(--color-outline);
+  --txt0: var(--color-on-surface);
+  --txt1: var(--color-on-surface-variant);
+  --txt2: #7a625b;
   --accent: var(--color-primary);
-  --accent-dim: var(--color-primary-soft);
+  --accent-dim: var(--color-primary-container);
   --accent-bg: var(--color-primary-fixed);
-  --warn: var(--color-warning);
-  --warn-bg: var(--color-warning-soft);
-  --err: var(--color-danger);
-  --err-bg: var(--color-danger-soft);
+  --warn: #b87525;
+  --warn-bg: #f6e4bf;
+  --err: var(--color-error);
+  --err-bg: var(--color-error-container);
   --info: var(--color-secondary);
-  --info-bg: #efe8ff;
+  --info-bg: var(--color-secondary-container);
   --info-dim: var(--color-lavender);
   --success: var(--color-tertiary);
-  --success-bg: var(--color-tertiary-soft);
+  --success-bg: var(--color-tertiary-fixed);
 
   --r-sm: 8px;
   --r-md: 10px;
@@ -63,14 +101,10 @@
   --r-xl: 18px;
   --font: var(--font-headline);
   --sans: var(--font-body);
-
-  --shadow-tactile-sm: 2px 2px 0 0 rgba(45, 45, 45, 0.9);
-  --shadow-tactile: 4px 4px 0 0 rgba(45, 45, 45, 0.92);
-  --shadow-tactile-lg: 7px 7px 0 0 rgba(45, 45, 45, 0.92);
-  --shadow-ambient: 0 14px 34px rgba(28, 28, 24, 0.08);
+  --desktop-ui-scale: 1;
 }
 
-/* Reset */
+/* Base reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -82,9 +116,5 @@ body {
   font-family: var(--sans);
   font-size: 13px;
   color: var(--txt0);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   min-height: 100vh;
-  padding: 20px 16px 40px;
 }

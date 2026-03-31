@@ -18,15 +18,10 @@
 </head>
 <body>
 
-<div class="dev-toggle">
-  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
-  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
-</div>
-
 <!-- DESKTOP -->
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
-    <span class="gnav-logo">resumeai</span>
+    <a class="gnav-logo" href="dashboard.html">resumeai</a>
     <div class="gnav-links">
       <button class="gnav-link active" onclick="showPage('dash')">Dashboard</button>
       <button class="gnav-link" onclick="showPage('resumes')">Resumes</button>
@@ -150,9 +145,9 @@
 
 <!-- MOBILE -->
 <div class="frame mobile view active" id="mobile-view">
-  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+  <div class="mob-frame">
     <div class="mob-topbar">
-      <span class="mob-topbar-logo">resumeai</span>
+      <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
       <div class="avatar" style="margin-left:auto" onclick="mobShowPage('profile')">AK</div>
     </div>
     <div style="flex:1;overflow-y:auto">

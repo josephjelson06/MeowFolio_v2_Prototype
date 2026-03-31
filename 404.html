@@ -13,14 +13,9 @@
 </head>
 <body>
 
-<div class="dev-toggle">
-  <button class="dev-btn" onclick="setDevice('desktop')">Desktop / Laptop</button>
-  <button class="dev-btn active" onclick="setDevice('mobile')">Mobile</button>
-</div>
-
 <div class="frame desktop view" id="desktop-view">
   <nav class="gnav">
-    <span class="gnav-logo">resumeai</span>
+    <a class="gnav-logo" href="index.html">resumeai</a>
     <div class="gnav-links">
       <a class="gnav-link" href="index.html">Home</a>
       <a class="gnav-link" href="about.html">About</a>
@@ -50,7 +45,7 @@
       <article class="pub-panel">
         <div class="section-label" style="margin-bottom:8px">NEXT STEP</div>
         <div class="pub-section-title">The workspace is still one click away.</div>
-        <div class="pub-text" style="margin-top:8px">If you landed here from an old link, return to Home or continue with Google. The rest of the prototype still uses the same shell, same tokens, and same navigation rhythm.</div>
+        <div class="pub-text" style="margin-top:8px">If you landed here from an old link, return to Home or continue with Google. The rest of the prototype still uses the same tokens and navigation rhythm.</div>
         <div class="pub-chip-row">
           <span class="badge-outline">Home</span>
           <span class="badge-outline">About</span>
@@ -71,9 +66,9 @@
 </div>
 
 <div class="frame mobile view active" id="mobile-view">
-  <div class="mob-frame" style="height:620px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+  <div class="mob-frame">
     <div class="mob-topbar">
-      <span class="mob-topbar-logo">resumeai</span>
+      <a class="mob-topbar-logo" href="index.html">resumeai</a>
       <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
     </div>
     <div class="mob-edit-toggle">
@@ -89,7 +84,7 @@
         </div>
         <div class="pub-error-code" style="margin:0 auto">404</div>
         <div class="pub-mob-headline">That page wandered off.</div>
-        <div class="pub-mob-text">This fallback now uses the same mobile shell as the rest of resumeai, so the error state still feels connected to the product.</div>
+        <div class="pub-mob-text">This fallback now uses the same mobile design language as the rest of resumeai, so the error state still feels connected to the product.</div>
         <div class="pub-mob-top-actions">
           <a class="btn-new" href="index.html">Back Home</a>
           <button class="pub-link-btn" type="button" onclick="showAuthModal()">Sign in</button>
@@ -126,7 +121,7 @@
     </div>
     <div class="auth-preview">
       <div class="pub-card-title">Same product language</div>
-      <div class="pub-card-copy">The missing-page fallback now shares the same frame, mobile layout, and component treatment as Home, About, and the logged-in prototype.</div>
+      <div class="pub-card-copy">The missing-page fallback now shares the same mobile layout and component treatment as Home, About, and the logged-in prototype.</div>
     </div>
     <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
       <span>G</span>
@@ -136,7 +131,6 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>
