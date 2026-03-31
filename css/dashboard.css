@@ -1,6 +1,8 @@
 /* ── DASHBOARD ── */
 .dash-body {
   padding: 20px 20px;
+  max-width: 1160px;
+  margin: 0 auto;
 }
 
 .dash-stats {
@@ -105,18 +107,21 @@
 }
 
 .dash-stats-row {
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(250px, 360px));
+  gap: 12px;
+  justify-content: space-between;
   margin-bottom: 16px;
-  flex-wrap: wrap;
 }
 
 .dash-stat-big {
-  flex: 1;
   background: var(--bg2);
   border: 0.5px solid var(--border0);
   border-radius: var(--r-md);
   padding: 14px;
+  min-height: 148px;
+  display: flex;
+  flex-direction: column;
 }
 
 .dash-stat-icon {
@@ -143,6 +148,7 @@
   height: 3px;
   border-radius: 2px;
   background: var(--bg4);
+  margin-top: auto;
 }
 
 .dash-stat-fill {
@@ -167,20 +173,25 @@
   background: var(--warn);
 }
 
-/* Hero row */
-.dash-hero-row {
-  display: flex;
-  gap: 8px;
+/* Middle layer */
+.dash-middle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(250px, 360px));
+  gap: 12px;
+  justify-content: space-between;
+  align-items: stretch;
   margin-bottom: 16px;
-  flex-wrap: wrap;
+}
+
+.dash-middle-card {
+  min-height: 300px;
 }
 
 .dash-create-card {
-  flex: 1;
   background: var(--bg2);
   border: 1px dashed var(--border2);
   border-radius: var(--r-md);
-  padding: 20px 16px;
+  padding: 18px 16px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -222,18 +233,7 @@
   line-height: 1.5;
 }
 
-.dash-preview-card {
-  flex: 1.2;
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-}
-
 .dash-preview-thumb {
-  flex: 1;
   background: var(--bg3);
   border: 0.5px solid var(--border1);
   border-radius: 3px;
@@ -274,14 +274,18 @@
   gap: 4px;
 }
 
-.dash-recent-card {
-  flex: 1.2;
+.dash-active-card {
   background: var(--bg2);
   border: 0.5px solid var(--border0);
   border-radius: var(--r-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
+}
+
+.dash-active-thumb {
+  min-height: 126px;
+  margin-top: 10px;
 }
 
 .dash-recent-name {
@@ -315,20 +319,13 @@
   text-decoration: underline;
 }
 
-/* Quick Actions + JD */
-.dash-bottom-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
 .dash-actions-card {
-  flex: 2;
   background: var(--bg2);
   border: 0.5px solid var(--border0);
   border-radius: var(--r-md);
   padding: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 .dash-actions-title {
@@ -340,17 +337,21 @@
 
 .dash-actions-grid {
   display: flex;
-  gap: 6px;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
 }
 
 .dash-action-item {
-  flex: 1;
   background: var(--bg3);
   border: 0.5px solid var(--border1);
   border-radius: var(--r-sm);
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
   transition: all .12s;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .dash-action-item:hover {
@@ -361,7 +362,13 @@
 .dash-action-icon {
   font-size: 16px;
   color: var(--txt2);
-  margin-bottom: 6px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.dash-action-copy {
+  display: flex;
+  flex-direction: column;
 }
 
 .dash-action-name {
@@ -377,52 +384,16 @@
   line-height: 1.4;
 }
 
-.dash-jd-card {
-  flex: 1;
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-}
-
-.dash-jd-icon {
-  font-size: 18px;
-  color: var(--txt2);
-  margin-bottom: 6px;
-}
-
-.dash-jd-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--txt0);
-  margin-bottom: 2px;
-}
-
-.dash-jd-co {
-  font-size: 10px;
-  color: var(--txt2);
-}
-
-.dash-jd-link {
-  font-size: 10px;
-  color: var(--accent);
-  cursor: pointer;
-  margin-top: auto;
-  padding-top: 8px;
-}
-
-.dash-jd-link:hover {
-  text-decoration: underline;
-}
-
 /* Tips */
 .dash-tips-card {
   background: var(--bg2);
   border: 0.5px solid var(--border0);
   border-radius: var(--r-md);
   padding: 14px;
+  max-width: 100%;
+  min-height: 156px;
+  display: flex;
+  flex-direction: column;
 }
 
 .dash-tips-title {
@@ -468,19 +439,15 @@
 
   .dash-stat-big,
   .dash-create-card,
-  .dash-preview-card,
-  .dash-recent-card,
-  .dash-actions-card,
-  .dash-jd-card {
+  .dash-active-card,
+  .dash-actions-card {
     min-width: 220px;
   }
 
-  .dash-actions-grid {
-    flex-wrap: wrap;
-  }
-
-  .dash-action-item {
-    min-width: 180px;
+  .dash-stats-row,
+  .dash-middle-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    justify-content: initial;
   }
 }
 
@@ -524,20 +491,8 @@
 }
 
 .dash-action-item {
-  display: flex;
-  flex-direction: column;
   text-decoration: none;
   color: inherit;
-}
-
-.dash-jd-card-link,
-.dash-jd-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.dash-jd-card-link .dash-jd-link {
-  color: var(--accent);
 }
 
 @media (max-width: 768px) {
@@ -556,6 +511,7 @@
 
   .dash-body {
     padding: 16px 12px calc(82px + env(safe-area-inset-bottom));
+    max-width: none;
   }
 
   .dash-greeting-name {
@@ -564,7 +520,6 @@
   }
 
   .dash-stats-row {
-    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
   }
@@ -587,20 +542,21 @@
     margin-bottom: 4px;
   }
 
-  .dash-hero-row,
-  .dash-bottom-row {
-    flex-direction: column;
+  .dash-middle-grid {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
   .dash-create-card,
-  .dash-preview-card,
-  .dash-recent-card,
   .dash-actions-card,
-  .dash-jd-card,
+  .dash-active-card,
   .dash-tips-card {
     min-width: 0;
     padding: 12px;
+  }
+
+  .dash-middle-card {
+    min-height: 0;
   }
 
   .dash-create-plus {
@@ -608,19 +564,19 @@
     margin-bottom: 6px;
   }
 
-  .dash-preview-thumb {
+  .dash-active-thumb {
     min-height: 126px;
   }
 
   .dash-actions-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 6px;
   }
 
   .dash-action-item {
     min-width: 0;
-    padding: 12px 10px;
+    padding: 10px;
   }
 
   .dash-action-name {
@@ -633,5 +589,9 @@
 
   .dash-tips-title {
     margin-bottom: 8px;
+  }
+
+  .dash-tips-card {
+    min-height: 0;
   }
 }

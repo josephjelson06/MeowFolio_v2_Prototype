@@ -39,16 +39,24 @@
     </article>
   </section>
 
-  <section class="dash-hero-row">
-    <button class="dash-create-card" type="button" data-open-resume-modal>
+  <section class="dash-middle-grid" aria-label="Dashboard workspace">
+    <button class="dash-create-card dash-middle-card" type="button" data-open-resume-modal>
       <div class="dash-create-plus">+</div>
       <div class="dash-create-label">CREATE NEW RESUME</div>
       <div class="dash-create-title">Start from scratch or upload</div>
       <div class="dash-create-desc">Open the modal flow, then either upload an existing resume or begin with a blank editor.</div>
     </button>
 
-    <article class="dash-preview-card">
-      <div class="dash-preview-thumb">
+    <article class="dash-active-card dash-middle-card">
+      <div class="section-label">ACTIVE RESUME</div>
+      <div class="dash-recent-badges">
+        <span class="badge-accent">MOST RECENT</span>
+        <span class="badge-info">UPDATED 2H AGO</span>
+      </div>
+      <div class="dash-recent-name">resume_v3.tex</div>
+      <div class="dash-recent-sub">Resume Workspace</div>
+      <div class="dash-recent-desc">Open the latest saved resume directly in the editor and continue from where you left off.</div>
+      <div class="dash-preview-thumb dash-active-thumb">
         <div class="pdf-name dash-preview-name">Arjun Kumar</div>
         <div class="pdf-contact dash-preview-contact">arjun@email.com</div>
         <div class="pdf-divider"></div>
@@ -64,54 +72,40 @@
         <span class="chip">Classic</span>
         <span class="chip">1 page</span>
       </div>
-    </article>
-
-    <article class="dash-recent-card">
-      <div class="dash-recent-badges">
-        <span class="badge-accent">MOST RECENT</span>
-        <span class="badge-info">UPDATED 2H AGO</span>
-      </div>
-      <div class="dash-recent-name">resume_v3.tex</div>
-      <div class="dash-recent-sub">Resume Workspace</div>
-      <div class="dash-recent-desc">Open the latest saved resume directly in the editor and continue from where you left off.</div>
       <div class="dash-recent-tags">
         <span class="badge-outline">12 SAVED RESUMES</span>
         <span class="badge-outline">EDITOR READY</span>
       </div>
       <a class="dash-recent-link" href="editor.html">Open editor &rarr;</a>
     </article>
-  </section>
 
-  <section class="dash-bottom-row">
-    <article class="dash-actions-card">
+    <article class="dash-actions-card dash-middle-card">
       <div class="section-label">QUICK ACTIONS</div>
       <div class="dash-actions-title">Move faster</div>
       <div class="dash-actions-grid">
         <a class="dash-action-item" href="editor.html">
           <div class="dash-action-icon">&#8801;</div>
-          <div class="dash-action-name">Open Editor</div>
-          <div class="dash-action-desc">Jump back into the latest resume.</div>
+          <div class="dash-action-copy">
+            <div class="dash-action-name">Open Editor</div>
+            <div class="dash-action-desc">Jump back into the latest resume.</div>
+          </div>
         </a>
         <a class="dash-action-item" href="editor.html?mode=ats">
           <div class="dash-action-icon">&#9678;</div>
-          <div class="dash-action-name">Calculate ATS Score</div>
-          <div class="dash-action-desc">Run a formatting and content scan.</div>
+          <div class="dash-action-copy">
+            <div class="dash-action-name">Calculate ATS Score</div>
+            <div class="dash-action-desc">Run a formatting and content scan.</div>
+          </div>
         </a>
         <a class="dash-action-item" href="jds.html">
           <div class="dash-action-icon">&#8857;</div>
-          <div class="dash-action-name">Calculate JD Match</div>
-          <div class="dash-action-desc">Compare resume against a target role.</div>
+          <div class="dash-action-copy">
+            <div class="dash-action-name">Calculate JD Match</div>
+            <div class="dash-action-desc">Compare resume against a target role.</div>
+          </div>
         </a>
       </div>
     </article>
-
-    <a class="dash-jd-card dash-jd-card-link" href="jds.html">
-      <div class="dash-jd-icon">&#9784;</div>
-      <div class="section-label">ACTIVE JD</div>
-      <div class="dash-jd-name">Software Engineer II</div>
-      <div class="dash-jd-co">Google &middot; Full-time</div>
-      <div class="dash-jd-link">View JD analysis &rarr;</div>
-    </a>
   </section>
 
   <section class="dash-tips-card">

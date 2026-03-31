@@ -13,16 +13,25 @@ let RESUME_LIBRARY = [
   { id: 'resume_startup', name: 'resume_startup.tex', updated: '1mo ago', template: 'Bold' },
 ];
 
-const RESUMES_PER_PAGE = 10;
+const RESUME_CARDS_PER_PAGE = 6;
+const FIRST_PAGE_RESUME_SLOTS = RESUME_CARDS_PER_PAGE - 1;
 let resumePage = 1;
 
 function getResumeTotalPages() {
-  return Math.max(1, Math.ceil(RESUME_LIBRARY.length / RESUMES_PER_PAGE));
+  if (RESUME_LIBRARY.length <= FIRST_PAGE_RESUME_SLOTS) {
+    return 1;
+  }
+
+  return 1 + Math.ceil((RESUME_LIBRARY.length - FIRST_PAGE_RESUME_SLOTS) / RESUME_CARDS_PER_PAGE);
 }
 
 function getResumePageItems() {
-  const start = (resumePage - 1) * RESUMES_PER_PAGE;
-  return RESUME_LIBRARY.slice(start, start + RESUMES_PER_PAGE);
+  if (resumePage === 1) {
+    return RESUME_LIBRARY.slice(0, FIRST_PAGE_RESUME_SLOTS);
+  }
+
+  const start = FIRST_PAGE_RESUME_SLOTS + ((resumePage - 2) * RESUME_CARDS_PER_PAGE);
+  return RESUME_LIBRARY.slice(start, start + RESUME_CARDS_PER_PAGE);
 }
 
 function goToResumeEditor(e) {
@@ -80,13 +89,15 @@ function renderResumeLibrary() {
   if (count) count.textContent = `${total} RESUMES`;
 
   if (grid) {
+    const showCreateCard = resumePage === 1;
     grid.innerHTML = `
+      ${showCreateCard ? `
       <button class="res-new-card" type="button" data-open-resume-modal>
         <div class="res-new-plus">+</div>
         <div class="section-label">CREATE NEW RESUME</div>
         <div class="res-new-title">Upload or start blank</div>
         <div class="res-new-desc">Open the modal, import an existing resume, or create a fresh version from scratch.</div>
-      </button>
+      </button>` : ''}
       ${pageItems.map(renderResumeCard).join('')}
     `;
   }
