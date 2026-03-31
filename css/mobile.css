@@ -41,7 +41,7 @@
 .mob-pdf-doc { background: var(--bg2); border: 0.5px solid var(--border0); border-radius: 3px; padding: 14px; }
 .compiled-bar { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--txt2); padding: 6px 12px; background: var(--bg0); border-bottom: 0.5px solid var(--border0); }
 .mob-fab-area { position: relative; }
-.mob-fab { position: fixed; bottom: 62px; right: 20px; padding: 8px 16px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--bg3); color: var(--txt0); font-size: 12px; cursor: pointer; font-family: var(--sans); font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+.mob-fab { position: fixed; bottom: 62px; right: 20px; padding: 8px 16px; border-radius: 20px; border: 0.5px solid var(--border2); background: var(--bg3); color: var(--txt0); font-size: 12px; cursor: pointer; font-family: var(--sans); font-weight: 500; box-shadow: var(--shadow-ambient); }
 .mob-bottom-sheet { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); width: 375px; max-height: 70vh; background: var(--bg1); border: 0.5px solid var(--border1); border-bottom: none; border-radius: var(--r-xl) var(--r-xl) 0 0; display: none; flex-direction: column; overflow: hidden; z-index: 100; }
 .mob-bottom-sheet.open { display: flex; }
 .mob-sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border2); margin: 10px auto 6px; flex-shrink: 0; cursor: pointer; }
