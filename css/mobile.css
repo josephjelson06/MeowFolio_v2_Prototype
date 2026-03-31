@@ -16,13 +16,13 @@
 
 .mob-topbar {
   min-height: 52px;
-  display: flex;
   align-items: center;
   gap: 8px;
   padding: 0 16px;
   background: rgba(253, 249, 243, 0.88);
   border-bottom: 0.5px solid var(--border0);
   backdrop-filter: blur(10px);
+  display: none;
 }
 
 .mob-topbar-logo {
@@ -63,10 +63,10 @@
 
 .mob-bottombar {
   min-height: calc(58px + env(safe-area-inset-bottom));
-  display: flex;
   padding-bottom: env(safe-area-inset-bottom);
   background: rgba(253, 249, 243, 0.96);
   border-top: 0.5px solid var(--border0);
+  display: none;
 }
 
 .mob-tab {
@@ -201,11 +201,11 @@
 
 /* Mobile editor */
 .mob-edit-toggle {
-  display: flex;
   gap: 6px;
   padding: 8px 14px;
   background: var(--bg0);
   border-bottom: 0.5px solid var(--border0);
+  display: none;
 }
 
 .mob-et-btn {
@@ -554,6 +554,14 @@
   gap: 4px;
   flex-wrap: wrap;
   margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .mob-topbar,
+  .mob-bottombar,
+  .mob-edit-toggle {
+    display: flex;
+  }
 }
 
 @media (max-width: 640px) {
