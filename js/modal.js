@@ -81,13 +81,13 @@ function handleResumeFileSelect() {
   pasteArea.focus();
 }
 
+function goToEditor() {
+  window.location.href = 'editor.html';
+}
+
 function startBlankResume() {
   closeModal();
-  if (document.getElementById('desktop-view') && document.getElementById('desktop-view').classList.contains('active')) {
-    openEditor();
-  } else {
-    mobShowPage('editor');
-  }
+  goToEditor();
 }
 
 function handleUpload() {
@@ -119,11 +119,7 @@ function handlePaste() {
   }
 
   closeModal();
-  if (document.getElementById('desktop-view') && document.getElementById('desktop-view').classList.contains('active')) {
-    openEditor();
-  } else {
-    mobShowPage('editor');
-  }
+  goToEditor();
 }
 
 document.addEventListener('keydown', event => {

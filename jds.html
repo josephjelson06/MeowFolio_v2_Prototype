@@ -12,127 +12,63 @@
 <link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/modal.css">
 </head>
-<body>
+<body data-workspace-page="jds">
 
-<div class="frame desktop view" id="desktop-view">
-  <nav class="gnav">
-    <a class="gnav-logo" href="dashboard.html">resumeai</a>
-    <div class="gnav-links">
-      <a class="gnav-link" href="dashboard.html">Dashboard</a>
-      <a class="gnav-link" href="resumes.html">Resumes</a>
-      <a class="gnav-link active" href="jds.html">JDs</a>
-    </div>
-    <div class="gnav-right">
-      <a class="avatar" href="profile.html">AK</a>
-    </div>
-  </nav>
+<div class="mob-edit-toggle jd-mobile-tabs">
+  <button class="mob-et-btn active" id="mob-jd-tab-workspace" onclick="setMobJDView('workspace')">Workspace</button>
+  <button class="mob-et-btn" id="mob-jd-tab-report" onclick="setMobJDView('report')">Detailed Report</button>
+</div>
 
-  <div class="jd-page-body">
-    <div class="jd-list-pane">
-      <div class="jd-list-head">
-        <div>
-          <div class="jd-list-title">Saved JDs</div>
-          <div class="page-status" id="desktop-jd-count" style="margin-top:4px">0 JDs</div>
-        </div>
-        <button class="btn-new" style="font-size:10px" onclick="showJDModal()">+ Add JD</button>
+<main class="jd-page-body jd-page" id="jd-page-body">
+  <section class="jd-list-pane">
+    <div class="jd-list-head">
+      <div>
+        <div class="jd-list-title">Saved JDs</div>
+        <div class="page-status jd-count-status" id="jd-count">0 JDs</div>
       </div>
-      <div class="jd-cards" id="desktop-jd-cards"></div>
-      <div class="list-pagination" style="padding:0 12px 12px">
-        <div class="page-status" id="desktop-jd-page">Page 1 of 1</div>
-        <div class="page-controls">
-          <button class="r-action" id="desktop-jd-prev" onclick="changeJDPage(-1)">Previous</button>
-          <button class="r-action" id="desktop-jd-next" onclick="changeJDPage(1)">Next</button>
-        </div>
+      <button class="btn-new jd-add-btn" type="button" onclick="showJDModal()">+ Add JD</button>
+    </div>
+    <div class="jd-cards" id="jd-cards"></div>
+    <div class="list-pagination jd-pagination">
+      <div class="page-status" id="jd-page">Page 1 of 1</div>
+      <div class="page-controls">
+        <button class="r-action" id="jd-prev" type="button" onclick="changeJDPage(-1)">Previous</button>
+        <button class="r-action" id="jd-next" type="button" onclick="changeJDPage(1)">Next</button>
       </div>
+    </div>
+  </section>
+
+  <section class="jd-analyze-pane">
+    <div class="jd-analyze-head">
+      <div>
+        <div class="jd-analyze-title" id="jd-title">No saved JDs</div>
+        <div class="jd-analyze-sub" id="jd-subtitle">Add a JD from the list to continue matching resumes.</div>
+      </div>
+      <button class="run-btn" id="jd-run-btn" type="button" onclick="runJDAnalysis()" disabled>Run Analysis &rarr;</button>
     </div>
 
-    <div class="jd-analyze-pane">
-      <div class="jd-analyze-head">
-        <div class="jd-analyze-title" id="desktop-jd-title">No saved JDs</div>
-        <button class="run-btn" id="jd-run-btn" onclick="runJDAnalysis()" disabled>Run Analysis &rarr;</button>
+    <div class="jd-analyze-body">
+      <div class="jd-pick-col">
+        <div class="jd-pick-head">Select Resume</div>
+        <div class="jd-pick-list" id="jd-resume-list"></div>
       </div>
-      <div class="jd-analyze-body">
-        <div class="jd-pick-col">
-          <div class="jd-pick-head">Select Resume</div>
-          <div class="jd-pick-list" id="desktop-jd-resume-list"></div>
-        </div>
-        <div class="jd-result-col" id="jd-results"></div>
+
+      <div class="jd-result-col">
+        <div id="jd-results"></div>
+        <div class="jd-mobile-report-content hidden" id="jd-mobile-report-content"></div>
       </div>
     </div>
+  </section>
+</main>
+
+<div class="mob-bottom-sheet jd-mobile-sheet" id="mob-jd-sheet">
+  <div class="mob-sheet-handle" onclick="toggleMobJDSheet()"></div>
+  <div class="mob-sheet-head">
+    <span>JD Match Report</span>
+    <button class="close-x" type="button" onclick="toggleMobJDSheet()">&times;</button>
   </div>
-</div><!-- /desktop-view -->
-
-<div class="frame mobile view" id="mobile-view">
-  <div class="mob-frame">
-    <div class="mob-topbar">
-      <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
-      <a class="avatar" style="margin-left:auto" href="profile.html">AK</a>
-    </div>
-    <div class="mob-edit-toggle">
-      <button class="mob-et-btn active" id="mob-jd-tab-workspace" onclick="setMobJDView('workspace')">Workspace</button>
-      <button class="mob-et-btn" id="mob-jd-tab-report" onclick="setMobJDView('report')">Detailed Report</button>
-    </div>
-
-    <div id="mob-jd-workspace-mode" style="flex:1;overflow-y:auto">
-      <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border0)">
-        <div>
-          <div style="font-size:11px;font-weight:500">Saved JDs</div>
-          <div class="page-status" id="mobile-jd-count" style="margin-top:4px">0 JDs</div>
-        </div>
-        <button class="btn-new" style="font-size:10px" onclick="showJDModal()">+ Add JD</button>
-      </div>
-
-      <div class="mob-jd-list" id="mobile-jd-list"></div>
-
-      <div class="list-pagination" style="padding:0 12px 12px">
-        <div class="page-status" id="mobile-jd-page">Page 1 of 1</div>
-        <div class="page-controls">
-          <button class="r-action" id="mobile-jd-prev" onclick="changeJDPage(-1)">Previous</button>
-          <button class="r-action" id="mobile-jd-next" onclick="changeJDPage(1)">Next</button>
-        </div>
-      </div>
-
-      <div class="mob-jd-workbench">
-        <div class="mob-jd-panel">
-          <div class="mob-jd-panel-head">
-            <div>
-              <div class="jd-upload-label" style="margin-bottom:4px">Analyze JD</div>
-              <div class="mob-jd-panel-title" id="mob-jd-selected-title">No saved JDs</div>
-              <div class="mob-jd-panel-sub">Add a JD from the button above to continue matching resumes.</div>
-            </div>
-            <button class="run-btn" id="mob-jd-run-btn" onclick="runMobJDAnalysis()" disabled>Run</button>
-          </div>
-          <div>
-            <div class="jd-upload-label">Select Resume</div>
-            <div class="mob-jd-pick-list" id="mobile-jd-resume-list"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="mob-jd-report-mode" class="hidden" style="flex:1;overflow-y:auto">
-      <div class="mob-ats-pane">
-        <div id="mob-jd-report-content" class="mob-jd-report-content"></div>
-      </div>
-    </div>
-
-    <div class="mob-bottombar">
-      <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></div>
-      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">&#9776;</div><span>Resumes</span></div>
-      <div class="mob-tab active" onclick="mobShowPage('jds')"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></div>
-      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></div>
-    </div>
-
-    <div class="mob-bottom-sheet" id="mob-jd-sheet">
-      <div class="mob-sheet-handle" onclick="toggleMobJDSheet()"></div>
-      <div class="mob-sheet-head">
-        <span>JD Match Report</span>
-        <button class="close-x" onclick="toggleMobJDSheet()">&times;</button>
-      </div>
-      <div class="mob-sheet-body" id="mob-jd-sheet-body"></div>
-    </div>
-  </div>
-</div><!-- /mobile-view -->
+  <div class="mob-sheet-body" id="mob-jd-sheet-body"></div>
+</div>
 
 <div class="modal-overlay" id="jd-modal-overlay" onclick="if(event.target===this)closeJDModal()">
   <div class="modal-box">
@@ -167,7 +103,7 @@
   </div>
 </div>
 
-<script src="js/mobile.js"></script>
+<script src="js/app.js"></script>
 <script src="js/jds.js"></script>
 </body>
 </html>

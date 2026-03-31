@@ -11,91 +11,35 @@
 <link rel="stylesheet" href="css/profile.css">
 <link rel="stylesheet" href="css/mobile.css">
 </head>
-<body>
+<body data-workspace-page="profile">
 
-<div class="frame desktop view" id="desktop-view">
-  <nav class="gnav">
-    <a class="gnav-logo" href="dashboard.html">resumeai</a>
-    <div class="gnav-links">
-      <a class="gnav-link" href="dashboard.html">Dashboard</a>
-      <a class="gnav-link" href="resumes.html">Resumes</a>
-      <a class="gnav-link" href="jds.html">JDs</a>
-    </div>
-    <div class="gnav-right">
-      <a class="avatar" style="border-color:var(--accent-dim)" href="profile.html">AK</a>
-    </div>
-  </nav>
-
-  <div class="profile-body">
-    <div class="profile-section" style="display:flex;align-items:center;gap:16px">
-      <div class="profile-avatar-big">AK</div>
-      <div style="flex:1">
-        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px">
-          <span class="badge-accent">FREE PLAN</span>
-          <span class="badge-info">MEMBER SINCE JAN 2026</span>
-        </div>
-        <div class="profile-name" style="font-size:16px">Arjun Kumar</div>
-        <div class="profile-email">arjun@email.com</div>
+<main class="profile-body profile-page">
+  <section class="profile-section profile-hero">
+    <div class="profile-avatar-big">AK</div>
+    <div class="profile-identity">
+      <div class="profile-badges">
+        <span class="badge-accent">FREE PLAN</span>
+        <span class="badge-info">MEMBER SINCE JAN 2026</span>
       </div>
-      <button class="r-action" style="padding:6px 14px;font-size:11px;border-color:var(--err);color:var(--err)" onclick="window.location.href='index.html'">Logout</button>
+      <div class="profile-name">Arjun Kumar</div>
+      <div class="profile-email">arjun@email.com</div>
     </div>
+    <a class="btn-new profile-logout" href="index.html">Logout</a>
+  </section>
 
-    <div class="profile-section">
-      <div class="profile-section-title">Usage details</div>
-      <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
-      <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
-      <div class="usage-row" style="margin-top:10px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
-      <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
-      <div class="usage-row" style="margin-top:10px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
-      <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
-      <div class="usage-row" style="margin-top:10px"><span>Parses today</span><span style="font-family:var(--font)">3 / 3</span></div>
-      <div class="usage-track"><div class="usage-fill" style="width:100%"></div></div>
-    </div>
-  </div>
-</div><!-- /desktop-view -->
+  <section class="profile-section">
+    <div class="profile-section-title">Usage details</div>
+    <div class="usage-row"><span>ATS analyses</span><span class="profile-usage-value">8 / 50</span></div>
+    <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
+    <div class="usage-row profile-usage-row"><span>JD comparisons</span><span class="profile-usage-value">3 / 20</span></div>
+    <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
+    <div class="usage-row profile-usage-row"><span>PDF exports</span><span class="profile-usage-value">2 / 100</span></div>
+    <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
+    <div class="usage-row profile-usage-row"><span>Parses today</span><span class="profile-usage-value">3 / 3</span></div>
+    <div class="usage-track"><div class="usage-fill" style="width:100%"></div></div>
+  </section>
+</main>
 
-<div class="frame mobile view" id="mobile-view">
-  <div class="mob-frame">
-    <div class="mob-topbar">
-      <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
-      <a class="avatar" style="margin-left:auto;border-color:var(--accent-dim)" href="profile.html">AK</a>
-    </div>
-    <div style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:12px">
-      <div class="profile-section" style="display:flex;align-items:center;gap:12px">
-        <div class="profile-avatar-big" style="width:46px;height:46px;font-size:16px">AK</div>
-        <div style="flex:1">
-          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">
-            <span class="badge-accent" style="font-size:7px">FREE PLAN</span>
-            <span class="badge-info" style="font-size:7px">MEMBER SINCE JAN 2026</span>
-          </div>
-          <div style="font-size:13px;font-weight:500">Arjun Kumar</div>
-          <div style="font-size:10px;color:var(--txt2);margin-top:2px">arjun@email.com</div>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <div class="profile-section-title">Usage details</div>
-        <div class="usage-row"><span>ATS analyses</span><span style="font-family:var(--font)">8 / 50</span></div>
-        <div class="usage-track"><div class="usage-fill" style="width:16%"></div></div>
-        <div class="usage-row" style="margin-top:8px"><span>JD comparisons</span><span style="font-family:var(--font)">3 / 20</span></div>
-        <div class="usage-track"><div class="usage-fill" style="width:15%"></div></div>
-        <div class="usage-row" style="margin-top:8px"><span>PDF exports</span><span style="font-family:var(--font)">2 / 100</span></div>
-        <div class="usage-track"><div class="usage-fill" style="width:2%"></div></div>
-        <div class="usage-row" style="margin-top:8px"><span>Parses today</span><span style="font-family:var(--font)">3 / 3</span></div>
-        <div class="usage-track"><div class="usage-fill" style="width:100%"></div></div>
-      </div>
-
-      <button class="r-action" style="padding:10px;font-size:11px;border-color:var(--err);color:var(--err)" onclick="window.location.href='index.html'">Logout</button>
-    </div>
-    <div class="mob-bottombar">
-      <div class="mob-tab" onclick="mobShowPage('dash')"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></div>
-      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">&#9776;</div><span>Resumes</span></div>
-      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></div>
-      <div class="mob-tab active" onclick="mobShowPage('profile')"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></div>
-    </div>
-  </div>
-</div><!-- /mobile-view -->
-
-<script src="js/mobile.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

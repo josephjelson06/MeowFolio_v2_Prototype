@@ -25,103 +25,75 @@ function getResumePageItems() {
   return RESUME_LIBRARY.slice(start, start + RESUMES_PER_PAGE);
 }
 
-function renderResumeThumb(isMobile) {
+function goToResumeEditor(e) {
+  if (e) e.stopPropagation();
+  window.location.href = 'editor.html';
+}
+
+function renderResumeThumb() {
   return `
-    <div class="${isMobile ? 'mob-res-visual-thumb' : 'res-visual-thumb'}">
-      <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-      <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+    <div class="res-visual-thumb">
+      <div class="pdf-name res-thumb-name">Arjun Kumar</div>
+      <div class="pdf-contact res-thumb-contact">arjun@email.com</div>
       <div class="pdf-divider"></div>
-      <div class="pdf-line d" style="width:55%"></div>
-      <div class="pdf-line" style="width:90%"></div>
-      <div class="pdf-line" style="width:72%"></div>
-      <div class="pdf-line" style="width:66%"></div>
+      <div class="pdf-line d res-thumb-line-short"></div>
+      <div class="pdf-line res-thumb-line-full"></div>
+      <div class="pdf-line res-thumb-line-mid"></div>
+      <div class="pdf-line res-thumb-line-midtwo"></div>
     </div>
   `;
 }
 
-function renderDesktopResumeCard(item) {
+function renderResumeCard(item) {
   return `
-    <div class="res-visual-card" onclick="openEditor()">
-      ${renderResumeThumb(false)}
-      <div class="res-visual-name">${item.name}</div>
-      <div class="res-visual-meta">Last updated ${item.updated} &middot; ${item.template}</div>
-      <div class="res-visual-actions">
-        <button class="r-action primary" onclick="openEditor(event)">&#9998;</button>
-        <button class="r-action" onclick="renameResume('${item.id}', event)">Rename</button>
-        <button class="r-action" onclick="downloadResume('${item.id}', event)">&#11015;</button>
-        <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteResume('${item.id}', event)">&#128465;</button>
-      </div>
-    </div>
-  `;
-}
-
-function renderMobileResumeCard(item) {
-  return `
-    <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
-      ${renderResumeThumb(true)}
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-        <div>
-          <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">${item.name}</div>
-          <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated ${item.updated} &middot; ${item.template}</div>
+    <article class="res-card" onclick="goToResumeEditor()">
+      ${renderResumeThumb()}
+      <div class="res-card-body">
+        <div class="res-card-top">
+          <div>
+            <div class="res-visual-name">${item.name}</div>
+            <div class="res-visual-meta">Last updated ${item.updated} &middot; ${item.template}</div>
+          </div>
+          ${item.recent ? '<span class="badge-outline">MOST RECENT</span>' : ''}
         </div>
-        <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
-          <button class="r-action primary" onclick="mobShowPage('editor');event.stopPropagation()">&#9998;</button>
-          <button class="r-action" onclick="renameResume('${item.id}', event)">Rename</button>
-          <button class="r-action" onclick="downloadResume('${item.id}', event)">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteResume('${item.id}', event)">&#128465;</button>
+        <div class="res-card-actions">
+          <button class="r-action primary" type="button" onclick="goToResumeEditor(event)">&#9998;</button>
+          <button class="r-action" type="button" onclick="renameResume('${item.id}', event)">Rename</button>
+          <button class="r-action" type="button" onclick="downloadResume('${item.id}', event)">&#11015;</button>
+          <button class="r-action res-delete-action" type="button" onclick="deleteResume('${item.id}', event)">&#128465;</button>
         </div>
       </div>
-    </div>
+    </article>
   `;
 }
 
-function renderResumePagination(statusId, prevId, nextId) {
-  const status = document.getElementById(statusId);
-  const prev = document.getElementById(prevId);
-  const next = document.getElementById(nextId);
+function renderResumeLibrary() {
+  const count = document.getElementById('resume-count');
+  const grid = document.getElementById('resume-grid');
+  const status = document.getElementById('resume-page');
+  const prev = document.getElementById('resume-prev');
+  const next = document.getElementById('resume-next');
+  const total = RESUME_LIBRARY.length;
   const totalPages = getResumeTotalPages();
+  const pageItems = getResumePageItems();
+
+  if (count) count.textContent = `${total} RESUMES`;
+
+  if (grid) {
+    grid.innerHTML = `
+      <button class="res-new-card" type="button" onclick="showModal()">
+        <div class="res-new-plus">+</div>
+        <div class="section-label">CREATE NEW RESUME</div>
+        <div class="res-new-title">Upload or start blank</div>
+        <div class="res-new-desc">Open the modal, import an existing resume, or create a fresh version from scratch.</div>
+      </button>
+      ${pageItems.map(renderResumeCard).join('')}
+    `;
+  }
 
   if (status) status.textContent = `Page ${resumePage} of ${totalPages}`;
   if (prev) prev.disabled = resumePage === 1;
   if (next) next.disabled = resumePage === totalPages;
-}
-
-function renderResumeLibrary() {
-  const desktopCount = document.getElementById('desktop-resume-count');
-  const mobileCount = document.getElementById('mobile-resume-count');
-  const desktopGrid = document.getElementById('desktop-resume-grid');
-  const mobileList = document.getElementById('mobile-resume-list');
-  const total = RESUME_LIBRARY.length;
-  const pageItems = getResumePageItems();
-
-  if (desktopCount) desktopCount.textContent = `${total} RESUMES`;
-  if (mobileCount) mobileCount.textContent = `${total} RESUMES`;
-
-  if (desktopGrid) {
-    desktopGrid.innerHTML = `
-      <div class="res-new-card" onclick="showModal()">
-        <div class="res-new-plus">+</div>
-        <div class="section-label">CREATE NEW RESUME</div>
-        <div class="res-new-title">Upload or start blank</div>
-        <div class="res-new-desc">Open the modal, upload an existing resume, or create a new one from scratch.</div>
-      </div>
-      ${pageItems.map(renderDesktopResumeCard).join('')}
-    `;
-  }
-
-  if (mobileList) {
-    mobileList.innerHTML = `
-      <div class="mob-res-create-card" onclick="showModal()">
-        <div class="mob-res-create-plus">+</div>
-        <div class="mob-res-create-label">CREATE NEW RESUME</div>
-        <div class="mob-res-create-title">Upload or start blank</div>
-      </div>
-      ${pageItems.map(renderMobileResumeCard).join('')}
-    `;
-  }
-
-  renderResumePagination('desktop-resume-page', 'desktop-resume-prev', 'desktop-resume-next');
-  renderResumePagination('mobile-resume-page', 'mobile-resume-prev', 'mobile-resume-next');
 }
 
 function changeResumePage(delta) {

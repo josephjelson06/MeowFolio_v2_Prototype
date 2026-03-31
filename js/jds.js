@@ -20,8 +20,7 @@ const JD_PAGE_SIZE = 5;
 let jdPage = 1;
 let selectedJDId = 1;
 let selectedResume = null;
-let mobSelectedResume = null;
-let lastMobJDAnalysis = null;
+let lastJDAnalysis = null;
 let lastJDUploadName = '';
 
 function getJDById(id) {
@@ -51,6 +50,10 @@ function ensureSelectedJD() {
   if (!getJDById(selectedJDId)) selectedJDId = JD_DATA[0].id;
 }
 
+function isMobileViewport() {
+  return window.matchMedia('(max-width: 768px)').matches;
+}
+
 function renderEmptyState(message) {
   return `
     <div class="jd-no-result">
@@ -60,115 +63,46 @@ function renderEmptyState(message) {
   `;
 }
 
-function renderJDResultCard(resumeKey, jdId) {
-  const resume = RESUME_DATA[resumeKey];
-  const jd = getJDById(jdId);
-  if (!resume || !jd) return renderEmptyState('Select a valid JD and resume to view the match report.');
-
-  const scoreColor = resume.cls === 'high' ? 'var(--accent)' : resume.cls === 'mid' ? 'var(--warn)' : 'var(--err)';
-
+function renderJDCard(jd) {
   return `
-    <div class="match-result-card">
-      <div class="match-res-header">
-        <div class="match-res-info">
-          <div class="match-res-label">Resume vs Job Description</div>
-          <div class="match-res-name">${resumeKey}</div>
-          <div style="font-size:10px;color:var(--txt2);margin-top:2px">${jd.title} &middot; ${jd.company}</div>
-        </div>
-        <div class="match-score-badge">
-          <div class="match-score ${resume.cls}">${resume.score}%</div>
-          <div class="match-score-label">match score</div>
-        </div>
-      </div>
-      <div class="match-bar-track">
-        <div class="match-bar-fill" style="width:${resume.score}%;background:${scoreColor}"></div>
-      </div>
-      <div class="match-kw-section">
-        <div class="match-kw-heading">&#10003; Keywords found (${resume.found.length})</div>
-        <div class="match-kw">
-          ${resume.found.map(keyword => `<span class="match-kw-tag found">${keyword}</span>`).join('')}
-        </div>
-      </div>
-      <div class="match-kw-section">
-        <div class="match-kw-heading">&#10007; Missing keywords (${resume.miss.length})</div>
-        <div class="match-kw">
-          ${resume.miss.map(keyword => `<span class="match-kw-tag miss">${keyword}</span>`).join('')}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderDesktopJDCard(jd) {
-  return `
-    <div class="jd-card${jd.id === selectedJDId ? ' active' : ''}" data-jd="${jd.id}" onclick="selectJD(${jd.id})">
+    <article class="jd-card${jd.id === selectedJDId ? ' active' : ''}" data-jd="${jd.id}" onclick="selectJD(${jd.id})">
       <div class="jd-card-title">${jd.title}</div>
-      <div class="jd-card-co">${jd.company} &middot; ${jd.type}</div>
+      <div class="jd-card-sub">${jd.company} &middot; ${jd.type}</div>
       <div class="jd-card-foot">
         <span class="jd-card-badge">${jd.badge}</span>
         <div class="jd-card-actions">
-          <button class="r-action" onclick="renameJD(${jd.id}, event)">Rename</button>
-          <button class="r-action" onclick="downloadJD(${jd.id}, event)">&#11015;</button>
-          <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(${jd.id}, event)">&#128465;</button>
+          <button class="r-action" type="button" onclick="renameJD(${jd.id}, event)">Rename</button>
+          <button class="r-action" type="button" onclick="downloadJD(${jd.id}, event)">&#11015;</button>
+          <button class="r-action jd-delete-action" type="button" onclick="deleteJD(${jd.id}, event)">&#128465;</button>
         </div>
       </div>
-    </div>
-  `;
-}
-
-function renderMobileJDCard(jd) {
-  return `
-    <div class="mob-jd-card${jd.id === selectedJDId ? ' active' : ''}" data-jd="${jd.id}" onclick="selectMobJD(${jd.id})">
-      <div class="mob-jd-title">${jd.title}</div>
-      <div class="mob-jd-co">${jd.company} &middot; ${jd.type}</div>
-      <div class="mob-jd-action">
-        <button class="r-action primary" onclick="prepareMobJDAnalysis(${jd.id}, event)">Analyze Match</button>
-        <button class="r-action" onclick="renameJD(${jd.id}, event)">Rename</button>
-        <button class="r-action" onclick="downloadJD(${jd.id}, event)">&#11015;</button>
-        <button class="r-action" style="border-color:var(--err);color:var(--err)" onclick="deleteJD(${jd.id}, event)">&#128465;</button>
-      </div>
-    </div>
+    </article>
   `;
 }
 
 function renderJDPagination() {
   const totalPages = getTotalJDPages();
-  const desktopPage = document.getElementById('desktop-jd-page');
-  const mobilePage = document.getElementById('mobile-jd-page');
-  const desktopPrev = document.getElementById('desktop-jd-prev');
-  const desktopNext = document.getElementById('desktop-jd-next');
-  const mobilePrev = document.getElementById('mobile-jd-prev');
-  const mobileNext = document.getElementById('mobile-jd-next');
+  const page = document.getElementById('jd-page');
+  const prev = document.getElementById('jd-prev');
+  const next = document.getElementById('jd-next');
 
-  if (desktopPage) desktopPage.textContent = `Page ${jdPage} of ${totalPages}`;
-  if (mobilePage) mobilePage.textContent = `Page ${jdPage} of ${totalPages}`;
-  if (desktopPrev) desktopPrev.disabled = jdPage === 1;
-  if (desktopNext) desktopNext.disabled = jdPage === totalPages;
-  if (mobilePrev) mobilePrev.disabled = jdPage === 1;
-  if (mobileNext) mobileNext.disabled = jdPage === totalPages;
+  if (page) page.textContent = `Page ${jdPage} of ${totalPages}`;
+  if (prev) prev.disabled = jdPage === 1;
+  if (next) next.disabled = jdPage === totalPages;
 }
 
 function renderJDLists() {
   ensureSelectedJD();
 
-  const desktopCount = document.getElementById('desktop-jd-count');
-  const mobileCount = document.getElementById('mobile-jd-count');
-  const desktopCards = document.getElementById('desktop-jd-cards');
-  const mobileCards = document.getElementById('mobile-jd-list');
+  const count = document.getElementById('jd-count');
+  const cards = document.getElementById('jd-cards');
   const pageItems = getCurrentJDPageItems();
 
-  if (desktopCount) desktopCount.textContent = `${JD_DATA.length} JDs`;
-  if (mobileCount) mobileCount.textContent = `${JD_DATA.length} JDs`;
+  if (count) count.textContent = `${JD_DATA.length} JDs`;
 
-  if (desktopCards) {
-    desktopCards.innerHTML = pageItems.length
-      ? pageItems.map(renderDesktopJDCard).join('')
-      : renderEmptyState('No saved JDs yet. Add one to begin matching.');
-  }
-
-  if (mobileCards) {
-    mobileCards.innerHTML = pageItems.length
-      ? pageItems.map(renderMobileJDCard).join('')
+  if (cards) {
+    cards.innerHTML = pageItems.length
+      ? pageItems.map(renderJDCard).join('')
       : renderEmptyState('No saved JDs yet. Add one to begin matching.');
   }
 
@@ -176,64 +110,38 @@ function renderJDLists() {
   updateJDTitles();
 }
 
-function renderResumePickers() {
-  const desktopList = document.getElementById('desktop-jd-resume-list');
-  const mobileList = document.getElementById('mobile-jd-resume-list');
+function renderResumePicker() {
+  const list = document.getElementById('jd-resume-list');
+  if (!list) return;
+
   const keys = Object.keys(RESUME_DATA);
-
-  if (desktopList) {
-    desktopList.innerHTML = keys.map(key => `
-      <div class="jd-pick-item${selectedResume === key ? ' selected' : ''}" data-resume="${key}" onclick="selectResume('${key}')">
-        <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-        <span class="jd-pick-label">${key}</span>
-      </div>
-    `).join('');
-  }
-
-  if (mobileList) {
-    mobileList.innerHTML = keys.map(key => `
-      <div class="jd-pick-item${mobSelectedResume === key ? ' selected' : ''}" data-mob-resume="${key}" onclick="selectMobResume('${key}')">
-        <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
-        <span class="jd-pick-label">${key}</span>
-      </div>
-    `).join('');
-  }
+  list.innerHTML = keys.map(key => `
+    <div class="jd-pick-item${selectedResume === key ? ' selected' : ''}" data-resume="${key}" onclick="selectResume('${key}')">
+      <div class="jd-pick-radio"><div class="jd-pick-radio-dot"></div></div>
+      <span class="jd-pick-label">${key}</span>
+    </div>
+  `).join('');
 }
 
 function updateJDTitles() {
   const jd = getJDById(selectedJDId);
-  const desktopTitle = document.getElementById('desktop-jd-title');
-  const mobileTitle = document.getElementById('mob-jd-selected-title');
-  const mobileSub = document.querySelector('.mob-jd-panel-sub');
+  const title = document.getElementById('jd-title');
+  const subtitle = document.getElementById('jd-subtitle');
 
   if (!jd) {
-    if (desktopTitle) desktopTitle.textContent = 'No saved JDs';
-    if (mobileTitle) mobileTitle.textContent = 'No saved JDs';
-    if (mobileSub) mobileSub.textContent = 'Add a JD from the button above to continue matching resumes.';
+    if (title) title.textContent = 'No saved JDs';
+    if (subtitle) subtitle.textContent = 'Add a JD from the list to continue matching resumes.';
     return;
   }
 
-  if (desktopTitle) desktopTitle.textContent = `${jd.title} - ${jd.company}`;
-  if (mobileTitle) mobileTitle.textContent = `${jd.title} - ${jd.company}`;
-  if (mobileSub) mobileSub.textContent = 'Choose a resume and run the same match workflow available on desktop.';
+  if (title) title.textContent = `${jd.title} - ${jd.company}`;
+  if (subtitle) subtitle.textContent = 'Choose a resume and run the same match workflow across desktop and mobile.';
 }
 
-function updateRunButtons() {
-  const desktopRun = document.getElementById('jd-run-btn');
-  const mobileRun = document.getElementById('mob-jd-run-btn');
+function updateRunButton() {
+  const runButton = document.getElementById('jd-run-btn');
   const hasJD = Boolean(getJDById(selectedJDId));
-
-  if (desktopRun) desktopRun.disabled = !selectedResume || !hasJD;
-  if (mobileRun) mobileRun.disabled = !mobSelectedResume || !hasJD;
-}
-
-function clearJDResults() {
-  const results = document.getElementById('jd-results');
-  if (!results) return;
-
-  results.innerHTML = getJDById(selectedJDId)
-    ? renderEmptyState('Select a resume on the left,<br>then click <strong style="color:var(--txt1)">Run Analysis</strong>')
-    : renderEmptyState('Add a JD to start matching resumes.');
+  if (runButton) runButton.disabled = !selectedResume || !hasJD;
 }
 
 function getJDReportModel(resumeKey, jdId) {
@@ -268,18 +176,57 @@ function getJDReportModel(resumeKey, jdId) {
   };
 }
 
-function renderMobJDReportEmpty() {
+function renderJDResultCard(model) {
   return `
-    <div class="mob-jd-panel">
-      <div class="jd-no-result" style="min-height:240px">
-        <div class="jd-no-result-icon">&#9678;</div>
-        <div class="jd-no-result-txt">Run a JD analysis from the workspace tab to view the detailed report.</div>
+    <div class="match-result-card">
+      <div class="match-res-header">
+        <div class="match-res-info">
+          <div class="match-res-label">Resume vs Job Description</div>
+          <div class="match-res-name">${model.resumeKey}</div>
+          <div class="match-res-sub">${model.jd.title} &middot; ${model.jd.company}</div>
+        </div>
+        <div class="match-score-badge">
+          <div class="match-score ${model.resume.cls}">${model.resume.score}%</div>
+          <div class="match-score-label">match score</div>
+        </div>
+      </div>
+      <div class="match-bar-track">
+        <div class="match-bar-fill" style="width:${model.resume.score}%;background:${model.scoreColor}"></div>
+      </div>
+      <div class="match-kw-section">
+        <div class="match-kw-heading">&#10003; Keywords found (${model.resume.found.length})</div>
+        <div class="match-kw">
+          ${model.resume.found.map(keyword => `<span class="match-kw-tag found">${keyword}</span>`).join('')}
+        </div>
+      </div>
+      <div class="match-kw-section">
+        <div class="match-kw-heading">&#10007; Missing keywords (${model.resume.miss.length})</div>
+        <div class="match-kw">
+          ${model.resume.miss.map(keyword => `<span class="match-kw-tag miss">${keyword}</span>`).join('')}
+        </div>
       </div>
     </div>
   `;
 }
 
-function renderMobJDSummary(model) {
+function renderMobileReportEmpty() {
+  return `
+    <div class="match-result-card">
+      ${renderEmptyState('Run a JD analysis from the workspace tab to view the detailed report.')}
+    </div>
+  `;
+}
+
+function renderMobileSheetEmpty() {
+  return `
+    <div class="jd-no-result" style="min-height:180px">
+      <div class="jd-no-result-icon">&#9678;</div>
+      <div class="jd-no-result-txt">Run a JD analysis to preview the report summary here.</div>
+    </div>
+  `;
+}
+
+function renderMobileSheetSummary(model) {
   return `
     <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
       <span style="font-size:32px;font-weight:600;font-family:var(--font);color:${model.scoreColor}">${model.resume.score}</span>
@@ -302,7 +249,7 @@ function renderMobJDSummary(model) {
   `;
 }
 
-function renderMobJDDetailedReport(model) {
+function renderMobileDetailedReport(model) {
   return `
     <div class="ats-score-card mob-ats-score-card">
       <div class="ats-score-num" style="color:${model.scoreColor}">${model.resume.score}</div>
@@ -310,7 +257,7 @@ function renderMobJDDetailedReport(model) {
         <div class="ats-score-label">${model.verdict}</div>
         <div class="ats-score-desc">${model.resumeKey} &middot; ${model.jd.title} &middot; ${model.jd.company}</div>
       </div>
-      <button class="analyze-btn" onclick="setMobJDView('workspace')">Back to Workspace</button>
+      <button class="analyze-btn" type="button" onclick="setMobJDView('workspace')">Back to Workspace</button>
     </div>
     <div class="ats-bars">
       ${model.metrics.map(metric => `
@@ -327,7 +274,7 @@ function renderMobJDDetailedReport(model) {
         </div>
       `).join('')}
     </div>
-    <div class="mob-jd-panel">
+    <div class="match-result-card">
       <div class="match-kw-section">
         <div class="match-kw-heading">&#10003; Keywords found (${model.resume.found.length})</div>
         <div class="match-kw">
@@ -344,43 +291,47 @@ function renderMobJDDetailedReport(model) {
   `;
 }
 
-function renderMobJDReportState() {
-  const reportContent = document.getElementById('mob-jd-report-content');
+function renderResultState() {
+  const resultHost = document.getElementById('jd-results');
+  const mobileReportHost = document.getElementById('jd-mobile-report-content');
   const sheetBody = document.getElementById('mob-jd-sheet-body');
-  if (!reportContent || !sheetBody) return;
 
-  if (!lastMobJDAnalysis || !getJDById(lastMobJDAnalysis.jdId)) {
-    reportContent.innerHTML = renderMobJDReportEmpty();
-    sheetBody.innerHTML = `
-      <div class="jd-no-result" style="min-height:180px">
-        <div class="jd-no-result-icon">&#9678;</div>
-        <div class="jd-no-result-txt">Run a JD analysis to preview the report summary here.</div>
-      </div>
-    `;
+  if (!resultHost || !mobileReportHost || !sheetBody) return;
+
+  if (!lastJDAnalysis || !getJDById(lastJDAnalysis.jdId)) {
+    resultHost.innerHTML = getJDById(selectedJDId)
+      ? renderEmptyState('Select a resume, then click <strong style="color:var(--txt1)">Run Analysis</strong>.')
+      : renderEmptyState('Add a JD to start matching resumes.');
+    mobileReportHost.innerHTML = renderMobileReportEmpty();
+    sheetBody.innerHTML = renderMobileSheetEmpty();
     return;
   }
 
-  const model = getJDReportModel(lastMobJDAnalysis.resumeKey, lastMobJDAnalysis.jdId);
-  reportContent.innerHTML = renderMobJDDetailedReport(model);
-  sheetBody.innerHTML = renderMobJDSummary(model);
+  const model = getJDReportModel(lastJDAnalysis.resumeKey, lastJDAnalysis.jdId);
+  resultHost.innerHTML = renderJDResultCard(model);
+  mobileReportHost.innerHTML = renderMobileDetailedReport(model);
+  sheetBody.innerHTML = renderMobileSheetSummary(model);
+}
+
+function clearJDAnalysis() {
+  lastJDAnalysis = null;
+  renderResultState();
+  const sheet = document.getElementById('mob-jd-sheet');
+  if (sheet) sheet.classList.remove('open');
 }
 
 function setMobJDView(view) {
   const workspaceTab = document.getElementById('mob-jd-tab-workspace');
   const reportTab = document.getElementById('mob-jd-tab-report');
-  const workspaceMode = document.getElementById('mob-jd-workspace-mode');
-  const reportMode = document.getElementById('mob-jd-report-mode');
-  if (!workspaceTab || !reportTab || !workspaceMode || !reportMode) return;
+  const pageBody = document.getElementById('jd-page-body');
+  const sheet = document.getElementById('mob-jd-sheet');
+  if (!workspaceTab || !reportTab || !pageBody) return;
 
   workspaceTab.classList.toggle('active', view === 'workspace');
   reportTab.classList.toggle('active', view === 'report');
-  workspaceMode.classList.toggle('hidden', view !== 'workspace');
-  reportMode.classList.toggle('hidden', view !== 'report');
+  pageBody.classList.toggle('report-view', view === 'report');
 
-  if (view === 'report') {
-    const sheet = document.getElementById('mob-jd-sheet');
-    if (sheet) sheet.classList.remove('open');
-  }
+  if (view === 'report' && sheet) sheet.classList.remove('open');
 }
 
 function toggleMobJDSheet() {
@@ -394,56 +345,33 @@ function openMobJDReport() {
   setMobJDView('report');
 }
 
-function clearMobJDResults() {
-  lastMobJDAnalysis = null;
-  renderMobJDReportState();
-  const sheet = document.getElementById('mob-jd-sheet');
-  if (sheet) sheet.classList.remove('open');
-}
-
 function selectJD(id) {
   if (!getJDById(id)) return;
   selectedJDId = id;
   jdPage = getJDPageForId(id);
   renderJDLists();
-  renderResumePickers();
-  updateRunButtons();
-  clearJDResults();
-  clearMobJDResults();
-}
-
-function selectMobJD(id) {
-  selectJD(id);
-  const panel = document.getElementById('mob-jd-selected-title');
-  if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderResumePicker();
+  updateRunButton();
+  clearJDAnalysis();
 }
 
 function selectResume(key) {
   selectedResume = key;
-  renderResumePickers();
-  updateRunButtons();
-  clearJDResults();
-}
-
-function selectMobResume(key) {
-  mobSelectedResume = key;
-  renderResumePickers();
-  updateRunButtons();
-  clearMobJDResults();
+  renderResumePicker();
+  updateRunButton();
+  clearJDAnalysis();
 }
 
 function runJDAnalysis() {
   if (!selectedResume || !getJDById(selectedJDId)) return;
-  const results = document.getElementById('jd-results');
-  if (results) results.innerHTML = renderJDResultCard(selectedResume, selectedJDId);
-}
+  lastJDAnalysis = { resumeKey: selectedResume, jdId: selectedJDId };
+  renderResultState();
 
-function runMobJDAnalysis() {
-  if (!mobSelectedResume || !getJDById(selectedJDId)) return;
-  lastMobJDAnalysis = { resumeKey: mobSelectedResume, jdId: selectedJDId };
-  renderMobJDReportState();
-  const sheet = document.getElementById('mob-jd-sheet');
-  if (sheet) sheet.classList.add('open');
+  if (isMobileViewport()) {
+    setMobJDView('workspace');
+    const sheet = document.getElementById('mob-jd-sheet');
+    if (sheet) sheet.classList.add('open');
+  }
 }
 
 function changeJDPage(delta) {
@@ -462,8 +390,7 @@ function renameJD(id, e) {
 
   jd.title = nextName.trim();
   renderJDLists();
-  if (selectedResume && selectedJDId === id) runJDAnalysis();
-  if (lastMobJDAnalysis && lastMobJDAnalysis.jdId === id) renderMobJDReportState();
+  renderResultState();
 }
 
 function downloadJD(id, e) {
@@ -486,16 +413,15 @@ function deleteJD(id, e) {
   if (e) e.stopPropagation();
   JD_DATA = JD_DATA.filter(jd => jd.id !== id);
 
-  if (lastMobJDAnalysis && lastMobJDAnalysis.jdId === id) lastMobJDAnalysis = null;
+  if (lastJDAnalysis && lastJDAnalysis.jdId === id) lastJDAnalysis = null;
   ensureSelectedJD();
   jdPage = Math.min(jdPage, getTotalJDPages());
   if (selectedJDId) jdPage = getJDPageForId(selectedJDId);
 
   renderJDLists();
-  renderResumePickers();
-  updateRunButtons();
-  clearJDResults();
-  renderMobJDReportState();
+  renderResumePicker();
+  updateRunButton();
+  renderResultState();
 }
 
 function buildParsedJDPreview(fileName) {
@@ -576,8 +502,8 @@ function handleJDFileSelect() {
   const pasteArea = document.getElementById('jd-modal-paste-area');
   const pasteButton = document.getElementById('jd-modal-paste-btn');
   if (!uploadInput || !pasteArea || !pasteButton || !uploadInput.files || !uploadInput.files[0]) return;
-  lastJDUploadName = uploadInput.files[0].name;
 
+  lastJDUploadName = uploadInput.files[0].name;
   setJDModalMode('paste');
   pasteArea.value = buildParsedJDPreview(lastJDUploadName);
   pasteButton.classList.add('active');
@@ -629,27 +555,22 @@ function handleJDPaste() {
     return;
   }
 
-  const nextJD = buildJDFromText(
-    pasteArea.value.trim(),
-    lastJDUploadName
-  );
-
+  const nextJD = buildJDFromText(pasteArea.value.trim(), lastJDUploadName);
   JD_DATA.unshift(nextJD);
   selectedJDId = nextJD.id;
   jdPage = getJDPageForId(nextJD.id);
+
   closeJDModal();
   renderJDLists();
-  renderResumePickers();
-  updateRunButtons();
-  clearJDResults();
-  clearMobJDResults();
+  renderResumePicker();
+  updateRunButton();
+  clearJDAnalysis();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   renderJDLists();
-  renderResumePickers();
-  updateRunButtons();
-  clearJDResults();
-  clearMobJDResults();
+  renderResumePicker();
+  updateRunButton();
+  renderResultState();
   setMobJDView('workspace');
 });

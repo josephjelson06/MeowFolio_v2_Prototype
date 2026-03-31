@@ -11,124 +11,46 @@
 <link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/public.css">
 </head>
-<body>
+<body
+  data-public-page="500"
+  data-auth-copy="The 500 page now uses the same shared entry path too. Once the workspace is available again, Google sign-in drops the user back into the same prototype flow."
+  data-auth-accent="GOOGLE ONLY"
+  data-auth-info="SHARED ENTRY"
+  data-auth-outline="WORKSPACE READY"
+  data-auth-preview-title="A connected fallback"
+  data-auth-preview-copy="Even the error handling pages now share the same desktop and mobile design system as the rest of resumeai, so the public layer feels fully incorporated."
+  data-auth-note="If the issue persists, return from Home once the flow has reset."
+>
 
-<div class="frame desktop view" id="desktop-view">
-  <nav class="gnav">
-    <a class="gnav-logo" href="index.html">resumeai</a>
-    <div class="gnav-links">
-      <a class="gnav-link" href="index.html">Home</a>
-      <a class="gnav-link" href="about.html">About</a>
-    </div>
-    <div class="gnav-right">
-      <button class="btn-new" type="button" onclick="showAuthModal()">Login / Signup</button>
-    </div>
-  </nav>
-
-  <div class="pub-desktop-body">
-    <section class="pub-panel pub-error-grid">
-      <article class="pub-error-card">
-        <div class="pub-copy-badges">
-          <span class="badge-accent">500</span>
-          <span class="badge-info">WORKSPACE ISSUE</span>
-        </div>
-        <div class="pub-error-code warn">500</div>
-        <div class="pub-section-title" style="margin-top:12px">The workspace hit a temporary snag.</div>
-        <div class="pub-text" style="margin-top:8px">This state stands in for a failed render, parse, or analysis request. It still lives inside the same product family, so the fallback feels like a part of resumeai instead of a disconnected dead-end page.</div>
-        <div class="pub-error-actions">
-          <a class="btn-new" href="index.html">Return Home</a>
-          <a class="pub-link-btn" href="about.html">Read About</a>
-        </div>
-      </article>
-
-      <article class="pub-panel">
-        <div class="section-label" style="margin-bottom:8px">STATUS</div>
-        <div class="pub-section-title">When this clears, the same workflow is waiting.</div>
-        <div class="pub-text" style="margin-top:8px">Once the issue is gone, the user lands back in the same dashboard, resumes, editor, JD, and profile loop. The 500 page now matches that environment in layout, tone, and navigation.</div>
-        <div class="pub-chip-row">
-          <span class="badge-outline">Dashboard</span>
-          <span class="badge-outline">Editor</span>
-          <span class="badge-outline">JD Analysis</span>
-        </div>
-      </article>
-    </section>
-
-    <div class="pub-footer-row">
-      <span>&copy; 2026 resumeai</span>
-      <div class="pub-footer-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="404.html">404</a>
+<main class="pub-desktop-body pub-page">
+  <section class="pub-panel pub-error-grid">
+    <article class="pub-error-card">
+      <div class="pub-copy-badges">
+        <span class="badge-accent">500</span>
+        <span class="badge-info">WORKSPACE ISSUE</span>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="frame mobile view" id="mobile-view">
-  <div class="mob-frame">
-    <div class="mob-topbar">
-      <a class="mob-topbar-logo" href="index.html">resumeai</a>
-      <button class="r-action primary" type="button" style="margin-left:auto" onclick="showAuthModal()">Login</button>
-    </div>
-    <div class="mob-edit-toggle">
-      <a class="mob-et-btn" href="index.html">Home</a>
-      <a class="mob-et-btn" href="about.html">About</a>
-    </div>
-
-    <div class="pub-mobile-scroll">
-      <section class="pub-mob-panel">
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <span class="badge-accent" style="font-size:8px">500</span>
-          <span class="badge-info" style="font-size:8px">WORKSPACE ISSUE</span>
-        </div>
-        <div class="pub-error-code warn" style="margin:0 auto">500</div>
-        <div class="pub-mob-headline">The workspace hit a temporary snag.</div>
-        <div class="pub-mob-text">The error state now uses the same mobile design language as the rest of the product, so it still feels like one system while the workflow is unavailable.</div>
-        <div class="pub-mob-top-actions">
-          <a class="btn-new" href="index.html">Return Home</a>
-          <a class="pub-link-btn" href="about.html">About</a>
-        </div>
-      </section>
-
-      <section class="pub-mob-panel">
-        <div class="pub-section-title">What this means</div>
-        <div class="pub-mob-text">This page stands in for a failed render, parse, or JD analysis request. Once it clears, the same dashboard flow continues.</div>
-      </section>
-
-      <div class="pub-footer-row">
-        <span>&copy; 2026 resumeai</span>
-        <div class="pub-footer-links">
-          <a href="index.html">Home</a>
-          <a href="about.html">About</a>
-          <a href="404.html">404</a>
-        </div>
+      <div class="pub-error-code warn">500</div>
+      <div class="pub-section-title pub-error-title">The workspace hit a temporary snag.</div>
+      <div class="pub-text pub-error-copy">This state stands in for a failed render, parse, or analysis request. It still lives inside the same product family, so the fallback feels like a part of resumeai instead of a disconnected dead-end page.</div>
+      <div class="pub-error-actions">
+        <a class="btn-new" href="index.html">Return Home</a>
+        <a class="pub-link-btn" href="about.html">Read About</a>
       </div>
-    </div>
-  </div>
-</div>
+    </article>
 
-<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
-  <div class="auth-modal-box">
-    <button class="auth-close" type="button" onclick="closeAuthModal()">&times;</button>
-    <div class="section-label" style="margin-bottom:8px">SIGN IN / SIGN UP</div>
-    <div class="auth-title">Continue with Google</div>
-    <div class="auth-copy">The 500 page now uses the same shared entry path too. Once the workspace is available again, Google sign-in drops the user back into the same prototype flow.</div>
-    <div class="auth-highlights">
-      <span class="badge-accent">GOOGLE ONLY</span>
-      <span class="badge-info">SHARED ENTRY</span>
-      <span class="badge-outline">WORKSPACE READY</span>
-    </div>
-    <div class="auth-preview">
-      <div class="pub-card-title">A connected fallback</div>
-      <div class="pub-card-copy">Even the error handling pages now share the same desktop and mobile design system as the rest of resumeai, so the public layer feels fully incorporated.</div>
-    </div>
-    <button class="auth-google-btn" type="button" onclick="continueWithGoogle()">
-      <span>G</span>
-      <span>Continue with Google</span>
-    </button>
-    <div class="auth-note">If the issue persists, return from Home once the flow has reset.</div>
-  </div>
-</div>
+    <article class="pub-panel">
+      <div class="section-label pub-error-label">STATUS</div>
+      <div class="pub-section-title">When this clears, the same workflow is waiting.</div>
+      <div class="pub-text pub-error-copy">Once the issue is gone, the user lands back in the same dashboard, resumes, editor, JD, and profile loop. The 500 page now matches that environment in layout, tone, and navigation.</div>
+      <div class="pub-chip-row">
+        <span class="badge-outline">Dashboard</span>
+        <span class="badge-outline">Editor</span>
+        <span class="badge-outline">JD Analysis</span>
+      </div>
+    </article>
+  </section>
+
+</main>
 
 <script src="js/auth.js"></script>
 </body>

@@ -12,220 +12,122 @@
 <link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/modal.css">
 </head>
-<body>
+<body data-workspace-page="dashboard">
 
-<!-- DESKTOP -->
-<div class="frame desktop view" id="desktop-view">
-  <nav class="gnav">
-    <a class="gnav-logo" href="dashboard.html">resumeai</a>
-    <div class="gnav-links">
-      <a class="gnav-link active" href="dashboard.html">Dashboard</a>
-      <a class="gnav-link" href="resumes.html">Resumes</a>
-      <a class="gnav-link" href="jds.html">JDs</a>
-    </div>
-    <div class="gnav-right">
-      <a class="avatar" href="profile.html">AK</a>
-    </div>
-  </nav>
+<main class="dash-body dash-page">
+  <div class="dash-greeting-label">WELCOME BACK</div>
+  <div class="dash-greeting-name">Good afternoon, Arjun Kumar!</div>
 
-  <div class="dash-body">
-    <div class="dash-greeting-label">WELCOME BACK</div>
-    <div class="dash-greeting-name">Good afternoon, Arjun Kumar!</div>
-    <div class="dash-stats-row">
-      <div class="dash-stat-big">
-        <div class="dash-stat-icon">&#9678;</div>
-        <div class="dash-stat-label">Average ATS Score</div>
-        <div class="dash-stat-num">74%</div>
-        <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:74%"></div></div>
-      </div>
-      <div class="dash-stat-big">
-        <div class="dash-stat-icon">&#9670;</div>
-        <div class="dash-stat-label">Resume Strength</div>
-        <div class="dash-stat-num">79%</div>
-        <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:79%"></div></div>
-      </div>
-      <div class="dash-stat-big">
-        <div class="dash-stat-icon">&#8857;</div>
-        <div class="dash-stat-label">JD Match Success</div>
-        <div class="dash-stat-num">18%</div>
-        <div class="dash-stat-bar"><div class="dash-stat-fill warn" style="width:18%"></div></div>
-      </div>
-    </div>
+  <section class="dash-stats-row" aria-label="Key metrics">
+    <article class="dash-stat-big">
+      <div class="dash-stat-icon">&#9678;</div>
+      <div class="dash-stat-label">Average ATS Score</div>
+      <div class="dash-stat-num">74%</div>
+      <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:74%"></div></div>
+    </article>
+    <article class="dash-stat-big">
+      <div class="dash-stat-icon">&#9670;</div>
+      <div class="dash-stat-label">Resume Strength</div>
+      <div class="dash-stat-num">79%</div>
+      <div class="dash-stat-bar"><div class="dash-stat-fill" style="width:79%"></div></div>
+    </article>
+    <article class="dash-stat-big">
+      <div class="dash-stat-icon">&#8857;</div>
+      <div class="dash-stat-label">JD Match Success</div>
+      <div class="dash-stat-num">18%</div>
+      <div class="dash-stat-bar"><div class="dash-stat-fill warn" style="width:18%"></div></div>
+    </article>
+  </section>
 
-    <div class="dash-hero-row">
-      <div class="dash-create-card" onclick="showModal()">
-        <div class="dash-create-plus">+</div>
-        <div class="dash-create-label">CREATE NEW RESUME</div>
-        <div class="dash-create-title">Start from scratch or upload</div>
-        <div class="dash-create-desc">Open the modal flow, then either upload an existing resume or begin with a blank editor.</div>
-      </div>
-      <div class="dash-preview-card">
-        <div class="dash-preview-thumb">
-          <div class="pdf-name" style="font-size:11px">Arjun Kumar</div>
-          <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:55%"></div>
-          <div class="pdf-line" style="width:90%"></div>
-          <div class="pdf-line" style="width:80%"></div>
-          <div class="pdf-divider"></div>
-          <div class="pdf-line d" style="width:50%"></div>
-          <div class="pdf-line" style="width:60%"></div>
-        </div>
-        <div class="dash-preview-chips">
-          <span class="chip">B&amp;W</span>
-          <span class="chip">Classic</span>
-          <span class="chip">1 page</span>
-        </div>
-      </div>
-      <div class="dash-recent-card">
-        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
-          <span class="badge-accent">MOST RECENT</span>
-          <span class="badge-info">UPDATED 2H AGO</span>
-        </div>
-        <div class="dash-recent-name">resume_v3.tex</div>
-        <div class="dash-recent-sub">Resume Workspace</div>
-        <div class="dash-recent-desc">Open the latest saved resume directly in the editor and continue from where you left off.</div>
-        <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap">
-          <span class="badge-outline">12 SAVED RESUMES</span>
-          <span class="badge-outline">EDITOR READY</span>
-        </div>
-        <div class="dash-recent-link" onclick="openEditor()">Open editor &rarr;</div>
-      </div>
-    </div>
+  <section class="dash-hero-row">
+    <button class="dash-create-card" type="button" onclick="showModal()">
+      <div class="dash-create-plus">+</div>
+      <div class="dash-create-label">CREATE NEW RESUME</div>
+      <div class="dash-create-title">Start from scratch or upload</div>
+      <div class="dash-create-desc">Open the modal flow, then either upload an existing resume or begin with a blank editor.</div>
+    </button>
 
-    <div class="dash-bottom-row">
-      <div class="dash-actions-card">
-        <div class="section-label">QUICK ACTIONS</div>
-        <div class="dash-actions-title">Move faster</div>
-        <div class="dash-actions-grid">
-          <div class="dash-action-item" onclick="openEditor()">
-            <div class="dash-action-icon">&#8801;</div>
-            <div class="dash-action-name">Open Editor</div>
-            <div class="dash-action-desc">Jump back into the latest resume.</div>
-          </div>
-          <div class="dash-action-item" onclick="openATS()">
-            <div class="dash-action-icon">&#9678;</div>
-            <div class="dash-action-name">Calculate ATS Score</div>
-            <div class="dash-action-desc">Run a formatting and content scan.</div>
-          </div>
-          <div class="dash-action-item" onclick="showPage('jds')">
-            <div class="dash-action-icon">&#8857;</div>
-            <div class="dash-action-name">Calculate JD Match</div>
-            <div class="dash-action-desc">Compare resume against a target role.</div>
-          </div>
-        </div>
+    <article class="dash-preview-card">
+      <div class="dash-preview-thumb">
+        <div class="pdf-name" style="font-size:11px">Arjun Kumar</div>
+        <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
+        <div class="pdf-divider"></div>
+        <div class="pdf-line d" style="width:55%"></div>
+        <div class="pdf-line" style="width:90%"></div>
+        <div class="pdf-line" style="width:80%"></div>
+        <div class="pdf-divider"></div>
+        <div class="pdf-line d" style="width:50%"></div>
+        <div class="pdf-line" style="width:60%"></div>
       </div>
-      <div class="dash-jd-card">
-        <div class="dash-jd-icon">&#9784;</div>
-        <div class="section-label">ACTIVE JD</div>
-        <div class="dash-jd-name">Software Engineer II</div>
-        <div class="dash-jd-co">Google &middot; Full-time</div>
-        <div class="dash-jd-link" onclick="showPage('jds')">View JD analysis &rarr;</div>
+      <div class="dash-preview-chips">
+        <span class="chip">B&amp;W</span>
+        <span class="chip">Classic</span>
+        <span class="chip">1 page</span>
       </div>
-    </div>
+    </article>
 
-    <div class="dash-tips-card">
-      <div class="section-label">TIPS</div>
-      <div class="dash-tips-title">One good reminder at a time</div>
-      <div class="dash-tip-content" id="dash-tip-text">Use numbers when they clarify scale, speed, quality, or reach.</div>
-      <div class="dash-tip-dots" id="dash-tip-dots">
-        <span class="tip-dot active"></span>
-        <span class="tip-dot"></span>
-        <span class="tip-dot"></span>
-        <span class="tip-dot"></span>
-        <span class="tip-dot"></span>
+    <article class="dash-recent-card">
+      <div class="dash-recent-badges">
+        <span class="badge-accent">MOST RECENT</span>
+        <span class="badge-info">UPDATED 2H AGO</span>
       </div>
-    </div>
-  </div>
-</div><!-- /desktop-view -->
+      <div class="dash-recent-name">resume_v3.tex</div>
+      <div class="dash-recent-sub">Resume Workspace</div>
+      <div class="dash-recent-desc">Open the latest saved resume directly in the editor and continue from where you left off.</div>
+      <div class="dash-recent-tags">
+        <span class="badge-outline">12 SAVED RESUMES</span>
+        <span class="badge-outline">EDITOR READY</span>
+      </div>
+      <a class="dash-recent-link" href="editor.html">Open editor &rarr;</a>
+    </article>
+  </section>
 
-<!-- MOBILE -->
-<div class="frame mobile view" id="mobile-view">
-  <div class="mob-frame">
-    <div class="mob-topbar">
-      <a class="mob-topbar-logo" href="dashboard.html">resumeai</a>
-      <a class="avatar" style="margin-left:auto" href="profile.html">AK</a>
-    </div>
-    <div style="flex:1;overflow-y:auto;padding-bottom:16px">
-      <div class="mob-dash-greeting">
-        <div class="dash-greeting-label">WELCOME BACK</div>
-        <div style="font-size:16px;font-weight:600;color:var(--txt0)">Good afternoon, Arjun!</div>
-      </div>
-      <div class="mob-dash-stats">
-        <div class="mob-stat"><div class="mob-stat-n">74%</div><div class="mob-stat-l">ATS Score</div></div>
-        <div class="mob-stat"><div class="mob-stat-n">79%</div><div class="mob-stat-l">Strength</div></div>
-        <div class="mob-stat"><div class="mob-stat-n">18%</div><div class="mob-stat-l">JD Match</div></div>
-      </div>
-      <div class="mob-dash-hero">
-        <div class="dash-create-card" onclick="showModal()" style="padding:16px 14px">
-          <div class="dash-create-plus" style="font-size:24px;margin-bottom:6px">+</div>
-          <div class="dash-create-label">CREATE NEW RESUME</div>
-          <div class="dash-create-title">Start from scratch or upload</div>
-        </div>
-        <div class="mob-res-visual-card" onclick="mobShowPage('editor')">
-          <div class="mob-res-visual-thumb">
-            <span class="badge-accent" style="position:absolute;top:6px;right:6px;font-size:7px">MOST RECENT</span>
-            <div class="pdf-name" style="font-size:10px">Arjun Kumar</div>
-            <div class="pdf-contact" style="font-size:7px">arjun@email.com</div>
-            <div class="pdf-divider"></div>
-            <div class="pdf-line d" style="width:55%"></div>
-            <div class="pdf-line" style="width:90%"></div>
-            <div class="pdf-line" style="width:80%"></div>
-          </div>
-          <div style="font-size:11px;font-weight:500;font-family:var(--font);color:var(--txt0)">resume_v3.tex</div>
-          <div style="font-size:9px;color:var(--txt2);margin-top:2px">Updated 2h ago &middot; Classic</div>
-          <div style="font-size:9px;color:var(--txt2);line-height:1.45;margin-top:6px">Open the latest saved resume directly in the editor and continue from where you left off.</div>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">
-            <span class="badge-outline" style="font-size:7px">12 SAVED RESUMES</span>
-            <span class="badge-outline" style="font-size:7px">EDITOR READY</span>
-          </div>
-          <div style="font-size:10px;color:var(--accent);margin-top:6px;cursor:pointer">Open editor &rarr;</div>
-        </div>
-      </div>
-      <div class="mob-section-label">QUICK ACTIONS</div>
-      <div class="mob-dash-actions-scroll">
-        <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('editor')">
+  <section class="dash-bottom-row">
+    <article class="dash-actions-card">
+      <div class="section-label">QUICK ACTIONS</div>
+      <div class="dash-actions-title">Move faster</div>
+      <div class="dash-actions-grid">
+        <a class="dash-action-item" href="editor.html">
           <div class="dash-action-icon">&#8801;</div>
           <div class="dash-action-name">Open Editor</div>
-        </div>
-        <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="openATS()">
+          <div class="dash-action-desc">Jump back into the latest resume.</div>
+        </a>
+        <a class="dash-action-item" href="editor.html?mode=ats">
           <div class="dash-action-icon">&#9678;</div>
-          <div class="dash-action-name">ATS Score</div>
-        </div>
-        <div class="dash-action-item" style="min-width:120px;flex-shrink:0" onclick="mobShowPage('jds')">
+          <div class="dash-action-name">Calculate ATS Score</div>
+          <div class="dash-action-desc">Run a formatting and content scan.</div>
+        </a>
+        <a class="dash-action-item" href="jds.html">
           <div class="dash-action-icon">&#8857;</div>
-          <div class="dash-action-name">JD Match</div>
-        </div>
+          <div class="dash-action-name">Calculate JD Match</div>
+          <div class="dash-action-desc">Compare resume against a target role.</div>
+        </a>
       </div>
-      <div style="padding:0 12px 12px">
-        <div class="dash-jd-card" style="padding:12px;cursor:pointer" onclick="mobShowPage('jds')">
-          <div class="dash-jd-icon">&#9784;</div>
-          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">ACTIVE JD</div>
-          <div class="dash-jd-name">Software Engineer II</div>
-          <div style="font-size:10px;color:var(--accent);margin-bottom:3px">View JD analysis</div>
-          <div class="dash-jd-co">Google &middot; Full-time</div>
-        </div>
-      </div>
-      <div style="padding:0 12px 12px">
-        <div class="dash-tips-card" style="padding:12px">
-          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.6px;color:var(--txt2);margin-bottom:4px">TIPS</div>
-          <div class="dash-tip-content" id="mob-tip-text" style="font-size:10px">Use numbers when they clarify scale, speed, quality, or reach.</div>
-          <div class="dash-tip-dots" id="mob-tip-dots">
-            <span class="tip-dot active"></span><span class="tip-dot"></span><span class="tip-dot"></span><span class="tip-dot"></span><span class="tip-dot"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mob-bottombar">
-      <div class="mob-tab active" onclick="mobShowPage('dash')"><div class="mob-tab-icon">&#8862;</div><span>Dashboard</span></div>
-      <div class="mob-tab" onclick="mobShowPage('resumes')"><div class="mob-tab-icon">&#9776;</div><span>Resumes</span></div>
-      <div class="mob-tab" onclick="mobShowPage('jds')"><div class="mob-tab-icon">&#8857;</div><span>JDs</span></div>
-      <div class="mob-tab" onclick="mobShowPage('profile')"><div class="mob-tab-icon">&#9675;</div><span>Profile</span></div>
-    </div>
-  </div>
-</div><!-- /mobile-view -->
+    </article>
 
-<!-- CREATE NEW RESUME MODAL -->
+    <a class="dash-jd-card dash-jd-card-link" href="jds.html">
+      <div class="dash-jd-icon">&#9784;</div>
+      <div class="section-label">ACTIVE JD</div>
+      <div class="dash-jd-name">Software Engineer II</div>
+      <div class="dash-jd-co">Google &middot; Full-time</div>
+      <div class="dash-jd-link">View JD analysis &rarr;</div>
+    </a>
+  </section>
+
+  <section class="dash-tips-card">
+    <div class="section-label">TIPS</div>
+    <div class="dash-tips-title">One good reminder at a time</div>
+    <div class="dash-tip-content" id="dash-tip-text">Use numbers when they clarify scale, speed, quality, or reach.</div>
+    <div class="dash-tip-dots" id="dash-tip-dots">
+      <span class="tip-dot active"></span>
+      <span class="tip-dot"></span>
+      <span class="tip-dot"></span>
+      <span class="tip-dot"></span>
+      <span class="tip-dot"></span>
+    </div>
+  </section>
+</main>
+
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -258,7 +160,6 @@
 </div>
 
 <script src="js/app.js"></script>
-<script src="js/mobile.js"></script>
 <script src="js/tips.js"></script>
 <script src="js/modal.js"></script>
 </body>
