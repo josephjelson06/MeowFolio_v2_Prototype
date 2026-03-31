@@ -2,6 +2,8 @@
 
 Last updated: 2026-03-31
 
+React migration planning now lives in [react_implementation_plan.md](./react_implementation_plan.md).
+
 ## Completed
 
 - [x] Remove the old device-toggle simulation from active pages.

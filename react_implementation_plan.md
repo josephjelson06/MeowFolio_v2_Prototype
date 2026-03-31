@@ -1,0 +1,302 @@
+# React Implementation Plan
+
+Last updated: 2026-03-31
+Status: planning ready
+Primary tracker for the React conversion phase.
+
+## Purpose
+
+- Convert the cleaned static prototype into a React app without losing the current visual baseline.
+- Preserve the current design system, responsive behavior, and shared shells while removing page-level HTML duplication.
+- Set up parent-child component boundaries cleanly enough that future backend/API work does not require another major refactor.
+
+## Current Preconditions
+
+- [x] Static HTML prototype cleaned and stabilized.
+- [x] Shared chrome centralized in the static version.
+- [x] Shared mock data layer exists in [js/data.js](./js/data.js).
+- [x] Legacy monolith removed.
+- [x] Responsive QA pass completed on the static baseline.
+
+## Working Assumptions
+
+- Use `React + TypeScript`.
+- Use `React Router` for the first migration pass.
+- Keep route and layout boundaries compatible with a later `Next app router` move if needed.
+- Preserve the current visual system first; do not redesign during migration.
+- Keep CSS token names and shared style layers as close as possible to the current prototype to reduce churn.
+
+## Source Of Truth Rules During Migration
+
+- The current static pages remain the visual and behavior reference until each React route is signed off.
+- This file is the living implementation tracker for the conversion phase.
+- [refactor_task_list.md](./refactor_task_list.md) remains the record of pre-React cleanup work already completed.
+- Do not delete the static page equivalent of a route until the React version reaches parity.
+
+## Target App Structure
+
+```text
+src/
+  app/
+    App.tsx
+    router.tsx
+    providers/
+      AppProviders.tsx
+      UiProvider.tsx
+  layouts/
+    RootLayout.tsx
+    PublicLayout.tsx
+    WorkspaceLayout.tsx
+    EditorLayout.tsx
+  pages/
+    public/
+      HomePage.tsx
+      AboutPage.tsx
+      NotFoundPage.tsx
+      Error500Page.tsx
+    workspace/
+      DashboardPage.tsx
+      ResumesPage.tsx
+      JdsPage.tsx
+      EditorPage.tsx
+      ProfilePage.tsx
+  components/
+    ui/
+      Button.tsx
+      Badge.tsx
+      Card.tsx
+      PageSection.tsx
+      Pagination.tsx
+      ProgressBar.tsx
+      EmptyState.tsx
+    public/
+      PublicHeader.tsx
+      PublicFooter.tsx
+      StoryRail.tsx
+      TemplateRail.tsx
+      FaqList.tsx
+    workspace/
+      WorkspaceHeader.tsx
+      WorkspaceTopbar.tsx
+      WorkspaceBottomNav.tsx
+      KpiCard.tsx
+      ResumeCard.tsx
+      QuickActionCard.tsx
+    editor/
+      EditorTabs.tsx
+      SectionNav.tsx
+      EditorFormPane.tsx
+      TemplatePane.tsx
+      ToolbarPane.tsx
+      PdfPreview.tsx
+      AtsDrawer.tsx
+      AtsFullReport.tsx
+    jds/
+      JdListPane.tsx
+      ResumePickerPane.tsx
+      JdResultPane.tsx
+      JdMobileSheet.tsx
+  modals/
+    AuthModalHost.tsx
+    ResumeModalHost.tsx
+    JdModalHost.tsx
+  hooks/
+    useAuthModal.ts
+    useResumeModal.ts
+    useViewportMode.ts
+    usePagination.ts
+  services/
+    resumeService.ts
+    jdService.ts
+    profileService.ts
+    tipsService.ts
+  mocks/
+    resumeLibrary.ts
+    jdLibrary.ts
+    resumeMatchProfiles.ts
+    dashboardTips.ts
+  state/
+    ui/
+      uiContext.tsx
+    editor/
+      editorState.ts
+    jds/
+      jdState.ts
+  lib/
+    routes.ts
+    formatters.ts
+    constants.ts
+  styles/
+    tokens.css
+    globals.css
+    layout.css
+    components.css
+    public.css
+    dashboard.css
+    resumes.css
+    editor.css
+    jds.css
+    profile.css
+  types/
+    resume.ts
+    jd.ts
+    ui.ts
+```
+
+## Parent-Child Structure Rules
+
+- `App -> AppProviders -> Router -> Layout -> Page -> Feature Components -> UI Primitives`.
+- `RootLayout` owns app-wide background, font loading, and any global modal portal/root elements.
+- `PublicLayout` owns public header, public footer, auth modal access points, and public page width rules.
+- `WorkspaceLayout` owns desktop workspace nav, mobile topbar, mobile bottom nav, and shared workspace page spacing.
+- `EditorLayout` is a route-specific nested layout because the editor has its own breadcrumb, mode toggles, dual-pane workspace, and ATS surfaces.
+- `Page` components orchestrate data and page-scoped state only; they should not own shared chrome.
+- `Feature` components compose page sections and can hold local interaction state, but should not fetch unrelated route data.
+- `UI` primitives stay dumb and reusable; they should not know about resumes, JDs, or editor-specific business rules.
+- `ModalHost` components own modal markup and focus/escape/backdrop handling; pages trigger them through hooks or context.
+- `Mobile` and `desktop` views must remain one React tree per route; no duplicate page DOMs for breakpoint variants.
+
+## Layout Ownership Rules
+
+- Layouts own spacing, safe-area padding, viewport-height handling, and shared navigation chrome.
+- Pages own route-specific section ordering and route-specific empty states.
+- Feature components own section internals.
+- Shared shells must never import page-specific mock data directly.
+- Route transitions should happen through router links/navigation helpers, not through hardcoded `window.location` calls.
+
+## State And Data Boundaries
+
+- `services/` becomes the only read/write boundary for page data.
+- `mocks/` provides seed data during the React phase until real APIs exist.
+- `uiContext` should only hold globally shared UI state such as auth modal, resume modal, and shared overlays.
+- `editor` state stays page-scoped unless another route truly needs it.
+- `jds` state can be page-scoped at first, then promoted only if cross-route sharing becomes necessary.
+- Pagination state should stay local to the page hooks.
+- Derived display metrics belong in helpers/selectors, not inline inside components.
+- No component should read from the DOM to derive state.
+
+## Route Map To Build
+
+- `/` -> `HomePage` inside `PublicLayout`
+- `/about` -> `AboutPage` inside `PublicLayout`
+- `/404` -> `NotFoundPage` inside `PublicLayout`
+- `/500` -> `Error500Page` inside `PublicLayout`
+- `/dashboard` -> `DashboardPage` inside `WorkspaceLayout`
+- `/resumes` -> `ResumesPage` inside `WorkspaceLayout`
+- `/jds` -> `JdsPage` inside `WorkspaceLayout`
+- `/editor` -> `EditorPage` inside `EditorLayout`
+- `/profile` -> `ProfilePage` inside `WorkspaceLayout`
+
+## Migration Strategy
+
+### Phase 0 - Foundation
+
+- [ ] Initialize the React + TypeScript app shell.
+- [ ] Add routing, providers, and the base `src/` folder structure.
+- [ ] Move static assets into the React app asset structure.
+- [ ] Copy the current token/global/layout CSS into `src/styles`.
+- [ ] Wire the app entry so the current design system renders before any route work starts.
+
+### Phase 1 - Shared Design System
+
+- [ ] Port the token layer from [css/tokens.css](./css/tokens.css).
+- [ ] Port the global layer from [css/globals.css](./css/globals.css).
+- [ ] Port the shared layout layer from [css/layout.css](./css/layout.css).
+- [ ] Port the shared component layer from [css/components.css](./css/components.css).
+- [ ] Build the first reusable primitives: button, badge, card, pagination, progress bar, empty state.
+- [ ] Confirm that the primitive components can reproduce current static styling without custom page hacks.
+
+### Phase 2 - Layouts And Modal Hosts
+
+- [ ] Build `RootLayout`.
+- [ ] Build `PublicLayout`.
+- [ ] Build `WorkspaceLayout`.
+- [ ] Build `EditorLayout`.
+- [ ] Build `AuthModalHost`.
+- [ ] Build `ResumeModalHost`.
+- [ ] Build `JdModalHost`.
+- [ ] Move shared nav/footer/modal behavior out of page components and into layout/host components.
+
+### Phase 3 - Mock Services And Types
+
+- [ ] Move [js/data.js](./js/data.js) into typed mock modules under `src/mocks`.
+- [ ] Create `resumeService`.
+- [ ] Create `jdService`.
+- [ ] Create `profileService`.
+- [ ] Create `tipsService`.
+- [ ] Add shared TypeScript types for resumes, JDs, report metrics, and UI state.
+- [ ] Replace direct page-script data access with service calls and selectors.
+
+### Phase 4 - Public Routes
+
+- [ ] Build `HomePage`.
+- [ ] Build `AboutPage`.
+- [ ] Build `NotFoundPage`.
+- [ ] Build `Error500Page`.
+- [ ] Recreate public rails, FAQ, and auth entry behavior in React.
+- [ ] Verify public routes inherit only `PublicLayout` concerns and no workspace-specific state.
+
+### Phase 5 - Workspace Core Routes
+
+- [ ] Build `DashboardPage`.
+- [ ] Build `ResumesPage`.
+- [ ] Build `ProfilePage`.
+- [ ] Recreate dashboard tips rotation in React.
+- [ ] Recreate resume pagination, rename, download, delete, and create modal flow in React.
+- [ ] Confirm `WorkspaceLayout` fully owns shared nav/mobile bars for these routes.
+
+### Phase 6 - JD Route
+
+- [ ] Build `JdsPage`.
+- [ ] Build JD list pane, picker pane, result pane, report sheet, and JD modal as separate feature components.
+- [ ] Move JD report calculations into helpers/selectors.
+- [ ] Keep mobile report sheet behavior route-local and controlled by React state.
+- [ ] Confirm no duplicated desktop/mobile DOM is introduced.
+
+### Phase 7 - Editor Route
+
+- [ ] Build `EditorPage` under `EditorLayout`.
+- [ ] Build section tabs, template pane, toolbar pane, preview pane, ATS drawer, and ATS full report as separate components.
+- [ ] Move editor mode, section selection, and slider state to route-local React state/hooks.
+- [ ] Preserve the current mobile edit/preview/ATS experience without DOM toggling hacks.
+- [ ] Confirm the editor route does not leak editor-specific chrome into the other workspace pages.
+
+### Phase 8 - QA, Parity, And Freeze
+
+- [ ] Run desktop/mobile screenshot QA on all React routes.
+- [ ] Compare route output against the static source-of-truth pages.
+- [ ] Fix spacing, overflow, and responsive regressions.
+- [ ] Verify keyboard/focus behavior for modals, drawers, tabs, and pagination.
+- [ ] Confirm each route is using shared layout/components instead of page-local duplication.
+- [ ] Freeze the React mock-data baseline before backend integration begins.
+
+## Definition Of Done Per Route
+
+- [ ] Route is rendered from React with one component tree only.
+- [ ] Route uses the correct layout instead of duplicating chrome.
+- [ ] Route behavior matches the static prototype at desktop and mobile sizes.
+- [ ] Route data comes through services or typed mock modules, not inline page constants.
+- [ ] Route contains no direct DOM query/manipulation for ordinary UI state.
+- [ ] Route is covered by screenshot QA.
+
+## Risks To Watch
+
+- Over-centralizing too early and making layouts own page logic.
+- Reintroducing duplicated desktop/mobile trees in React components.
+- Letting page components import from each other directly.
+- Keeping mock calculations embedded in JSX instead of moving them into helpers.
+- Mixing modal ownership between layouts and pages.
+- Starting API work before route/component boundaries settle.
+
+## Update Protocol
+
+- Update `Last updated` whenever meaningful migration work lands.
+- Mark completed tasks here immediately after code is merged into the React branch/workspace.
+- Add a short note under `Current focus` whenever the active phase changes.
+- Add blockers here instead of burying them in chat.
+- Keep this file as the canonical React conversion tracker going forward.
+
+## Current Focus
+
+- Planning complete.
+- Next execution step: start `Phase 0 - Foundation`.
