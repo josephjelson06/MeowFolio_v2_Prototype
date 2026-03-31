@@ -1,0 +1,79 @@
+/* ── SHARED UTILITIES ── */
+.hidden { display: none !important; }
+.chip { padding: 3px 8px; border-radius: 3px; font-size: 9px; border: 0.5px solid var(--border1); color: var(--txt2); background: var(--bg3); }
+
+/* ── SECTION LABEL ── */
+.section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--txt2); margin-bottom: 10px; }
+
+/* ── BUTTONS ── */
+.btn-new { padding: 5px 12px; border-radius: var(--r-md); border: 0.5px solid var(--border2); background: var(--bg3); color: var(--txt0); font-size: 11px; cursor: pointer; font-family: var(--sans); display: flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
+.btn-new:hover { background: var(--bg4); border-color: var(--accent-dim); color: var(--accent); }
+.btn-new:focus-visible { outline: 2px solid var(--accent-dim); outline-offset: 2px; }
+.btn-new:active { transform: scale(0.97); }
+.r-action { padding: 4px 9px; border-radius: var(--r-sm); border: 0.5px solid var(--border1); background: none; color: var(--txt1); font-size: 10px; cursor: pointer; font-family: var(--sans); transition: all .12s; }
+.r-action:hover { background: var(--bg4); color: var(--txt0); }
+.r-action.primary { border-color: var(--accent-dim); color: var(--accent); }
+.r-action.primary:hover { background: var(--accent-bg); }
+.r-action:disabled,
+.r-action[disabled] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.close-x { width: 20px; height: 20px; border-radius: var(--r-sm); border: 0.5px solid var(--border1); background: none; cursor: pointer; font-size: 12px; color: var(--txt1); display: flex; align-items: center; justify-content: center; }
+.analyze-btn { padding: 5px 11px; border-radius: var(--r-md); border: 0.5px solid var(--border2); background: var(--bg3); color: var(--txt0); font-size: 11px; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: all .15s; }
+.analyze-btn:hover { border-color: var(--accent-dim); color: var(--accent); background: var(--accent-bg); }
+
+/* Shared pagination */
+.list-pagination { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+.page-status { font-size: 10px; color: var(--txt2); }
+.page-controls { display: flex; gap: 6px; }
+
+/* ── FORM ELEMENTS ── */
+.fl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); margin-bottom: 3px; }
+.fi { width: 100%; padding: 6px 8px; border: 0.5px solid var(--border1); border-radius: var(--r-sm); background: var(--bg2); color: var(--txt1); font-size: 11px; font-family: var(--font); outline: none; transition: border-color .12s; }
+.fi:focus { border-color: var(--border2); color: var(--txt0); }
+.fi:disabled { opacity: 0.55; cursor: not-allowed; background: var(--bg3); }
+.fi.error { border-color: var(--err); background: var(--err-bg); }
+.fi-add { color: var(--txt2); cursor: pointer; font-size: 10px; padding: 4px 8px; border: 0.5px dashed var(--border1); border-radius: var(--r-sm); display: flex; align-items: center; gap: 5px; background: none; width: 100%; text-align: left; font-family: var(--sans); margin-top: 2px; transition: all .12s; }
+.fi-add:hover { border-color: var(--border2); color: var(--txt1); background: var(--bg2); }
+
+/* ── PDF PREVIEW ELEMENTS ── */
+.pdf-doc { width: 100%; background: var(--bg2); border: 0.5px solid var(--border0); border-radius: 3px; padding: 16px; }
+.pdf-name { font-size: 14px; font-weight: 600; color: var(--txt0); font-family: var(--font); margin-bottom: 2px; }
+.pdf-contact { font-size: 9px; color: var(--txt2); margin-bottom: 10px; }
+.pdf-divider { height: 0.5px; background: var(--border1); margin: 8px 0; }
+.pdf-section-h { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt1); margin-bottom: 5px; font-weight: 600; }
+.pdf-line { height: 5px; border-radius: 2px; background: var(--border1); margin-bottom: 3px; }
+.pdf-line.d { background: var(--border0); }
+.pdf-tags { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
+.pdf-tag { padding: 2px 6px; border: 0.5px solid var(--border1); border-radius: 3px; font-size: 8px; color: var(--txt2); }
+
+/* ── SYNC INDICATOR ── */
+.sync-row { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--txt2); }
+.sync-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-dim); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── PROGRESS BARS ── */
+.bar-row { padding: 0 12px 8px; }
+.bar-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--txt2); margin-bottom: 3px; }
+.bar-val { font-family: var(--font); }
+.bar-track { height: 3px; border-radius: 2px; background: var(--bg3); }
+.bar-fill { height: 3px; border-radius: 2px; background: var(--accent); transition: width .4s; }
+.bar-fill.warn { background: var(--warn); }
+
+/* ── AUDIT CHECKLIST ── */
+.audit { padding: 0 12px; }
+.audit-head { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--txt2); padding: 5px 0 6px; }
+.audit-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 0.5px solid var(--border0); font-size: 11px; color: var(--txt0); }
+.abadge { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; flex-shrink: 0; }
+.bp { background: var(--accent-bg); color: var(--accent); }
+.bw { background: var(--warn-bg); color: var(--warn); }
+.bf { background: var(--err-bg); color: var(--err); }
+.check-ico { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+
+/* ── BADGES ── */
+.badge-accent { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 9px; font-weight: 500; background: var(--accent-bg); color: var(--accent); border: 0.5px solid var(--accent-dim); }
+.badge-info { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 9px; font-weight: 500; background: var(--info-bg); color: var(--info); border: 0.5px solid var(--info-dim); }
+.badge-outline { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 9px; color: var(--txt2); border: 0.5px solid var(--border1); }
+
+/* ── USAGE METERS ── */
+.usage-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--txt1); margin-bottom: 6px; }
+.usage-track { height: 3px; border-radius: 2px; background: var(--bg4); margin-top: 3px; }
+.usage-fill { height: 3px; border-radius: 2px; background: var(--accent); }

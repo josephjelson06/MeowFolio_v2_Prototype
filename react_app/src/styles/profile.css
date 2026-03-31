@@ -1,0 +1,169 @@
+/* Profile page */
+.profile-desktop-nav {}
+
+.profile-mobile-nav,
+.profile-mobile-bar {
+  display: none;
+}
+
+.profile-page {
+  min-height: calc(100dvh - 60px);
+}
+
+.profile-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-section {
+  padding: 14px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border0);
+  border-radius: var(--r-md);
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar-link {
+  border-color: var(--accent-dim);
+}
+
+.profile-avatar-big {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 0.5px solid var(--border2);
+  color: var(--info);
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-badges {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--txt0);
+}
+
+.profile-email {
+  font-size: 11px;
+  color: var(--txt2);
+}
+
+.profile-section-title {
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--txt0);
+}
+
+.profile-usage-row {
+  margin-top: 10px;
+}
+
+.profile-usage-value {
+  font-family: var(--font);
+}
+
+.profile-usage-fill-16 {
+  width: 16%;
+}
+
+.profile-usage-fill-15 {
+  width: 15%;
+}
+
+.profile-usage-fill-2 {
+  width: 2%;
+}
+
+.profile-usage-fill-100 {
+  width: 100%;
+}
+
+.profile-logout {
+  border-color: var(--err);
+  color: var(--err);
+}
+
+.profile-logout:hover {
+  border-color: var(--err);
+  background: var(--err-bg);
+  color: var(--err);
+}
+
+@media (max-width: 768px) {
+  .profile-desktop-nav {
+    display: none;
+  }
+
+  .profile-mobile-nav,
+  .profile-mobile-bar {
+    display: flex;
+  }
+
+  .profile-page {
+    min-height: calc(100dvh - 52px);
+  }
+
+  .profile-body {
+    padding: 12px 14px calc(82px + env(safe-area-inset-bottom));
+    gap: 12px;
+  }
+
+  .profile-hero {
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .profile-avatar-big {
+    width: 46px;
+    height: 46px;
+    font-size: 16px;
+  }
+
+  .profile-badges {
+    gap: 4px;
+  }
+
+  .profile-name {
+    font-size: 13px;
+  }
+
+  .profile-email {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+
+  .profile-usage-row {
+    margin-top: 8px;
+  }
+
+  .profile-logout {
+    width: 100%;
+  }
+}

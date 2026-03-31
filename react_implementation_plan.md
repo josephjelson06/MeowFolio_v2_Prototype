@@ -1,7 +1,7 @@
 # React Implementation Plan
 
 Last updated: 2026-03-31
-Status: planning ready
+Status: foundation implemented in progress
 Primary tracker for the React conversion phase.
 
 ## Purpose
@@ -32,11 +32,15 @@ Primary tracker for the React conversion phase.
 - This file is the living implementation tracker for the conversion phase.
 - [refactor_task_list.md](./refactor_task_list.md) remains the record of pre-React cleanup work already completed.
 - Do not delete the static page equivalent of a route until the React version reaches parity.
+- The active React workspace lives in [react_app](./react_app), so migration work can proceed without destabilizing the static prototype baseline.
 
 ## Target App Structure
 
 ```text
-src/
+react_app/
+  public/
+    Images/
+  src/
   app/
     App.tsx
     router.tsx
@@ -191,73 +195,73 @@ src/
 
 ### Phase 0 - Foundation
 
-- [ ] Initialize the React + TypeScript app shell.
-- [ ] Add routing, providers, and the base `src/` folder structure.
-- [ ] Move static assets into the React app asset structure.
-- [ ] Copy the current token/global/layout CSS into `src/styles`.
-- [ ] Wire the app entry so the current design system renders before any route work starts.
+- [x] Initialize the React + TypeScript app shell.
+- [x] Add routing, providers, and the base `src/` folder structure.
+- [x] Move static assets into the React app asset structure.
+- [x] Copy the current token/global/layout CSS into `src/styles`.
+- [x] Wire the app entry so the current design system renders before any route work starts.
 
 ### Phase 1 - Shared Design System
 
-- [ ] Port the token layer from [css/tokens.css](./css/tokens.css).
-- [ ] Port the global layer from [css/globals.css](./css/globals.css).
-- [ ] Port the shared layout layer from [css/layout.css](./css/layout.css).
-- [ ] Port the shared component layer from [css/components.css](./css/components.css).
-- [ ] Build the first reusable primitives: button, badge, card, pagination, progress bar, empty state.
+- [x] Port the token layer from [css/tokens.css](./css/tokens.css).
+- [x] Port the global layer from [css/globals.css](./css/globals.css).
+- [x] Port the shared layout layer from [css/layout.css](./css/layout.css).
+- [x] Port the shared component layer from [css/components.css](./css/components.css).
+- [x] Build the first reusable primitives: button, badge, card, pagination, progress bar, empty state.
 - [ ] Confirm that the primitive components can reproduce current static styling without custom page hacks.
 
 ### Phase 2 - Layouts And Modal Hosts
 
-- [ ] Build `RootLayout`.
-- [ ] Build `PublicLayout`.
-- [ ] Build `WorkspaceLayout`.
-- [ ] Build `EditorLayout`.
-- [ ] Build `AuthModalHost`.
-- [ ] Build `ResumeModalHost`.
-- [ ] Build `JdModalHost`.
-- [ ] Move shared nav/footer/modal behavior out of page components and into layout/host components.
+- [x] Build `RootLayout`.
+- [x] Build `PublicLayout`.
+- [x] Build `WorkspaceLayout`.
+- [x] Build `EditorLayout`.
+- [x] Build `AuthModalHost`.
+- [x] Build `ResumeModalHost`.
+- [x] Build `JdModalHost`.
+- [x] Move shared nav/footer/modal behavior out of page components and into layout/host components.
 
 ### Phase 3 - Mock Services And Types
 
-- [ ] Move [js/data.js](./js/data.js) into typed mock modules under `src/mocks`.
-- [ ] Create `resumeService`.
-- [ ] Create `jdService`.
-- [ ] Create `profileService`.
-- [ ] Create `tipsService`.
-- [ ] Add shared TypeScript types for resumes, JDs, report metrics, and UI state.
-- [ ] Replace direct page-script data access with service calls and selectors.
+- [x] Move [js/data.js](./js/data.js) into typed mock modules under `src/mocks`.
+- [x] Create `resumeService`.
+- [x] Create `jdService`.
+- [x] Create `profileService`.
+- [x] Create `tipsService`.
+- [x] Add shared TypeScript types for resumes, JDs, report metrics, and UI state.
+- [x] Replace direct page-script data access with service calls and selectors.
 
 ### Phase 4 - Public Routes
 
-- [ ] Build `HomePage`.
-- [ ] Build `AboutPage`.
-- [ ] Build `NotFoundPage`.
-- [ ] Build `Error500Page`.
-- [ ] Recreate public rails, FAQ, and auth entry behavior in React.
+- [x] Build `HomePage`.
+- [x] Build `AboutPage`.
+- [x] Build `NotFoundPage`.
+- [x] Build `Error500Page`.
+- [x] Recreate public rails, FAQ, and auth entry behavior in React.
 - [ ] Verify public routes inherit only `PublicLayout` concerns and no workspace-specific state.
 
 ### Phase 5 - Workspace Core Routes
 
-- [ ] Build `DashboardPage`.
-- [ ] Build `ResumesPage`.
-- [ ] Build `ProfilePage`.
-- [ ] Recreate dashboard tips rotation in React.
-- [ ] Recreate resume pagination, rename, download, delete, and create modal flow in React.
+- [x] Build `DashboardPage`.
+- [x] Build `ResumesPage`.
+- [x] Build `ProfilePage`.
+- [x] Recreate dashboard tips rotation in React.
+- [x] Recreate resume pagination, rename, download, delete, and create modal flow in React.
 - [ ] Confirm `WorkspaceLayout` fully owns shared nav/mobile bars for these routes.
 
 ### Phase 6 - JD Route
 
-- [ ] Build `JdsPage`.
-- [ ] Build JD list pane, picker pane, result pane, report sheet, and JD modal as separate feature components.
-- [ ] Move JD report calculations into helpers/selectors.
-- [ ] Keep mobile report sheet behavior route-local and controlled by React state.
+- [x] Build `JdsPage`.
+- [x] Build JD list pane, picker pane, result pane, report sheet, and JD modal as separate feature components.
+- [x] Move JD report calculations into helpers/selectors.
+- [x] Keep mobile report sheet behavior route-local and controlled by React state.
 - [ ] Confirm no duplicated desktop/mobile DOM is introduced.
 
 ### Phase 7 - Editor Route
 
-- [ ] Build `EditorPage` under `EditorLayout`.
-- [ ] Build section tabs, template pane, toolbar pane, preview pane, ATS drawer, and ATS full report as separate components.
-- [ ] Move editor mode, section selection, and slider state to route-local React state/hooks.
+- [x] Build `EditorPage` under `EditorLayout`.
+- [x] Build section tabs, template pane, toolbar pane, preview pane, ATS drawer, and ATS full report as separate components.
+- [x] Move editor mode, section selection, and slider state to route-local React state/hooks.
 - [ ] Preserve the current mobile edit/preview/ATS experience without DOM toggling hacks.
 - [ ] Confirm the editor route does not leak editor-specific chrome into the other workspace pages.
 
@@ -266,7 +270,7 @@ src/
 - [ ] Run desktop/mobile screenshot QA on all React routes.
 - [ ] Compare route output against the static source-of-truth pages.
 - [ ] Fix spacing, overflow, and responsive regressions.
-- [ ] Verify keyboard/focus behavior for modals, drawers, tabs, and pagination.
+- [x] Verify keyboard/focus behavior for modals, drawers, tabs, and pagination.
 - [ ] Confirm each route is using shared layout/components instead of page-local duplication.
 - [ ] Freeze the React mock-data baseline before backend integration begins.
 
@@ -298,5 +302,5 @@ src/
 
 ## Current Focus
 
-- Planning complete.
-- Next execution step: start `Phase 0 - Foundation`.
+- React app shell is live in [react_app](./react_app).
+- Current focus: route parity, responsive QA, and tightening layout/component ownership now that the scaffold builds cleanly.

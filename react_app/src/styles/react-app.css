@@ -1,0 +1,519 @@
+.ra-public-main,
+.ra-workspace-main {
+  padding-bottom: 104px;
+}
+
+.ra-workspace-main {
+  width: min(1220px, calc(100% - 32px));
+  margin: 0 auto;
+  padding-top: 28px;
+}
+
+.ra-editor-main {
+  width: min(1320px, calc(100% - 24px));
+}
+
+.ra-page-stack {
+  display: grid;
+  gap: 22px;
+}
+
+.ra-section-card {
+  background: var(--bg1);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.ra-grid-2,
+.ra-grid-3,
+.ra-grid-4 {
+  display: grid;
+  gap: 18px;
+}
+
+.ra-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ra-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ra-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ra-card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.15;
+}
+
+.ra-card-copy {
+  margin: 0;
+  color: var(--txt2);
+}
+
+.ra-stack-sm {
+  display: grid;
+  gap: 10px;
+}
+
+.ra-stack-md {
+  display: grid;
+  gap: 16px;
+}
+
+.ra-stack-lg {
+  display: grid;
+  gap: 22px;
+}
+
+.ra-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ra-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ra-split-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.ra-hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.ra-image-frame {
+  min-height: 340px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,248,243,0.96));
+  overflow: hidden;
+}
+
+.ra-image-frame img {
+  width: min(100%, 320px);
+  height: auto;
+  object-fit: contain;
+}
+
+.ra-story-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 280px);
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x proximity;
+}
+
+.ra-story-card {
+  scroll-snap-align: start;
+}
+
+.ra-template-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(240px, 260px);
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.ra-page-header {
+  display: grid;
+  gap: 10px;
+}
+
+.ra-page-kicker {
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  color: var(--txt2);
+}
+
+.ra-page-title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 0.94;
+}
+
+.ra-subtitle {
+  margin: 0;
+  font-size: 1.06rem;
+  color: var(--txt2);
+  max-width: 68ch;
+}
+
+.ra-dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.ra-dashboard-middle {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.ra-dashboard-card {
+  min-height: 320px;
+}
+
+.ra-quick-actions {
+  display: grid;
+  gap: 14px;
+}
+
+.ra-action-tile {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+
+.ra-progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(40, 28, 18, 0.1);
+  overflow: hidden;
+}
+
+.ra-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.ra-resume-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.ra-resume-card {
+  min-height: 280px;
+}
+
+.ra-resume-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ra-mini-doc {
+  min-height: 132px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.ra-mini-line {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(167, 77, 39, 0.18);
+}
+
+.ra-mini-line.short {
+  width: 42%;
+}
+
+.ra-mini-line.medium {
+  width: 68%;
+}
+
+.ra-mini-line.long {
+  width: 88%;
+}
+
+.ra-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ra-jd-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.92fr) minmax(0, 1.08fr);
+  gap: 18px;
+}
+
+.ra-scroll-panel {
+  max-height: 560px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.ra-list-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.ra-list-item {
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.ra-list-item.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(167, 77, 39, 0.12);
+}
+
+.ra-report-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.ra-score-chip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 90px;
+  min-height: 90px;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.ra-check-list {
+  display: grid;
+  gap: 10px;
+}
+
+.ra-check-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bg2);
+}
+
+.ra-check-item.ok { border-color: rgba(81, 136, 78, 0.35); }
+.ra-check-item.warn { border-color: rgba(170, 130, 52, 0.35); }
+.ra-check-item.bad { border-color: rgba(168, 78, 62, 0.35); }
+
+.ra-keyword-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ra-token-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ra-token {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  font-size: 0.88rem;
+}
+
+.ra-token.miss {
+  background: rgba(168, 78, 62, 0.08);
+}
+
+.ra-editor-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: 18px;
+}
+
+.ra-tab-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ra-nav-list {
+  display: grid;
+  gap: 10px;
+}
+
+.ra-nav-item {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+}
+
+.ra-nav-item.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ra-editor-preview {
+  min-height: 620px;
+}
+
+.ra-form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.ra-field {
+  display: grid;
+  gap: 8px;
+}
+
+.ra-field input,
+.ra-field textarea,
+.ra-field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg2);
+  color: var(--txt1);
+  font: inherit;
+}
+
+.ra-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.ra-profile-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+}
+
+.ra-avatar-panel {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.ra-avatar-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.ra-usage-list {
+  display: grid;
+  gap: 14px;
+}
+
+.ra-usage-item {
+  display: grid;
+  gap: 8px;
+}
+
+.ra-modal-box {
+  width: min(560px, calc(100vw - 24px));
+}
+
+.ra-mobile-only {
+  display: none;
+}
+
+.ra-desktop-only {
+  display: block;
+}
+
+@media (max-width: 980px) {
+  .ra-split-hero,
+  .ra-jd-layout,
+  .ra-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ra-editor-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .ra-public-main,
+  .ra-workspace-main {
+    width: min(100%, calc(100% - 20px));
+    padding-top: 20px;
+    padding-bottom: 112px;
+  }
+
+  .ra-grid-2,
+  .ra-grid-3,
+  .ra-grid-4,
+  .ra-dashboard-kpis,
+  .ra-dashboard-middle,
+  .ra-resume-grid,
+  .ra-keyword-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ra-section-card {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .ra-mobile-only {
+    display: block;
+  }
+
+  .ra-desktop-only {
+    display: none;
+  }
+
+  .ra-dashboard-card,
+  .ra-resume-card {
+    min-height: 0;
+  }
+
+  .ra-hero-copy {
+    gap: 16px;
+  }
+
+  .ra-report-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .ra-scroll-panel {
+    max-height: none;
+  }
+}
