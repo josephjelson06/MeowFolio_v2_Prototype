@@ -5,3 +5,5 @@ old_tokens.css
 old_tailwind.config.ts
 react_app/node_modules/
 react_app/dist/
+
+qa_screens/

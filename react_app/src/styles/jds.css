@@ -20,6 +20,7 @@
   background: var(--bg1);
   border-left: 0.5px solid var(--border0);
   border-right: 0.5px solid var(--border0);
+  min-width: 0;
 }
 
 .jd-list-pane {
@@ -29,6 +30,7 @@
   flex-direction: column;
   border-right: 0.5px solid var(--border0);
   background: var(--bg2);
+  min-width: 0;
 }
 
 .jd-list-head {
@@ -142,6 +144,7 @@
   flex-direction: column;
   overflow: hidden;
   background: var(--bg1);
+  min-width: 0;
 }
 
 .jd-analyze-head {
@@ -198,6 +201,7 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-width: 0;
 }
 
 .jd-pick-col {
@@ -207,6 +211,7 @@
   flex-direction: column;
   border-right: 0.5px solid var(--border0);
   background: var(--bg2);
+  min-width: 0;
 }
 
 .jd-pick-head {
@@ -296,6 +301,7 @@
   flex-direction: column;
   gap: 10px;
   background: var(--bg1);
+  min-width: 0;
 }
 
 .jd-mobile-report-content {
@@ -642,8 +648,7 @@
 
   .jd-mobile-nav,
   .jd-mobile-tabs,
-  .jd-mobile-bar,
-  .jd-mobile-sheet {
+  .jd-mobile-bar {
     display: flex;
   }
 
@@ -657,6 +662,7 @@
     max-width: none;
     border-left: none;
     border-right: none;
+    overflow-x: clip;
   }
 
   .jd-list-pane {
@@ -667,6 +673,17 @@
 
   .jd-list-head {
     padding: 10px 12px;
+  }
+
+  .jd-mobile-tabs {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+
+  .jd-mobile-tabs .mob-et-btn {
+    min-width: 0;
+    padding-inline: 8px;
+    font-size: 10px;
   }
 
   .jd-cards {
@@ -686,13 +703,23 @@
     justify-content: flex-start;
   }
 
+  .jd-card-actions .r-action {
+    min-width: 0;
+    padding: 4px 8px;
+  }
+
   .jd-analyze-pane {
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
   }
 
   .jd-analyze-head {
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
     padding: 12px;
+  }
+
+  .jd-analyze-head .run-btn {
+    width: 100%;
   }
 
   .jd-analyze-body {

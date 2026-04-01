@@ -37,9 +37,13 @@
 
 .mob-topbar-title {
   flex: 1;
+  min-width: 0;
   font-size: 12px;
   font-weight: 500;
   color: var(--txt0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mob-back {
@@ -47,6 +51,7 @@
   font-size: 16px;
   color: var(--txt1);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .mob-analyze-btn {
@@ -59,6 +64,7 @@
   font-size: 11px;
   cursor: pointer;
   font-family: var(--sans);
+  flex-shrink: 0;
 }
 
 .mob-bottombar {
@@ -67,6 +73,10 @@
   background: rgba(253, 249, 243, 0.96);
   border-top: 0.5px solid var(--border0);
   display: none;
+}
+
+.mob-topbar .avatar {
+  flex-shrink: 0;
 }
 
 .mob-tab {
@@ -205,6 +215,13 @@
   padding: 8px 14px;
   background: var(--bg0);
   border-bottom: 0.5px solid var(--border0);
+  display: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.mob-edit-toggle::-webkit-scrollbar {
   display: none;
 }
 

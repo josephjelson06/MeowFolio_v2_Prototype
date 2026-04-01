@@ -8,6 +8,7 @@
   margin: 0 auto;
   border-left: 0.5px solid var(--border0);
   border-right: 0.5px solid var(--border0);
+  min-width: 0;
 }
 
 .ed-left {
@@ -16,6 +17,7 @@
   display: flex;
   flex-direction: column;
   background: var(--bg2);
+  min-width: 0;
 }
 
 .ed-right {
@@ -55,6 +57,7 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-width: 0;
 }
 
 .sec-nav {
@@ -111,6 +114,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
 }
 
 .editor-workspace .fl {
@@ -718,8 +722,7 @@ input[type=range] {
 
   .editor-mobile-nav,
   .editor-mobile-toggle,
-  .editor-mobile-bar,
-  .editor-mobile-sheet {
+  .editor-mobile-bar {
     display: flex;
   }
 
@@ -730,6 +733,7 @@ input[type=range] {
     max-width: none;
     border-left: none;
     border-right: none;
+    overflow-x: clip;
   }
 
   .ed-left,
@@ -737,6 +741,7 @@ input[type=range] {
     width: 100%;
     min-height: calc(100dvh - 170px);
     border-right: none;
+    max-width: 100%;
   }
 
   .editor-root.mob-edit-view .ed-left {
@@ -761,6 +766,19 @@ input[type=range] {
 
   .left-tabs {
     padding: 0 12px;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .left-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ltab {
+    white-space: nowrap;
+    min-width: max-content;
+    padding: 10px 10px;
   }
 
   .sec-pane {
@@ -823,5 +841,18 @@ input[type=range] {
   #ed-mode-ats .ats-score-card {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .editor-mobile-toggle .mob-et-btn {
+    min-width: 0;
+    padding-inline: 8px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .editor-mobile-nav .mob-analyze-btn {
+    padding-inline: 8px;
+    font-size: 10px;
   }
 }

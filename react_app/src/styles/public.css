@@ -49,6 +49,7 @@
   background: var(--bg2);
   border: 0.5px solid var(--border0);
   border-radius: var(--r-lg);
+  min-width: 0;
 }
 
 .pub-panel {
@@ -114,6 +115,7 @@
   line-height: 1.7;
   color: var(--txt1);
   max-width: 62ch;
+  overflow-wrap: anywhere;
 }
 
 .pub-text+.pub-text {
@@ -142,6 +144,7 @@
   color: var(--txt0);
   letter-spacing: -0.02em;
   max-width: 18ch;
+  overflow-wrap: anywhere;
 }
 
 .pub-section-desc {
@@ -707,6 +710,11 @@
 
 .pub-mobile-login {
   margin-left: auto;
+  flex-shrink: 0;
+}
+
+.pub-mobile-nav {
+  justify-content: space-between;
 }
 
 .pub-error-title {
@@ -823,7 +831,14 @@
   }
 
   .pub-headline {
-    max-width: 10ch;
+    font-size: clamp(30px, 11vw, 48px);
+    max-width: 8.5ch;
+  }
+
+  .pub-text {
+    max-width: none;
+    font-size: 13px;
+    line-height: 1.6;
   }
 
   .pub-image-panel {
@@ -835,6 +850,12 @@
     max-height: 280px;
   }
 
+  .pub-image-note {
+    position: static;
+    margin-top: 10px;
+    text-align: left;
+  }
+
   .pub-hscroll {
     display: flex;
     gap: 10px;
@@ -844,8 +865,8 @@
   }
 
   .pub-story-rail .pub-story-card {
-    min-width: calc(100% - 26px);
-    max-width: calc(100% - 26px);
+    min-width: calc(100% - 12px);
+    max-width: calc(100% - 12px);
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
@@ -860,8 +881,23 @@
     scroll-snap-align: start;
   }
 
+  .pub-section-title {
+    font-size: clamp(24px, 8vw, 34px);
+    max-width: none;
+  }
+
   .pub-builder-title {
     font-size: 20px;
     max-width: 16ch;
+  }
+
+  .pub-error-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pub-error-actions .btn-new,
+  .pub-error-actions .pub-link-btn {
+    width: 100%;
   }
 }

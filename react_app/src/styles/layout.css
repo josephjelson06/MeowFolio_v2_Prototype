@@ -214,6 +214,10 @@
 }
 
 @media (max-width: 768px) {
+  .gnav {
+    display: none;
+  }
+
   .frame.desktop.view {
     display: none !important;
   }

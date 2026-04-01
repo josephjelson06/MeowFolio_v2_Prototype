@@ -1,7 +1,7 @@
 # React Implementation Plan
 
 Last updated: 2026-04-01
-Status: foundation implemented in progress
+Status: React mock baseline stabilized
 Primary tracker for the React conversion phase.
 
 ## Purpose
@@ -267,12 +267,12 @@ react_app/
 
 ### Phase 8 - QA, Parity, And Freeze
 
-- [ ] Run desktop/mobile screenshot QA on all React routes.
-- [ ] Compare route output against the static source-of-truth pages.
-- [ ] Fix spacing, overflow, and responsive regressions.
+- [x] Run desktop/mobile screenshot QA on all React routes.
+- [x] Compare route output against the static source-of-truth pages.
+- [x] Fix spacing, overflow, and responsive regressions.
 - [x] Verify keyboard/focus behavior for modals, drawers, tabs, and pagination.
-- [ ] Confirm each route is using shared layout/components instead of page-local duplication.
-- [ ] Freeze the React mock-data baseline before backend integration begins.
+- [x] Confirm each route is using shared layout/components instead of page-local duplication.
+- [x] Freeze the React mock-data baseline before backend integration begins.
 
 ## Definition Of Done Per Route
 
@@ -305,4 +305,13 @@ react_app/
 - React app shell is live in [react_app](./react_app).
 - Dashboard, resume-library, JD, editor, profile, and public routes now use the static class rhythm more directly inside React.
 - Editor-specific mobile chrome now lives at the editor route boundary instead of inside shared workspace layout.
-- Current focus: run responsive QA across the React routes and fix the last spacing, overflow, and regression issues before freezing the React mock-data baseline.
+- Responsive QA has been run across the React routes using screenshot verification against the routed app.
+- The first shared regression from that pass has been fixed: desktop `gnav` no longer overlaps the mobile workspace/public chrome on narrow widths.
+- The second shared regression batch is also fixed: mobile bottom sheets on editor/JD routes no longer render open by default, and mobile topbar controls now shrink more safely.
+- The current responsive QA pass has also produced route-level mobile fixes for:
+  - dashboard KPI and middle-section stacking
+  - narrower public hero/story containment
+  - editor tab/toggle compression
+  - JD workspace tab and action compression
+- Additional inspection against rendered page widths confirmed that the last suspicious public/resume/JD/editor mobile screenshots were not caused by real page-wide overflow, only by narrow control clusters and capture quirks.
+- Current focus: React route parity and responsive QA are complete for the mock-data phase. The next phase is backend/API integration planning and implementation, not more structural UI cleanup.
