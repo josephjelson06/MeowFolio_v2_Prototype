@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ResumeCard } from 'components/workspace/ResumeCard';
 import { downloadTextFile } from 'lib/formatters';
@@ -21,22 +22,32 @@ function getTotalPages(count: number) {
 export function ResumesPage() {
   const navigate = useNavigate();
   const { openResume } = useResumeModal();
-  const [resumes, setResumes] = useState(() => resumeService.list());
+  const [resumes, setResumes] = useState<ResumeRecord[]>([]);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    async function loadResumes() {
+      setResumes(await resumeService.list());
+    }
+
+    loadResumes();
+    window.addEventListener(resumeService.eventName, loadResumes);
+    return () => window.removeEventListener(resumeService.eventName, loadResumes);
+  }, []);
 
   const totalPages = useMemo(() => getTotalPages(resumes.length), [resumes.length]);
   const visibleResumes = useMemo(() => getVisibleResumes(resumes, page), [page, resumes]);
 
-  function renameResume(resume: ResumeRecord) {
+  async function renameResume(resume: ResumeRecord) {
     const nextName = window.prompt('Rename resume', resume.name);
     if (!nextName || !nextName.trim()) return;
-    setResumes(resumeService.rename(resume.id, nextName.trim()));
+    setResumes(await resumeService.rename(resume.id, nextName.trim()));
   }
 
-  function deleteResume(resume: ResumeRecord) {
+  async function deleteResume(resume: ResumeRecord) {
     const confirmed = window.confirm(`Delete ${resume.name}?`);
     if (!confirmed) return;
-    const next = resumeService.remove(resume.id);
+    const next = await resumeService.remove(resume.id);
     setResumes(next);
     const nextTotal = getTotalPages(next.length);
     setPage(current => Math.min(current, nextTotal));
@@ -74,7 +85,10 @@ export function ResumesPage() {
             onRename={renameResume}
             onDownload={downloadResume}
             onDelete={deleteResume}
-            onOpen={() => navigate(routes.editor)}
+            onOpen={() => {
+              resumeService.setActiveId(resume.id);
+              navigate(`${routes.editor}?resumeId=${resume.id}`);
+            }}
           />
         ))}
       </section>

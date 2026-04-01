@@ -1,7 +1,7 @@
-import type { ResumeMatchProfile } from 'types/resume';
+import type { ResumePickerOption } from 'types/resume';
 
 interface ResumePickerPaneProps {
-  items: Array<{ key: string; profile: ResumeMatchProfile }>;
+  items: ResumePickerOption[];
   activeKey: string | null;
   onSelect: (key: string) => void;
 }
@@ -13,13 +13,13 @@ export function ResumePickerPane({ items, activeKey, onSelect }: ResumePickerPan
       <div className="jd-pick-list">
         {items.map(item => (
           <button
-            key={item.key}
-            className={`jd-pick-item${activeKey === item.key ? ' selected' : ''}`}
+            key={item.id}
+            className={`jd-pick-item${activeKey === item.id ? ' selected' : ''}`}
             type="button"
-            onClick={() => onSelect(item.key)}
+            onClick={() => onSelect(item.id)}
           >
             <div className="jd-pick-radio"><div className="jd-pick-radio-dot"></div></div>
-            <span className="jd-pick-label">{item.key}</span>
+            <span className="jd-pick-label">{item.label}</span>
           </button>
         ))}
       </div>

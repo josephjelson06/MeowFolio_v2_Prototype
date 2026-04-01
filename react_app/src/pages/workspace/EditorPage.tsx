@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import { AtsDrawer } from 'components/editor/AtsDrawer';
 import { AtsFullReport } from 'components/editor/AtsFullReport';
 import { EditorFormPane } from 'components/editor/EditorFormPane';
@@ -47,12 +47,9 @@ const initialToolbarValues: ToolbarValues = {
 
 export function EditorPage() {
   const { isMobile } = useViewportMode();
-  const activeResume = resumeService.list()[0] ?? {
-    id: 'resume_v3',
-    name: 'resume_v3.tex',
-    updated: 'Updated 2h ago',
-    template: 'Classic',
-  };
+  const [searchParams] = useSearchParams();
+  const resumeIdFromQuery = searchParams.get('resumeId');
+  const [resumeOptions, setResumeOptions] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
   const [mode, setMode] = useState<'editor' | 'ats'>('editor');
   const [mobileView, setMobileView] = useState<'edit' | 'preview' | 'ats'>('edit');
   const [activeLeftTab, setActiveLeftTab] = useState<(typeof leftTabs)[number]['id']>('sections');
@@ -74,6 +71,31 @@ export function EditorPage() {
   const page = pageBySection[activeSection] ?? 1;
   const totalPages = Math.max(1, Math.ceil(items.length / 5));
   const visibleItems = useMemo(() => items.slice((page - 1) * 5, ((page - 1) * 5) + 5), [items, page]);
+  const activeResume = useMemo(() => {
+    const preferredId = resumeIdFromQuery ?? resumeService.getActiveId();
+    return resumeOptions.find(item => item.id === preferredId) ?? resumeOptions[0] ?? {
+      id: 'resume_v3',
+      name: 'resume_v3.tex',
+      updated: 'Updated 2h ago',
+      template: 'Classic',
+    };
+  }, [resumeIdFromQuery, resumeOptions]);
+
+  useEffect(() => {
+    async function loadResumes() {
+      setResumeOptions(await resumeService.list());
+    }
+
+    loadResumes();
+    window.addEventListener(resumeService.eventName, loadResumes);
+    return () => window.removeEventListener(resumeService.eventName, loadResumes);
+  }, []);
+
+  useEffect(() => {
+    if (activeResume?.id) {
+      resumeService.setActiveId(activeResume.id);
+    }
+  }, [activeResume]);
 
   useEffect(() => {
     if (!isMobile) {

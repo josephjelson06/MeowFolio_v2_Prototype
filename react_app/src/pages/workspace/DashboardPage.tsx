@@ -13,10 +13,27 @@ const kpis = [
 
 export function DashboardPage() {
   const { openResume } = useResumeModal();
-  const resumes = useMemo(() => resumeService.list(), []);
-  const recentResume = useMemo(() => resumes.find(item => item.recent) ?? resumes[0], [resumes]);
-  const tips = useMemo(() => tipsService.list(), []);
+  const [resumes, setResumes] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
+  const [tips, setTips] = useState<string[]>([]);
   const [tipIndex, setTipIndex] = useState(0);
+  const recentResume = useMemo(() => resumes.find(item => item.recent) ?? resumes[0] ?? {
+    id: 'resume_placeholder',
+    name: 'resume_v3.tex',
+    template: 'template1',
+    updated: 'just now',
+  }, [resumes]);
+
+  useEffect(() => {
+    async function loadDashboardData() {
+      const [resumeItems, tipItems] = await Promise.all([resumeService.list(), tipsService.list()]);
+      setResumes(resumeItems);
+      setTips(tipItems);
+    }
+
+    loadDashboardData();
+    window.addEventListener(resumeService.eventName, loadDashboardData);
+    return () => window.removeEventListener(resumeService.eventName, loadDashboardData);
+  }, []);
 
   useEffect(() => {
     if (tips.length <= 1) return undefined;
@@ -81,21 +98,21 @@ export function DashboardPage() {
             <span className="badge-outline">{resumes.length} SAVED RESUMES</span>
             <span className="badge-outline">EDITOR READY</span>
           </div>
-          <Link className="dash-recent-link" to={routes.editor}>Open editor &rarr;</Link>
+          <Link className="dash-recent-link" to={`${routes.editor}?resumeId=${recentResume.id}`}>Open editor &rarr;</Link>
         </article>
 
         <article className="dash-actions-card dash-middle-card">
           <div className="section-label">QUICK ACTIONS</div>
           <div className="dash-actions-title">Move faster</div>
           <div className="dash-actions-grid">
-            <Link className="dash-action-item" to={routes.editor}>
+            <Link className="dash-action-item" to={`${routes.editor}?resumeId=${recentResume.id}`}>
               <div className="dash-action-icon">&#8801;</div>
               <div className="dash-action-copy">
                 <div className="dash-action-name">Open Editor</div>
                 <div className="dash-action-desc">Jump back into the latest resume.</div>
               </div>
             </Link>
-            <Link className="dash-action-item" to={`${routes.editor}?mode=ats`}>
+            <Link className="dash-action-item" to={`${routes.editor}?resumeId=${recentResume.id}&mode=ats`}>
               <div className="dash-action-icon">&#9678;</div>
               <div className="dash-action-copy">
                 <div className="dash-action-name">Calculate ATS Score</div>

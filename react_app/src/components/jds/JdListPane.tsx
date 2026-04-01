@@ -3,17 +3,17 @@ import { Button } from 'components/ui/Button';
 
 interface JdListPaneProps {
   items: JdRecord[];
-  activeId: number | null;
+  activeId: string | null;
   totalCount: number;
   page: number;
   totalPages: number;
-  onSelect: (id: number) => void;
+  onSelect: (id: string) => void;
   onAdd: () => void;
   onPrev: () => void;
   onNext: () => void;
-  onRename: (id: number) => void;
-  onDownload: (id: number) => void;
-  onDelete: (id: number) => void;
+  onRename: (id: string) => void;
+  onDownload: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 export function JdListPane({

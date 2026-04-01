@@ -30,10 +30,10 @@ export function JdResultPane({
     return (
       <>
         <div className="ats-score-card mob-ats-score-card">
-          <div className={`ats-score-num ${report.scoreTone}`}>{report.resume.score}</div>
+          <div className={`ats-score-num ${report.scoreTone}`}>{report.score}</div>
           <div className="ats-score-info">
             <div className="ats-score-label">{report.verdict}</div>
-            <div className="ats-score-desc">{report.resumeKey} &middot; {report.jd.title} &middot; {report.jd.company}</div>
+            <div className="ats-score-desc">{report.resumeLabel} &middot; {report.jd.title} &middot; {report.jd.company}</div>
           </div>
           {onBackToWorkspace ? <button className="analyze-btn" type="button" onClick={onBackToWorkspace}>Back to Workspace</button> : null}
         </div>
@@ -62,15 +62,15 @@ export function JdResultPane({
         </div>
         <div className="match-result-card">
           <div className="match-kw-section">
-            <div className="match-kw-heading">&#10003; Keywords found ({report.resume.found.length})</div>
+            <div className="match-kw-heading">&#10003; Keywords found ({report.found.length})</div>
             <div className="match-kw">
-              {report.resume.found.map(keyword => <span className="match-kw-tag found" key={keyword}>{keyword}</span>)}
+              {report.found.map(keyword => <span className="match-kw-tag found" key={keyword}>{keyword}</span>)}
             </div>
           </div>
           <div className="match-kw-section">
-            <div className="match-kw-heading">&#10007; Missing keywords ({report.resume.miss.length})</div>
+            <div className="match-kw-heading">&#10007; Missing keywords ({report.miss.length})</div>
             <div className="match-kw">
-              {report.resume.miss.map(keyword => <span className="match-kw-tag miss" key={keyword}>{keyword}</span>)}
+              {report.miss.map(keyword => <span className="match-kw-tag miss" key={keyword}>{keyword}</span>)}
             </div>
           </div>
         </div>
@@ -83,27 +83,27 @@ export function JdResultPane({
       <div className="match-res-header">
         <div className="match-res-info">
           <div className="match-res-label">Resume vs Job Description</div>
-          <div className="match-res-name">{report.resumeKey}</div>
+          <div className="match-res-name">{report.resumeLabel}</div>
           <div className="match-res-sub">{report.jd.title} &middot; {report.jd.company}</div>
         </div>
         <div className="match-score-badge">
-          <div className={`match-score ${report.resume.cls}`}>{report.resume.score}%</div>
+          <div className={`match-score ${report.scoreTone}`}>{report.score}%</div>
           <div className="match-score-label">match score</div>
         </div>
       </div>
       <div className="match-bar-track">
-        <div className={`match-bar-fill ${report.scoreTone}`} style={{ width: `${report.resume.score}%` }}></div>
+        <div className={`match-bar-fill ${report.scoreTone}`} style={{ width: `${report.score}%` }}></div>
       </div>
       <div className="match-kw-section">
-        <div className="match-kw-heading">&#10003; Keywords found ({report.resume.found.length})</div>
+        <div className="match-kw-heading">&#10003; Keywords found ({report.found.length})</div>
         <div className="match-kw">
-          {report.resume.found.map(keyword => <span className="match-kw-tag found" key={keyword}>{keyword}</span>)}
+          {report.found.map(keyword => <span className="match-kw-tag found" key={keyword}>{keyword}</span>)}
         </div>
       </div>
       <div className="match-kw-section">
-        <div className="match-kw-heading">&#10007; Missing keywords ({report.resume.miss.length})</div>
+        <div className="match-kw-heading">&#10007; Missing keywords ({report.miss.length})</div>
         <div className="match-kw">
-          {report.resume.miss.map(keyword => <span className="match-kw-tag miss" key={keyword}>{keyword}</span>)}
+          {report.miss.map(keyword => <span className="match-kw-tag miss" key={keyword}>{keyword}</span>)}
         </div>
       </div>
     </div>

@@ -1,11 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Button } from 'components/ui/Button';
 import { Badge } from 'components/ui/Badge';
 import { profileService } from 'services/profileService';
 import { routes } from 'lib/routes';
+import type { ProfileSummary, UsageMetric } from 'types/ui';
 
 export function ProfilePage() {
-  const summary = profileService.getSummary();
-  const usage = profileService.getUsage();
+  const [summary, setSummary] = useState<ProfileSummary>({
+    name: 'Arjun Kumar',
+    email: 'arjun@email.com',
+    plan: 'Free Plan',
+    memberSince: 'Jan 2026',
+  });
+  const [usage, setUsage] = useState<UsageMetric[]>([]);
+
+  useEffect(() => {
+    async function loadProfile() {
+      const [nextSummary, nextUsage] = await Promise.all([profileService.getSummary(), profileService.getUsage()]);
+      setSummary(nextSummary);
+      setUsage(nextUsage);
+    }
+
+    loadProfile();
+  }, []);
 
   return (
     <div className="profile-body profile-page">

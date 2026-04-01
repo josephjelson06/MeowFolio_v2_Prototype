@@ -24,7 +24,7 @@ export function JdMobileSheet({ report, open, onToggle, onOpenDetailed }: JdMobi
         ) : (
           <>
             <div className="jd-sheet-score-row">
-              <span className={`jd-sheet-score-num ${report.scoreTone}`}>{report.resume.score}</span>
+              <span className={`jd-sheet-score-num ${report.scoreTone}`}>{report.score}</span>
               <span className="jd-sheet-score-label">match score</span>
             </div>
             <div className="jd-sheet-verdict">{report.verdict}</div>
@@ -43,7 +43,7 @@ export function JdMobileSheet({ report, open, onToggle, onOpenDetailed }: JdMobi
             </div>
             <div className="audit-head jd-sheet-headline">Top matched keywords</div>
             <div className="mob-jd-sheet-tags">
-              {report.resume.found.slice(0, 4).map(keyword => <span className="match-kw-tag found" key={keyword}>{keyword}</span>)}
+              {report.found.slice(0, 4).map((keyword: string) => <span className="match-kw-tag found" key={keyword}>{keyword}</span>)}
             </div>
             <button className="analyze-btn jd-sheet-report-btn" type="button" onClick={onOpenDetailed}>Open detailed JD report</button>
           </>

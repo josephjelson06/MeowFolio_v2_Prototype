@@ -5,5 +5,11 @@ old_tokens.css
 old_tailwind.config.ts
 react_app/node_modules/
 react_app/dist/
+backend/node_modules/
+backend/dist/
+backend/uploads/
 
 qa_screens/
+
+.env*
+Old*

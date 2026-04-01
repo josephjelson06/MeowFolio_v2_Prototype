@@ -1,10 +1,11 @@
 export interface JdRecord {
-  id: number;
+  id: string;
   title: string;
   company: string;
   type: string;
   badge: string;
   parsedText: string;
+  updatedAt?: string;
 }
 
 export interface JdMetric {
