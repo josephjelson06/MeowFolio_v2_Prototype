@@ -2,7 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
-const backendRoot = path.resolve(__dirname, '..', '..');
+function resolveBackendRoot() {
+  const cwd = process.cwd();
+  const cwdLooksLikeBackendRoot = fs.existsSync(path.join(cwd, 'src')) && fs.existsSync(path.join(cwd, 'migrations'));
+  if (cwdLooksLikeBackendRoot) {
+    return cwd;
+  }
+  return path.resolve(__dirname, '..', '..');
+}
+
+const backendRoot = resolveBackendRoot();
 const projectRoot = path.resolve(backendRoot, '..');
 const envPath = path.join(projectRoot, '.env.local');
 

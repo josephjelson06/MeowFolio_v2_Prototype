@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 interface TemplateItem {
+  id: string;
   name: string;
   label: string;
   copy: string;
-  lines: readonly ('short' | 'medium' | 'long')[];
+  previewImageUrl?: string;
 }
 
 interface TemplateRailProps {
@@ -35,14 +36,20 @@ export function TemplateRail({ items, onUse }: TemplateRailProps) {
 
       <div className="pub-hscroll pub-template-rail" ref={railRef}>
         {items.map(item => (
-          <article className="pub-template-card" key={item.label}>
+          <article className="pub-template-card" key={item.id}>
             <div className="pub-template-preview">
-              <div className="pub-template-doc">
-                <div className="pdf-name pub-template-name">Arjun Kumar</div>
-                <div className="pdf-contact pub-template-sub">{item.label}</div>
-                <div className="pdf-divider"></div>
-                {item.lines.map((line, index) => <div className={`ra-mini-line ${line}`} key={`${item.label}-${index}`}></div>)}
-              </div>
+              {item.previewImageUrl ? (
+                <img src={item.previewImageUrl} alt={`${item.name} template preview`} className="pub-template-preview-img" loading="lazy" />
+              ) : (
+                <div className="pub-template-doc">
+                  <div className="pdf-name pub-template-name">Arjun Kumar</div>
+                  <div className="pdf-contact pub-template-sub">{item.label}</div>
+                  <div className="pdf-divider"></div>
+                  <div className="ra-mini-line medium"></div>
+                  <div className="ra-mini-line short"></div>
+                  <div className="ra-mini-line long"></div>
+                </div>
+              )}
             </div>
             <div className="pub-template-actions">
               <button className="r-action primary" type="button" onClick={onUse}>Use this template</button>

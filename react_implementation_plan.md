@@ -1,7 +1,7 @@
 # React Implementation Plan
 
 Last updated: 2026-04-01
-Status: React mock baseline stabilized
+Status: React routes stabilized and live backend integration is running locally across the main workspace flows, including dev session bootstrap and TeX-backed export
 Primary tracker for the React conversion phase.
 
 ## Purpose
@@ -314,4 +314,15 @@ react_app/
   - editor tab/toggle compression
   - JD workspace tab and action compression
 - Additional inspection against rendered page widths confirmed that the last suspicious public/resume/JD/editor mobile screenshots were not caused by real page-wide overflow, only by narrow control clusters and capture quirks.
-- Current focus: React route parity and responsive QA are complete for the mock-data phase. The next phase is backend/API integration planning and implementation, not more structural UI cleanup.
+- Backend integration is now live locally:
+  - shared API client is active
+  - resume/JD/profile/tips services are backend-backed
+  - editor route now loads full resume records from the backend
+  - editor route autosaves to the backend and runs live ATS scoring
+- React now bootstraps a dev session actor before rendering route flows, so the frontend consistently exercises the backend ownership seam.
+- Public and editor template selectors now use backend-driven template metadata instead of duplicate hardcoded template lists.
+- Resume download now uses the live backend TeX export path instead of a placeholder text stub.
+- Editor persistence now also covers section ordering and custom sections through the canonical resume document save path.
+- JD route synchronization has been tightened so library refreshes and report state behave predictably against the live backend.
+- Backend-ready ownership preparation is in place through optional `user_id` scoping and `x-user-id` request support.
+- Current focus: move from local integration completeness into the next backend phase, especially auth preparation hardening, richer preview/export polish, and eventual PDF compile wiring on top of the TeX export path.

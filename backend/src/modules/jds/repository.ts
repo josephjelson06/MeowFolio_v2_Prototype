@@ -30,22 +30,29 @@ function mapRow(row: QueryResultRow): StoredJd {
   };
 }
 
-export async function countJds() {
-  const result = await pool.query<{ count: string }>('SELECT COUNT(*)::text AS count FROM job_descriptions');
+export async function countJds(userId?: string) {
+  const result = userId
+    ? await pool.query<{ count: string }>('SELECT COUNT(*)::text AS count FROM job_descriptions WHERE user_id = $1', [userId])
+    : await pool.query<{ count: string }>('SELECT COUNT(*)::text AS count FROM job_descriptions');
   return Number(result.rows[0]?.count ?? 0);
 }
 
-export async function listJds() {
-  const result = await pool.query('SELECT * FROM job_descriptions ORDER BY updated_at DESC, created_at DESC');
+export async function listJds(userId?: string) {
+  const result = userId
+    ? await pool.query('SELECT * FROM job_descriptions WHERE user_id = $1 ORDER BY updated_at DESC, created_at DESC', [userId])
+    : await pool.query('SELECT * FROM job_descriptions ORDER BY updated_at DESC, created_at DESC');
   return result.rows.map(mapRow);
 }
 
-export async function getJdById(id: string) {
-  const result = await pool.query('SELECT * FROM job_descriptions WHERE id = $1 LIMIT 1', [id]);
+export async function getJdById(id: string, userId?: string) {
+  const result = userId
+    ? await pool.query('SELECT * FROM job_descriptions WHERE id = $1 AND user_id = $2 LIMIT 1', [id, userId])
+    : await pool.query('SELECT * FROM job_descriptions WHERE id = $1 LIMIT 1', [id]);
   return result.rows[0] ? mapRow(result.rows[0]) : null;
 }
 
 export async function createJd(input: {
+  userId?: string | null;
   title: string;
   company: string;
   type?: string;
@@ -55,10 +62,10 @@ export async function createJd(input: {
 }) {
   const id = randomUUID();
   const result = await pool.query(
-    `INSERT INTO job_descriptions (id, title, company, type, badge, raw_text, parsed_json)
-     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+    `INSERT INTO job_descriptions (id, user_id, title, company, type, badge, raw_text, parsed_json)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
      RETURNING *`,
-    [id, input.title, input.company, input.type ?? 'Imported', input.badge ?? 'Newly added', input.rawText, JSON.stringify(input.parsedMeta)],
+    [id, input.userId ?? null, input.title, input.company, input.type ?? 'Imported', input.badge ?? 'Newly added', input.rawText, JSON.stringify(input.parsedMeta)],
   );
   return mapRow(result.rows[0]);
 }
@@ -70,36 +77,61 @@ export async function updateJd(id: string, input: Partial<{
   badge: string;
   rawText: string;
   parsedMeta: JdParsedMeta;
-}>) {
-  const current = await getJdById(id);
+}>, userId?: string) {
+  const current = await getJdById(id, userId);
   if (!current) return null;
 
-  const result = await pool.query(
-    `UPDATE job_descriptions
-       SET title = $2,
-           company = $3,
-           type = $4,
-           badge = $5,
-           raw_text = $6,
-           parsed_json = $7::jsonb,
-           updated_at = NOW()
-     WHERE id = $1
-     RETURNING *`,
-    [
-      id,
-      input.title ?? current.title,
-      input.company ?? current.company,
-      input.type ?? current.type,
-      input.badge ?? current.badge,
-      input.rawText ?? current.rawText,
-      JSON.stringify(input.parsedMeta ?? current.parsedMeta),
-    ],
-  );
+  const result = userId
+    ? await pool.query(
+        `UPDATE job_descriptions
+           SET title = $2,
+               company = $3,
+               type = $4,
+               badge = $5,
+               raw_text = $6,
+               parsed_json = $7::jsonb,
+               updated_at = NOW()
+         WHERE id = $1 AND user_id = $8
+         RETURNING *`,
+        [
+          id,
+          input.title ?? current.title,
+          input.company ?? current.company,
+          input.type ?? current.type,
+          input.badge ?? current.badge,
+          input.rawText ?? current.rawText,
+          JSON.stringify(input.parsedMeta ?? current.parsedMeta),
+          userId,
+        ],
+      )
+    : await pool.query(
+        `UPDATE job_descriptions
+           SET title = $2,
+               company = $3,
+               type = $4,
+               badge = $5,
+               raw_text = $6,
+               parsed_json = $7::jsonb,
+               updated_at = NOW()
+         WHERE id = $1
+         RETURNING *`,
+        [
+          id,
+          input.title ?? current.title,
+          input.company ?? current.company,
+          input.type ?? current.type,
+          input.badge ?? current.badge,
+          input.rawText ?? current.rawText,
+          JSON.stringify(input.parsedMeta ?? current.parsedMeta),
+        ],
+      );
   return mapRow(result.rows[0]);
 }
 
-export async function deleteJd(id: string) {
-  const result = await pool.query('DELETE FROM job_descriptions WHERE id = $1', [id]);
+export async function deleteJd(id: string, userId?: string) {
+  const result = userId
+    ? await pool.query('DELETE FROM job_descriptions WHERE id = $1 AND user_id = $2', [id, userId])
+    : await pool.query('DELETE FROM job_descriptions WHERE id = $1', [id]);
   return (result.rowCount ?? 0) > 0;
 }
 

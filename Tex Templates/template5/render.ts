@@ -1,5 +1,6 @@
 import {
   type CustomEntriesSection,
+  type DynamicCustomSection,
   type RenderOptions,
   type ResumeData,
   type ResumeSectionKey
@@ -210,6 +211,23 @@ function renderCustomSection(sectionKey: ResumeSectionKey, section: CustomEntrie
   return sectionBlock(getTemplateSectionTitle(sectionKey, options, resume), entries);
 }
 
+function renderDynamicCustomSection(section: DynamicCustomSection, options: RenderOptions) {
+  const entries = section.entries
+    .map((entry) =>
+      renderEntry(
+        entry.title?.trim() || section.label,
+        renderLink(entry.link),
+        formatDateField(entry.date),
+        getDescriptionLines(entry.description, options),
+        getDescriptionParagraph(entry.description, options),
+      ),
+    )
+    .filter(Boolean)
+    .join('\n\n');
+
+  return sectionBlock(section.label.trim() || 'Custom Section', entries);
+}
+
 function renderLanguages(resume: ResumeData, options: RenderOptions) {
   const rows =
     resume.languages.mode === "grouped"
@@ -246,7 +264,12 @@ function renderHobbies(resume: ResumeData, options: RenderOptions) {
   return renderCompactRows(getTemplateSectionTitle("hobbies", options, resume), rows);
 }
 
-function renderSection(section: ResumeSectionKey, resume: ResumeData, options: RenderOptions) {
+function renderSection(section: string, resume: ResumeData, options: RenderOptions) {
+  const dynamicSection = resume.customSections.find(item => item.id === section);
+  if (dynamicSection) {
+    return renderDynamicCustomSection(dynamicSection, options);
+  }
+
   switch (section) {
     case "summary":
       return renderSummary(resume, options);

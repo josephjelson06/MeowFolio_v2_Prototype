@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useViewportMode } from 'hooks/useViewportMode';
 import { JdListPane } from 'components/jds/JdListPane';
 import { JdMobileSheet } from 'components/jds/JdMobileSheet';
 import { JdResultPane } from 'components/jds/JdResultPane';
 import { ResumePickerPane } from 'components/jds/ResumePickerPane';
+import { useViewportMode } from 'hooks/useViewportMode';
 import { useJdModal } from 'hooks/useJdModal';
 import { downloadTextFile } from 'lib/formatters';
 import { jdService, type JdReportModel } from 'services/jdService';
@@ -29,6 +29,7 @@ export function JdsPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [resumeProfiles, setResumeProfiles] = useState<ResumePickerOption[]>([]);
   const [reportState, setReportState] = useState<JdReportModel | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
 
   const pageItems = useMemo(() => {
     const start = (jdPage - 1) * JD_PAGE_SIZE;
@@ -39,41 +40,41 @@ export function JdsPage() {
   const selectedJd = useMemo(() => jds.find(item => item.id === selectedJdId) ?? null, [jds, selectedJdId]);
 
   useEffect(() => {
-    async function loadJdData() {
+    async function syncLibraries(preferredJdId?: string | null) {
       const [nextJds, nextProfiles] = await Promise.all([jdService.list(), jdService.getMatchProfiles()]);
       setJds(nextJds);
       setResumeProfiles(nextProfiles);
+
       setSelectedJdId(current => {
-        const nextSelected = current && nextJds.some(item => item.id === current) ? current : nextJds[0]?.id ?? null;
+        const candidate = preferredJdId ?? current;
+        const nextSelected = candidate && nextJds.some(item => item.id === candidate) ? candidate : nextJds[0]?.id ?? null;
         setJdPage(getPageForId(nextJds, nextSelected));
         return nextSelected;
       });
+
       setSelectedResume(current => current && nextProfiles.some(item => item.id === current) ? current : nextProfiles[0]?.id ?? null);
     }
 
-    loadJdData();
-    window.addEventListener(jdService.eventName, loadJdData);
-    window.addEventListener(resumeService.eventName, loadJdData);
-    return () => {
-      window.removeEventListener(jdService.eventName, loadJdData);
-      window.removeEventListener(resumeService.eventName, loadJdData);
-    };
-  }, [jds]);
+    void syncLibraries();
 
-  useEffect(() => {
-    function handleJdSubmit(event: Event) {
-      const customEvent = event as CustomEvent<{ id: string }>;
-      if (customEvent.detail?.id) {
-        setSelectedJdId(customEvent.detail.id);
-        setJdPage(getPageForId(jds, customEvent.detail.id));
-      }
+    function handleJdChange(event: Event) {
+      const customEvent = event as CustomEvent<{ id?: string }>;
       setReportState(null);
       setMobileView('workspace');
       setSheetOpen(false);
+      void syncLibraries(customEvent.detail?.id ?? null);
     }
 
-    window.addEventListener(jdService.eventName, handleJdSubmit as EventListener);
-    return () => window.removeEventListener(jdService.eventName, handleJdSubmit as EventListener);
+    function handleResumeChange() {
+      void syncLibraries();
+    }
+
+    window.addEventListener(jdService.eventName, handleJdChange as EventListener);
+    window.addEventListener(resumeService.eventName, handleResumeChange);
+    return () => {
+      window.removeEventListener(jdService.eventName, handleJdChange as EventListener);
+      window.removeEventListener(resumeService.eventName, handleResumeChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -97,12 +98,17 @@ export function JdsPage() {
 
   async function runAnalysis() {
     if (!selectedResume || !selectedJdId) return;
-    const nextReport = await jdService.buildReport(selectedResume, selectedJdId);
-    if (!nextReport) return;
-    setReportState(nextReport);
-    if (isMobile) {
-      setMobileView('workspace');
-      setSheetOpen(true);
+    try {
+      setAnalyzing(true);
+      const nextReport = await jdService.buildReport(selectedResume, selectedJdId);
+      if (!nextReport) return;
+      setReportState(nextReport);
+      if (isMobile) {
+        setMobileView('workspace');
+        setSheetOpen(true);
+      }
+    } finally {
+      setAnalyzing(false);
     }
   }
 
@@ -142,8 +148,20 @@ export function JdsPage() {
   return (
     <>
       <div className="mob-edit-toggle jd-mobile-tabs">
-        <button className={`mob-et-btn${mobileView === 'workspace' ? ' active' : ''}`} type="button" onClick={() => setMobileView('workspace')}>Workspace</button>
-        <button className={`mob-et-btn${mobileView === 'report' ? ' active' : ''}`} type="button" onClick={() => setMobileView('report')}>Detailed Report</button>
+        <button
+          className={`mob-et-btn${mobileView === 'workspace' ? ' active' : ''}`}
+          type="button"
+          onClick={() => setMobileView('workspace')}
+        >
+          Workspace
+        </button>
+        <button
+          className={`mob-et-btn${mobileView === 'report' ? ' active' : ''}`}
+          type="button"
+          onClick={() => setMobileView('report')}
+        >
+          Detailed Report
+        </button>
       </div>
 
       <main className={`jd-page-body jd-page${mobileView === 'report' ? ' report-view' : ''}`}>
@@ -173,17 +191,28 @@ export function JdsPage() {
               <div className="jd-analyze-title">{analyzeTitle}</div>
               <div className="jd-analyze-sub">{analyzeSubtitle}</div>
             </div>
-            <button className="run-btn" type="button" onClick={runAnalysis} disabled={!selectedResume || !selectedJd}>
-              Run Analysis &rarr;
+            <button
+              className="run-btn"
+              type="button"
+              onClick={() => {
+                void runAnalysis();
+              }}
+              disabled={!selectedResume || !selectedJd || analyzing}
+            >
+              {analyzing ? 'Running...' : 'Run Analysis ->'}
             </button>
           </div>
 
           <div className="jd-analyze-body">
-            <ResumePickerPane items={resumeProfiles} activeKey={selectedResume} onSelect={key => {
-              setSelectedResume(key);
-              setReportState(null);
-              setSheetOpen(false);
-            }} />
+            <ResumePickerPane
+              items={resumeProfiles}
+              activeKey={selectedResume}
+              onSelect={key => {
+                setSelectedResume(key);
+                setReportState(null);
+                setSheetOpen(false);
+              }}
+            />
 
             <div className="jd-result-col">
               <div id="jd-results">

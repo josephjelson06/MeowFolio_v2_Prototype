@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { routes } from 'lib/routes';
+import { useSession } from 'state/session/sessionContext';
 
 interface EditorMobileTopbarProps {
   title: string;
@@ -7,6 +8,7 @@ interface EditorMobileTopbarProps {
 }
 
 export function EditorMobileTopbar({ title, onAnalyze }: EditorMobileTopbarProps) {
+  const { initials } = useSession();
   return (
     <div className="mob-topbar editor-mobile-nav">
       <NavLink className="mob-back editor-back-link" to={routes.resumes}>
@@ -17,7 +19,7 @@ export function EditorMobileTopbar({ title, onAnalyze }: EditorMobileTopbarProps
         Analyze
       </button>
       <NavLink className="avatar" to={routes.profile}>
-        AK
+        {initials}
       </NavLink>
     </div>
   );

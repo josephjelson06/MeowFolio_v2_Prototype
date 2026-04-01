@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Badge } from 'components/ui/Badge';
 import { Button } from 'components/ui/Button';
 import { FaqList } from 'components/public/FaqList';
@@ -5,6 +6,8 @@ import { StoryRail } from 'components/public/StoryRail';
 import { TemplateRail } from 'components/public/TemplateRail';
 import { useAuthModal } from 'hooks/useAuthModal';
 import { routes } from 'lib/routes';
+import { templateService } from 'services/templateService';
+import type { TemplateRecord } from 'types/template';
 
 const storyItems = [
   { step: '01', title: 'Mochii starts the job search journey.', copy: 'Every resume process starts with a first draft and a lot of unknowns.', image: '/Images/Scene1.jpg', alt: 'Mochii starting the job search' },
@@ -13,13 +16,6 @@ const storyItems = [
   { step: '04', title: 'A glimmer of hope appears.', copy: 'The public side now leads users into the same product loop instead of a disconnected landing page.', image: '/Images/Scene4.jpg', alt: 'Mochii finding resumeai' },
   { step: '05', title: 'Builds a purr-fect resume.', copy: 'Import, refine, preview, and export from one coherent workspace.', image: '/Images/Scene5.jpg', alt: 'Mochii building a resume' },
   { step: '06', title: 'Hired as Senior Treat Officer.', copy: 'A better system does not guarantee outcomes, but it gives the work a fairer shot.', image: '/Images/Scene6.jpg', alt: 'Mochii getting hired' },
-];
-
-const templateItems = [
-  { name: 'Classic', label: 'Template 1', copy: 'A calm, balanced format for most applications.', lines: ['medium', 'short', 'long'] as const },
-  { name: 'Sidebar', label: 'Template 2', copy: 'A stronger information hierarchy with faster scanning.', lines: ['long', 'medium', 'short'] as const },
-  { name: 'Structured', label: 'Template 3', copy: 'Useful when you want the layout to feel more formal.', lines: ['medium', 'long', 'medium'] as const },
-  { name: 'Minimal', label: 'Template 4', copy: 'Less chrome, tighter spacing, and a leaner preview.', lines: ['long', 'short', 'medium'] as const },
 ];
 
 const faqItems = [
@@ -31,6 +27,11 @@ const faqItems = [
 
 export function HomePage() {
   const { openAuth } = useAuthModal();
+  const [templateItems, setTemplateItems] = useState<TemplateRecord[]>([]);
+
+  useEffect(() => {
+    void templateService.list().then(setTemplateItems);
+  }, []);
 
   function openHomeAuth() {
     openAuth({
@@ -116,7 +117,16 @@ export function HomePage() {
       </section>
 
       <section className="pub-panel">
-        <TemplateRail items={templateItems} onUse={openHomeAuth} />
+        <TemplateRail
+          items={templateItems.map(item => ({
+            copy: item.description,
+            id: item.id,
+            label: item.badge,
+            name: item.name,
+            previewImageUrl: item.previewImageUrl,
+          }))}
+          onUse={openHomeAuth}
+        />
       </section>
 
       <section className="pub-panel pub-faq-grid">

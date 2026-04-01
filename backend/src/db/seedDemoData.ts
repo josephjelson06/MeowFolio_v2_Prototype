@@ -1,4 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import { createEmptyDescriptionField, createEmptyLinkField, createEmptyResumeData, DEFAULT_RENDER_OPTIONS, type RenderTemplateId } from '../../../shared/contracts/resume';
+import { pool } from './pool';
 import { countJds, createJd } from '../modules/jds/repository';
 import { deriveJdParsedMeta } from '../modules/jds/scoring';
 import { countResumes, createResume } from '../modules/resumes/repository';
@@ -44,14 +46,33 @@ function buildDemoResume(name: string, title: string, templateId: RenderTemplate
   };
 }
 
+async function ensureDemoUser() {
+  const email = 'demo@resumeai.local';
+  const existing = await pool.query<{ id: string }>('SELECT id FROM users WHERE email = $1 LIMIT 1', [email]);
+  if (existing.rows[0]?.id) return existing.rows[0].id;
+
+  const inserted = await pool.query<{ id: string }>(
+    `INSERT INTO users (id, email, name, google_sub)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id`,
+    [randomUUID(), email, 'Demo User', 'demo-google-sub'],
+  );
+  return inserted.rows[0].id;
+}
+
 export async function seedDemoData() {
-  if (await countResumes() === 0) {
-    await createResume(buildDemoResume('Arjun Kumar', 'Software Engineer', 'template1', 'Software engineer with experience across full-stack delivery, API performance, and resume tailoring workflows.', ['Python', 'React', 'Node.js', 'AWS', 'Docker', 'PostgreSQL'], ['Built REST APIs and internal tools used across product teams.', 'Improved response times by 37% and reduced manual review effort.']));
-    await createResume(buildDemoResume('Arjun Kumar', 'Frontend Engineer', 'template2', 'Frontend-focused engineer with strong UI delivery, system thinking, and performance habits.', ['React', 'TypeScript', 'Design Systems', 'Accessibility'], ['Shipped responsive product surfaces across web and mobile breakpoints.', 'Reduced layout regressions by building reusable UI primitives.']));
-    await createResume(buildDemoResume('Arjun Kumar', 'Data Engineer', 'template4', 'Data engineer working across pipelines, analytics foundations, and product instrumentation.', ['Python', 'SQL', 'Airflow', 'dbt', 'AWS'], ['Designed data pipelines used for operational and product reporting.', 'Improved warehouse freshness and reduced dashboard lag.']));
+  const demoUserId = await ensureDemoUser();
+
+  await pool.query('UPDATE resumes SET user_id = $1 WHERE user_id IS NULL', [demoUserId]);
+  await pool.query('UPDATE job_descriptions SET user_id = $1 WHERE user_id IS NULL', [demoUserId]);
+
+  if (await countResumes(demoUserId) === 0) {
+    await createResume({ ...buildDemoResume('Arjun Kumar', 'Software Engineer', 'template1', 'Software engineer with experience across full-stack delivery, API performance, and resume tailoring workflows.', ['Python', 'React', 'Node.js', 'AWS', 'Docker', 'PostgreSQL'], ['Built REST APIs and internal tools used across product teams.', 'Improved response times by 37% and reduced manual review effort.']), userId: demoUserId });
+    await createResume({ ...buildDemoResume('Arjun Kumar', 'Frontend Engineer', 'template2', 'Frontend-focused engineer with strong UI delivery, system thinking, and performance habits.', ['React', 'TypeScript', 'Design Systems', 'Accessibility'], ['Shipped responsive product surfaces across web and mobile breakpoints.', 'Reduced layout regressions by building reusable UI primitives.']), userId: demoUserId });
+    await createResume({ ...buildDemoResume('Arjun Kumar', 'Data Engineer', 'template4', 'Data engineer working across pipelines, analytics foundations, and product instrumentation.', ['Python', 'SQL', 'Airflow', 'dbt', 'AWS'], ['Designed data pipelines used for operational and product reporting.', 'Improved warehouse freshness and reduced dashboard lag.']), userId: demoUserId });
   }
 
-  if (await countJds() === 0) {
+  if (await countJds(demoUserId) === 0) {
     const seedJds = [
       'Software Engineer II\nGoogle\nBuild product features, APIs, and internal tooling using Python, React, cloud systems, and scalable architecture.',
       'Senior Frontend Dev\nRazorpay\nOwn frontend architecture, performance, React systems, and UX polish.',
@@ -69,6 +90,7 @@ export async function seedDemoData() {
         rawText: jdText,
         title: meta.roleTitle ?? 'Imported JD',
         type: 'Full-time',
+        userId: demoUserId,
       });
     }
   }

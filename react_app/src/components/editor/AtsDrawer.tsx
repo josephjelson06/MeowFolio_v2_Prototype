@@ -1,39 +1,44 @@
+import type { AtsScoreResponse } from 'types/resumeDocument';
+
 interface AtsDrawerProps {
   open: boolean;
+  report: AtsScoreResponse | null;
   onClose: () => void;
 }
 
-export function AtsDrawer({ open, onClose }: AtsDrawerProps) {
+export function AtsDrawer({ open, report, onClose }: AtsDrawerProps) {
   return (
     <div className={`ats-drawer${open ? ' open' : ''}`}>
       <div className="drawer-head">
         <span>ATS Report</span>
         <button className="close-x" type="button" onClick={onClose}>&times;</button>
       </div>
-      <div className="score-big">
-        <div className="score-num">74</div>
-        <div className="score-sub">out of 100 &middot; Good - a few fixes needed</div>
-      </div>
-      <div className="bar-row">
-        <div className="bar-label"><span>Keywords</span><span className="bar-val">82%</span></div>
-        <div className="bar-track"><div className="bar-fill editor-bar-82"></div></div>
-      </div>
-      <div className="bar-row">
-        <div className="bar-label"><span>Formatting</span><span className="bar-val">90%</span></div>
-        <div className="bar-track"><div className="bar-fill editor-bar-90"></div></div>
-      </div>
-      <div className="bar-row">
-        <div className="bar-label"><span>Section structure</span><span className="bar-val">65%</span></div>
-        <div className="bar-track"><div className="bar-fill warn editor-bar-65"></div></div>
-      </div>
-      <div className="audit">
-        <div className="audit-head">Checklist</div>
-        <div className="audit-row"><span className="abadge bp">&#10003;</span>File format readable</div>
-        <div className="audit-row"><span className="abadge bp">&#10003;</span>Contact info present</div>
-        <div className="audit-row"><span className="abadge bw">!</span>Add measurable impact</div>
-        <div className="audit-row"><span className="abadge bf">&#10007;</span>Missing summary section</div>
-        <div className="audit-row"><span className="abadge bw">!</span>Quantify skills section</div>
-      </div>
+      {report ? (
+        <>
+          <div className="score-big">
+            <div className="score-num">{report.score}</div>
+            <div className="score-sub">out of 100 · {report.verdict}</div>
+          </div>
+          {report.breakdown.slice(0, 3).map(item => {
+            const percentage = Math.round((item.score / item.max) * 100);
+            return (
+              <div className="bar-row" key={item.label}>
+                <div className="bar-label"><span>{item.label}</span><span className="bar-val">{percentage}%</span></div>
+                <div className="bar-track"><div className={`bar-fill${percentage < 60 ? ' warn' : ''}`} style={{ width: `${percentage}%` }}></div></div>
+              </div>
+            );
+          })}
+          <div className="audit">
+            <div className="audit-head">Checklist</div>
+            {report.warnings.map(item => <div className="audit-row" key={item}><span className="abadge bw">!</span>{item}</div>)}
+            {report.tips.slice(0, 3).map(item => <div className="audit-row" key={item}><span className="abadge bp">&#10003;</span>{item}</div>)}
+          </div>
+        </>
+      ) : (
+        <div className="score-big">
+          <div className="score-sub">Run analysis to see the ATS report.</div>
+        </div>
+      )}
     </div>
   );
 }

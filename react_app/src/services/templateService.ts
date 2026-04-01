@@ -1,11 +1,16 @@
-import type { TemplatePreviewRecord } from '../../../../shared/contracts/template';
-import { paths } from '../../config/env';
+import { apiClient } from 'lib/apiClient';
+import type { TemplateRecord } from 'types/template';
 
-function previewImage(relativeFile: string) {
-  return `/static/templates/${relativeFile}`;
+interface TemplateListResponse {
+  items: TemplateRecord[];
+  runtime: {
+    compileEnabled: boolean;
+    texRenderEnabled?: boolean;
+    texSourceAvailable: boolean;
+  };
 }
 
-export const templateRegistry: TemplatePreviewRecord[] = [
+const fallbackTemplates: TemplateRecord[] = [
   {
     id: 'template1',
     name: 'Classic',
@@ -14,7 +19,7 @@ export const templateRegistry: TemplatePreviewRecord[] = [
     density: 'balanced',
     description: 'Centered identity block with ruled sections and clean multi-page flow.',
     headerLayout: 'center',
-    previewImageUrl: previewImage('Temp1.jpg'),
+    previewImageUrl: '/Templates/Temp1.jpg',
     sectionStyle: 'rule',
     availableForCompile: false,
   },
@@ -26,7 +31,7 @@ export const templateRegistry: TemplatePreviewRecord[] = [
     density: 'tight',
     description: 'Compact single-column technical layout with strong scanability.',
     headerLayout: 'center',
-    previewImageUrl: previewImage('Temp2.jpg'),
+    previewImageUrl: '/Templates/Temp2.jpg',
     sectionStyle: 'rule',
     availableForCompile: false,
   },
@@ -38,7 +43,7 @@ export const templateRegistry: TemplatePreviewRecord[] = [
     density: 'balanced',
     description: 'Jake-style resume layout with dense but readable section rhythm.',
     headerLayout: 'center',
-    previewImageUrl: previewImage('Temp5.jpg'),
+    previewImageUrl: '/Templates/Temp5.jpg',
     sectionStyle: 'underline',
     availableForCompile: false,
   },
@@ -50,7 +55,7 @@ export const templateRegistry: TemplatePreviewRecord[] = [
     density: 'airy',
     description: 'Lean visual treatment with lighter section chrome and wider breathing room.',
     headerLayout: 'left',
-    previewImageUrl: previewImage('Temp6.png'),
+    previewImageUrl: '/Templates/Temp6.png',
     sectionStyle: 'capsule',
     availableForCompile: false,
   },
@@ -62,21 +67,25 @@ export const templateRegistry: TemplatePreviewRecord[] = [
     density: 'balanced',
     description: 'A more expressive layout with a confident section treatment and compact flow.',
     headerLayout: 'left',
-    previewImageUrl: previewImage('Temp7.png'),
+    previewImageUrl: '/Templates/Temp7.png',
     sectionStyle: 'capsule',
     availableForCompile: false,
   },
 ];
 
-export function getTemplateById(templateId: string) {
-  return templateRegistry.find(template => template.id === templateId) ?? templateRegistry[0];
-}
-
-export function getTemplateRuntimeMeta() {
-  return {
-    compileEnabled: false,
-    compilerImage: Boolean(paths.texTemplatesDir),
-    texRenderEnabled: true,
-    texSourceAvailable: true,
-  };
-}
+export const templateService = {
+  async list() {
+    try {
+      const response = await apiClient.get<TemplateListResponse>('/templates');
+      const assetOrigin = apiClient.baseUrl.replace(/\/api\/?$/, '');
+      return response.items.map(item => ({
+        ...item,
+        previewImageUrl: item.previewImageUrl.startsWith('http')
+          ? item.previewImageUrl
+          : `${assetOrigin}${item.previewImageUrl}`,
+      }));
+    } catch {
+      return structuredClone(fallbackTemplates);
+    }
+  },
+};

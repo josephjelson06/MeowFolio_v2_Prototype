@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { routes } from 'lib/routes';
 import { resumeService } from 'services/resumeService';
 import { tipsService } from 'services/tipsService';
+import { useSession } from 'state/session/sessionContext';
 import { useResumeModal } from 'hooks/useResumeModal';
 
 const kpis = [
@@ -13,6 +14,7 @@ const kpis = [
 
 export function DashboardPage() {
   const { openResume } = useResumeModal();
+  const { actor } = useSession();
   const [resumes, setResumes] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
   const [tips, setTips] = useState<string[]>([]);
   const [tipIndex, setTipIndex] = useState(0);
@@ -46,7 +48,7 @@ export function DashboardPage() {
   return (
     <div className="dash-body dash-page">
       <div className="dash-greeting-label">WELCOME BACK</div>
-      <div className="dash-greeting-name">Good afternoon, Arjun Kumar!</div>
+      <div className="dash-greeting-name">Good afternoon, {actor?.name ?? 'there'}!</div>
 
       <section className="dash-stats-row" aria-label="Key metrics">
         {kpis.map(kpi => (

@@ -1,6 +1,7 @@
 import { resumeLibrarySeed } from 'mocks/resumeLibrary';
 import { apiClient } from 'lib/apiClient';
 import type { ResumeRecord } from 'types/resume';
+import type { AtsScoreResponse, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
 
 const RESUME_EVENT = 'resumeai:resume-library-changed';
 const ACTIVE_RESUME_KEY = 'resumeai:active-resume-id';
@@ -13,10 +14,21 @@ interface ResumeListResponse {
 
 interface ResumeMutationResponse {
   item: ResumeRecord;
+  record?: ResumeDocumentRecord;
   resumeId?: string;
   parseStatus?: 'parsed' | 'partial' | 'failed';
   warnings?: string[];
   extractedText?: string;
+}
+
+interface ResumeRecordResponse {
+  record: ResumeDocumentRecord;
+}
+
+interface ResumeTexExportResponse {
+  filename: string;
+  templateId: string;
+  tex: string;
 }
 
 function cloneLibrary() {
@@ -107,6 +119,28 @@ export const resumeService = {
   async getById(id: string): Promise<ResumeRecord | undefined> {
     const loaded = await this.list();
     return loaded.find(item => item.id === id);
+  },
+  async getRecord(id: string) {
+    const response = await apiClient.get<ResumeRecordResponse>(`/resumes/${id}`);
+    return response.record;
+  },
+  async saveRecord(id: string, input: {
+    content: ResumeData;
+    renderOptions: RenderOptions;
+    templateId: string;
+    title?: string;
+    rawText?: string;
+  }) {
+    const response = await apiClient.patch<ResumeMutationResponse>(`/resumes/${id}`, input);
+    prependOrReplace(response.item);
+    notifyResumeChange();
+    return response.record ?? null;
+  },
+  async scoreAts(id: string) {
+    return apiClient.post<AtsScoreResponse>(`/resumes/${id}/ats-score`);
+  },
+  async exportTex(id: string) {
+    return apiClient.get<ResumeTexExportResponse>(`/resumes/${id}/export/tex`);
   },
   async createBlank() {
     try {

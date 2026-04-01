@@ -53,8 +53,13 @@ export function ResumesPage() {
     setPage(current => Math.min(current, nextTotal));
   }
 
-  function downloadResume(resume: ResumeRecord) {
-    downloadTextFile(resume.name.replace('.tex', '.txt'), `${resume.name}\n\nTemplate: ${resume.template}\nUpdated: ${resume.updated}`);
+  async function downloadResume(resume: ResumeRecord) {
+    try {
+      const exported = await resumeService.exportTex(resume.id);
+      downloadTextFile(exported.filename, exported.tex);
+    } catch {
+      downloadTextFile(resume.name.replace('.tex', '.txt'), `${resume.name}\n\nTemplate: ${resume.template}\nUpdated: ${resume.updated}`);
+    }
   }
 
   return (

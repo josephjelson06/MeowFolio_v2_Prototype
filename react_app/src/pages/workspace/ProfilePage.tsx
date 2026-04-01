@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button } from 'components/ui/Button';
 import { Badge } from 'components/ui/Badge';
 import { profileService } from 'services/profileService';
+import { useSession } from 'state/session/sessionContext';
 import { routes } from 'lib/routes';
 import type { ProfileSummary, UsageMetric } from 'types/ui';
 
 export function ProfilePage() {
+  const { actor, initials } = useSession();
   const [summary, setSummary] = useState<ProfileSummary>({
     name: 'Arjun Kumar',
     email: 'arjun@email.com',
@@ -27,14 +29,14 @@ export function ProfilePage() {
   return (
     <div className="profile-body profile-page">
       <section className="profile-section profile-hero">
-        <div className="profile-avatar-big">AK</div>
+        <div className="profile-avatar-big">{initials}</div>
         <div className="profile-identity">
           <div className="profile-badges">
             <Badge variant="accent">{summary.plan.toUpperCase()}</Badge>
             <Badge variant="info">{`MEMBER SINCE ${summary.memberSince.toUpperCase()}`}</Badge>
           </div>
-          <div className="profile-name">{summary.name}</div>
-          <div className="profile-email">{summary.email}</div>
+          <div className="profile-name">{actor?.name ?? summary.name}</div>
+          <div className="profile-email">{actor?.email ?? summary.email}</div>
         </div>
         <Button className="profile-logout" to={routes.home}>Logout</Button>
       </section>

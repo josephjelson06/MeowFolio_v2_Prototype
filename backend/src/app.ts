@@ -9,6 +9,8 @@ import { HttpError } from './lib/httpError';
 import { buildUsageMetrics, getProfileSummary } from './modules/profile/service';
 import { dashboardTips } from './modules/tips/service';
 import { getTemplateRuntimeMeta, templateRegistry } from './modules/templates/templateRegistry';
+import { buildTexExportPayload } from './modules/templates/texRenderer';
+import { getDefaultDevUser, getUserById } from './modules/users/repository';
 import { extractTextFromUpload } from './modules/imports/textExtraction';
 import { importResumeFromText } from './modules/imports/resumeImporter';
 import { createJd, deleteJd, getJdById, listJds, toJdRecord, updateJd } from './modules/jds/repository';
@@ -59,6 +61,11 @@ function paramId(request: express.Request) {
   return String(request.params.id ?? '');
 }
 
+function actorUserId(request: express.Request) {
+  const value = request.header('x-user-id');
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
 export function createApp() {
   const app = express();
   app.use(cors({
@@ -92,12 +99,27 @@ export function createApp() {
     });
   });
 
+  app.get('/api/session', asyncRoute(async (request, response) => {
+    const requestedUserId = actorUserId(request);
+    const actor = requestedUserId ? await getUserById(requestedUserId) : await getDefaultDevUser();
+    response.json({
+      actor: actor ? {
+        avatarUrl: actor.avatarUrl,
+        email: actor.email,
+        id: actor.id,
+        name: actor.name,
+      } : null,
+      mode: 'dev',
+    });
+  }));
+
   app.get('/api/tips', (_request, response) => {
     response.json({ items: dashboardTips });
   });
 
   app.get('/api/profile', asyncRoute(async (_request, response) => {
-    const [resumeItems, jdItems] = await Promise.all([listResumes(), listJds()]);
+    const userId = actorUserId(_request);
+    const [resumeItems, jdItems] = await Promise.all([listResumes(userId), listJds(userId)]);
     response.json({
       summary: getProfileSummary(),
       usage: buildUsageMetrics(resumeItems.length, jdItems.length),
@@ -105,13 +127,14 @@ export function createApp() {
   }));
 
   app.get('/api/resumes', asyncRoute(async (_request, response) => {
-    const resumes = await listResumes();
+    const resumes = await listResumes(actorUserId(_request));
     response.json({
       items: resumes.map((resume, index) => toResumeSummary(resume, index === 0)),
     });
   }));
 
   app.post('/api/resumes', asyncRoute(async (request, response) => {
+    const userId = actorUserId(request);
     const title = typeof request.body?.title === 'string' && request.body.title.trim()
       ? request.body.title.trim()
       : `resume_${Date.now()}.tex`;
@@ -123,6 +146,7 @@ export function createApp() {
       source: 'scratch',
       templateId,
       title,
+      userId,
     });
     response.status(201).json({
       item: toResumeSummary(resume, true),
@@ -131,7 +155,7 @@ export function createApp() {
   }));
 
   app.get('/api/resumes/:id', asyncRoute(async (request, response) => {
-    const resume = await getResumeById(paramId(request));
+    const resume = await getResumeById(paramId(request), actorUserId(request));
     if (!resume) throw new HttpError(404, 'Resume not found.');
     response.json({ record: resume });
   }));
@@ -143,7 +167,7 @@ export function createApp() {
       renderOptions: request.body?.renderOptions ? normalizeRenderOptions(request.body.renderOptions) : undefined,
       templateId: typeof request.body?.templateId === 'string' ? request.body.templateId : undefined,
       title: typeof request.body?.title === 'string' ? request.body.title.trim() : undefined,
-    });
+    }, actorUserId(request));
     if (!updated) throw new HttpError(404, 'Resume not found.');
     response.json({
       item: toResumeSummary(updated, true),
@@ -152,12 +176,13 @@ export function createApp() {
   }));
 
   app.delete('/api/resumes/:id', asyncRoute(async (request, response) => {
-    const deleted = await deleteResume(paramId(request));
+    const deleted = await deleteResume(paramId(request), actorUserId(request));
     if (!deleted) throw new HttpError(404, 'Resume not found.');
     response.status(204).end();
   }));
 
   app.post('/api/import/resume', upload.single('file'), asyncRoute(async (request, response) => {
+    const userId = actorUserId(request);
     const textBody = typeof request.body?.text === 'string' ? request.body.text.trim() : '';
     const sourceName = typeof request.body?.sourceName === 'string' ? request.body.sourceName : request.file?.originalname ?? 'Imported Resume';
 
@@ -174,6 +199,7 @@ export function createApp() {
       source: imported.resume.meta.source,
       templateId: imported.renderOptions.templateId,
       title: imported.title,
+      userId,
     });
 
     if (request.file) {
@@ -191,17 +217,28 @@ export function createApp() {
   }));
 
   app.post('/api/resumes/:id/ats-score', asyncRoute(async (request, response) => {
-    const resume = await getResumeById(paramId(request));
+    const resume = await getResumeById(paramId(request), actorUserId(request));
     if (!resume) throw new HttpError(404, 'Resume not found.');
     response.json(scoreResumeForAts(resume.content));
   }));
 
+  app.get('/api/resumes/:id/export/tex', asyncRoute(async (request, response) => {
+    const resume = await getResumeById(paramId(request), actorUserId(request));
+    if (!resume) throw new HttpError(404, 'Resume not found.');
+    response.json(buildTexExportPayload({
+      renderOptions: resume.renderOptions,
+      resume: resume.content,
+      title: resume.title,
+    }));
+  }));
+
   app.get('/api/jds', asyncRoute(async (_request, response) => {
-    const items = await listJds();
+    const items = await listJds(actorUserId(_request));
     response.json({ items: items.map(toJdRecord) });
   }));
 
   app.post('/api/jds', asyncRoute(async (request, response) => {
+    const userId = actorUserId(request);
     const text = typeof request.body?.text === 'string' ? request.body.text.trim() : '';
     if (!text) throw new HttpError(400, 'JD text is required.');
     const parsedMeta = deriveJdParsedMeta(text, request.body?.title ?? '');
@@ -212,12 +249,13 @@ export function createApp() {
       rawText: text,
       title: typeof request.body?.title === 'string' && request.body.title.trim() ? request.body.title.trim() : parsedMeta.roleTitle ?? 'Imported JD',
       type: typeof request.body?.type === 'string' ? request.body.type : 'Imported',
+      userId,
     });
     response.status(201).json({ item: toJdRecord(jd), record: jd });
   }));
 
   app.get('/api/jds/:id', asyncRoute(async (request, response) => {
-    const jd = await getJdById(paramId(request));
+    const jd = await getJdById(paramId(request), actorUserId(request));
     if (!jd) throw new HttpError(404, 'JD not found.');
     response.json({ item: toJdRecord(jd), record: jd });
   }));
@@ -232,18 +270,19 @@ export function createApp() {
       rawText,
       title: typeof request.body?.title === 'string' ? request.body.title.trim() : undefined,
       type: typeof request.body?.type === 'string' ? request.body.type : undefined,
-    });
+    }, actorUserId(request));
     if (!jd) throw new HttpError(404, 'JD not found.');
     response.json({ item: toJdRecord(jd), record: jd });
   }));
 
   app.delete('/api/jds/:id', asyncRoute(async (request, response) => {
-    const deleted = await deleteJd(paramId(request));
+    const deleted = await deleteJd(paramId(request), actorUserId(request));
     if (!deleted) throw new HttpError(404, 'JD not found.');
     response.status(204).end();
   }));
 
   app.post('/api/import/jd', upload.single('file'), asyncRoute(async (request, response) => {
+    const userId = actorUserId(request);
     const textBody = typeof request.body?.text === 'string' ? request.body.text.trim() : '';
     let extractedText = textBody;
     if (request.file) {
@@ -259,6 +298,7 @@ export function createApp() {
       rawText: extractedText,
       title: parsedMeta.roleTitle ?? 'Imported JD',
       type: 'Imported',
+      userId,
     });
     if (request.file) {
       await recordUpload(request.file, 'jd', jd.id, extractedText);
@@ -267,10 +307,11 @@ export function createApp() {
   }));
 
   app.post('/api/jds/:id/match-score', asyncRoute(async (request, response) => {
-    const jd = await getJdById(paramId(request));
+    const userId = actorUserId(request);
+    const jd = await getJdById(paramId(request), userId);
     if (!jd) throw new HttpError(404, 'JD not found.');
     const resumeId = typeof request.body?.resumeId === 'string' ? request.body.resumeId : '';
-    const resume = await getResumeById(resumeId);
+    const resume = await getResumeById(resumeId, userId);
     if (!resume) throw new HttpError(404, 'Resume not found.');
     response.json({
       jd: toJdRecord(jd),
