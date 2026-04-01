@@ -1,8 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'components/ui/Button';
-import { Card } from 'components/ui/Card';
-import { Pagination } from 'components/ui/Pagination';
 import { ResumeCard } from 'components/workspace/ResumeCard';
 import { downloadTextFile } from 'lib/formatters';
 import { routes } from 'lib/routes';
@@ -50,25 +47,24 @@ export function ResumesPage() {
   }
 
   return (
-    <div className="ra-page-stack">
-      <div className="ra-page-header">
-        <div className="section-label">RESUME LIBRARY</div>
-        <h1 className="ra-card-title">All resumes, one tighter grid.</h1>
-        <p className="ra-subtitle">The React route keeps the current 3-column desktop structure, 6 visible tiles per page, and the create tile only on page 1.</p>
-      </div>
+    <div className="res-page-body res-page">
+      <section className="res-page-header">
+        <div className="res-header-badges">
+          <span className="badge-accent">RESUME LIBRARY</span>
+          <span className="badge-info">{resumes.length} RESUMES</span>
+        </div>
+        <div className="res-page-title">All your resumes</div>
+        <div className="res-page-desc">Paginated resume versions with rename, download, and delete actions. The grid stays at 3 cards per row, with up to 6 visible tiles per page.</div>
+      </section>
 
-      <section className="ra-resume-grid">
+      <section className="res-cards-grid" aria-label="Resume library">
         {page === 1 ? (
-          <Card className="ra-resume-card">
-            <div className="ra-stack-lg">
-              <div className="section-label">CREATE NEW</div>
-              <h2 className="ra-card-title">Start from scratch or upload</h2>
-              <p className="ra-card-copy">Open the shared resume modal and move directly into the editor flow.</p>
-              <div className="ra-actions">
-                <Button onClick={openResume}>+ Create Resume</Button>
-              </div>
-            </div>
-          </Card>
+          <button className="res-new-card" type="button" onClick={openResume}>
+            <div className="res-new-plus">+</div>
+            <div className="section-label">CREATE NEW RESUME</div>
+            <div className="res-new-title">Upload or start blank</div>
+            <div className="res-new-desc">Open the modal, import an existing resume, or create a fresh version from scratch.</div>
+          </button>
         ) : null}
 
         {visibleResumes.map(resume => (
@@ -83,13 +79,17 @@ export function ResumesPage() {
         ))}
       </section>
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPrev={() => setPage(current => Math.max(1, current - 1))}
-        onNext={() => setPage(current => Math.min(totalPages, current + 1))}
-        label="Resume pagination"
-      />
+      <div className="list-pagination" aria-label="Resume pagination">
+        <div className="page-status">Page {page} of {totalPages}</div>
+        <div className="page-controls">
+          <button className="r-action" type="button" onClick={() => setPage(current => Math.max(1, current - 1))} disabled={page === 1}>
+            Previous
+          </button>
+          <button className="r-action" type="button" onClick={() => setPage(current => Math.min(totalPages, current + 1))} disabled={page === totalPages}>
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

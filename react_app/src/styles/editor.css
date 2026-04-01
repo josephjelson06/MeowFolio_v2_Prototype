@@ -739,23 +739,23 @@ input[type=range] {
     border-right: none;
   }
 
-  body.mob-edit-view .ed-left {
+  .editor-root.mob-edit-view .ed-left {
     display: flex;
   }
 
-  body.mob-edit-view .ed-right {
+  .editor-root.mob-edit-view .ed-right {
     display: none;
   }
 
-  body.mob-preview-view .ed-left {
+  .editor-root.mob-preview-view .ed-left {
     display: none;
   }
 
-  body.mob-preview-view .ed-right {
+  .editor-root.mob-preview-view .ed-right {
     display: flex;
   }
 
-  body.mob-ats-view .mob-analyze-btn {
+  .editor-root.mob-ats-view .mob-analyze-btn {
     display: none;
   }
 

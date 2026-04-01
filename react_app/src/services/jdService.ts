@@ -15,6 +15,24 @@ export interface JdReportModel {
   checks: JdCheck[];
 }
 
+function buildJdFromText(text: string, sourceName?: string): JdRecord {
+  const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+  const rawTitle = sourceName
+    ? sourceName.replace(/\.[^.]+$/, '')
+    : lines[0] || `Imported JD ${jdLibrary.length + 1}`;
+  const title = rawTitle.slice(0, 38);
+  const company = (lines[1] && lines[1].length <= 28 ? lines[1] : 'Imported Company') || 'Imported Company';
+
+  return {
+    id: Math.max(0, ...jdLibrary.map(item => item.id)) + 1,
+    title,
+    company,
+    type: 'Imported',
+    badge: 'Newly added',
+    parsedText: text,
+  };
+}
+
 export const jdService = {
   list() {
     return structuredClone(jdLibrary);
@@ -29,6 +47,14 @@ export const jdService = {
   remove(id: number) {
     jdLibrary = jdLibrary.filter(item => item.id !== id);
     return structuredClone(jdLibrary);
+  },
+  addFromText(text: string, sourceName?: string) {
+    const nextJd = buildJdFromText(text, sourceName);
+    jdLibrary = [nextJd, ...jdLibrary];
+    return {
+      jd: structuredClone(nextJd),
+      list: structuredClone(jdLibrary),
+    };
   },
   getMatchProfiles() {
     return structuredClone(resumeMatchProfilesSeed);

@@ -1,22 +1,31 @@
+export interface EditorSectionItem {
+  id: string;
+  label: string;
+  done?: boolean;
+}
+
 interface SectionNavProps {
-  sections: string[];
+  sections: EditorSectionItem[];
   activeSection: string;
   onSelect: (section: string) => void;
 }
 
 export function SectionNav({ sections, activeSection, onSelect }: SectionNavProps) {
   return (
-    <div className="ra-nav-list">
+    <div className="sec-nav">
+      <div className="snl">Sections</div>
       {sections.map(section => (
         <button
-          key={section}
-          className={`ra-nav-item${activeSection === section ? ' active' : ''}`}
+          key={section.id}
+          className={`snav${activeSection === section.id ? ' active' : ''}${section.done ? ' done' : ''}`}
           type="button"
-          onClick={() => onSelect(section)}
+          onClick={() => onSelect(section.id)}
         >
-          {section}
+          <span className="sdot"></span>
+          {section.label}
         </button>
       ))}
+      <button className="snav editor-add-row" type="button">+ Add</button>
     </div>
   );
 }

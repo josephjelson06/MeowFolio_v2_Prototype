@@ -1,6 +1,6 @@
 # Refactor Task List
 
-Last updated: 2026-03-31
+Last updated: 2026-04-01
 
 React migration planning now lives in [react_implementation_plan.md](./react_implementation_plan.md).
 
@@ -86,3 +86,5 @@ React implementation is now underway in [react_app](./react_app).
 - Resume library, JD library, resume match profiles, and dashboard tips now come from a shared mock data source in [js/data.js](./js/data.js).
 - Screenshot-based QA was run across the active desktop/mobile pages using a headless local browser, followed by desktop containment/scale fixes on the editor and JD pages.
 - The old monolithic `resumeai_full_prototype.html` file has been removed so the split app is the only active source of truth.
+- The React migration is now active in [react_app](./react_app), with the first parity slice landing on the dashboard and resume library routes.
+- The React migration parity pass now also covers the JD and editor routes, including editor-specific mobile chrome moving out of shared layout ownership.

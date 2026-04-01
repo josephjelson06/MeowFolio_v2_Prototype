@@ -1,6 +1,6 @@
 # React Implementation Plan
 
-Last updated: 2026-03-31
+Last updated: 2026-04-01
 Status: foundation implemented in progress
 Primary tracker for the React conversion phase.
 
@@ -255,15 +255,15 @@ react_app/
 - [x] Build JD list pane, picker pane, result pane, report sheet, and JD modal as separate feature components.
 - [x] Move JD report calculations into helpers/selectors.
 - [x] Keep mobile report sheet behavior route-local and controlled by React state.
-- [ ] Confirm no duplicated desktop/mobile DOM is introduced.
+- [x] Confirm no duplicated desktop/mobile DOM is introduced.
 
 ### Phase 7 - Editor Route
 
 - [x] Build `EditorPage` under `EditorLayout`.
 - [x] Build section tabs, template pane, toolbar pane, preview pane, ATS drawer, and ATS full report as separate components.
 - [x] Move editor mode, section selection, and slider state to route-local React state/hooks.
-- [ ] Preserve the current mobile edit/preview/ATS experience without DOM toggling hacks.
-- [ ] Confirm the editor route does not leak editor-specific chrome into the other workspace pages.
+- [x] Preserve the current mobile edit/preview/ATS experience without DOM toggling hacks.
+- [x] Confirm the editor route does not leak editor-specific chrome into the other workspace pages.
 
 ### Phase 8 - QA, Parity, And Freeze
 
@@ -303,4 +303,6 @@ react_app/
 ## Current Focus
 
 - React app shell is live in [react_app](./react_app).
-- Current focus: route parity, responsive QA, and tightening layout/component ownership now that the scaffold builds cleanly.
+- Dashboard, resume-library, JD, and editor routes now use the static class rhythm more directly inside React.
+- Editor-specific mobile chrome now lives at the editor route boundary instead of inside shared workspace layout.
+- Current focus: tighten the remaining public/profile route parity and then run responsive QA across the React routes.

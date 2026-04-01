@@ -21,11 +21,13 @@ export function JdModalHost() {
   const { jdOpen, closeJd } = useJdModal();
   const [mode, setMode] = useState<JdMode>('upload');
   const [text, setText] = useState('');
+  const [sourceName, setSourceName] = useState('');
 
   useEffect(() => {
     if (!jdOpen) {
       setMode('upload');
       setText('');
+      setSourceName('');
     }
   }, [jdOpen]);
 
@@ -74,6 +76,7 @@ export function JdModalHost() {
             </div>
             <button className="modal-btn active" type="button" onClick={() => {
               setMode('paste');
+              setSourceName('Imported_JD.pdf');
               setText(buildParsedJdPreview());
             }}>
               Parse JD into text box &rarr;
@@ -89,7 +92,23 @@ export function JdModalHost() {
               value={text}
               onChange={event => setText(event.target.value)}
             />
-            <button className="modal-btn active" type="button" onClick={closeJd}>Save JD draft &rarr;</button>
+            <button
+              className="modal-btn active"
+              type="button"
+              onClick={() => {
+                const nextText = text.trim();
+                if (!nextText) return;
+                window.dispatchEvent(new CustomEvent('resumeai:jd-submit', {
+                  detail: {
+                    text: nextText,
+                    sourceName,
+                  },
+                }));
+                closeJd();
+              }}
+            >
+              Save JD &rarr;
+            </button>
           </>
         ) : null}
       </div>
