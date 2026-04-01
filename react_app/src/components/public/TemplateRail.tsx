@@ -1,6 +1,4 @@
 import { useRef } from 'react';
-import { Button } from 'components/ui/Button';
-
 interface TemplateItem {
   name: string;
   label: string;
@@ -23,7 +21,7 @@ export function TemplateRail({ items, onUse }: TemplateRailProps) {
   }
 
   return (
-    <div className="ra-stack-md">
+    <div>
       <div className="pub-section-head">
         <div>
           <div className="section-label pub-label-tight">TEMPLATES</div>
@@ -35,7 +33,7 @@ export function TemplateRail({ items, onUse }: TemplateRailProps) {
         </div>
       </div>
 
-      <div className="ra-template-grid" ref={railRef}>
+      <div className="pub-hscroll pub-template-rail" ref={railRef}>
         {items.map(item => (
           <article className="pub-template-card" key={item.label}>
             <div className="pub-template-preview">
@@ -47,7 +45,7 @@ export function TemplateRail({ items, onUse }: TemplateRailProps) {
               </div>
             </div>
             <div className="pub-template-actions">
-              <Button className="r-action primary" onClick={onUse}>Use this template</Button>
+              <button className="r-action primary" type="button" onClick={onUse}>Use this template</button>
             </div>
             <div className="pub-card-title pub-template-title">{item.name}</div>
             <div className="pub-template-copy">{item.copy}</div>

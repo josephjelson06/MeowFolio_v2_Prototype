@@ -238,7 +238,7 @@ react_app/
 - [x] Build `NotFoundPage`.
 - [x] Build `Error500Page`.
 - [x] Recreate public rails, FAQ, and auth entry behavior in React.
-- [ ] Verify public routes inherit only `PublicLayout` concerns and no workspace-specific state.
+- [x] Verify public routes inherit only `PublicLayout` concerns and no workspace-specific state.
 
 ### Phase 5 - Workspace Core Routes
 
@@ -247,7 +247,7 @@ react_app/
 - [x] Build `ProfilePage`.
 - [x] Recreate dashboard tips rotation in React.
 - [x] Recreate resume pagination, rename, download, delete, and create modal flow in React.
-- [ ] Confirm `WorkspaceLayout` fully owns shared nav/mobile bars for these routes.
+- [x] Confirm `WorkspaceLayout` fully owns shared nav/mobile bars for these routes.
 
 ### Phase 6 - JD Route
 
@@ -303,6 +303,6 @@ react_app/
 ## Current Focus
 
 - React app shell is live in [react_app](./react_app).
-- Dashboard, resume-library, JD, and editor routes now use the static class rhythm more directly inside React.
+- Dashboard, resume-library, JD, editor, profile, and public routes now use the static class rhythm more directly inside React.
 - Editor-specific mobile chrome now lives at the editor route boundary instead of inside shared workspace layout.
-- Current focus: tighten the remaining public/profile route parity and then run responsive QA across the React routes.
+- Current focus: run responsive QA across the React routes and fix the last spacing, overflow, and regression issues before freezing the React mock-data baseline.

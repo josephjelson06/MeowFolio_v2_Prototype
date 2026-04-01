@@ -11,7 +11,7 @@ const usageMetrics: UsageMetric[] = [
   { label: 'ATS analyses', used: 8, total: 50 },
   { label: 'JD comparisons', used: 3, total: 20 },
   { label: 'PDF exports', used: 2, total: 100 },
-  { label: 'Parses today', used: 4, total: 4 },
+  { label: 'Parses today', used: 3, total: 3 },
 ];
 
 export const profileService = {

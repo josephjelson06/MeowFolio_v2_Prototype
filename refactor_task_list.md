@@ -87,4 +87,4 @@ React implementation is now underway in [react_app](./react_app).
 - Screenshot-based QA was run across the active desktop/mobile pages using a headless local browser, followed by desktop containment/scale fixes on the editor and JD pages.
 - The old monolithic `resumeai_full_prototype.html` file has been removed so the split app is the only active source of truth.
 - The React migration is now active in [react_app](./react_app), with the first parity slice landing on the dashboard and resume library routes.
-- The React migration parity pass now also covers the JD and editor routes, including editor-specific mobile chrome moving out of shared layout ownership.
+- The React migration parity pass now covers dashboard, resumes, JDs, editor, profile, and the public routes, including editor-specific mobile chrome moving out of shared layout ownership.

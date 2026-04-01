@@ -1,26 +1,34 @@
+import { Badge } from 'components/ui/Badge';
 import { Button } from 'components/ui/Button';
-import { Card } from 'components/ui/Card';
 import { routes } from 'lib/routes';
 
 export function Error500Page() {
   return (
-    <div className="ra-page-stack">
-      <Card>
-        <div className="ra-split-hero">
-          <div className="ra-hero-copy">
-            <div className="section-label">500</div>
-            <h1 className="ra-page-title">Something broke in the stack.</h1>
-            <p className="ra-subtitle">This page represents the error surface only. The React migration keeps it inside the same public layout so error states do not feel like a separate product.</p>
-            <div className="ra-actions">
-              <Button to={routes.home}>Back home</Button>
-              <Button to={routes.error500} variant="secondary">Stay on 500</Button>
-            </div>
-          </div>
-          <div className="ra-image-frame">
-            <img src="/Images/Prof_Mochii.png" alt="Professor Mochii illustration" />
-          </div>
+    <section className="pub-panel pub-error-grid">
+      <article className="pub-error-card">
+        <div className="pub-copy-badges">
+          <Badge variant="accent">500</Badge>
+          <Badge variant="info">WORKSPACE ISSUE</Badge>
         </div>
-      </Card>
-    </div>
+        <div className="pub-error-code warn">500</div>
+        <div className="pub-section-title pub-error-title">The workspace hit a temporary snag.</div>
+        <div className="pub-text pub-error-copy">This state stands in for a failed render, parse, or analysis request. It still lives inside the same product family, so the fallback feels like a part of resumeai instead of a disconnected dead-end page.</div>
+        <div className="pub-error-actions">
+          <Button to={routes.home}>Return Home</Button>
+          <Button to={routes.about} variant="secondary">Read About</Button>
+        </div>
+      </article>
+
+      <article className="pub-panel">
+        <div className="section-label pub-error-label">STATUS</div>
+        <div className="pub-section-title">When this clears, the same workflow is waiting.</div>
+        <div className="pub-text pub-error-copy">Once the issue is gone, the user lands back in the same dashboard, resumes, editor, JD, and profile loop. The 500 page now matches that environment in layout, tone, and navigation.</div>
+        <div className="pub-chip-row">
+          <Badge>Dashboard</Badge>
+          <Badge>Editor</Badge>
+          <Badge>JD Analysis</Badge>
+        </div>
+      </article>
+    </section>
   );
 }
