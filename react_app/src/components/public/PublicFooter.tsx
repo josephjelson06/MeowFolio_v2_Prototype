@@ -13,7 +13,7 @@ export function PublicFooter() {
 
   return (
     <footer className="pub-footer-row">
-      <span>&copy; 2026 resumeai</span>
+      <span>&copy; 2026 meowfolio</span>
       <div className="pub-footer-links">
         {footerLinks
           .filter(link => link.to !== location.pathname)

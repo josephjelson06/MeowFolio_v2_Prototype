@@ -100,10 +100,11 @@
 }
 
 .dash-greeting-name {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--txt0);
   margin-bottom: 16px;
+  letter-spacing: -0.03em;
 }
 
 .dash-stats-row {
@@ -115,13 +116,14 @@
 }
 
 .dash-stat-big {
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
-  padding: 14px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1.5px solid rgba(45, 45, 45, 0.78);
+  border-radius: 24px;
+  padding: 16px;
   min-height: 148px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .dash-stat-icon {
@@ -132,8 +134,12 @@
 
 .dash-stat-label {
   font-size: 10px;
-  color: var(--txt2);
+  color: var(--accent);
   margin-bottom: 4px;
+  font-family: var(--font);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .dash-stat-num {
@@ -145,15 +151,15 @@
 }
 
 .dash-stat-bar {
-  height: 3px;
-  border-radius: 2px;
-  background: var(--bg4);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(220, 193, 184, 0.38);
   margin-top: auto;
 }
 
 .dash-stat-fill {
-  height: 3px;
-  border-radius: 2px;
+  height: 4px;
+  border-radius: 999px;
   background: var(--accent);
 }
 
@@ -188,9 +194,9 @@
 }
 
 .dash-create-card {
-  background: var(--bg2);
-  border: 1px dashed var(--border2);
-  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.84);
+  border: 2px dashed rgba(45, 45, 45, 0.42);
+  border-radius: 26px;
   padding: 18px 16px;
   cursor: pointer;
   display: flex;
@@ -198,11 +204,14 @@
   align-items: flex-start;
   justify-content: center;
   transition: all .15s;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .dash-create-card:hover {
-  border-color: var(--accent-dim);
-  background: var(--accent-bg);
+  transform: translate(-1px, -1px);
+  border-color: rgba(45, 45, 45, 0.82);
+  background: rgba(255, 219, 208, 0.42);
+  box-shadow: var(--shadow-tactile);
 }
 
 .dash-create-plus {
@@ -275,24 +284,27 @@
 }
 
 .dash-active-card {
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.84);
+  border: 1.5px solid rgba(45, 45, 45, 0.78);
+  border-radius: 26px;
   padding: 16px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .dash-active-thumb {
   min-height: 126px;
   margin-top: 10px;
+  border-radius: 18px;
 }
 
 .dash-recent-name {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--txt0);
   margin-bottom: 2px;
+  letter-spacing: -0.02em;
 }
 
 .dash-recent-sub {
@@ -320,19 +332,21 @@
 }
 
 .dash-actions-card {
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.84);
+  border: 1.5px solid rgba(45, 45, 45, 0.78);
+  border-radius: 26px;
   padding: 14px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .dash-actions-title {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--txt0);
   margin-bottom: 10px;
+  letter-spacing: -0.02em;
 }
 
 .dash-actions-grid {
@@ -343,20 +357,23 @@
 }
 
 .dash-action-item {
-  background: var(--bg3);
-  border: 0.5px solid var(--border1);
-  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(45, 45, 45, 0.14);
+  border-radius: 18px;
   padding: 12px;
   cursor: pointer;
   transition: all .12s;
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  box-shadow: 0 12px 24px rgba(28, 28, 24, 0.05);
 }
 
 .dash-action-item:hover {
-  border-color: var(--border2);
-  background: var(--bg4);
+  transform: translate(-1px, -1px);
+  border-color: rgba(45, 45, 45, 0.74);
+  background: #fffdf9;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .dash-action-icon {
@@ -386,14 +403,15 @@
 
 /* Tips */
 .dash-tips-card {
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1.5px solid rgba(45, 45, 45, 0.78);
+  border-radius: 26px;
   padding: 14px;
   max-width: 100%;
   min-height: 156px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .dash-tips-title {
@@ -404,9 +422,9 @@
 }
 
 .dash-tip-content {
-  background: var(--bg3);
-  border: 0.5px solid var(--border1);
-  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(45, 45, 45, 0.14);
+  border-radius: 18px;
   padding: 10px 12px;
   font-size: 11px;
   color: var(--txt1);

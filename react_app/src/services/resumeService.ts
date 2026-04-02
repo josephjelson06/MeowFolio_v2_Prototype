@@ -3,8 +3,9 @@ import { apiClient } from 'lib/apiClient';
 import type { ResumeRecord } from 'types/resume';
 import type { AtsScoreResponse, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
 
-const RESUME_EVENT = 'resumeai:resume-library-changed';
-const ACTIVE_RESUME_KEY = 'resumeai:active-resume-id';
+const RESUME_EVENT = 'meowfolio:resume-library-changed';
+const ACTIVE_RESUME_KEY = 'meowfolio:active-resume-id';
+const LEGACY_ACTIVE_RESUME_KEY = 'resumeai:active-resume-id';
 
 let resumeLibrary = structuredClone(resumeLibrarySeed);
 
@@ -78,7 +79,7 @@ function buildFallbackResume(sourceName = 'resume') {
 export const resumeService = {
   eventName: RESUME_EVENT,
   getActiveId() {
-    return localStorage.getItem(ACTIVE_RESUME_KEY);
+    return localStorage.getItem(ACTIVE_RESUME_KEY) ?? localStorage.getItem(LEGACY_ACTIVE_RESUME_KEY);
   },
   setActiveId(id: string) {
     setActiveResumeId(id);

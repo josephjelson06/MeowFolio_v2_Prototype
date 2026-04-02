@@ -5,7 +5,7 @@ import type { JdCheck, JdMetric, JdRecord } from 'types/jd';
 import type { ResumePickerOption, ResumeScoreTone } from 'types/resume';
 import { resumeService } from './resumeService';
 
-const JD_EVENT = 'resumeai:jd-library-changed';
+const JD_EVENT = 'meowfolio:jd-library-changed';
 
 let jdLibrary = structuredClone(jdLibrarySeed);
 

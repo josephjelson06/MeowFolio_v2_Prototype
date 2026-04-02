@@ -26,7 +26,7 @@ const storyCards = [
     shellClass: 'pub-home-story-media-cream',
   },
   {
-    title: 'Discovers resumeai. A glimmer of hope.',
+    title: 'Discovers meowfolio. A glimmer of hope.',
     copy: 'The public side should feel like the same product world, not a separate brochure.',
     image: '/Images/Scene4.jpg',
     shellClass: 'pub-home-story-media-coral',

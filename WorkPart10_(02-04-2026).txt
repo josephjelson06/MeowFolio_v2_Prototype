@@ -1,0 +1,2 @@
+Insight:
+- How do you trigger different layouts -> bottom navbar in mobile + top-nav bar in desktop.

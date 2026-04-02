@@ -103,6 +103,8 @@
   --r-xl: 18px;
   --font: var(--font-headline);
   --sans: var(--font-body);
+  --line: var(--border1);
+  --shadow-soft: var(--shadow-ambient);
   --desktop-ui-scale: 1;
 }
 

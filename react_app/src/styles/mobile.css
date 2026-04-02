@@ -20,9 +20,10 @@
   gap: 8px;
   padding: 0 16px;
   background: rgba(253, 249, 243, 0.88);
-  border-bottom: 0.5px solid var(--border0);
-  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(45, 45, 45, 0.1);
+  backdrop-filter: blur(16px);
   display: none;
+  box-shadow: 0 6px 18px rgba(28, 28, 24, 0.04);
 }
 
 .mob-topbar-logo {
@@ -30,9 +31,10 @@
   align-items: center;
   font-family: var(--font);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--txt0);
   text-decoration: none;
+  letter-spacing: -0.03em;
 }
 
 .mob-topbar-title {
@@ -57,22 +59,25 @@
 .mob-analyze-btn {
   margin-left: auto;
   padding: 5px 10px;
-  border-radius: var(--r-md);
-  border: 0.5px solid var(--border2);
-  background: var(--bg3);
+  border-radius: 999px;
+  border: 1.5px solid rgba(45, 45, 45, 0.82);
+  background: rgba(255, 255, 255, 0.88);
   color: var(--txt0);
   font-size: 11px;
   cursor: pointer;
-  font-family: var(--sans);
+  font-family: var(--font);
+  font-weight: 700;
   flex-shrink: 0;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .mob-bottombar {
   min-height: calc(58px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   background: rgba(253, 249, 243, 0.96);
-  border-top: 0.5px solid var(--border0);
+  border-top: 1px solid rgba(45, 45, 45, 0.1);
   display: none;
+  box-shadow: 0 -8px 18px rgba(28, 28, 24, 0.05);
 }
 
 .mob-topbar .avatar {
@@ -574,6 +579,7 @@
 }
 
 @media (max-width: 768px) {
+
   .mob-topbar,
   .mob-bottombar,
   .mob-edit-toggle {

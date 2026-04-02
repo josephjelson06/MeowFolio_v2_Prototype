@@ -9,7 +9,7 @@ export function WorkspaceHeader() {
 
   return (
     <nav className="gnav">
-      <NavLink className="gnav-logo" to={routes.dashboard}>resumeai</NavLink>
+      <NavLink className="gnav-logo" to={routes.dashboard}>meowfolio</NavLink>
       <div className="gnav-links">
         <NavLink className={({ isActive }) => `gnav-link${isActive ? ' active' : ''}`} to={routes.dashboard}>Dashboard</NavLink>
         <NavLink className={`gnav-link${resumesActive ? ' active' : ''}`} to={routes.resumes}>Resumes</NavLink>

@@ -9,7 +9,7 @@ export function PublicHeader() {
   return (
     <>
       <nav className="gnav pub-desktop-nav">
-        <NavLink className="gnav-logo" to={routes.home}>resumeai</NavLink>
+        <NavLink className="gnav-logo" to={routes.home}>meowfolio</NavLink>
         <div className="gnav-links">
           <NavLink className={({ isActive }) => `gnav-link${isActive ? ' active' : ''}`} to={routes.home}>Home</NavLink>
           <NavLink className={({ isActive }) => `gnav-link${isActive ? ' active' : ''}`} to={routes.about}>About</NavLink>
@@ -20,7 +20,7 @@ export function PublicHeader() {
       </nav>
 
       <div className="mob-topbar pub-mobile-nav">
-        <NavLink className="mob-topbar-logo" to={routes.home}>resumeai</NavLink>
+        <NavLink className="mob-topbar-logo" to={routes.home}>meowfolio</NavLink>
         <Button className="pub-mobile-login" variant="link" onClick={() => openAuth()}>Login</Button>
       </div>
 

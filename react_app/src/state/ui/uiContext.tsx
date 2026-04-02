@@ -3,7 +3,7 @@ import type { AuthModalConfig } from 'types/ui';
 
 const defaultAuthConfig: AuthModalConfig = {
   title: 'Continue with Google',
-  copy: 'Sign in here and continue into the resumeai workspace flow.',
+  copy: 'Sign in here and continue into the meowfolio workspace flow.',
   note: 'No extra signup form on this prototype.',
   accent: 'GOOGLE ONLY',
   info: 'SAME PRODUCT',

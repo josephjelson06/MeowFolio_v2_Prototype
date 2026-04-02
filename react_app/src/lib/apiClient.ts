@@ -3,13 +3,18 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE ||
   'http://localhost:4000/api';
 
-const ACTOR_STORAGE_KEY = 'resumeai:actor-user-id';
+const ACTOR_STORAGE_KEY = 'meowfolio:actor-user-id';
+const LEGACY_ACTOR_STORAGE_KEY = 'resumeai:actor-user-id';
 
 let actorId = (() => {
   try {
     return localStorage.getItem(ACTOR_STORAGE_KEY);
   } catch {
-    return null;
+    try {
+      return localStorage.getItem(LEGACY_ACTOR_STORAGE_KEY);
+    } catch {
+      return null;
+    }
   }
 })();
 

@@ -22,7 +22,7 @@ export function WorkspaceTopbar({ title, editorMode = false }: WorkspaceTopbarPr
 
   return (
     <div className="mob-topbar">
-      <NavLink className="mob-topbar-logo" to={routes.dashboard}>resumeai</NavLink>
+      <NavLink className="mob-topbar-logo" to={routes.dashboard}>meowfolio</NavLink>
       <span className="mob-topbar-title">{title}</span>
       <NavLink className="avatar" to={routes.profile}>{initials}</NavLink>
     </div>

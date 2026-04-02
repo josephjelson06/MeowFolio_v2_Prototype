@@ -1,5 +1,5 @@
 export const appMeta = {
-  name: 'resumeai',
+  name: 'meowfolio',
   avatarInitials: 'AK',
   editorResumeName: 'resume_v3.tex',
 } as const;

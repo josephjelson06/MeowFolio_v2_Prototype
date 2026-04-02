@@ -32,7 +32,8 @@ const leftTabs = [
 
 const BASE_SECTION_ORDER = ['summary', 'education', 'skills', 'experience', 'projects'] as const;
 const ACCENT_COLORS: RenderAccentColor[] = ['charcoal', 'navy', 'slate', 'forest', 'berry'];
-const DRAFT_PREFIX = 'resumeai:editor-draft:';
+const DRAFT_PREFIX = 'meowfolio:editor-draft:';
+const LEGACY_DRAFT_PREFIX = 'resumeai:editor-draft:';
 
 function getDraftKey(id: string) {
   return `${DRAFT_PREFIX}${id}`;
@@ -40,7 +41,7 @@ function getDraftKey(id: string) {
 
 function readDraft(id: string) {
   try {
-    const raw = localStorage.getItem(getDraftKey(id));
+    const raw = localStorage.getItem(getDraftKey(id)) ?? localStorage.getItem(`${LEGACY_DRAFT_PREFIX}${id}`);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as ResumeDocumentRecord;
     return parsed.id === id ? parsed : null;

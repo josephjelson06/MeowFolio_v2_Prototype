@@ -19,9 +19,10 @@
 
 .profile-section {
   padding: 14px;
-  background: var(--bg2);
-  border: 0.5px solid var(--border0);
-  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.84);
+  border: 1.5px solid rgba(45, 45, 45, 0.78);
+  border-radius: 26px;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .profile-hero {
@@ -42,12 +43,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--bg3);
-  border: 0.5px solid var(--border2);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1.5px solid rgba(45, 45, 45, 0.78);
   color: var(--info);
   font-family: var(--font);
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: var(--shadow-tactile-sm);
 }
 
 .profile-identity {
@@ -63,9 +65,10 @@
 }
 
 .profile-name {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--txt0);
+  letter-spacing: -0.03em;
 }
 
 .profile-email {
@@ -76,8 +79,11 @@
 .profile-section-title {
   margin-bottom: 10px;
   font-size: 11px;
-  font-weight: 500;
-  color: var(--txt0);
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font);
 }
 
 .profile-usage-row {
