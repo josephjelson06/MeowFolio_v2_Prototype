@@ -1,17 +1,18 @@
 # Backend Implementation Task List
 
-Last updated: 2026-04-01
-Status: Backend implemented, built runtime verified locally, with live editor/JD flows, auth-ready ownership seams, dev session bootstrap, and TeX export working
-Primary tracker for the Express backend, shared contracts, and React API integration.
+Last updated: 2026-04-03
+Status: FastAPI backend implemented, migrations/seed running locally, and live API smoke-tested against the existing React app contract
+Primary tracker for the FastAPI backend, shared contracts, and React API integration.
 
 ## Foundation
 
-- [x] Lock backend direction: Express + TypeScript + Postgres JSONB + Groq resume parsing.
+- [x] Lock backend direction: FastAPI + Python + Postgres JSONB + Groq resume parsing.
 - [x] Lock v1 scoring direction: ATS and JD matching stay rule-based.
 - [x] Lock validation direction: no Zod in the v1 runtime path.
 - [x] Create backend scaffold and scripts.
 - [x] Create shared contract layer for canonical resume, JD, template, and profile data.
 - [x] Create backend env/config loading and error handling.
+- [x] Replace the legacy Express runtime with a FastAPI app that preserves the existing `/api/*` contract for the React app.
 
 ## Persistence And Domain
 
@@ -66,8 +67,9 @@ Primary tracker for the Express backend, shared contracts, and React API integra
 - [x] Install backend dependencies and build cleanly.
 - [x] Run migrations and seed demo data.
 - [x] Verify backend endpoints manually.
+- [x] Verify legacy or invalid stored actor ids fall back cleanly to the demo user instead of breaking ownership-scoped routes.
 - [x] Verify React app still builds after service migration.
-- [x] Verify the built backend runtime starts cleanly with `node dist/backend/src/index.js`.
+- [x] Verify the FastAPI runtime starts cleanly with `uvicorn backend.main:app`.
 - [x] Verify ownership-scoped smoke tests with the seeded demo user header.
 - [x] Verify session bootstrap and TeX export endpoints on the built backend runtime.
 - [x] Update this tracker with completed and remaining work after each implementation slice.
@@ -81,8 +83,17 @@ Primary tracker for the Express backend, shared contracts, and React API integra
 - [x] Smoke-test completed:
   - `GET /api/health`
   - `GET /api/templates`
+  - `GET /api/session`
   - `GET /api/resumes`
   - `GET /api/jds`
   - resume create/delete round-trip
   - ATS score
+  - TeX export
   - JD match score
+
+## Cleanup And Follow-up
+
+- [x] Add Python runtime ignores to `.gitignore`.
+- [x] Keep the React app on the same API contract while swapping backend implementation.
+- [ ] Decide whether to archive or delete the old TypeScript/Express backend sources after the FastAPI cutover is accepted.
+- [ ] Add a dedicated backend README/runbook for Python-only local setup.
