@@ -38,35 +38,35 @@ export function ResumeModalHost() {
   if (!resumeOpen) return null;
 
   return (
-    <div className="modal-overlay open" aria-hidden="false" onClick={event => {
+    <div className="fixed inset-0 z-[500] flex items-center justify-center bg-charcoal/30 px-4 backdrop-blur-sm" aria-hidden="false" onClick={event => {
       if (event.target === event.currentTarget) closeResume();
     }}>
-      <div className="modal-box ra-modal-box" role="dialog" aria-modal="true" aria-labelledby="resume-modal-title">
-        <button className="modal-close" type="button" onClick={closeResume}>&times;</button>
-        <div className="modal-title" id="resume-modal-title">Create new resume</div>
-        <div className="modal-desc">Upload a file, preview the parsed text, or start with a blank editor.</div>
-        <div className="modal-options">
-          <button className="modal-option" type="button" onClick={() => {
+      <div className="relative w-full max-w-[35rem] overflow-y-auto rounded-[1.75rem] border-[1.5px] border-charcoal/80 bg-[rgba(255,253,249,0.98)] p-6 shadow-tactile-lg shadow-ambient" role="dialog" aria-modal="true" aria-labelledby="resume-modal-title">
+        <button className="absolute right-4 top-4 grid size-8 place-items-center rounded-full border-[1.5px] border-charcoal/70 bg-white/85 text-sm text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low hover:text-on-surface" type="button" onClick={closeResume}>&times;</button>
+        <div className="font-headline text-xl font-extrabold text-on-surface" id="resume-modal-title">Create new resume</div>
+        <div className="mt-2 text-sm leading-7 text-[color:var(--txt2)]">Upload a file, preview the parsed text, or start with a blank editor.</div>
+        <div className="mt-5 flex flex-col gap-3">
+          <button className="flex items-start gap-4 rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm" type="button" onClick={() => {
             setError('');
             setMode('upload');
           }}>
-            <div className="modal-option-icon">&#8593;</div>
+            <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-charcoal/15 bg-primary-fixed text-lg text-primary">&#8593;</div>
             <div>
-              <div className="modal-option-name">Upload a file</div>
-              <div className="modal-option-desc">Parse a PDF or document and preview the text before importing.</div>
+              <div className="font-headline text-sm font-bold text-on-surface">Upload a file</div>
+              <div className="mt-1 text-xs leading-6 text-[color:var(--txt2)]">Parse a PDF or document and preview the text before importing.</div>
             </div>
           </button>
-          <button className="modal-option" type="button" onClick={() => {
+          <button className="flex items-start gap-4 rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm" type="button" onClick={() => {
             setError('');
             setMode('paste');
           }}>
-            <div className="modal-option-icon">&#9112;</div>
+            <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-charcoal/15 bg-secondary-fixed text-lg text-secondary">&#9112;</div>
             <div>
-              <div className="modal-option-name">Paste resume text</div>
-              <div className="modal-option-desc">Copy-paste your resume content for quick import.</div>
+              <div className="font-headline text-sm font-bold text-on-surface">Paste resume text</div>
+              <div className="mt-1 text-xs leading-6 text-[color:var(--txt2)]">Copy-paste your resume content for quick import.</div>
             </div>
           </button>
-          <button className="modal-option" type="button" onClick={async () => {
+          <button className="flex items-start gap-4 rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm" type="button" onClick={async () => {
             setBusy(true);
             setError('');
             try {
@@ -79,20 +79,20 @@ export function ResumeModalHost() {
               setBusy(false);
             }
           }}>
-            <div className="modal-option-icon">+</div>
+            <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-charcoal/15 bg-tertiary-fixed text-lg text-tertiary">+</div>
             <div>
-              <div className="modal-option-name">Start from blank</div>
-              <div className="modal-option-desc">Open an empty editor with a fresh template.</div>
+              <div className="font-headline text-sm font-bold text-on-surface">Start from blank</div>
+              <div className="mt-1 text-xs leading-6 text-[color:var(--txt2)]">Open an empty editor with a fresh template.</div>
             </div>
           </button>
         </div>
 
         {mode === 'upload' ? (
           <>
-            <div className="modal-upload-zone active">
-              <div className="modal-upload-icon">&#9729;</div>
-              <div className="modal-upload-text">Choose a PDF, DOCX, TXT, or MD file and preview the parsed text.</div>
-              <div className="modal-upload-sub">The backend stores the upload, extracts text, and creates an editable resume draft.</div>
+            <div className="mt-4 rounded-[1.25rem] border-2 border-dashed border-charcoal/40 px-6 py-5 text-center">
+              <div className="text-3xl text-[color:var(--txt2)]">&#9729;</div>
+              <div className="mt-2 text-sm text-[color:var(--txt2)]">Choose a PDF, DOCX, TXT, or MD file and preview the parsed text.</div>
+              <div className="mt-1 text-[11px] text-outline">The backend stores the upload, extracts text, and creates an editable resume draft.</div>
             </div>
             <input
               ref={fileInputRef}
@@ -117,7 +117,7 @@ export function ResumeModalHost() {
                 }
               }}
             />
-            <button className="modal-btn active" type="button" disabled={busy} onClick={() => fileInputRef.current?.click()}>
+            <button className="mt-4 inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal bg-white/95 px-4 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed hover:text-on-surface hover:shadow-tactile disabled:pointer-events-none disabled:opacity-40" type="button" disabled={busy} onClick={() => fileInputRef.current?.click()}>
               {busy ? 'Parsing upload...' : 'Upload and parse file ->'}
             </button>
           </>
@@ -126,13 +126,13 @@ export function ResumeModalHost() {
         {mode === 'paste' ? (
           <>
             <textarea
-              className="modal-paste-area active"
+              className="mt-4 min-h-[140px] w-full rounded-2xl border border-outline-variant bg-white/90 px-4 py-3 text-sm text-[color:var(--txt1)]"
               placeholder="Pasted or parsed resume text will appear here..."
               value={text}
               onChange={event => setText(event.target.value)}
             />
             <button
-              className="modal-btn active"
+              className="mt-4 inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal bg-white/95 px-4 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed hover:text-on-surface hover:shadow-tactile disabled:pointer-events-none disabled:opacity-40"
               type="button"
               disabled={busy || !text.trim()}
               onClick={async () => {
@@ -156,7 +156,7 @@ export function ResumeModalHost() {
           </>
         ) : null}
 
-        {error ? <div className="modal-desc">{error}</div> : null}
+        {error ? <div className="mt-3 text-sm text-error">{error}</div> : null}
       </div>
     </div>
   );

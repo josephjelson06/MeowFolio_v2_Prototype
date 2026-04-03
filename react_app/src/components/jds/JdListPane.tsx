@@ -1,5 +1,6 @@
-import type { JdRecord } from 'types/jd';
 import { Button } from 'components/ui/Button';
+import { cn } from 'lib/cn';
+import type { JdRecord } from 'types/jd';
 
 interface JdListPaneProps {
   items: JdRecord[];
@@ -16,6 +17,9 @@ interface JdListPaneProps {
   onDelete: (id: string) => void;
 }
 
+const actionClass =
+  'inline-flex min-h-8 items-center justify-center rounded-full border-2 border-charcoal/70 bg-white/85 px-3 py-1.5 text-[10px] font-semibold text-[color:var(--txt1)] shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white disabled:pointer-events-none disabled:opacity-40';
+
 export function JdListPane({
   items,
   activeId,
@@ -31,63 +35,100 @@ export function JdListPane({
   onDelete,
 }: JdListPaneProps) {
   return (
-    <section className="jd-list-pane">
-      <div className="jd-list-head">
-        <div>
-          <div className="jd-list-title">Saved JDs</div>
-          <div className="page-status jd-count-status">{totalCount} JDs</div>
+    <section className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="grid gap-1">
+          <div className="font-headline text-2xl font-extrabold text-on-surface">Saved JDs</div>
+          <div className="font-headline text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--txt2)]">
+            {totalCount} JDs
+          </div>
         </div>
-        <Button className="jd-add-btn" onClick={onAdd}>+ Add JD</Button>
+        <Button className="whitespace-nowrap" onClick={onAdd}>
+          + Add JD
+        </Button>
       </div>
 
-      <div className="jd-cards">
+      <div className="grid gap-3">
         {items.length ? (
           items.map(item => (
             <article
               key={item.id}
-              className={`jd-card${activeId === item.id ? ' active' : ''}`}
+              className={cn(
+                'grid gap-3 rounded-[1.35rem] border px-4 py-4 transition',
+                activeId === item.id
+                  ? 'border-charcoal/75 bg-surface shadow-tactile-sm'
+                  : 'border-outline-variant bg-white/70 hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/55 hover:bg-white',
+              )}
               onClick={() => onSelect(item.id)}
             >
-              <div className="jd-card-title">{item.title}</div>
-              <div className="jd-card-sub">{item.company} &middot; {item.type}</div>
-              <div className="jd-card-foot">
-                <span className="jd-card-badge">{item.badge}</span>
-                <div className="jd-card-actions">
-                  <button className="r-action" type="button" onClick={event => {
-                    event.stopPropagation();
-                    onRename(item.id);
-                  }}>
+              <div className="grid gap-1">
+                <div className="font-headline text-lg font-extrabold leading-tight text-on-surface">{item.title}</div>
+                <div className="text-sm text-[color:var(--txt2)]">
+                  {item.company} · {item.type}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex items-center rounded-full border border-tertiary/30 bg-tertiary-fixed px-3 py-1 font-headline text-[9px] font-bold uppercase tracking-[0.12em] text-tertiary">
+                  {item.badge}
+                </span>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    className={actionClass}
+                    type="button"
+                    onClick={event => {
+                      event.stopPropagation();
+                      onRename(item.id);
+                    }}
+                  >
                     Rename
                   </button>
-                  <button className="r-action" type="button" onClick={event => {
-                    event.stopPropagation();
-                    onDownload(item.id);
-                  }}>
-                    &#11015;
+                  <button
+                    className={actionClass}
+                    type="button"
+                    onClick={event => {
+                      event.stopPropagation();
+                      onDownload(item.id);
+                    }}
+                  >
+                    ↓
                   </button>
-                  <button className="r-action jd-delete-action" type="button" onClick={event => {
-                    event.stopPropagation();
-                    onDelete(item.id);
-                  }}>
-                    &#128465;
+                  <button
+                    className={cn(actionClass, 'border-error/30 bg-error-container/40 text-error hover:bg-error-container')}
+                    type="button"
+                    onClick={event => {
+                      event.stopPropagation();
+                      onDelete(item.id);
+                    }}
+                  >
+                    Delete
                   </button>
                 </div>
               </div>
             </article>
           ))
         ) : (
-          <div className="jd-no-result">
-            <div className="jd-no-result-icon">&#9678;</div>
-            <div className="jd-no-result-txt">No saved JDs yet. Add one to begin matching.</div>
+          <div className="grid min-h-44 place-items-center rounded-[1.35rem] border border-dashed border-outline bg-surface px-6 py-8 text-center">
+            <div className="grid gap-2">
+              <div className="text-3xl text-primary">⊘</div>
+              <div className="text-sm leading-7 text-[color:var(--txt2)]">No saved JDs yet. Add one to begin matching.</div>
+            </div>
           </div>
         )}
       </div>
 
-      <div className="list-pagination jd-pagination">
-        <div className="page-status">Page {page} of {totalPages}</div>
-        <div className="page-controls">
-          <button className="r-action" type="button" onClick={onPrev} disabled={page === 1}>Previous</button>
-          <button className="r-action" type="button" onClick={onNext} disabled={page === totalPages}>Next</button>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="font-headline text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--txt2)]">
+          Page {page} of {totalPages}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button className={actionClass} type="button" onClick={onPrev} disabled={page === 1}>
+            Previous
+          </button>
+          <button className={actionClass} type="button" onClick={onNext} disabled={page === totalPages}>
+            Next
+          </button>
         </div>
       </div>
     </section>

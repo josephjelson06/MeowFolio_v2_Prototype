@@ -23,36 +23,36 @@ export function ProfilePage() {
       setUsage(nextUsage);
     }
 
-    loadProfile();
+    void loadProfile();
   }, []);
 
   return (
-    <div className="profile-body profile-page">
-      <section className="profile-section profile-hero">
-        <div className="profile-avatar-big">{initials}</div>
-        <div className="profile-identity">
-          <div className="profile-badges">
+    <div className="grid gap-6">
+      <section className="flex flex-col gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:flex-row md:items-center md:gap-6 md:p-6">
+        <div className="grid size-16 shrink-0 place-items-center rounded-full border border-outline bg-surface text-xl font-semibold text-secondary">{initials}</div>
+        <div className="min-w-0 flex-1">
+          <div className="mb-2 flex flex-wrap gap-2">
             <Badge variant="accent">{summary.plan.toUpperCase()}</Badge>
             <Badge variant="info">{`MEMBER SINCE ${summary.memberSince.toUpperCase()}`}</Badge>
           </div>
-          <div className="profile-name">{actor?.name ?? summary.name}</div>
-          <div className="profile-email">{actor?.email ?? summary.email}</div>
+          <div className="font-headline text-xl font-extrabold text-on-surface">{actor?.name ?? summary.name}</div>
+          <div className="mt-1 text-sm text-[color:var(--txt2)]">{actor?.email ?? summary.email}</div>
         </div>
-        <Button className="profile-logout" to={routes.home}>Logout</Button>
+        <Button className="border-error/40 bg-error-container/70 text-error hover:bg-error-container hover:text-error" to={routes.home}>Logout</Button>
       </section>
 
-      <section className="profile-section">
-        <div className="profile-section-title">Usage details</div>
+      <section className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6">
+        <div className="mb-4 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface">Usage details</div>
         {usage.map((item, index) => {
           const value = Math.round((item.used / item.total) * 100);
           return (
-            <div key={item.label}>
-              <div className={`usage-row${index > 0 ? ' profile-usage-row' : ''}`}>
+            <div className={index > 0 ? 'mt-4' : ''} key={item.label}>
+              <div className="mb-2 flex items-center justify-between text-sm text-[color:var(--txt1)]">
                 <span>{item.label}</span>
-                <span className="profile-usage-value">{item.used} / {item.total}</span>
+                <span className="font-headline text-sm font-semibold">{item.used} / {item.total}</span>
               </div>
-              <div className="usage-track">
-                <div className="usage-fill" style={{ width: `${value}%` }}></div>
+              <div className="h-1.5 rounded-full bg-surface-container-high">
+                <div className="h-1.5 rounded-full bg-primary" style={{ width: `${value}%` }}></div>
               </div>
             </div>
           );

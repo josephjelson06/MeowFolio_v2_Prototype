@@ -11,37 +11,37 @@ const storyCards = [
     title: 'Mochii starts the job search journey.',
     copy: 'The first draft is always messy. What matters is having one calm place to begin.',
     image: '/Images/Scene1.jpg',
-    shellClass: 'pub-home-story-media-cream',
+    shellClass: 'bg-cream',
   },
   {
     title: 'Sent 47 resumes to top tech companies.',
     copy: 'Volume is easy. Useful iteration and cleaner signals are the hard part.',
     image: '/Images/Scene2.jpg',
-    shellClass: 'pub-home-story-media-lavender',
+    shellClass: 'bg-lavender',
   },
   {
     title: '47 rejections. Not enough experience in napping.',
     copy: 'When formatting and structure fall apart, every rejection feels heavier than it should.',
     image: '/Images/Scene3.png',
-    shellClass: 'pub-home-story-media-cream',
+    shellClass: 'bg-cream',
   },
   {
     title: 'Discovers meowfolio. A glimmer of hope.',
     copy: 'The public side should feel like the same product world, not a separate brochure.',
     image: '/Images/Scene4.jpg',
-    shellClass: 'pub-home-story-media-coral',
+    shellClass: 'bg-primary-fixed',
   },
   {
     title: 'Builds a professional resume in one workspace.',
     copy: 'Import, refine, preview, and export while ATS and JD tools stay connected to the same data.',
     image: '/Images/Scene5.jpg',
-    shellClass: 'pub-home-story-media-mint',
+    shellClass: 'bg-tertiary-fixed',
   },
   {
     title: 'Hired. Senior Treat Officer at Global Meow Inc.',
     copy: 'A better workflow does not guarantee outcomes, but it gives the work a fairer shot.',
     image: '/Images/Scene6.jpg',
-    shellClass: 'pub-home-story-media-cream',
+    shellClass: 'bg-cream',
   },
 ] as const;
 
@@ -50,19 +50,19 @@ const features = [
     title: 'Build from Scratch',
     description: 'The editor writes directly into the canonical resume schema and updates the live canvas as you type.',
     icon: 'NEW',
-    toneClass: 'pub-home-feature-icon-coral',
+    toneClass: 'bg-primary-fixed text-primary',
   },
   {
     title: 'Import & Refine',
     description: 'Paste resume text or upload `.txt`, `.md`, `.pdf`, and `.docx` files, then clean everything up in one workspace.',
     icon: 'IN',
-    toneClass: 'pub-home-feature-icon-mint',
+    toneClass: 'bg-tertiary-fixed text-tertiary',
   },
   {
     title: 'Compile, Match & Score',
     description: 'Generate a TeX-backed PDF, then inspect ATS output health and JD evidence against the same shared resume state.',
     icon: 'OUT',
-    toneClass: 'pub-home-feature-icon-lavender',
+    toneClass: 'bg-secondary-fixed text-secondary',
   },
 ] as const;
 
@@ -85,6 +85,25 @@ const faqs = [
   },
 ] as const;
 
+function RoundRailButton({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="grid size-11 place-items-center rounded-full border-2 border-charcoal/75 bg-white/90 text-lg text-on-surface shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:shadow-tactile"
+      onClick={onClick}
+      aria-label={label}
+    >
+      {label.includes('previous') ? '\u2190' : '\u2192'}
+    </button>
+  );
+}
+
 export function HomePage() {
   const { openAuth } = useAuthModal();
   const [templateItems, setTemplateItems] = useState<TemplateRecord[]>([]);
@@ -98,7 +117,7 @@ export function HomePage() {
 
   function openHomeAuth() {
     openAuth({
-      copy: 'The public pages now live inside the same prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
+      copy: 'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
       accent: 'GOOGLE ONLY',
     });
   }
@@ -115,57 +134,71 @@ export function HomePage() {
 
   return (
     <>
-      <section className="pub-panel pub-home-hero-core">
-        <div className="pub-home-hero-orb pub-home-hero-orb-left"></div>
-        <div className="pub-home-hero-orb pub-home-hero-orb-right"></div>
+      <section className="relative overflow-hidden rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-16">
+        <div className="absolute left-12 top-12 h-40 w-40 rounded-full bg-primary-fixed blur-3xl"></div>
+        <div className="absolute bottom-10 right-16 h-48 w-48 rounded-full bg-secondary-fixed blur-3xl"></div>
 
-        <div className="pub-home-hero-grid-core">
-          <div className="pub-home-copy-core">
-            <Badge variant="info" className="pub-home-eyebrow">FREE FOREVER. NO WATERMARKS.</Badge>
+        <div className="relative z-10 grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
+          <div className="grid gap-6">
+            <div>
+              <Badge variant="info">FREE FOREVER. NO WATERMARKS.</Badge>
+            </div>
 
-            <h1 className="pub-home-title-core">
-              Build resumes that <span className="pub-home-title-accent">actually</span> get read.
-            </h1>
+            <div className="max-w-[38rem] font-headline text-5xl font-extrabold leading-[0.95] tracking-[-0.05em] text-on-surface md:text-7xl">
+              Build resumes that <span className="text-coral underline decoration-4 underline-offset-8">actually</span> get read.
+            </div>
 
-            <div className="pub-home-copy-stack">
-              <p className="pub-home-lead-core">Even a cat got hired. You&apos;re next.</p>
-              <p className="pub-home-body-core">
+            <div className="grid gap-4">
+              <p className="max-w-lg text-xl font-semibold leading-9 text-[color:var(--txt1)] md:text-2xl">
+                Even a cat got hired. You&apos;re next.
+              </p>
+              <p className="max-w-xl text-base leading-8 text-[color:var(--txt2)] md:text-lg">
                 Build the resume in one workspace, generate TeX-backed PDFs, and carry the same structured profile into ATS and JD analysis without jumping between disconnected tools.
               </p>
             </div>
 
-            <div className="pub-home-cta-row">
-              <Button onClick={openHomeAuth} className="pub-home-cta-primary">Get Started</Button>
-              <Button to={routes.about} variant="secondary" className="pub-home-cta-secondary">Read the story</Button>
+            <div className="flex flex-wrap gap-4">
+              <Button className="px-8 py-4 text-base" onClick={openHomeAuth}>Get Started</Button>
+              <Button className="px-8 py-4 text-base" to={routes.about} variant="secondary">Read the story</Button>
             </div>
           </div>
 
-          <div className="pub-home-hero-art">
-            <div className="pub-home-hero-art-shadow"></div>
-            <div className="pub-home-hero-doc">
-              <div className="pub-home-hero-doc-inner">
-                <div className="pub-home-doc-head">
-                  <div>
-                    <div className="pub-home-doc-title"></div>
-                    <div className="pub-home-doc-subtitle"></div>
-                  </div>
-                  <div className="pub-home-doc-pill">ATS READY</div>
-                </div>
-
-                <div className="pub-home-doc-grid">
-                  <div className="pub-home-doc-copy">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
+          <div className="relative">
+            <div className="absolute -left-4 top-8 hidden h-[86%] w-[88%] rounded-[2rem] bg-primary-fixed lg:block"></div>
+            <div className="relative rotate-2 rounded-[2rem] border-[1.5px] border-charcoal/75 bg-white/95 p-4 shadow-tactile-lg">
+              <div className="rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,244,239,0.98))] p-5">
+                <div className="rounded-[1.2rem] bg-white p-5 shadow-ambient">
+                  <div className="mb-5 flex items-start justify-between gap-4">
+                    <div>
+                      <div className="h-4 w-40 rounded-full bg-primary/80"></div>
+                      <div className="mt-3 h-2 w-24 rounded-full bg-outline-variant/60"></div>
+                    </div>
+                    <div className="rounded-full bg-tertiary-fixed px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-tertiary">
+                      ATS ready
+                    </div>
                   </div>
 
-                  <div className="pub-home-doc-side">
-                    <span className="pub-home-doc-panel pub-home-doc-panel-coral"></span>
-                    <span className="pub-home-doc-panel pub-home-doc-panel-lavender"></span>
-                    <span className="pub-home-doc-panel pub-home-doc-panel-mint"></span>
+                  <div className="grid gap-5 md:grid-cols-[1.35fr_0.65fr]">
+                    <div className="space-y-3">
+                      <div className="h-2 w-full rounded-full bg-outline-variant/30"></div>
+                      <div className="h-2 w-11/12 rounded-full bg-outline-variant/30"></div>
+                      <div className="h-2 w-4/5 rounded-full bg-outline-variant/30"></div>
+                      <div className="mt-5 space-y-2">
+                        <div className="h-2 w-full rounded-full bg-outline-variant/25"></div>
+                        <div className="h-2 w-5/6 rounded-full bg-outline-variant/25"></div>
+                        <div className="h-2 w-4/5 rounded-full bg-outline-variant/25"></div>
+                        <div className="h-2 w-3/4 rounded-full bg-outline-variant/25"></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 rounded-[1rem] bg-surface-container-low p-4">
+                      <div className="h-2 w-16 rounded-full bg-outline-variant/30"></div>
+                      <div className="space-y-2">
+                        <div className="h-10 rounded-xl bg-primary-fixed"></div>
+                        <div className="h-10 rounded-xl bg-secondary-fixed"></div>
+                        <div className="h-10 rounded-xl bg-tertiary-fixed"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -174,123 +207,132 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="pub-panel pub-home-story-core">
-        <div className="pub-home-section-head">
-          <h2 className="pub-home-section-title">How one cat changed everything.</h2>
-          <p className="pub-home-section-meta">Swipe through Mochii&apos;s journey &#8594;</p>
+      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+        <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">How one cat changed everything.</h2>
+            <p className="mt-3 text-sm leading-7 text-[color:var(--txt2)]">Swipe through Mochii&apos;s journey and see how the product loop moves from panic to a cleaner workflow.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <RoundRailButton label="Show previous story cards" onClick={() => scrollRail(storyRailRef, 'left', 0.8)} />
+            <RoundRailButton label="Show next story cards" onClick={() => scrollRail(storyRailRef, 'right', 0.8)} />
+          </div>
         </div>
 
-        <div className="pub-home-rail" ref={storyRailRef}>
+        <div className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2" ref={storyRailRef}>
           {storyCards.map((card, index) => (
-            <article className="pub-home-story-shell" key={card.title}>
-              <div className={`pub-home-story-media-shell ${card.shellClass}`}>
-                <img src={card.image} alt={card.title} loading="lazy" />
+            <article className="grid w-[20rem] flex-none snap-start gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile" key={card.title}>
+              <div className={`grid aspect-square place-items-center overflow-hidden rounded-[1.2rem] border border-charcoal/15 ${card.shellClass}`}>
+                <img className="h-full w-full object-cover" src={card.image} alt={card.title} loading="lazy" />
               </div>
-              <p className="pub-home-story-title">{card.title}</p>
-              <p className="pub-home-story-copy">{card.copy}</p>
-              <div className="pub-home-story-step">{String(index + 1).padStart(2, '0')}</div>
+              <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">{String(index + 1).padStart(2, '0')}</div>
+              <p className="font-headline text-xl font-extrabold leading-tight text-on-surface">{card.title}</p>
+              <p className="text-sm leading-7 text-[color:var(--txt2)]">{card.copy}</p>
             </article>
           ))}
 
-          <article className="pub-home-story-cta">
-            <h3>Write your story</h3>
-            <Button onClick={openHomeAuth} className="pub-home-story-cta-btn">Get Started</Button>
+          <article className="flex w-[20rem] flex-none snap-start flex-col items-center justify-center gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-coral p-8 text-center shadow-tactile">
+            <h3 className="font-headline text-4xl font-extrabold text-white">Write your story</h3>
+            <Button className="bg-white text-on-surface hover:text-primary" onClick={openHomeAuth}>Get Started</Button>
           </article>
-        </div>
-
-        <div className="pub-home-rail-controls">
-          <button type="button" className="pub-home-round-btn" onClick={() => scrollRail(storyRailRef, 'left', 0.8)} aria-label="Show previous story cards">&#8592;</button>
-          <button type="button" className="pub-home-round-btn" onClick={() => scrollRail(storyRailRef, 'right', 0.8)} aria-label="Show next story cards">&#8594;</button>
         </div>
       </section>
 
-      <section className="pub-panel pub-home-capabilities-core">
-        <div className="pub-home-cap-header">
-          <h2 className="pub-home-section-title">Everything you need.</h2>
-          <div className="pub-home-cap-chips">
+      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+        <div className="mb-10 text-center">
+          <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">Everything you need.</h2>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Badge variant="info">FREE FOREVER</Badge>
-            <Badge className="pub-home-success-badge">NO WATERMARKS</Badge>
+            <Badge className="border-tertiary/30 bg-tertiary-fixed text-tertiary">NO WATERMARKS</Badge>
             <Badge variant="accent">ATS-READY</Badge>
           </div>
         </div>
 
-        <div className="pub-home-feature-grid">
+        <div className="grid gap-6 md:grid-cols-3">
           {features.map(feature => (
-            <article className="pub-home-feature-card" key={feature.title}>
-              <div className={`pub-home-feature-icon ${feature.toneClass}`}>{feature.icon}</div>
-              <h3 className="pub-home-feature-title">{feature.title}</h3>
-              <p className="pub-home-feature-copy">{feature.description}</p>
+            <article className="grid gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-6 shadow-tactile transition hover:-translate-x-px hover:-translate-y-px" key={feature.title}>
+              <div className={`grid size-16 place-items-center rounded-2xl border border-charcoal/20 font-headline text-base font-bold ${feature.toneClass}`}>
+                {feature.icon}
+              </div>
+              <h3 className="font-headline text-2xl font-extrabold leading-tight text-on-surface">{feature.title}</h3>
+              <p className="text-sm leading-7 text-[color:var(--txt2)]">{feature.description}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="pub-panel pub-home-template-core">
-        <div className="pub-home-template-head">
-          <h2 className="pub-home-section-title">Pick your vibe.</h2>
-          <div className="pub-home-rail-controls">
-            <button type="button" className="pub-home-round-btn" onClick={() => scrollRail(templateRailRef, 'left', 0.82)} aria-label="Show previous templates">&#8592;</button>
-            <button type="button" className="pub-home-round-btn" onClick={() => scrollRail(templateRailRef, 'right', 0.82)} aria-label="Show next templates">&#8594;</button>
+      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+        <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-center md:justify-between">
+          <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">Pick your vibe.</h2>
+          <div className="flex items-center gap-3">
+            <RoundRailButton label="Show previous templates" onClick={() => scrollRail(templateRailRef, 'left', 0.82)} />
+            <RoundRailButton label="Show next templates" onClick={() => scrollRail(templateRailRef, 'right', 0.82)} />
           </div>
         </div>
 
-        <div className="pub-home-template-rail" ref={templateRailRef}>
+        <div className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2" ref={templateRailRef}>
           {templateItems.map(template => (
-            <article className="pub-home-template-card" key={template.id}>
-              <div className="pub-home-template-preview-shell">
-                <div className="pub-home-template-preview-frame">
+            <article className="grid w-[19rem] flex-none snap-start overflow-hidden rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 shadow-tactile" key={template.id}>
+              <div className="relative bg-surface-container-low px-5 pb-6 pt-5">
+                <div className="overflow-hidden rounded-[1.25rem] bg-white p-4 shadow-ambient">
                   {template.previewImageUrl ? (
-                    <img src={template.previewImageUrl} alt={`${template.name} template preview`} className="pub-home-template-preview-img" loading="lazy" />
+                    <img className="h-[17rem] w-full rounded-[1rem] object-cover object-top" src={template.previewImageUrl} alt={`${template.name} template preview`} loading="lazy" />
                   ) : null}
                 </div>
-                <div className="pub-home-template-action">
-                  <Button onClick={openHomeAuth} className="pub-home-template-btn">Use this template</Button>
+                <div className="absolute inset-x-0 bottom-3 flex justify-center">
+                  <Button className="min-h-9 px-5 py-2 text-[10px]" onClick={openHomeAuth}>Use this template</Button>
                 </div>
               </div>
 
-              <div className="pub-home-template-meta">
-                <h3 className="pub-home-template-title">{template.badge}</h3>
+              <div className="grid gap-2 p-5 text-center">
+                <h3 className="font-headline text-2xl font-extrabold text-on-surface">{template.badge}</h3>
+                <p className="text-sm leading-7 text-[color:var(--txt2)]">{template.description}</p>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="pub-panel pub-home-faq-core">
-        <div className="pub-home-faq-grid">
-          <div className="pub-home-faq-visual">
-            <div className="pub-home-faq-visual-card">
-              <div className="pub-home-faq-visual-circle">
-                <img src="/Images/Prof_Mochii.png" alt="Professor Mochii illustration" loading="lazy" />
+      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+        <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+          <div className="grid gap-5">
+            <div className="relative rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/95 p-3 shadow-tactile">
+              <div className="grid h-[23rem] place-items-center rounded-[1.4rem] bg-surface-container-low md:h-[30rem]">
+                <div className="grid size-48 place-items-center rounded-full bg-primary-fixed md:size-60">
+                  <img className="h-28 w-28 object-contain md:h-36 md:w-36" src="/Images/Prof_Mochii.png" alt="Professor Mochii illustration" loading="lazy" />
+                </div>
+              </div>
+              <div className="absolute -bottom-6 left-4 right-4 rounded-[1.25rem] border-[1.5px] border-charcoal/75 bg-coral p-5 shadow-tactile md:left-6 md:right-6">
+                <p className="font-headline text-lg font-extrabold italic leading-snug text-white md:text-xl">
+                  &quot;Curious about something? I&apos;ve got the answers right here, human.&quot;
+                </p>
+                <p className="mt-2 text-sm font-black text-white">- Professor Mochii</p>
               </div>
             </div>
-            <div className="pub-home-faq-quote">
-              <p>&quot;Curious about something? I&apos;ve got the answers right here, human.&quot;</p>
-              <span>- Professor Mochii</span>
-            </div>
+            <div className="h-10 lg:hidden"></div>
           </div>
 
-          <div className="pub-home-faq-copy">
-            <h2 className="pub-home-section-title">Got questions?</h2>
-            <div className="pub-home-faq-list">
+          <div>
+            <h2 className="mb-8 font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">Got questions?</h2>
+            <div className="space-y-4">
               {faqs.map((faq, index) => {
                 const open = openFaqIndex === index;
 
                 return (
-                  <article className={`pub-home-faq-item${open ? ' open' : ''}`} key={faq.question}>
+                  <article className="overflow-hidden rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 shadow-tactile" key={faq.question}>
                     <button
                       type="button"
-                      className="pub-home-faq-trigger"
+                      className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left md:px-8 md:py-6"
                       onClick={() => setOpenFaqIndex(open ? null : index)}
                       aria-expanded={open}
                       aria-controls={`home-faq-answer-${index}`}
                     >
-                      <span>{faq.question}</span>
-                      <span>{open ? '\u2212' : '+'}</span>
+                      <span className="font-headline text-xl font-extrabold text-on-surface">{faq.question}</span>
+                      <span className="text-xl font-bold text-[color:var(--txt1)]">{open ? '\u2212' : '+'}</span>
                     </button>
                     {open ? (
-                      <div className="pub-home-faq-answer" id={`home-faq-answer-${index}`}>
-                        <p>{faq.answer}</p>
+                      <div className="border-t border-outline-variant/30 px-6 py-5 md:px-8 md:py-6" id={`home-faq-answer-${index}`}>
+                        <p className="text-sm leading-7 text-[color:var(--txt2)]">{faq.answer}</p>
                       </div>
                     ) : null}
                   </article>

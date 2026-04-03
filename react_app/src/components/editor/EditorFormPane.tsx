@@ -45,6 +45,20 @@ function clampStart(page: number) {
   return Math.max(0, (page - 1) * 5);
 }
 
+const labelClass = 'font-headline text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--txt2)]';
+const labelGapClass = `${labelClass} mt-4`;
+const inputClass =
+  'w-full rounded-[1rem] border border-outline-variant bg-white px-4 py-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10';
+const textAreaMdClass = `${inputClass} min-h-40 resize-y`;
+const textAreaSmClass = `${inputClass} min-h-28 resize-y`;
+const removeButtonClass =
+  'mt-4 inline-flex min-h-9 items-center justify-center self-start rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[10px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white';
+const addButtonClass =
+  'mt-5 inline-flex min-h-10 items-center justify-center self-start rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white';
+const paginationButtonClass =
+  'inline-flex min-h-8 items-center justify-center rounded-full border-2 border-charcoal/70 bg-white/85 px-3 py-1.5 text-[10px] font-semibold text-[color:var(--txt1)] shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white disabled:pointer-events-none disabled:opacity-40';
+const dividerClass = 'my-6 h-px bg-outline-variant/40';
+
 export function EditorFormPane({
   activeSection,
   page,
@@ -65,57 +79,57 @@ export function EditorFormPane({
   const needsPagination = ['experience', 'education', 'skills', 'projects'].includes(activeSection) || Boolean(activeCustomSection);
 
   return (
-    <div className="form-area">
+    <div className="grid gap-3 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-4 shadow-tactile-sm">
       {activeSection === 'contact' ? (
         <>
-          <div className="fl">Full name</div>
+          <div className={labelClass}>Full name</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.name ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
               header: { ...current.header, name: event.target.value },
             }))}
           />
-          <div className="fl editor-field-gap">Role</div>
+          <div className={labelGapClass}>Role</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.role ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
               header: { ...current.header, role: event.target.value },
             }))}
           />
-          <div className="fl editor-field-gap">Email</div>
+          <div className={labelGapClass}>Email</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.email ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
               header: { ...current.header, email: event.target.value },
             }))}
           />
-          <div className="fl editor-field-gap">Phone</div>
+          <div className={labelGapClass}>Phone</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.phone ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
               header: { ...current.header, phone: event.target.value },
             }))}
           />
-          <div className="fl editor-field-gap">Location</div>
+          <div className={labelGapClass}>Location</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.address ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
               header: { ...current.header, address: event.target.value },
             }))}
           />
-          <div className="fl editor-field-gap">LinkedIn</div>
+          <div className={labelGapClass}>LinkedIn</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.linkedin.url ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
@@ -125,9 +139,9 @@ export function EditorFormPane({
               },
             }))}
           />
-          <div className="fl editor-field-gap">GitHub</div>
+          <div className={labelGapClass}>GitHub</div>
           <input
-            className="fi"
+            className={inputClass}
             value={resume.header.github.url ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
@@ -142,9 +156,9 @@ export function EditorFormPane({
 
       {activeSection === 'summary' ? (
         <>
-          <div className="fl">Professional summary</div>
+          <div className={labelClass}>Professional summary</div>
           <textarea
-            className="fi editor-ta-md"
+            className={textAreaMdClass}
             value={resume.summary.content ?? ''}
             onChange={event => onContentChange(current => ({
               ...current,
@@ -159,36 +173,36 @@ export function EditorFormPane({
             const index = startIndex + localIndex;
             return (
               <div key={`exp-${index}`}>
-                <div className="fl">Company</div>
+                <div className={labelClass}>Company</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.company ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     experience: current.experience.map((entry, entryIndex) => entryIndex === index ? { ...entry, company: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Role</div>
+                <div className={labelGapClass}>Role</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.role ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     experience: current.experience.map((entry, entryIndex) => entryIndex === index ? { ...entry, role: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Location</div>
+                <div className={labelGapClass}>Location</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.location ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     experience: current.experience.map((entry, entryIndex) => entryIndex === index ? { ...entry, location: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Start year</div>
+                <div className={labelGapClass}>Start year</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.date.startYear ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -198,9 +212,9 @@ export function EditorFormPane({
                     } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">End year</div>
+                <div className={labelGapClass}>End year</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.date.endYear ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -210,9 +224,9 @@ export function EditorFormPane({
                     } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Bullets</div>
+                <div className={labelGapClass}>Bullets</div>
                 <textarea
-                  className="fi editor-ta-sm"
+                  className={textAreaSmClass}
                   value={joinLines(item.description.bullets)}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -223,7 +237,7 @@ export function EditorFormPane({
                   }))}
                 />
                 <button
-                  className="r-action editor-field-gap"
+                  className={removeButtonClass}
                   type="button"
                   onClick={() => onContentChange(current => ({
                     ...current,
@@ -232,7 +246,7 @@ export function EditorFormPane({
                 >
                   Remove experience
                 </button>
-                {localIndex < visibleExperience.length - 1 ? <div className="editor-field-gap"></div> : null}
+                {localIndex < visibleExperience.length - 1 ? <div className={dividerClass}></div> : null}
               </div>
             );
           })
@@ -243,36 +257,36 @@ export function EditorFormPane({
             const index = startIndex + localIndex;
             return (
               <div key={`edu-${index}`}>
-                <div className="fl">Institution</div>
+                <div className={labelClass}>Institution</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.institution ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     education: current.education.map((entry, entryIndex) => entryIndex === index ? { ...entry, institution: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Degree</div>
+                <div className={labelGapClass}>Degree</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.degree ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     education: current.education.map((entry, entryIndex) => entryIndex === index ? { ...entry, degree: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Field</div>
+                <div className={labelGapClass}>Field</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.field ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     education: current.education.map((entry, entryIndex) => entryIndex === index ? { ...entry, field: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Start year</div>
+                <div className={labelGapClass}>Start year</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.date.startYear ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -282,9 +296,9 @@ export function EditorFormPane({
                     } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">End year</div>
+                <div className={labelGapClass}>End year</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.date.endYear ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -295,7 +309,7 @@ export function EditorFormPane({
                   }))}
                 />
                 <button
-                  className="r-action editor-field-gap"
+                  className={removeButtonClass}
                   type="button"
                   onClick={() => onContentChange(current => ({
                     ...current,
@@ -304,7 +318,7 @@ export function EditorFormPane({
                 >
                   Remove education
                 </button>
-                {localIndex < visibleEducation.length - 1 ? <div className="editor-field-gap"></div> : null}
+                {localIndex < visibleEducation.length - 1 ? <div className={dividerClass}></div> : null}
               </div>
             );
           })
@@ -316,9 +330,9 @@ export function EditorFormPane({
             const usingGroups = resume.skills.groups.length > 0;
             return (
               <div key={`skills-${index}`}>
-                <div className="fl">Skill group</div>
+                <div className={labelClass}>Skill group</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={group.groupLabel ?? ''}
                   onChange={event => onContentChange(current => {
                     if (!usingGroups) {
@@ -341,9 +355,9 @@ export function EditorFormPane({
                     };
                   })}
                 />
-                <div className="fl editor-field-gap">Skills</div>
+                <div className={labelGapClass}>Skills</div>
                 <textarea
-                  className="fi editor-ta-sm"
+                  className={textAreaSmClass}
                   value={usingGroups ? joinCsv(group.items) : joinCsv(resume.skills.items)}
                   onChange={event => onContentChange(current => {
                     if (!usingGroups) {
@@ -367,7 +381,7 @@ export function EditorFormPane({
                 />
                 {usingGroups ? (
                   <button
-                    className="r-action editor-field-gap"
+                    className={removeButtonClass}
                     type="button"
                     onClick={() => onContentChange(current => ({
                       ...current,
@@ -380,7 +394,7 @@ export function EditorFormPane({
                     Remove group
                   </button>
                 ) : null}
-                {localIndex < visibleSkillGroups.length - 1 ? <div className="editor-field-gap"></div> : null}
+                {localIndex < visibleSkillGroups.length - 1 ? <div className={dividerClass}></div> : null}
               </div>
             );
           })
@@ -391,18 +405,18 @@ export function EditorFormPane({
             const index = startIndex + localIndex;
             return (
               <div key={`proj-${index}`}>
-                <div className="fl">Project name</div>
+                <div className={labelClass}>Project name</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={item.title ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
                     projects: current.projects.map((entry, entryIndex) => entryIndex === index ? { ...entry, title: event.target.value } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Technologies</div>
+                <div className={labelGapClass}>Technologies</div>
                 <textarea
-                  className="fi editor-ta-sm"
+                  className={textAreaSmClass}
                   value={joinCsv(item.technologies)}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -412,9 +426,9 @@ export function EditorFormPane({
                     } : entry),
                   }))}
                 />
-                <div className="fl editor-field-gap">Bullets</div>
+                <div className={labelGapClass}>Bullets</div>
                 <textarea
-                  className="fi editor-ta-sm"
+                  className={textAreaSmClass}
                   value={joinLines(item.description.bullets)}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -425,7 +439,7 @@ export function EditorFormPane({
                   }))}
                 />
                 <button
-                  className="r-action editor-field-gap"
+                  className={removeButtonClass}
                   type="button"
                   onClick={() => onContentChange(current => ({
                     ...current,
@@ -434,7 +448,7 @@ export function EditorFormPane({
                 >
                   Remove project
                 </button>
-                {localIndex < visibleProjects.length - 1 ? <div className="editor-field-gap"></div> : null}
+                {localIndex < visibleProjects.length - 1 ? <div className={dividerClass}></div> : null}
               </div>
             );
           })
@@ -442,9 +456,9 @@ export function EditorFormPane({
 
       {activeCustomSection ? (
         <>
-          <div className="fl">Section label</div>
+          <div className={labelClass}>Section label</div>
           <input
-            className="fi"
+            className={inputClass}
             value={activeCustomSection.label}
             onChange={event => onContentChange(current => ({
               ...current,
@@ -455,9 +469,9 @@ export function EditorFormPane({
             const index = startIndex + localIndex;
             return (
               <div key={`${activeCustomSection.id}-${index}`}>
-                <div className="fl editor-field-gap">Title</div>
+                <div className={labelGapClass}>Title</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={entry.title ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -467,9 +481,9 @@ export function EditorFormPane({
                     } : section),
                   }))}
                 />
-                <div className="fl editor-field-gap">Subtitle</div>
+                <div className={labelGapClass}>Subtitle</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={entry.subtitle ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -479,9 +493,9 @@ export function EditorFormPane({
                     } : section),
                   }))}
                 />
-                <div className="fl editor-field-gap">Location</div>
+                <div className={labelGapClass}>Location</div>
                 <input
-                  className="fi"
+                  className={inputClass}
                   value={entry.location ?? ''}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -491,9 +505,9 @@ export function EditorFormPane({
                     } : section),
                   }))}
                 />
-                <div className="fl editor-field-gap">Bullets</div>
+                <div className={labelGapClass}>Bullets</div>
                 <textarea
-                  className="fi editor-ta-sm"
+                  className={textAreaSmClass}
                   value={joinLines(entry.description.bullets)}
                   onChange={event => onContentChange(current => ({
                     ...current,
@@ -507,7 +521,7 @@ export function EditorFormPane({
                   }))}
                 />
                 <button
-                  className="r-action editor-field-gap"
+                  className={removeButtonClass}
                   type="button"
                   onClick={() => onContentChange(current => ({
                     ...current,
@@ -523,7 +537,7 @@ export function EditorFormPane({
             );
           })}
           <button
-            className="fi-add"
+            className={addButtonClass}
             type="button"
             onClick={() => onContentChange(current => ({
               ...current,
@@ -547,7 +561,7 @@ export function EditorFormPane({
 
       {activeSection === 'experience' ? (
         <button
-          className="fi-add"
+          className={addButtonClass}
           type="button"
           onClick={() => onContentChange(current => ({
             ...current,
@@ -560,7 +574,7 @@ export function EditorFormPane({
 
       {activeSection === 'education' ? (
         <button
-          className="fi-add"
+          className={addButtonClass}
           type="button"
           onClick={() => onContentChange(current => ({
             ...current,
@@ -573,7 +587,7 @@ export function EditorFormPane({
 
       {activeSection === 'skills' ? (
         <button
-          className="fi-add"
+          className={addButtonClass}
           type="button"
           onClick={() => onContentChange(current => ({
             ...current,
@@ -590,7 +604,7 @@ export function EditorFormPane({
 
       {activeSection === 'projects' ? (
         <button
-          className="fi-add"
+          className={addButtonClass}
           type="button"
           onClick={() => onContentChange(current => ({
             ...current,
@@ -602,11 +616,11 @@ export function EditorFormPane({
       ) : null}
 
       {needsPagination ? (
-        <div className="list-pagination">
-          <div className="page-status">Page {page} of {totalPages}</div>
-          <div className="page-controls">
-            <button className="r-action" type="button" onClick={onPrevPage} disabled={page === 1}>Previous</button>
-            <button className="r-action" type="button" onClick={onNextPage} disabled={page === totalPages}>Next</button>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="font-headline text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--txt2)]">Page {page} of {totalPages}</div>
+          <div className="flex flex-wrap gap-2">
+            <button className={paginationButtonClass} type="button" onClick={onPrevPage} disabled={page === 1}>Previous</button>
+            <button className={paginationButtonClass} type="button" onClick={onNextPage} disabled={page === totalPages}>Next</button>
           </div>
         </div>
       ) : null}

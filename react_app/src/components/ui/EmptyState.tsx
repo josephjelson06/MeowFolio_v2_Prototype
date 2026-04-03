@@ -8,9 +8,9 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, copy, action }: EmptyStateProps) {
   return (
-    <div className="ra-stack-md">
-      <h3 className="ra-card-title">{title}</h3>
-      <p className="ra-card-copy">{copy}</p>
+    <div className="grid gap-4">
+      <h3 className="font-headline text-2xl font-extrabold leading-tight text-on-surface">{title}</h3>
+      <p className="max-w-2xl text-sm leading-7 text-[color:var(--txt2)]">{copy}</p>
       {action}
     </div>
   );

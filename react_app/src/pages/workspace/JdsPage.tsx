@@ -3,8 +3,9 @@ import { JdListPane } from 'components/jds/JdListPane';
 import { JdMobileSheet } from 'components/jds/JdMobileSheet';
 import { JdResultPane } from 'components/jds/JdResultPane';
 import { ResumePickerPane } from 'components/jds/ResumePickerPane';
-import { useViewportMode } from 'hooks/useViewportMode';
 import { useJdModal } from 'hooks/useJdModal';
+import { useViewportMode } from 'hooks/useViewportMode';
+import { cn } from 'lib/cn';
 import { downloadTextFile } from 'lib/formatters';
 import { jdService, type JdReportModel } from 'services/jdService';
 import { resumeService } from 'services/resumeService';
@@ -17,6 +18,9 @@ function getPageForId(items: Array<{ id: string }>, id: string | null) {
   const index = items.findIndex(item => item.id === id);
   return index === -1 ? 1 : Math.floor(index / JD_PAGE_SIZE) + 1;
 }
+
+const mobileTabClass =
+  'flex-1 rounded-full border-2 border-charcoal/70 px-4 py-2 font-headline text-[11px] font-bold uppercase tracking-[0.12em] transition';
 
 export function JdsPage() {
   const { isMobile } = useViewportMode();
@@ -52,7 +56,7 @@ export function JdsPage() {
         return nextSelected;
       });
 
-      setSelectedResume(current => current && nextProfiles.some(item => item.id === current) ? current : nextProfiles[0]?.id ?? null);
+      setSelectedResume(current => (current && nextProfiles.some(item => item.id === current) ? current : nextProfiles[0]?.id ?? null));
     }
 
     void syncLibraries();
@@ -147,16 +151,16 @@ export function JdsPage() {
 
   return (
     <>
-      <div className="mob-edit-toggle jd-mobile-tabs">
+      <div className="mb-4 flex gap-2 md:hidden">
         <button
-          className={`mob-et-btn${mobileView === 'workspace' ? ' active' : ''}`}
+          className={cn(mobileTabClass, mobileView === 'workspace' ? 'bg-white text-on-surface shadow-tactile-sm' : 'bg-white/65 text-[color:var(--txt1)]')}
           type="button"
           onClick={() => setMobileView('workspace')}
         >
           Workspace
         </button>
         <button
-          className={`mob-et-btn${mobileView === 'report' ? ' active' : ''}`}
+          className={cn(mobileTabClass, mobileView === 'report' ? 'bg-white text-on-surface shadow-tactile-sm' : 'bg-white/65 text-[color:var(--txt1)]')}
           type="button"
           onClick={() => setMobileView('report')}
         >
@@ -164,46 +168,48 @@ export function JdsPage() {
         </button>
       </div>
 
-      <main className={`jd-page-body jd-page${mobileView === 'report' ? ' report-view' : ''}`}>
-        <JdListPane
-          items={pageItems}
-          activeId={selectedJdId}
-          totalCount={jds.length}
-          page={jdPage}
-          totalPages={totalPages}
-          onSelect={id => {
-            setSelectedJdId(id);
-            setJdPage(getPageForId(jds, id));
-            setReportState(null);
-            setSheetOpen(false);
-          }}
-          onAdd={openJd}
-          onPrev={() => setJdPage(current => Math.max(1, current - 1))}
-          onNext={() => setJdPage(current => Math.min(totalPages, current + 1))}
-          onRename={renameJd}
-          onDownload={downloadJd}
-          onDelete={deleteJd}
-        />
+      <main className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+        <div className={cn(mobileView === 'report' ? 'hidden md:block' : 'block')}>
+          <JdListPane
+            items={pageItems}
+            activeId={selectedJdId}
+            totalCount={jds.length}
+            page={jdPage}
+            totalPages={totalPages}
+            onSelect={id => {
+              setSelectedJdId(id);
+              setJdPage(getPageForId(jds, id));
+              setReportState(null);
+              setSheetOpen(false);
+            }}
+            onAdd={openJd}
+            onPrev={() => setJdPage(current => Math.max(1, current - 1))}
+            onNext={() => setJdPage(current => Math.min(totalPages, current + 1))}
+            onRename={renameJd}
+            onDownload={downloadJd}
+            onDelete={deleteJd}
+          />
+        </div>
 
-        <section className="jd-analyze-pane">
-          <div className="jd-analyze-head">
-            <div>
-              <div className="jd-analyze-title">{analyzeTitle}</div>
-              <div className="jd-analyze-sub">{analyzeSubtitle}</div>
+        <section className={cn(mobileView === 'report' ? 'hidden gap-5 md:grid' : 'grid gap-5')}>
+          <div className="flex flex-col gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:flex-row md:items-start md:justify-between md:p-6">
+            <div className="grid gap-2">
+              <div className="font-headline text-2xl font-extrabold text-on-surface">{analyzeTitle}</div>
+              <div className="max-w-2xl text-sm leading-7 text-[color:var(--txt2)]">{analyzeSubtitle}</div>
             </div>
             <button
-              className="run-btn"
+              className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white disabled:pointer-events-none disabled:opacity-40"
               type="button"
               onClick={() => {
                 void runAnalysis();
               }}
               disabled={!selectedResume || !selectedJd || analyzing}
             >
-              {analyzing ? 'Running...' : 'Run Analysis ->'}
+              {analyzing ? 'Running...' : 'Run Analysis →'}
             </button>
           </div>
 
-          <div className="jd-analyze-body">
+          <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
             <ResumePickerPane
               items={resumeProfiles}
               activeKey={selectedResume}
@@ -213,22 +219,18 @@ export function JdsPage() {
                 setSheetOpen(false);
               }}
             />
-
-            <div className="jd-result-col">
-              <div id="jd-results">
-                <JdResultPane report={reportState} selected={Boolean(selectedJd)} />
-              </div>
-              <div className={`jd-mobile-report-content${mobileView === 'report' ? '' : ' hidden'}`}>
-                <JdResultPane
-                  report={reportState}
-                  selected={Boolean(selectedJd)}
-                  detailed
-                  onBackToWorkspace={() => setMobileView('workspace')}
-                />
-              </div>
-            </div>
+            <JdResultPane report={reportState} selected={Boolean(selectedJd)} />
           </div>
         </section>
+
+        <div className={cn(mobileView === 'report' ? 'grid md:hidden' : 'hidden')}>
+          <JdResultPane
+            report={reportState}
+            selected={Boolean(selectedJd)}
+            detailed
+            onBackToWorkspace={() => setMobileView('workspace')}
+          />
+        </div>
       </main>
 
       <JdMobileSheet

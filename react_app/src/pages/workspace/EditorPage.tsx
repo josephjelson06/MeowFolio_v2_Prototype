@@ -10,6 +10,7 @@ import { SectionNav, type EditorSectionItem } from 'components/editor/SectionNav
 import { TemplatePane } from 'components/editor/TemplatePane';
 import { ToolbarPane, type ToolbarValues } from 'components/editor/ToolbarPane';
 import { useViewportMode } from 'hooks/useViewportMode';
+import { cn } from 'lib/cn';
 import { routes } from 'lib/routes';
 import { resumeService } from 'services/resumeService';
 import {
@@ -134,9 +135,7 @@ function sectionList(resume: ResumeData | null, sectionOrder: string[] = DEFAULT
     });
   });
 
-  return ['contact', ...mergedOrder]
-    .map(section => itemMap.get(section))
-    .filter(Boolean) as EditorSectionItem[];
+  return ['contact', ...mergedOrder].map(section => itemMap.get(section)).filter(Boolean) as EditorSectionItem[];
 }
 
 function createFallbackRecord(id: string, title: string): ResumeDocumentRecord {
@@ -153,6 +152,11 @@ function createFallbackRecord(id: string, title: string): ResumeDocumentRecord {
     updatedAt: now,
   };
 }
+
+const mobileTabClass =
+  'flex-1 rounded-full border-2 border-charcoal/70 px-4 py-2 font-headline text-[11px] font-bold uppercase tracking-[0.12em] transition';
+const desktopModeClass =
+  'inline-flex min-h-10 items-center justify-center rounded-full border-2 px-4 py-2 font-headline text-[11px] font-bold uppercase tracking-[0.12em] transition';
 
 export function EditorPage() {
   const { isMobile } = useViewportMode();
@@ -312,7 +316,7 @@ export function EditorPage() {
         clearDraft(currentRecord.id);
         setSaveState('saved');
         if (saved) {
-          setRecord(previous => previous && previous.id === saved.id ? { ...previous, updatedAt: saved.updatedAt } : previous);
+          setRecord(previous => (previous && previous.id === saved.id ? { ...previous, updatedAt: saved.updatedAt } : previous));
         }
       } catch {
         setSaveState('error');
@@ -358,7 +362,7 @@ export function EditorPage() {
     clearDraft(currentRecord.id);
     setSaveState('saved');
     if (saved) {
-      setRecord(previous => previous && previous.id === saved.id ? { ...previous, updatedAt: saved.updatedAt } : previous);
+      setRecord(previous => (previous && previous.id === saved.id ? { ...previous, updatedAt: saved.updatedAt } : previous));
       return saved;
     }
     return currentRecord;
@@ -468,51 +472,89 @@ export function EditorPage() {
     }
   }
 
-  const rootClassName = `editor-root${isMobile ? ` mob-${mobileView}-view` : ''}`;
-  const syncCopy = saveState === 'saving'
-    ? 'saving...'
-    : saveState === 'error'
-      ? 'save failed'
-      : saveState === 'recovered'
-        ? 'draft recovered'
-        : 'saved locally and synced';
+  const syncCopy =
+    saveState === 'saving'
+      ? 'saving...'
+      : saveState === 'error'
+        ? 'save failed'
+        : saveState === 'recovered'
+          ? 'draft recovered'
+          : 'saved locally and synced';
 
   if (!record) {
     return (
-      <div className="editor-root">
-        <div className="ats-full">
-          <div className="ats-score-card">
-            <div className="ats-score-info">
-              <div className="ats-score-label">No resume selected</div>
-              <div className="ats-score-desc">Choose a resume from the library first, then return to the editor.</div>
-            </div>
-            <NavLink className="analyze-btn editor-back-link" to={routes.resumes}>Go to Resumes</NavLink>
+      <div className="grid gap-4">
+        <div className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+          <div className="grid gap-1">
+            <div className="font-headline text-2xl font-extrabold text-on-surface">No resume selected</div>
+            <div className="text-sm leading-7 text-[color:var(--txt2)]">Choose a resume from the library first, then return to the editor.</div>
           </div>
+          <NavLink
+            className="inline-flex min-h-10 items-center justify-center self-start rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white"
+            to={routes.resumes}
+          >
+            Go to Resumes
+          </NavLink>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={rootClassName}>
-      <EditorMobileTopbar title={resumeName} onAnalyze={() => { void runAtsAnalysis(); }} />
+    <div className="grid gap-4">
+      <EditorMobileTopbar
+        title={resumeName}
+        onAnalyze={() => {
+          void runAtsAnalysis();
+        }}
+      />
 
-      <div className="mob-edit-toggle editor-mobile-toggle">
-        <button className={`mob-et-btn${mobileView === 'edit' ? ' active' : ''}`} type="button" onClick={() => { setMobileView('edit'); setSheetOpen(false); }}>Edit</button>
-        <button className={`mob-et-btn${mobileView === 'preview' ? ' active' : ''}`} type="button" onClick={() => { setMobileView('preview'); setSheetOpen(false); }}>Preview</button>
-        <button className={`mob-et-btn${mobileView === 'ats' ? ' active' : ''}`} type="button" onClick={() => { setMobileView('ats'); setSheetOpen(false); }}>ATS</button>
+      <div className="flex gap-2 md:hidden">
+        {(['edit', 'preview', 'ats'] as const).map(tab => (
+          <button
+            key={tab}
+            className={cn(
+              mobileTabClass,
+              mobileView === tab ? 'bg-white text-on-surface shadow-tactile-sm' : 'bg-white/65 text-[color:var(--txt1)]',
+            )}
+            type="button"
+            onClick={() => {
+              setMobileView(tab);
+              setSheetOpen(false);
+            }}
+          >
+            {tab === 'ats' ? 'ATS' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
       </div>
 
-      <div className="bcrumb editor-bcrumb">
-        <NavLink className="bc-link" to={routes.resumes}>Resumes</NavLink>
-        <span className="bc-sep">/</span>
-        <span className="bc-link">{resumeName}</span>
-        <span className="bc-sep">/</span>
-        <span className="bc-cur">{mode === 'ats' ? 'ATS Score' : 'Editor'}</span>
-        <div className="ed-segs">
-          <button className={`ed-seg${mode === 'editor' ? ' active' : ''}`} type="button" onClick={() => handleModeChange('editor')}>Editor</button>
+      <div className="hidden items-center justify-between gap-4 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 px-5 py-4 shadow-tactile md:flex">
+        <div className="flex min-w-0 flex-wrap items-center gap-2 text-sm text-[color:var(--txt1)]">
+          <NavLink className="font-semibold text-primary transition hover:text-on-surface" to={routes.resumes}>
+            Resumes
+          </NavLink>
+          <span>/</span>
+          <span className="truncate">{resumeName}</span>
+          <span>/</span>
+          <span className="font-semibold text-on-surface">{mode === 'ats' ? 'ATS Score' : 'Editor'}</span>
+        </div>
+
+        <div className="flex shrink-0 gap-2">
           <button
-            className={`ed-seg${mode === 'ats' ? ' active' : ''}`}
+            className={cn(
+              desktopModeClass,
+              mode === 'editor' ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm' : 'border-outline bg-white/65 text-[color:var(--txt1)]',
+            )}
+            type="button"
+            onClick={() => handleModeChange('editor')}
+          >
+            Editor
+          </button>
+          <button
+            className={cn(
+              desktopModeClass,
+              mode === 'ats' ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm' : 'border-outline bg-white/65 text-[color:var(--txt1)]',
+            )}
             type="button"
             onClick={() => {
               handleModeChange('ats');
@@ -525,114 +567,134 @@ export function EditorPage() {
       </div>
 
       {mode === 'editor' ? (
-        <div id="ed-mode-editor">
-          <div className="editor-workspace">
-            <div className="ed-left">
-              <div className="left-tabs">
-                {leftTabs.map(tab => (
-                  <button
-                    key={tab.id}
-                    className={`ltab${activeLeftTab === tab.id ? ' active' : ''}`}
-                    type="button"
-                    onClick={() => setActiveLeftTab(tab.id)}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {activeLeftTab === 'sections' ? (
-                <div className="sec-pane">
-                  <SectionNav
-                    sections={sections}
-                    activeSection={activeSection}
-                    onSelect={setActiveSection}
-                    onAddCustomSection={addCustomSection}
-                    onMoveSection={moveSection}
-                    onRemoveSection={removeSection}
-                    canMoveUp={section => {
-                      if (section === 'contact') return false;
-                      const index = record.renderOptions.sectionOrder.indexOf(section);
-                      return index > 0;
-                    }}
-                    canMoveDown={section => {
-                      if (section === 'contact') return false;
-                      const index = record.renderOptions.sectionOrder.indexOf(section);
-                      return index !== -1 && index < record.renderOptions.sectionOrder.length - 1;
-                    }}
-                  />
-                  <EditorFormPane
-                    activeSection={activeSection}
-                    page={page}
-                    resume={record.content}
-                    totalPages={totalPages}
-                    onContentChange={updateContent}
-                    onNextPage={() => updatePage(page + 1)}
-                    onPrevPage={() => updatePage(page - 1)}
-                  />
-                </div>
-              ) : null}
-
-              {activeLeftTab === 'template' ? (
-                <TemplatePane
-                  selectedTemplate={record.templateId}
-                  onSelect={(templateId: RenderTemplateId) => {
-                    setRecord(current => current ? {
-                      ...current,
-                      renderOptions: { ...current.renderOptions, templateId },
-                      templateId,
-                    } : current);
-                    setAtsReport(null);
-                  }}
-                />
-              ) : null}
-
-              {activeLeftTab === 'toolbar' ? (
-                <ToolbarPane
-                  values={toolbarValues}
-                  onChange={patch => {
-                    setToolbarValues(current => {
-                      const next = { ...current, ...patch };
-                      setRecord(previous => previous ? {
-                        ...previous,
-                        renderOptions: applyToolbarValues(previous.renderOptions, next),
-                      } : previous);
-                      return next;
-                    });
-                    setAtsReport(null);
-                  }}
-                />
-              ) : null}
+        <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
+          <div className={cn(mobileView === 'edit' ? 'grid gap-4' : 'hidden gap-4 md:grid')}>
+            <div className="flex flex-wrap gap-2 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-3 shadow-tactile-sm">
+              {leftTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  className={cn(
+                    'inline-flex min-h-10 items-center justify-center rounded-full border-2 px-4 py-2 font-headline text-[11px] font-bold uppercase tracking-[0.12em] transition',
+                    activeLeftTab === tab.id
+                      ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm'
+                      : 'border-outline bg-white/65 text-[color:var(--txt1)] hover:bg-white',
+                  )}
+                  type="button"
+                  onClick={() => setActiveLeftTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
-            <div className="ed-right">
-              <div className="prev-bar">
-                <div className="sync-row">
-                  <span className="sync-dot"></span>
-                  <span>{syncCopy}{loadError ? ` · ${loadError}` : ''}</span>
-                </div>
-                <button className="analyze-btn" type="button" onClick={() => { void runAtsAnalysis(); }} disabled={atsLoading}>
-                  {atsLoading ? 'Analyzing...' : 'Analyze →'}
-                </button>
+            {activeLeftTab === 'sections' ? (
+              <div className="grid gap-4">
+                <SectionNav
+                  sections={sections}
+                  activeSection={activeSection}
+                  onSelect={setActiveSection}
+                  onAddCustomSection={addCustomSection}
+                  onMoveSection={moveSection}
+                  onRemoveSection={removeSection}
+                  canMoveUp={section => {
+                    if (section === 'contact') return false;
+                    const index = record.renderOptions.sectionOrder.indexOf(section);
+                    return index > 0;
+                  }}
+                  canMoveDown={section => {
+                    if (section === 'contact') return false;
+                    const index = record.renderOptions.sectionOrder.indexOf(section);
+                    return index !== -1 && index < record.renderOptions.sectionOrder.length - 1;
+                  }}
+                />
+                <EditorFormPane
+                  activeSection={activeSection}
+                  page={page}
+                  resume={record.content}
+                  totalPages={totalPages}
+                  onContentChange={updateContent}
+                  onNextPage={() => updatePage(page + 1)}
+                  onPrevPage={() => updatePage(page - 1)}
+                />
               </div>
-              <div className="pdf-area">
-                <PdfPreview resume={record.content} />
+            ) : null}
+
+            {activeLeftTab === 'template' ? (
+              <TemplatePane
+                selectedTemplate={record.templateId}
+                onSelect={(templateId: RenderTemplateId) => {
+                  setRecord(current =>
+                    current
+                      ? {
+                          ...current,
+                          renderOptions: { ...current.renderOptions, templateId },
+                          templateId,
+                        }
+                      : current,
+                  );
+                  setAtsReport(null);
+                }}
+              />
+            ) : null}
+
+            {activeLeftTab === 'toolbar' ? (
+              <ToolbarPane
+                values={toolbarValues}
+                onChange={patch => {
+                  setToolbarValues(current => {
+                    const next = { ...current, ...patch };
+                    setRecord(previous =>
+                      previous
+                        ? {
+                            ...previous,
+                            renderOptions: applyToolbarValues(previous.renderOptions, next),
+                          }
+                        : previous,
+                    );
+                    return next;
+                  });
+                  setAtsReport(null);
+                }}
+              />
+            ) : null}
+          </div>
+
+          <div className={cn(mobileView === 'edit' ? 'hidden gap-4 md:grid' : 'grid gap-4')}>
+            <div className="flex flex-col gap-4 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-4 shadow-tactile-sm md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-3 text-sm text-[color:var(--txt1)]">
+                <span className="size-2.5 rounded-full bg-tertiary"></span>
+                <span>
+                  {syncCopy}
+                  {loadError ? ` · ${loadError}` : ''}
+                </span>
               </div>
+              <button
+                className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white disabled:pointer-events-none disabled:opacity-40"
+                type="button"
+                onClick={() => {
+                  void runAtsAnalysis();
+                }}
+                disabled={atsLoading}
+              >
+                {atsLoading ? 'Analyzing...' : 'Analyze →'}
+              </button>
+            </div>
+
+            <div className="relative rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-4 shadow-tactile md:p-6">
+              <PdfPreview resume={record.content} />
               <AtsDrawer open={drawerOpen} report={atsReport} onClose={() => setDrawerOpen(false)} />
             </div>
           </div>
         </div>
       ) : (
-        <div id="ed-mode-ats">
-          <AtsFullReport
-            report={atsReport}
-            resumeName={resumeName}
-            onBack={() => {
-              if (isMobile) setMobileView('edit');
-              handleModeChange('editor');
-            }}
-          />
-        </div>
+        <AtsFullReport
+          report={atsReport}
+          resumeName={resumeName}
+          onBack={() => {
+            if (isMobile) setMobileView('edit');
+            handleModeChange('editor');
+          }}
+        />
       )}
 
       <EditorMobileSheet

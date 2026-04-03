@@ -4,8 +4,8 @@ interface ProgressBarProps {
 
 export function ProgressBar({ value }: ProgressBarProps) {
   return (
-    <div className="ra-progress-track" aria-hidden="true">
-      <div className="ra-progress-fill" style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
+    <div className="h-1.5 overflow-hidden rounded-full bg-charcoal/10" aria-hidden="true">
+      <div className="h-full rounded-full bg-primary" style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
     </div>
   );
 }

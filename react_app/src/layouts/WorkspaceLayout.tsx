@@ -16,13 +16,13 @@ export function WorkspaceLayout() {
   const title = getTitle(location.pathname);
 
   return (
-    <>
+    <div className="min-h-screen">
       <WorkspaceHeader />
       <WorkspaceTopbar title={title} />
-      <main className="ra-workspace-main">
+      <main className="mx-auto w-full max-w-[1220px] px-4 pb-28 pt-7 sm:px-6 lg:px-8">
         <Outlet />
       </main>
       <WorkspaceBottomNav />
-    </>
+    </div>
   );
 }
