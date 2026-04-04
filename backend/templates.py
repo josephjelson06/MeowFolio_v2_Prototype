@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+import os
+import subprocess
+from pathlib import Path
 from typing import Any
 
 from .app_config import PATHS
@@ -8,6 +12,22 @@ from .app_config import PATHS
 def _preview_image(relative_file: str) -> str:
     return f"/static/templates/{relative_file}"
 
+
+def _tsx_runtime_path() -> Path:
+    if os.name == "nt":
+        return PATHS.backend_root / "node_modules" / ".bin" / "tsx.cmd"
+    return PATHS.backend_root / "node_modules" / ".bin" / "tsx"
+
+
+def _tex_bridge_script_path() -> Path:
+    return PATHS.backend_root / "tex_bridge" / "render_resume.ts"
+
+
+def _tex_bridge_available() -> bool:
+    return _tsx_runtime_path().exists() and _tex_bridge_script_path().exists()
+
+
+TEX_BRIDGE_AVAILABLE = _tex_bridge_available()
 
 TEMPLATE_REGISTRY = [
     {"id": "template1", "name": "Classic", "badge": "Template 1", "bestFor": "ATS-friendly technical resumes with clear section rhythm", "density": "balanced", "description": "Centered identity block with ruled sections and clean multi-page flow.", "headerLayout": "center", "previewImageUrl": _preview_image("Temp1.jpg"), "sectionStyle": "rule", "availableForCompile": False},
@@ -19,7 +39,13 @@ TEMPLATE_REGISTRY = [
 
 
 def get_template_runtime_meta() -> dict[str, Any]:
-    return {"compileEnabled": False, "compilerImage": bool(PATHS.tex_templates_dir), "texRenderEnabled": True, "texSourceAvailable": True}
+    return {
+        "compileEnabled": False,
+        "compilerImage": bool(PATHS.tex_templates_dir),
+        "texBridgeAvailable": TEX_BRIDGE_AVAILABLE,
+        "texRenderEnabled": True,
+        "texSourceAvailable": True,
+    }
 
 
 def _escape_tex(value: str) -> str:
@@ -36,7 +62,7 @@ def _render_section(title: str, lines: list[str]) -> str:
     return "\n".join([rf"\section*{{{_escape_tex(title)}}}", r"\begin{itemize}[leftmargin=*,itemsep=0.35em]", body, r"\end{itemize}", ""])
 
 
-def render_resume_to_tex(resume: dict[str, Any], options: dict[str, Any]) -> str:
+def _fallback_render_resume_to_tex(resume: dict[str, Any], options: dict[str, Any]) -> str:
     header = resume.get("header", {})
     summary = resume.get("summary", {})
     education_lines = [" | ".join(filter(None, [item.get("degree"), item.get("field"), item.get("institution"), item.get("boardOrUniversity"), item.get("result")])) for item in resume.get("education", [])]
@@ -86,7 +112,47 @@ def render_resume_to_tex(resume: dict[str, Any], options: dict[str, Any]) -> str
     ])
 
 
-def build_tex_export_payload(title: str, resume: dict[str, Any], render_options: dict[str, Any]) -> dict[str, Any]:
+def _normalize_filename(title: str) -> str:
     trimmed = title.strip()
-    filename = "resume.tex" if not trimmed else trimmed if trimmed.lower().endswith(".tex") else f"{trimmed}.tex"
-    return {"filename": filename, "templateId": render_options.get("templateId", "template1"), "tex": render_resume_to_tex(resume, render_options)}
+    if not trimmed:
+        return "resume.tex"
+    return trimmed if trimmed.lower().endswith(".tex") else f"{trimmed}.tex"
+
+
+def _build_fallback_tex_payload(title: str, resume: dict[str, Any], render_options: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "filename": _normalize_filename(title),
+        "templateId": render_options.get("templateId", "template1"),
+        "tex": _fallback_render_resume_to_tex(resume, render_options),
+    }
+
+
+def _render_tex_via_bridge(title: str, resume: dict[str, Any], render_options: dict[str, Any]) -> dict[str, Any]:
+    payload = {"title": title, "resume": resume, "renderOptions": render_options}
+    completed = subprocess.run(
+        [str(_tsx_runtime_path()), str(_tex_bridge_script_path())],
+        capture_output=True,
+        check=True,
+        cwd=str(PATHS.project_root),
+        input=json.dumps(payload),
+        text=True,
+        timeout=30,
+    )
+    response = json.loads(completed.stdout)
+    if not isinstance(response, dict) or not isinstance(response.get("tex"), str):
+        raise RuntimeError("Template bridge returned an invalid payload.")
+    return {
+        "filename": response.get("filename") or _normalize_filename(title),
+        "templateId": response.get("templateId") or render_options.get("templateId", "template1"),
+        "tex": response["tex"],
+    }
+
+
+def build_tex_export_payload(title: str, resume: dict[str, Any], render_options: dict[str, Any]) -> dict[str, Any]:
+    if TEX_BRIDGE_AVAILABLE:
+        try:
+            return _render_tex_via_bridge(title, resume, render_options)
+        except (subprocess.SubprocessError, json.JSONDecodeError, OSError, RuntimeError):
+            pass
+
+    return _build_fallback_tex_payload(title, resume, render_options)

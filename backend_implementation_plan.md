@@ -1,7 +1,7 @@
 # Backend Implementation Task List
 
 Last updated: 2026-04-03
-Status: FastAPI backend implemented, migrations/seed running locally, and live API smoke-tested against the existing React app contract
+Status: FastAPI backend implemented, migrations/seed running locally, live API smoke-tested against the existing React app contract, and TeX export now bridged to the real `Tex Templates` renderers
 Primary tracker for the FastAPI backend, shared contracts, and React API integration.
 
 ## Foundation
@@ -42,6 +42,7 @@ Primary tracker for the FastAPI backend, shared contracts, and React API integra
 - [x] Add resume import and JD import endpoints.
 - [x] Add ATS score and JD score endpoints.
 - [x] Add TeX export endpoint for saved resumes.
+- [x] Bridge TeX export to the real `Tex Templates` source renderers instead of the temporary generic Python fallback.
 - [x] Add profile and tips endpoints for current React consumers.
 - [x] Add auth-ready ownership scoping seam with optional `user_id` filtering and `x-user-id` request support.
 
@@ -90,10 +91,12 @@ Primary tracker for the FastAPI backend, shared contracts, and React API integra
   - ATS score
   - TeX export
   - JD match score
+  - template-specific TeX export via the `Tex Templates` bridge
 
 ## Cleanup And Follow-up
 
 - [x] Add Python runtime ignores to `.gitignore`.
 - [x] Keep the React app on the same API contract while swapping backend implementation.
+- [x] Preserve the existing TypeScript template renderer source as the single TeX template source-of-truth and bridge FastAPI to it.
 - [ ] Decide whether to archive or delete the old TypeScript/Express backend sources after the FastAPI cutover is accepted.
 - [ ] Add a dedicated backend README/runbook for Python-only local setup.
