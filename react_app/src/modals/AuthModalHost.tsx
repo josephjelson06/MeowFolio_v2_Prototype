@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthModal } from 'hooks/useAuthModal';
 import { routes } from 'lib/routes';
-import { Badge } from 'components/ui/Badge';
 
 export function AuthModalHost() {
   const navigate = useNavigate();
