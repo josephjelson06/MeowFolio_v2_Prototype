@@ -1,6 +1,13 @@
 import { Badge } from 'components/ui/Badge';
 import { Button } from 'components/ui/Button';
+import { PublicSection } from 'components/public/PublicSection';
 import { useAuthModal } from 'hooks/useAuthModal';
+import {
+  publicBodyClass,
+  publicCardShell,
+  publicEyebrowClass,
+  publicHeadingClass,
+} from 'components/public/publicStyles';
 
 const productCards = [
   {
@@ -20,9 +27,6 @@ const productCards = [
   },
 ] as const;
 
-const sectionShell =
-  'w-full max-w-full overflow-hidden rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-5 py-10 shadow-tactile backdrop-blur-sm sm:px-6 md:px-8 md:py-14 lg:px-12 lg:py-16';
-
 export function AboutPage() {
   const { openAuth } = useAuthModal();
 
@@ -41,13 +45,13 @@ export function AboutPage() {
 
   return (
     <>
-      <section className={sectionShell}>
-        <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
-          <div className="grid gap-6">
-            <Badge variant="info">THE STORY BEHIND MEOWFOLIO</Badge>
+      <PublicSection>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] lg:items-start lg:gap-12 xl:gap-16">
+          <div className="grid content-start gap-5 lg:py-3">
+            <Badge size="md" variant="info">THE STORY BEHIND MEOWFOLIO</Badge>
 
             <div className="grid gap-4">
-              <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+              <div className={publicEyebrowClass}>
                 PROBLEM
               </div>
               <h1 className="max-w-[12ch] font-headline text-4xl font-extrabold leading-[0.98] tracking-[-0.05em] text-on-surface sm:text-5xl lg:text-6xl">
@@ -58,38 +62,38 @@ export function AboutPage() {
               </h1>
             </div>
 
-            <p className="max-w-2xl text-base leading-8 text-[color:var(--txt2)] md:text-lg">
+            <p className={`max-w-2xl ${publicBodyClass}`}>
               meowfolio started from a familiar frustration: early-career people have real experience, but the tools around them
               make the process awkward, unclear, and harder than it should be.
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <Badge className="border-tertiary/30 bg-tertiary-fixed text-tertiary">
+              <Badge size="md" className="border-tertiary/30 bg-tertiary-fixed text-tertiary">
                 BAD WORKFLOWS
               </Badge>
-              <Badge variant="accent">AWKWARD DOCUMENTS</Badge>
-              <Badge variant="info">CONFUSING TOOLING</Badge>
+              <Badge size="md" variant="accent">AWKWARD DOCUMENTS</Badge>
+              <Badge size="md" variant="info">CONFUSING TOOLING</Badge>
             </div>
           </div>
 
-          <article className="overflow-hidden rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/95 p-3 shadow-tactile">
+          <article className={`overflow-hidden bg-white/95 p-3 ${publicCardShell}`}>
             <div className="overflow-hidden rounded-[1.35rem] border border-charcoal/10 bg-surface-container-low">
               <img
-                className="aspect-[4/5] w-full object-cover md:aspect-[4/4.2]"
+                className="h-full min-h-[20rem] w-full object-cover object-center lg:min-h-[34rem]"
                 src="/Images/Graduation_Day.png"
                 alt="Graduation day image representing the builder journey"
               />
             </div>
           </article>
         </div>
-      </section>
+      </PublicSection>
 
-      <section className={sectionShell}>
+      <PublicSection>
         <div className="mx-auto max-w-4xl text-center">
-          <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+          <div className={publicEyebrowClass}>
             PRODUCT
           </div>
-          <h2 className="mt-3 font-headline text-4xl font-extrabold leading-tight tracking-[-0.04em] text-on-surface md:text-5xl">
+          <h2 className={`mt-3 ${publicHeadingClass}`}>
             Make powerful resume tooling feel approachable.
           </h2>
         </div>
@@ -98,7 +102,7 @@ export function AboutPage() {
           {productCards.map(card => (
             <article
               key={card.title}
-              className="flex h-full flex-col gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-6 shadow-tactile"
+              className={`flex h-full flex-col gap-4 bg-white/90 p-5 sm:p-6 md:min-h-[14.5rem] ${publicCardShell}`}
             >
               <div className="grid size-16 place-items-center rounded-2xl border border-charcoal/20 bg-secondary-fixed text-base font-headline font-bold text-secondary">
                 {card.code}
@@ -106,48 +110,43 @@ export function AboutPage() {
               <h3 className="font-headline text-2xl font-extrabold leading-tight text-on-surface">
                 {card.title}
               </h3>
-              <p className="text-sm leading-7 text-[color:var(--txt2)]">{card.copy}</p>
+              <p className={publicBodyClass}>{card.copy}</p>
             </article>
           ))}
         </div>
-      </section>
+      </PublicSection>
 
-      <section className={sectionShell}>
-        <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <article className="flex items-center gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/95 p-5 shadow-tactile w-fit">
-
-            {/* Avatar - with round image */}
+      <PublicSection>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:items-center lg:gap-12">
+          <article className={`flex w-full max-w-[24rem] items-center gap-5 bg-white/95 p-5 sm:p-6 ${publicCardShell}`}>
             <img
-              className="w-20 h-20 rounded-full object-cover shrink-0"
+              className="h-20 w-20 shrink-0 rounded-full object-cover"
               src="/Images/DP.jpg"
               alt="Profile photo of the builder"
               loading="lazy"
             />
 
-            {/* Text Content */}
-            <div className="flex flex-col">
-              <h3 className="font-semibold text-lg text-on-surface">
+            <div className="flex min-w-0 flex-col gap-1">
+              <h3 className="font-headline text-xl font-extrabold text-on-surface">
                 Jelson Joseph
               </h3>
 
-              <p className="text-sm text-[color:var(--txt2)]">
+              <p className="text-sm font-semibold text-[color:var(--txt1)]">
                 Software Engineer
               </p>
 
-              <p className="text-xs text-[color:var(--txt2)] opacity-80 max-w-[220px]">
+              <p className="max-w-[22rem] text-sm leading-6 text-[color:var(--txt2)]">
                 Passionate about crafting scalable and innovative solutions.
               </p>
             </div>
-
           </article>
 
           <div className="grid gap-5">
-
-            <h2 className="max-w-3xl font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">
+            <h2 className="max-w-3xl font-headline text-3xl font-extrabold tracking-[-0.04em] text-on-surface sm:text-4xl lg:text-5xl">
               About Me
             </h2>
 
-            <p className="max-w-3xl text-base leading-8 text-[color:var(--txt2)]">
+            <p className={`max-w-3xl ${publicBodyClass}`}>
               Hello Everyone! My name is Jelson Joseph, and I am a Software Engineer with a passion for crafting innovative
               solutions. I have a strong background in software development, and I am always eager to take on new challenges
               and learn new technologies. I believe in the power of collaboration and teamwork, and I am committed to
@@ -155,11 +154,11 @@ export function AboutPage() {
             </p>
 
             <div>
-              <Button onClick={openAboutAuth}>Enter the Workspace</Button>
+              <Button onClick={openAboutAuth} size="md">Enter the Workspace</Button>
             </div>
           </div>
         </div>
-      </section>
+      </PublicSection>
     </>
   );
 }

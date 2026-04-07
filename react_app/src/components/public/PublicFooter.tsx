@@ -1,7 +1,9 @@
+import { publicSurfaceWidth } from 'components/public/publicStyles';
+
 export function PublicFooter() {
   return (
-    <footer className="mt-auto border-t border-charcoal/10 bg-charcoal text-white/90">
-      <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-3 px-4 py-4 text-sm sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between">
+    <footer className="mt-auto w-full border-t border-charcoal/10 bg-charcoal text-white/90">
+      <div className={`mx-auto flex w-full flex-col gap-3 px-4 py-5 text-sm sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between ${publicSurfaceWidth}`}>
         <span className="font-medium">&copy; 2026 meowfolio</span>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/70">
           <span>Built for focused resume work.</span>
