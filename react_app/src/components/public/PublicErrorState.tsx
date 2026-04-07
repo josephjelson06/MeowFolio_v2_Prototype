@@ -29,13 +29,13 @@ export function PublicErrorState({
   actions,
 }: PublicErrorStateProps) {
   return (
-    <section className="flex flex-1 items-center justify-center py-8 sm:py-12 lg:py-16">
-      <article className={`relative w-full max-w-[32rem] overflow-hidden bg-white/90 px-8 py-10 text-center sm:px-10 sm:py-12 ${publicCardShell}`}>
-        <div className={`absolute inset-x-8 top-8 h-32 rounded-full blur-3xl ${glowClass}`} />
+    <section className="flex min-h-[calc(100vh-13rem)] flex-1 items-center justify-center px-4 py-10 sm:px-6 sm:py-12 lg:py-16">
+      <article className={`relative w-full max-w-[36rem] overflow-hidden bg-white/92 px-8 py-12 text-center sm:px-12 sm:py-14 ${publicCardShell}`}>
+        <div className={`absolute inset-x-10 top-10 h-36 rounded-full blur-3xl ${glowClass}`} />
 
-        <div className="relative z-10 grid justify-items-center gap-5 sm:gap-6">
-          <div className={`grid size-24 place-items-center rounded-full shadow-[inset_0_0_0_1px_rgba(28,28,24,0.12)] sm:size-28 ${iconClass}`}>
-            <span className="font-headline text-6xl font-extrabold leading-none tracking-[-0.06em] sm:text-7xl">
+        <div className="relative z-10 grid justify-items-center gap-6 sm:gap-7">
+          <div className={`grid size-28 place-items-center rounded-full shadow-[inset_0_0_0_1px_rgba(28,28,24,0.12)] sm:size-32 ${iconClass}`}>
+            <span className="font-headline text-7xl font-extrabold leading-none tracking-[-0.06em] sm:text-[5rem]">
               {code}
             </span>
           </div>
@@ -44,17 +44,17 @@ export function PublicErrorState({
             {label}
           </div>
 
-          <h1 className="max-w-[16rem] font-headline text-3xl font-extrabold leading-tight tracking-[-0.04em] text-on-surface sm:max-w-[18rem] sm:text-[2.5rem]">
+          <h1 className="max-w-[22rem] font-headline text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] text-on-surface sm:text-[3.25rem]">
             {title}
           </h1>
 
-          <p className={`max-w-[24rem] ${publicBodyClass}`}>
+          <p className={`max-w-[26rem] ${publicBodyClass}`}>
             {description}
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
             {actions.map(action => (
-              <Button key={action.label} to={action.to} variant={action.variant ?? 'primary'} size="md">
+              <Button key={action.label} to={action.to} variant={action.variant ?? 'primary'} size="lg">
                 {action.label}
               </Button>
             ))}

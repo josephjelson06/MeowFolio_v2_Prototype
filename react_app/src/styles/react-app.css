@@ -53,6 +53,15 @@
     background-size: 28px 28px;
   }
 
+  body,
+  #root {
+    @apply w-full;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+
   ::selection {
     @apply bg-primary-fixed text-on-surface;
   }

@@ -21,8 +21,8 @@ function getButtonClass(variant: ButtonVariant, size: ButtonSize, className?: st
   const interactive = 'shadow-tactile-sm hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px active:shadow-none';
   const sizes = {
     sm: 'min-h-10 px-4 py-2 font-headline text-[11px] font-bold tracking-[0.01em]',
-    md: 'min-h-11 px-5 py-2.5 font-headline text-xs font-bold tracking-[0.01em]',
-    lg: 'min-h-12 px-6 py-3 font-headline text-sm font-bold tracking-[0.01em]',
+    md: 'min-h-12 px-6 py-3 font-headline text-sm font-bold tracking-[0.01em]',
+    lg: 'min-h-[3.5rem] px-7 py-3.5 font-headline text-base font-bold tracking-[0.01em]',
   } satisfies Record<ButtonSize, string>;
   const variants = {
     primary: 'bg-white/95 text-on-surface hover:bg-surface-container-low hover:text-primary hover:shadow-tactile',
@@ -31,8 +31,8 @@ function getButtonClass(variant: ButtonVariant, size: ButtonSize, className?: st
   } satisfies Record<ButtonVariant, string>;
   const linkSize = {
     sm: 'min-h-8 px-3 py-1.5 text-[10px]',
-    md: 'min-h-9 px-3.5 py-2 text-[11px]',
-    lg: 'min-h-10 px-4 py-2 text-xs',
+    md: 'min-h-10 px-4 py-2 text-xs',
+    lg: 'min-h-11 px-5 py-2.5 text-sm',
   } satisfies Record<ButtonSize, string>;
   return cn(base, interactive, variant === 'link' ? linkSize[size] : sizes[size], variants[variant], className);
 }

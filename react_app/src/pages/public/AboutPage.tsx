@@ -46,15 +46,15 @@ export function AboutPage() {
   return (
     <>
       <PublicSection>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] lg:items-start lg:gap-12 xl:gap-16">
-          <div className="grid content-start gap-5 lg:py-3">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)] lg:items-center lg:gap-12 xl:gap-16">
+          <div className="grid content-start gap-6 lg:py-3">
             <Badge size="md" variant="info">THE STORY BEHIND MEOWFOLIO</Badge>
 
             <div className="grid gap-4">
               <div className={publicEyebrowClass}>
                 PROBLEM
               </div>
-              <h1 className="max-w-[12ch] font-headline text-4xl font-extrabold leading-[0.98] tracking-[-0.05em] text-on-surface sm:text-5xl lg:text-6xl">
+              <h1 className="max-w-[11ch] font-headline text-4xl font-extrabold leading-[0.96] tracking-[-0.05em] text-on-surface sm:text-5xl lg:text-6xl">
                 Good work gets buried by{' '}
                 <span className="text-coral underline decoration-4 underline-offset-8">
                   bad resumes.
@@ -76,10 +76,10 @@ export function AboutPage() {
             </div>
           </div>
 
-          <article className={`overflow-hidden bg-white/95 p-3 ${publicCardShell}`}>
+          <article className={`overflow-hidden bg-white/95 p-4 ${publicCardShell}`}>
             <div className="overflow-hidden rounded-[1.35rem] border border-charcoal/10 bg-surface-container-low">
               <img
-                className="h-full min-h-[20rem] w-full object-cover object-center lg:min-h-[34rem]"
+                className="h-full min-h-[22rem] w-full object-cover object-center sm:min-h-[26rem] lg:min-h-[30rem]"
                 src="/Images/Graduation_Day.png"
                 alt="Graduation day image representing the builder journey"
               />
@@ -102,7 +102,7 @@ export function AboutPage() {
           {productCards.map(card => (
             <article
               key={card.title}
-              className={`flex h-full flex-col gap-4 bg-white/90 p-5 sm:p-6 md:min-h-[14.5rem] ${publicCardShell}`}
+              className={`flex h-full flex-col gap-5 bg-white/90 p-6 sm:p-7 md:min-h-[16.5rem] ${publicCardShell}`}
             >
               <div className="grid size-16 place-items-center rounded-2xl border border-charcoal/20 bg-secondary-fixed text-base font-headline font-bold text-secondary">
                 {card.code}
@@ -117,32 +117,32 @@ export function AboutPage() {
       </PublicSection>
 
       <PublicSection>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:items-center lg:gap-12">
-          <article className={`flex w-full max-w-[24rem] items-center gap-5 bg-white/95 p-5 sm:p-6 ${publicCardShell}`}>
+        <div className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start lg:gap-12 xl:grid-cols-[360px_minmax(0,1fr)]">
+          <article className={`flex w-full items-center gap-5 bg-white/95 p-6 sm:p-7 ${publicCardShell}`}>
             <img
-              className="h-20 w-20 shrink-0 rounded-full object-cover"
+              className="h-24 w-24 shrink-0 rounded-full object-cover"
               src="/Images/DP.jpg"
               alt="Profile photo of the builder"
               loading="lazy"
             />
 
             <div className="flex min-w-0 flex-col gap-1">
-              <h3 className="font-headline text-xl font-extrabold text-on-surface">
+              <h3 className="font-headline text-2xl font-extrabold text-on-surface">
                 Jelson Joseph
               </h3>
 
-              <p className="text-sm font-semibold text-[color:var(--txt1)]">
+              <p className="text-base font-semibold text-[color:var(--txt1)]">
                 Software Engineer
               </p>
 
-              <p className="max-w-[22rem] text-sm leading-6 text-[color:var(--txt2)]">
+              <p className="max-w-[22rem] text-base leading-7 text-[color:var(--txt2)]">
                 Passionate about crafting scalable and innovative solutions.
               </p>
             </div>
           </article>
 
-          <div className="grid gap-5">
-            <h2 className="max-w-3xl font-headline text-3xl font-extrabold tracking-[-0.04em] text-on-surface sm:text-4xl lg:text-5xl">
+          <div className="grid gap-6">
+            <h2 className="max-w-3xl font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface sm:text-5xl">
               About Me
             </h2>
 
@@ -154,7 +154,7 @@ export function AboutPage() {
             </p>
 
             <div>
-              <Button onClick={openAboutAuth} size="md">Enter the Workspace</Button>
+              <Button onClick={openAboutAuth} size="lg">Enter the Workspace</Button>
             </div>
           </div>
         </div>

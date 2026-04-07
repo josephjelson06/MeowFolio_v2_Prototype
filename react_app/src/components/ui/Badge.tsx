@@ -17,7 +17,7 @@ export function Badge({ children, variant = 'outline', size = 'sm', className = 
       ? 'border-secondary/35 bg-secondary-fixed text-secondary'
       : 'border-charcoal/65 bg-white/80 text-[color:var(--txt2)]';
   const sizeClass = size === 'md'
-    ? 'px-3.5 py-1.5 text-[10px] tracking-[0.14em] sm:text-[11px]'
+    ? 'px-4 py-1.5 text-[11px] tracking-[0.14em] sm:text-xs'
     : 'px-2.5 py-1 text-[9px] tracking-[0.12em]';
 
   return (
