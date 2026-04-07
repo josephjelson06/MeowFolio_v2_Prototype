@@ -3,13 +3,13 @@ import type { AuthModalConfig } from 'types/ui';
 
 const defaultAuthConfig: AuthModalConfig = {
   title: 'Continue with Google',
-  copy: 'Sign in here and continue into the meowfolio workspace flow.',
-  note: 'No extra signup form on this prototype.',
-  accent: 'GOOGLE ONLY',
-  info: 'SAME PRODUCT',
-  outline: 'DASHBOARD READY',
-  previewTitle: 'One product, one path',
-  previewCopy: 'The public entry and workspace share the same design system and route map.',
+  // copy: 'Sign in here and continue into the meowfolio workspace flow.',
+  // note: 'No extra signup form on this prototype.',
+  // accent: 'GOOGLE ONLY',
+  // info: 'SAME PRODUCT',
+  // outline: 'DASHBOARD READY',
+  // previewTitle: 'One product, one path',
+  // previewCopy: 'The public entry and workspace share the same design system and route map.',
 };
 
 interface UiContextValue {

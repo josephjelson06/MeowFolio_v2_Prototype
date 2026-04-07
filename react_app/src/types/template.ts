@@ -2,7 +2,7 @@ export interface TemplateRecord {
   id: string;
   name: string;
   badge: string;
-  description: string;
+  // description: string;
   bestFor: string;
   density: 'airy' | 'balanced' | 'tight';
   headerLayout: 'center' | 'left';

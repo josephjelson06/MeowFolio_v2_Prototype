@@ -9,37 +9,37 @@ import type { TemplateRecord } from 'types/template';
 const storyCards = [
   {
     title: 'Mochii starts the job search journey.',
-    copy: 'The first draft is always messy. What matters is having one calm place to begin.',
+    // copy: 'The first draft is always messy. What matters is having one calm place to begin.',
     image: '/Images/Scene1.jpg',
     shellClass: 'bg-cream',
   },
   {
     title: 'Sent 47 resumes to top tech companies.',
-    copy: 'Volume is easy. Useful iteration and cleaner signals are the hard part.',
+    // copy: 'Volume is easy. Useful iteration and cleaner signals are the hard part.',
     image: '/Images/Scene2.jpg',
     shellClass: 'bg-lavender',
   },
   {
     title: '47 rejections. Not enough experience in napping.',
-    copy: 'When formatting and structure fall apart, every rejection feels heavier than it should.',
+    // copy: 'When formatting and structure fall apart, every rejection feels heavier than it should.',
     image: '/Images/Scene3.png',
     shellClass: 'bg-cream',
   },
   {
     title: 'Discovers meowfolio. A glimmer of hope.',
-    copy: 'The public side should feel like the same product world, not a separate brochure.',
+    // copy: 'The public side should feel like the same product world, not a separate brochure.',
     image: '/Images/Scene4.jpg',
     shellClass: 'bg-primary-fixed',
   },
   {
     title: 'Builds a professional resume in one workspace.',
-    copy: 'Import, refine, preview, and export while ATS and JD tools stay connected to the same data.',
+    // copy: 'Import, refine, preview, and export while ATS and JD tools stay connected to the same data.',
     image: '/Images/Scene5.jpg',
     shellClass: 'bg-tertiary-fixed',
   },
   {
     title: 'Hired. Senior Treat Officer at Global Meow Inc.',
-    copy: 'A better workflow does not guarantee outcomes, but it gives the work a fairer shot.',
+    // copy: 'A better workflow does not guarantee outcomes, but it gives the work a fairer shot.',
     image: '/Images/Scene6.jpg',
     shellClass: 'bg-cream',
   },
@@ -117,7 +117,7 @@ export function HomePage() {
 
   function openHomeAuth() {
     openAuth({
-      copy: 'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
+      // copy: 'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
       accent: 'GOOGLE ONLY',
     });
   }

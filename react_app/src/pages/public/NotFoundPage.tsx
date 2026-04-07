@@ -18,7 +18,7 @@ export function NotFoundPage() {
         </div>
       </article>
 
-      <article className="grid content-start gap-4 rounded-[2rem] border-[1.5px] border-charcoal/75 bg-white/85 p-8 shadow-tactile md:p-10">
+      {/* <article className="grid content-start gap-4 rounded-[2rem] border-[1.5px] border-charcoal/75 bg-white/85 p-8 shadow-tactile md:p-10">
         <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">NEXT STEP</div>
         <h2 className="font-headline text-3xl font-extrabold tracking-[-0.03em] text-on-surface">
           The workspace is still one click away.
@@ -31,7 +31,7 @@ export function NotFoundPage() {
             Open About
           </Button>
         </div>
-      </article>
+      </article> */}
     </section>
   );
 }

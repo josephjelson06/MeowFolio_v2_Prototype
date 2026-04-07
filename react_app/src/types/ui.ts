@@ -13,11 +13,11 @@ export interface UsageMetric {
 
 export interface AuthModalConfig {
   title: string;
-  copy: string;
-  note: string;
-  accent: string;
-  info: string;
-  outline: string;
-  previewTitle: string;
-  previewCopy: string;
+  // copy: string;
+  // note: string;
+  // accent: string;
+  // info: string;
+  // outline: string;
+  // previewTitle: string;
+  // previewCopy: string;
 }
