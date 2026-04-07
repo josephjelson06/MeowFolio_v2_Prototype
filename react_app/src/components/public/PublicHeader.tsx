@@ -17,14 +17,16 @@ export function PublicHeader() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 hidden min-h-[68px] grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-charcoal/10 bg-background/85 px-4 shadow-[0_8px_24px_rgba(28,28,24,0.05)] backdrop-blur-xl md:grid md:px-8">
-        <NavLink className="inline-flex w-max items-center font-headline text-2xl font-extrabold tracking-[-0.03em] text-on-surface" to={routes.home}>meowfolio</NavLink>
-        <div className="flex items-center justify-self-center gap-2">
-          <NavLink className={desktopLink} to={routes.home}>Home</NavLink>
-          <NavLink className={desktopLink} to={routes.about}>About</NavLink>
-        </div>
-        <div className="justify-self-end">
-          <Button onClick={() => openAuth()}>Login / Signup</Button>
+      <nav className="sticky top-0 z-40 hidden min-h-[68px] border-b border-charcoal/10 bg-background/85 shadow-[0_8px_24px_rgba(28,28,24,0.05)] backdrop-blur-xl md:block">
+        <div className="mx-auto grid min-h-[68px] w-full max-w-[1120px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 sm:px-6 lg:px-8">
+          <NavLink className="inline-flex w-max items-center font-headline text-2xl font-extrabold tracking-[-0.03em] text-on-surface" to={routes.home}>meowfolio</NavLink>
+          <div className="flex items-center justify-self-center gap-2">
+            <NavLink className={desktopLink} to={routes.home}>Home</NavLink>
+            <NavLink className={desktopLink} to={routes.about}>About</NavLink>
+          </div>
+          <div className="justify-self-end">
+            <Button onClick={() => openAuth()}>Login / Signup</Button>
+          </div>
         </div>
       </nav>
 

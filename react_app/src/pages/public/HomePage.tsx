@@ -9,37 +9,31 @@ import type { TemplateRecord } from 'types/template';
 const storyCards = [
   {
     title: 'Mochii starts the job search journey.',
-    // copy: 'The first draft is always messy. What matters is having one calm place to begin.',
     image: '/Images/Scene1.jpg',
     shellClass: 'bg-cream',
   },
   {
     title: 'Sent 47 resumes to top tech companies.',
-    // copy: 'Volume is easy. Useful iteration and cleaner signals are the hard part.',
     image: '/Images/Scene2.jpg',
     shellClass: 'bg-lavender',
   },
   {
     title: '47 rejections. Not enough experience in napping.',
-    // copy: 'When formatting and structure fall apart, every rejection feels heavier than it should.',
     image: '/Images/Scene3.png',
     shellClass: 'bg-cream',
   },
   {
     title: 'Discovers meowfolio. A glimmer of hope.',
-    // copy: 'The public side should feel like the same product world, not a separate brochure.',
     image: '/Images/Scene4.jpg',
     shellClass: 'bg-primary-fixed',
   },
   {
     title: 'Builds a professional resume in one workspace.',
-    // copy: 'Import, refine, preview, and export while ATS and JD tools stay connected to the same data.',
     image: '/Images/Scene5.jpg',
     shellClass: 'bg-tertiary-fixed',
   },
   {
     title: 'Hired. Senior Treat Officer at Global Meow Inc.',
-    // copy: 'A better workflow does not guarantee outcomes, but it gives the work a fairer shot.',
     image: '/Images/Scene6.jpg',
     shellClass: 'bg-cream',
   },
@@ -85,6 +79,9 @@ const faqs = [
   },
 ] as const;
 
+const sectionShell =
+  'w-full max-w-full overflow-hidden rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-5 py-10 shadow-tactile backdrop-blur-sm sm:px-6 md:px-8 md:py-14 lg:px-12 lg:py-16';
+
 function RoundRailButton({
   label,
   onClick,
@@ -117,7 +114,7 @@ export function HomePage() {
 
   function openHomeAuth() {
     openAuth({
-      // copy: 'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
+      copy: 'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
       accent: 'GOOGLE ONLY',
     });
   }
@@ -134,17 +131,17 @@ export function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-16">
+      <section className={`relative overflow-hidden ${sectionShell}`}>
         <div className="absolute left-12 top-12 h-40 w-40 rounded-full bg-primary-fixed blur-3xl"></div>
         <div className="absolute bottom-10 right-16 h-48 w-48 rounded-full bg-secondary-fixed blur-3xl"></div>
 
-        <div className="relative z-10 grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-12">
           <div className="grid gap-6">
             <div>
               <Badge variant="info">FREE FOREVER. NO WATERMARKS.</Badge>
             </div>
 
-            <div className="max-w-[38rem] font-headline text-5xl font-extrabold leading-[0.95] tracking-[-0.05em] text-on-surface md:text-7xl">
+            <div className="max-w-[34rem] font-headline text-4xl font-extrabold leading-[0.98] tracking-[-0.05em] text-on-surface sm:text-5xl lg:text-6xl">
               Build resumes that <span className="text-coral underline decoration-4 underline-offset-8">actually</span> get read.
             </div>
 
@@ -163,9 +160,9 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative min-w-0">
             <div className="absolute -left-4 top-8 hidden h-[86%] w-[88%] rounded-[2rem] bg-primary-fixed lg:block"></div>
-            <div className="relative rotate-2 rounded-[2rem] border-[1.5px] border-charcoal/75 bg-white/95 p-4 shadow-tactile-lg">
+            <div className="relative max-w-full rotate-2 rounded-[2rem] border-[1.5px] border-charcoal/75 bg-white/95 p-4 shadow-tactile-lg">
               <div className="rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,244,239,0.98))] p-5">
                 <div className="rounded-[1.2rem] bg-white p-5 shadow-ambient">
                   <div className="mb-5 flex items-start justify-between gap-4">
@@ -207,10 +204,10 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+      <section className={sectionShell}>
         <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">How one cat changed everything.</h2>
+            <h2 className="font-headline text-4xl font-extrabold leading-tight tracking-[-0.04em] text-on-surface md:text-5xl">How one cat changed everything.</h2>
             <p className="mt-3 text-sm leading-7 text-[color:var(--txt2)]">Swipe through Mochii&apos;s journey and see how the product loop moves from panic to a cleaner workflow.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -219,7 +216,7 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2" ref={storyRailRef}>
+        <div className="hide-scrollbar flex max-w-full snap-x snap-mandatory gap-6 overflow-x-auto pb-2" ref={storyRailRef}>
           {storyCards.map((card, index) => (
             <article className="grid w-[20rem] flex-none snap-start gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile" key={card.title}>
               <div className={`grid aspect-square place-items-center overflow-hidden rounded-[1.2rem] border border-charcoal/15 ${card.shellClass}`}>
@@ -227,7 +224,7 @@ export function HomePage() {
               </div>
               <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">{String(index + 1).padStart(2, '0')}</div>
               <p className="font-headline text-xl font-extrabold leading-tight text-on-surface">{card.title}</p>
-              <p className="text-sm leading-7 text-[color:var(--txt2)]">{card.copy}</p>
+              {/* <p className="text-sm leading-7 text-[color:var(--txt2)]">{card.copy}</p> */}
             </article>
           ))}
 
@@ -238,7 +235,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+      <section className={sectionShell}>
         <div className="mb-10 text-center">
           <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">Everything you need.</h2>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -250,7 +247,7 @@ export function HomePage() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {features.map(feature => (
-            <article className="grid gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-6 shadow-tactile transition hover:-translate-x-px hover:-translate-y-px" key={feature.title}>
+            <article className="grid h-full gap-5 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-6 shadow-tactile transition hover:-translate-x-px hover:-translate-y-px" key={feature.title}>
               <div className={`grid size-16 place-items-center rounded-2xl border border-charcoal/20 font-headline text-base font-bold ${feature.toneClass}`}>
                 {feature.icon}
               </div>
@@ -261,7 +258,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+      <section className={sectionShell}>
         <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-center md:justify-between">
           <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface md:text-5xl">Pick your vibe.</h2>
           <div className="flex items-center gap-3">
@@ -270,7 +267,7 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2" ref={templateRailRef}>
+        <div className="hide-scrollbar flex max-w-full snap-x snap-mandatory gap-6 overflow-x-auto pb-2" ref={templateRailRef}>
           {templateItems.map(template => (
             <article className="grid w-[19rem] flex-none snap-start overflow-hidden rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 shadow-tactile" key={template.id}>
               <div className="relative bg-surface-container-low px-5 pb-6 pt-5">
@@ -286,14 +283,14 @@ export function HomePage() {
 
               <div className="grid gap-2 p-5 text-center">
                 <h3 className="font-headline text-2xl font-extrabold text-on-surface">{template.badge}</h3>
-                <p className="text-sm leading-7 text-[color:var(--txt2)]">{template.description}</p>
+                <p className="text-sm leading-7 text-[color:var(--txt2)]">{template.bestFor}</p>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="rounded-[2.25rem] border-[1.5px] border-charcoal/75 bg-white/75 px-6 py-8 shadow-tactile backdrop-blur-sm md:px-10 md:py-12 lg:px-14 lg:py-14">
+      <section className={sectionShell}>
         <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div className="grid gap-5">
             <div className="relative rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/95 p-3 shadow-tactile">
