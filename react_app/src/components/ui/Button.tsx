@@ -17,7 +17,7 @@ type ButtonProps =
   | (PropsWithChildren<BaseProps & ButtonHTMLAttributes<HTMLButtonElement>>);
 
 function getButtonClass(variant: ButtonVariant, size: ButtonSize, className?: string) {
-  const base = 'inline-flex items-center justify-center gap-2 rounded-full border-2 border-charcoal text-center transition duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-40';
+  const base = 'inline-flex items-center justify-center gap-2 rounded-[9999px] border-2 border-charcoal text-center transition duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-40';
   const interactive = 'shadow-tactile-sm hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px active:shadow-none';
   const sizes = {
     sm: 'min-h-10 px-4 py-2 font-headline text-[11px] font-bold tracking-[0.01em]',
@@ -37,33 +37,30 @@ function getButtonClass(variant: ButtonVariant, size: ButtonSize, className?: st
   return cn(base, interactive, variant === 'link' ? linkSize[size] : sizes[size], variants[variant], className);
 }
 
-export function Button(props: ButtonProps) {
-  const variant = props.variant ?? 'primary';
-  const size = props.size ?? 'sm';
-  const className = getButtonClass(variant, size, props.className);
+export function Button({ variant = 'primary', size = 'sm', className: outerClassName, children, ...rest }: ButtonProps) {
+  const className = getButtonClass(variant, size, outerClassName);
 
-  if ('to' in props) {
-    const { to, children, ...rest } = props;
+  if ('to' in rest) {
+    const { to, ...linkRest } = rest as any;
     return (
-      <Link className={className} to={to} {...rest}>
+      <Link className={className} to={to} {...linkRest}>
         {children}
       </Link>
     );
   }
 
-  if ('href' in props) {
-    const { href, children, ...rest } = props;
+  if ('href' in rest) {
+    const { href, ...aRest } = rest as any;
     return (
-      <a className={className} href={href} {...rest}>
+      <a className={className} href={href} {...aRest}>
         {children}
       </a>
     );
   }
 
-  const buttonProps = props as PropsWithChildren<BaseProps & ButtonHTMLAttributes<HTMLButtonElement>>;
-  const { children, type = 'button', ...rest } = buttonProps;
+  const { type = 'button', ...buttonRest } = rest as any;
   return (
-    <button className={className} type={type} {...rest}>
+    <button className={className} type={type} {...buttonRest}>
       {children}
     </button>
   );

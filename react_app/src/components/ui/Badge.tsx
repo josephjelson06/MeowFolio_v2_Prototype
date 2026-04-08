@@ -23,7 +23,7 @@ export function Badge({ children, variant = 'outline', size = 'sm', className = 
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border-[1.5px] font-headline font-bold uppercase',
+        'inline-flex items-center whitespace-nowrap rounded-[9999px] border-[1.5px] font-headline font-bold uppercase',
         sizeClass,
         badgeClass,
         className,

@@ -1,0 +1,1 @@
+We shifted from structuring the UI around reusable containers to structuring it around visual hierarchy and user attention—using layout first and applying containers only where they add meaning.

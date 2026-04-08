@@ -1,13 +1,15 @@
-import type { ComponentPropsWithoutRef } from 'react';
-import { cn } from 'lib/cn';
-import { publicSectionShell } from 'components/public/publicStyles';
+import type { PropsWithChildren } from "react";
 
-type PublicSectionProps = ComponentPropsWithoutRef<'section'>;
+type PublicSectionProps = PropsWithChildren<{
+  className?: string;
+}>;
 
-export function PublicSection({ className, children, ...props }: PublicSectionProps) {
-  return (
-    <section className={cn(publicSectionShell, className)} {...props}>
-      {children}
-    </section>
-  );
+/**
+ * Neutral section wrapper:
+ * - handles semantics
+ * - does not impose a visual shell by default
+ * - lets each page decide whether a section should feel open or boxed
+ */
+export function PublicSection({ className = "", children }: PublicSectionProps) {
+  return <section className={`relative w-full ${className}`}>{children}</section>;
 }
