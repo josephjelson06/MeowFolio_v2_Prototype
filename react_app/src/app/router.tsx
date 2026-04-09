@@ -1,7 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { routes } from 'lib/routes';
 import { RootLayout } from 'layouts/RootLayout';
-import { PublicLayout } from 'layouts/PublicLayout';
 import { WorkspaceLayout } from 'layouts/WorkspaceLayout';
 import { EditorLayout } from 'layouts/EditorLayout';
 import { HomePage } from 'pages/public/HomePage';
@@ -19,15 +18,10 @@ export const router = createBrowserRouter([
     path: '/',
     element: <RootLayout />,
     children: [
-      {
-        element: <PublicLayout />,
-        children: [
-          { index: true, element: <HomePage /> },
-          { path: routes.about, element: <AboutPage /> },
-          { path: routes.notFound, element: <NotFoundPage /> },
-          { path: routes.error500, element: <Error500Page /> },
-        ],
-      },
+      { index: true, element: <HomePage /> },
+      { path: routes.about, element: <AboutPage /> },
+      { path: routes.notFound, element: <NotFoundPage /> },
+      { path: routes.error500, element: <Error500Page /> },
       {
         element: <WorkspaceLayout />,
         children: [
