@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { useAuthModal } from 'hooks/useAuthModal';
 import { cn } from 'lib/cn';
 import { routes } from 'lib/routes';
+import { useUiContext } from 'state/ui/uiContext';
 
 const notFoundSurfaceWidth = 'w-full max-w-[1360px]';
 const notFoundBodyClass = 'text-base leading-7 text-[color:var(--txt2)] lg:text-lg lg:leading-8';
@@ -159,7 +159,7 @@ function NotFoundFooter() {
 }
 
 export function NotFoundPage() {
-  const { openAuth } = useAuthModal();
+  const { openAuth } = useUiContext();
 
   return (
     <div className="flex min-h-screen flex-col">

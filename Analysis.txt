@@ -1,0 +1,669 @@
+Can you read @HomePage.tsx and tell me what needs to be done here?
+
+Read the other pages too. Error500Page.tsx NotFoundPage. AboutPage.tsx
+
+I'm trying to break-down this huge monolithic page. 
+
+Keep only HomePage related items here and move the rest outside - like say Header, footer, (other components like cards maybe if relevant).
+
+I don't want you to make any changes just tell me what to do.
+
+-------
+Yes. The main thing to do is extract the public-site chrome first, then break `HomePage` into Home-only sections.
+
+**Move Out**
+- Extract the duplicated CTA/button component from [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:100), [AboutPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/AboutPage.tsx:36), [NotFoundPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/NotFoundPage.tsx:14), and [Error500Page.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/Error500Page.tsx:14) into one shared `PublicAction` component.
+- Extract the duplicated header from [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:200), [AboutPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/AboutPage.tsx:117), [NotFoundPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/NotFoundPage.tsx:66), and [Error500Page.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/Error500Page.tsx:66) into one shared `PublicHeader`.
+- Extract the duplicated footer from [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:272), [AboutPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/AboutPage.tsx:189), [NotFoundPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/NotFoundPage.tsx:138), and [Error500Page.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/Error500Page.tsx:138) into one shared `PublicFooter`.
+- Extract the repeated page tokens like `surfaceWidth`, `bodyClass`, and `cardShell` from the tops of all four files into shared public-page styles/constants.
+- Extract `Pill` too, because `HomePill` and `AboutPill` are the same component with different names: [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:152), [AboutPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/AboutPage.tsx:88).
+- Make a shared `PublicLayout` wrapper for the outer `div > main > footer` structure if you want the pages to become very thin.
+- Strongly consider a shared `PublicStatusPage` for 404/500, because those two pages are nearly the same component with different copy and colors: [NotFoundPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/NotFoundPage.tsx:161), [Error500Page.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/Error500Page.tsx:161).
+
+**Keep In `HomePage`**
+- Keep the Home-only content/data: `homeStoryCards`, `homeFeatures`, `homeFaqs` in [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:16).
+- Keep the Home-only auth copy in `openHomeAuth()` at [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:306).
+- Keep the Home-only section composition:
+  - Hero around [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:330)
+  - Story rail around [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:380)
+  - Features around [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:435)
+  - FAQ around [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:521)
+- If you want a cleaner Home file, split those into page-local components like `HomeHeroSection`, `HomeStorySection`, `HomeFeaturesSection`, `HomeFaqSection`, but keep them under a Home-specific folder rather than the global shared components folder.
+
+**What’s Weird Right Now**
+- `HomeAction` in [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:100) has its `Link` branch commented out, so `to={routes.about}` won’t actually work there. If you extract `PublicAction`, fix that behavior in the shared version.
+- `templateService`, `templateItems`, and `templateRailRef` in [HomePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/public/HomePage.tsx:295) only exist for the commented-out template section. If that section is staying removed, those should go too.
+- [NavBar.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/components/NavBar.tsx:1) is not a reusable shared component yet. It’s basically an unfinished copy of `HomeHeader` and still references `HomeAction`, so I would not build on that file as-is.
+
+**Best Breakdown Order**
+1. Extract `PublicAction`, `PublicPill`, `PublicHeader`, `PublicFooter`, and shared public style constants.
+2. Convert `About`, `404`, and `500` to use those shared pieces.
+3. Then slim `HomePage` down to only Home content and Home sections.
+4. If needed after that, split Home sections into local subcomponents.
+
+If you want, I can next give you a concrete target folder structure for this refactor without touching the code.
+----
+Tell me what to keep and what to move out for Pages - About, 500, 404 too.
+---Here’s the clean split for each page.
+
+**About**
+Keep in `AboutPage.tsx`:
+- `aboutProductCards` data, because it only feeds About content.
+- `openAboutAuth()` because its modal copy is page-specific.
+- The actual About sections:
+  - Story/problem hero
+  - Product cards
+  - About-me/profile section
+
+Move out of `AboutPage.tsx`:
+- `AboutAction` to a shared `PublicAction`
+- `AboutPill` to a shared `PublicPill`
+- `AboutHeader` to a shared `PublicHeader`
+- `AboutFooter` to a shared `PublicFooter`
+- Shared style tokens like `aboutSurfaceWidth`, `aboutBodyClass`, `aboutCardShell`
+- Possibly `aboutEyebrowClass` and `aboutHeadingClass` if you want a shared public typography file
+
+About should end up being mostly:
+- page data
+- page-specific auth copy
+- About-only sections
+
+**404**
+Keep in `NotFoundPage.tsx`:
+- The 404-specific content only:
+  - badge text
+  - title
+  - description
+  - action targets (`home`, `about`)
+  - any 404-specific accent styling
+
+Move out of `NotFoundPage.tsx`:
+- `NotFoundAction` to shared `PublicAction`
+- `NotFoundHeader` to shared `PublicHeader`
+- `NotFoundFooter` to shared `PublicFooter`
+- Shared tokens like `notFoundSurfaceWidth`, `notFoundBodyClass`, `notFoundCardShell`
+
+You can go one step further and make `NotFoundPage` just a config wrapper around a reusable `PublicStatusPage`.
+
+**500**
+Keep in `Error500Page.tsx`:
+- The 500-specific content only:
+  - badge text
+  - title
+  - description
+  - action targets (`home`, `dashboard`)
+  - warning-toned accent styling
+- If later you want custom recovery logic, that should stay here too.
+
+Move out of `Error500Page.tsx`:
+- `ErrorAction` to shared `PublicAction`
+- `ErrorHeader` to shared `PublicHeader`
+- `ErrorFooter` to shared `PublicFooter`
+- Shared tokens like `errorSurfaceWidth`, `errorBodyClass`, `errorCardShell`
+
+Like 404, this is a strong candidate for a shared `PublicStatusPage`.
+
+**Shared Across All Public Pages**
+Move these out once and reuse everywhere:
+- Header
+- Footer
+- Action/button component
+- Pill component
+- Shared page width / card shell / body text classes
+- Possibly a `PublicLayout` wrapper
+- Possibly a `PublicStatusPage` for 404 + 500
+
+**Rule of Thumb**
+Keep in a page:
+- content
+- copy
+- page-specific data
+- page-specific behavior
+
+Move out of a page:
+- navigation chrome
+- footer
+- repeated buttons/pills
+- shared styling tokens
+- identical structural wrappers
+
+If you want, I can next give you the ideal folder/component structure for `public/` before you refactor.
+---
+tell me do not-found or error pages require a navbar or a footer?
+Or they are just a display page tell that something went-wrong or page doesn't exist?
+
+Because if they required a navbar and a footer then we have to handle that for post-auth pages too
+---
+They do not inherently require a navbar or footer.
+
+A `404` or `500` page only needs to do one job well:
+- explain what happened
+- give the user a safe next step
+
+Everything beyond that is product/design choice.
+
+For your app, I’d treat them differently by context:
+
+**Public 404/500**
+- A navbar is useful if the user is still on the public marketing surface.
+- A footer is optional.
+- This version helps people recover by going to `Home`, `About`, or `Login`.
+
+**Post-auth 404/500**
+- Don’t automatically reuse the public navbar/footer.
+- These should usually live inside the authenticated app shell, or use a simpler workspace-safe error layout.
+- The recovery actions should be things like `Go to Dashboard`, `Back to Editor`, `Open Templates`, `Try again`.
+
+So the key point is: error pages do not need universal chrome, they need the right recovery UI for the part of the app they belong to.
+
+My recommendation:
+- Keep navbar/footer for public `404` and maybe public `500`.
+- Do not use the public navbar/footer for post-auth pages.
+- For authenticated routes, use either:
+  - the normal workspace shell if it’s still available, or
+  - a stripped-down workspace error page with app-relevant actions.
+
+A clean mental model is:
+- `PublicStatusPage` for unauthenticated/public routes
+- `WorkspaceStatusPage` for authenticated/app routes
+
+That keeps you from forcing one error-page design across two very different contexts.
+---
+Okay then we will see that later. 
+Now read the post - auth pages. and tell me what all needs to be done with those pages?
+Dashboard | Editor | ResumeListPage | JDsPage | Profile
+---
+The big thing on the post-auth side is this: all five pages are carrying their own version of the workspace shell, and `EditorPage` is also carrying a whole mini feature system inside one file.
+
+**Shared Workspace Layer**
+Move these out first because they’re repeated across almost every post-auth page:
+
+- A shared `WorkspaceShell` from [DashboardPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/DashboardPage.tsx:55), [ResumesPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ResumesPage.tsx:116), [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:50), [ProfilePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ProfilePage.tsx:101), and part of [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:201).
+- A shared nav-link class helper from `workspaceLinkClass` / `resumeLinkClass` / `jdShellLinkClass` / `profileLinkClass` / `editorShellLinkClass`.
+- A shared `WorkspaceBadge` from [DashboardPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/DashboardPage.tsx:19), [ResumesPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ResumesPage.tsx:81), and [ProfilePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ProfilePage.tsx:66).
+- A shared action/button component from [ResumesPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ResumesPage.tsx:27), [ProfilePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ProfilePage.tsx:14), and the button class patterns inside `JdsPage` and `DashboardPage`.
+- A shared `usePageViewportMode` hook, duplicated in [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:56) and [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:27).
+- A shared resume-preview skeleton/card if you want to clean up the repeated fake resume thumbnail used in Dashboard and Resumes.
+
+**Dashboard**
+Keep in `DashboardPage.tsx`:
+- `kpis` at [DashboardPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/DashboardPage.tsx:11)
+- dashboard data loading and page behavior at [DashboardPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/DashboardPage.tsx:129)
+- the dashboard-only sections: KPI cards, create-resume card, active-resume panel, quick actions, rotating tips
+
+Move out:
+- `WorkspacePageShell`
+- `WorkspaceBadge`
+- shared button styles for CTA cards if you want consistency
+- possibly the resume preview mock block as a reusable component
+
+Dashboard is otherwise already fairly reasonable once the shell moves out.
+
+**Resumes**
+Keep in `ResumesPage.tsx`:
+- pagination helpers `getVisibleResumes` and `getTotalPages` at [ResumesPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ResumesPage.tsx:12)
+- resume CRUD handlers at [ResumesPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ResumesPage.tsx:267)
+- the library page composition at [ResumesPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ResumesPage.tsx:248)
+
+Move out:
+- `ResumePageShell`
+- `ResumeAction`
+- `ResumeBadge`
+
+Maybe keep `ResumeLibraryCard` in the page file if you want, or move it into a page-local `resumes/components` folder. It’s specific enough that I would not make it globally shared yet.
+
+**JDs**
+Keep in `JdsPage.tsx`:
+- `JD_PAGE_SIZE` and `getPageForId` at [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:14)
+- JD page state and orchestration at [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:547)
+- JD-specific UI blocks:
+  - `JdListPane` at [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:124)
+  - `ResumePickerPane` at [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:256)
+  - `JdResultPane` at [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:304)
+  - `JdMobileSheet` at [JdsPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/JdsPage.tsx:470)
+
+Move out:
+- `JdWorkspaceShell`
+- duplicated viewport hook
+- generic action button styles if you want one workspace button system
+
+`JdsPage` is not as bad as `EditorPage`. Most of its components are feature-specific and should stay close to the JD feature.
+
+**Profile**
+Keep in `ProfilePage.tsx`:
+- profile data loading and usage display at [ProfilePage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/ProfilePage.tsx:175)
+- the profile summary card
+- usage metrics section
+- logout behavior
+
+Move out:
+- `ProfilePageShell`
+- `ProfileAction`
+- `ProfileBadge`
+
+`ProfilePage` should become very thin after that. It’s mostly fine already.
+
+**Editor**
+This is the one that really needs decomposition.
+
+Keep in `EditorPage.tsx`:
+- the main orchestration state and effect flow at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:1326)
+- record loading, save/draft lifecycle, ATS trigger flow, section/page coordination
+- top-level decisions like `mode`, `mobileView`, `activeSection`, `activeLeftTab`
+
+Move out of `EditorPage.tsx`:
+- `EditorPageShell` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:201)
+- `EditorMobileTopbar` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:276)
+- `SectionNav` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:309)
+- `ToolbarPane` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:382)
+- `TemplatePane` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:451)
+- `PdfPreview` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:506)
+- `AtsDrawer` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:588)
+- `AtsFullReport` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:659)
+- `EditorMobileSheet` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:743)
+- `EditorFormPane` at [EditorPage.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/pages/workspace/EditorPage.tsx:874)
+
+Move out to hooks/utils:
+- `usePageViewportMode`
+- draft persistence helpers: `getDraftKey`, `readDraft`, `writeDraft`, `clearDraft`
+- editor serialization helpers: `editableSnapshot`, `toolbarFromRenderOptions`, `applyToolbarValues`
+- section helpers: `countForSection`, `sectionList`, maybe `createFallbackRecord`
+
+So for `EditorPage`, the goal is:
+- page file owns orchestration
+- hooks own stateful logic
+- utils own transformations
+- components own rendering
+
+**What I’d Do First**
+1. Create one shared `WorkspaceShell`.
+2. Replace the shells in Dashboard, Resumes, JDs, and Profile.
+3. Extract shared `WorkspaceBadge`, `WorkspaceAction`, and the viewport hook.
+4. Then attack `EditorPage` separately, because it’s the only truly monolithic one.
+
+If you want, I can next give you the ideal folder structure for these authenticated pages before you refactor.
+----
+So, what are you saying what should stay in these pages 
+- only across Pre-Auth pages
+- only across Post-Auth pages
+- both across Pre-Auth & Post-Auth pages
+- only in each individual Pages (eg: HomePage only, DashboardPage only etc...)
+----
+Here’s the clean way to think about it.
+
+**Only Across Pre-Auth Pages**
+Share these only among `Home`, `About`, `404`, `500`:
+
+- `PublicLayout`
+- `PublicHeader`
+- `PublicFooter`
+- `PublicAction`
+- `PublicPill`
+- public page width / spacing / card-shell / body-text constants
+- possibly `PublicStatusPage` for `404` + `500`
+
+These belong to the marketing/public surface, not the logged-in app.
+
+**Only Across Post-Auth Pages**
+Share these only among `Dashboard`, `Editor`, `Resumes`, `JDs`, `Profile`:
+
+- `WorkspaceShell`
+- top workspace nav
+- mobile workspace top bar
+- mobile bottom tab nav
+- profile avatar/link in shell
+- workspace nav-link class helpers
+- `WorkspaceAction`
+- `WorkspaceBadge`
+- shared workspace card / panel / section wrappers
+- shared workspace hooks like `usePageViewportMode`
+- later, maybe `WorkspaceStatusPage` for logged-in `404/500`
+
+These belong to the app shell, not the public site.
+
+**Across Both Pre-Auth And Post-Auth**
+Only share true low-level primitives here, not layout/chrome:
+
+- base button primitive, only if you want one real design-system button
+- base badge/pill primitive, only if the variants are truly the same
+- generic card/surface wrapper, if it is truly identical
+- generic typography/style tokens
+- utility hooks with no auth/public meaning
+- helpers already in `lib`, `routes`, `cn`, shared type helpers, service helpers
+
+Important: do **not** force `PublicHeader` and `WorkspaceShell` into one component. They are different products surfaces.
+
+So for “both”, I’d keep it limited to:
+- design-system primitives
+- utilities
+- hooks
+- style tokens
+
+**Only In Each Individual Page**
+Keep page-specific content, data, and behavior in the page or in a page-local folder.
+
+`HomePage` only:
+- hero content
+- story cards data
+- features data
+- FAQ data
+- home-specific auth modal copy
+- home-only sections like hero, story rail, feature grid, FAQ
+
+`AboutPage` only:
+- about hero/story content
+- product cards data
+- profile/about-me section
+- about-specific auth modal copy
+
+`NotFoundPage` only:
+- 404 copy
+- 404 actions
+- 404 visual tone
+
+`Error500Page` only:
+- 500 copy
+- 500 actions
+- 500 warning tone
+
+`DashboardPage` only:
+- KPI data
+- recent resume logic
+- tips rotation logic
+- dashboard quick actions
+- dashboard section composition
+
+`EditorPage` only:
+- editor orchestration/state
+- draft/save lifecycle
+- ATS trigger flow
+- active section / active tab / mode logic
+- resume record loading and synchronization
+
+`ResumesPage` only:
+- resume library pagination logic
+- rename/delete/download handlers
+- resume list composition
+
+`JdsPage` only:
+- JD list pagination/selection logic
+- JD analysis flow
+- JD report state
+- JD-specific panes and mobile report behavior
+
+`ProfilePage` only:
+- profile summary loading
+- usage metrics loading/display
+- logout behavior
+
+**Short Rule**
+Keep shared by surface:
+- public things with public
+- workspace things with workspace
+
+Keep shared by both only when it is truly primitive:
+- button
+- badge
+- card
+- hook
+- token
+- utility
+
+Keep in the page when it answers:
+- what this page says
+- what this page does
+- what data this page owns
+- how this page behaves
+
+If you want, I can turn this into a concrete folder tree next, like `components/public`, `components/workspace`, `components/ui`, and `pages/.../components`.
+----
+Here’s the clean way to think about it.
+
+**Only Across Pre-Auth Pages**
+Share these only among `Home`, `About`, `404`, `500`:
+
+- `PublicLayout`
+- `PublicHeader`
+- `PublicFooter`
+- `PublicAction`
+- `PublicPill`
+- public page width / spacing / card-shell / body-text constants
+- possibly `PublicStatusPage` for `404` + `500`
+
+These belong to the marketing/public surface, not the logged-in app.
+
+**Only Across Post-Auth Pages**
+Share these only among `Dashboard`, `Editor`, `Resumes`, `JDs`, `Profile`:
+
+- `WorkspaceShell`
+- top workspace nav
+- mobile workspace top bar
+- mobile bottom tab nav
+- profile avatar/link in shell
+- workspace nav-link class helpers
+- `WorkspaceAction`
+- `WorkspaceBadge`
+- shared workspace card / panel / section wrappers
+- shared workspace hooks like `usePageViewportMode`
+- later, maybe `WorkspaceStatusPage` for logged-in `404/500`
+
+These belong to the app shell, not the public site.
+
+**Across Both Pre-Auth And Post-Auth**
+Only share true low-level primitives here, not layout/chrome:
+
+- base button primitive, only if you want one real design-system button
+- base badge/pill primitive, only if the variants are truly the same
+- generic card/surface wrapper, if it is truly identical
+- generic typography/style tokens
+- utility hooks with no auth/public meaning
+- helpers already in `lib`, `routes`, `cn`, shared type helpers, service helpers
+
+Important: do **not** force `PublicHeader` and `WorkspaceShell` into one component. They are different products surfaces.
+
+So for “both”, I’d keep it limited to:
+- design-system primitives
+- utilities
+- hooks
+- style tokens
+
+**Only In Each Individual Page**
+Keep page-specific content, data, and behavior in the page or in a page-local folder.
+
+`HomePage` only:
+- hero content
+- story cards data
+- features data
+- FAQ data
+- home-specific auth modal copy
+- home-only sections like hero, story rail, feature grid, FAQ
+
+`AboutPage` only:
+- about hero/story content
+- product cards data
+- profile/about-me section
+- about-specific auth modal copy
+
+`NotFoundPage` only:
+- 404 copy
+- 404 actions
+- 404 visual tone
+
+`Error500Page` only:
+- 500 copy
+- 500 actions
+- 500 warning tone
+
+`DashboardPage` only:
+- KPI data
+- recent resume logic
+- tips rotation logic
+- dashboard quick actions
+- dashboard section composition
+
+`EditorPage` only:
+- editor orchestration/state
+- draft/save lifecycle
+- ATS trigger flow
+- active section / active tab / mode logic
+- resume record loading and synchronization
+
+`ResumesPage` only:
+- resume library pagination logic
+- rename/delete/download handlers
+- resume list composition
+
+`JdsPage` only:
+- JD list pagination/selection logic
+- JD analysis flow
+- JD report state
+- JD-specific panes and mobile report behavior
+
+`ProfilePage` only:
+- profile summary loading
+- usage metrics loading/display
+- logout behavior
+
+**Short Rule**
+Keep shared by surface:
+- public things with public
+- workspace things with workspace
+
+Keep shared by both only when it is truly primitive:
+- button
+- badge
+- card
+- hook
+- token
+- utility
+
+Keep in the page when it answers:
+- what this page says
+- what this page does
+- what data this page owns
+- how this page behaves
+
+If you want, I can turn this into a concrete folder tree next, like `components/public`, `components/workspace`, `components/ui`, and `pages/.../components`.
+----
+I want you to analyze the lib/, modals/, services/, state/ and types/ folder too.
+Then also the app/ folder too.
+Then main.tsx
+These folders exist under src/
+Inside many of these just two-lines of code exist.
+-----------------------
+Then, go ahead and analyze the lib/, shared/ and types/ folders outside react_app itself. Should these files and folders even exist?
+------------------------
+Leave out the folders: 
+backend/ -> Not built properly
+Tex Templates/ -> Tex Code written through TS Language.
+Templates/ -> contains SS of Templates
+----
+**Inside `react_app/src`**
+
+`lib/`
+- Keep `apiClient.ts`, `routes.ts`, and `cn.ts`. They’re real app-wide utilities and are used broadly: [apiClient.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/lib/apiClient.ts:48), [routes.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/lib/routes.ts:1), [cn.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/lib/cn.ts:1).
+- `constants.ts` looks unused right now: [constants.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/lib/constants.ts:1).
+- `formatters.ts` is partly useful because `downloadTextFile` is used, but `formatCountLabel` looks unused: [formatters.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/lib/formatters.ts:1).
+
+`modals/`
+- Keep this folder. These are not “just modal UI”; they are route-global modal hosts mounted from the app shell: [router.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/app/router.tsx:16).
+- Structurally they’re fine, but they are feature-specific modals, not generic shared UI. Long-term, `AuthModalHost`, `ResumeModalHost`, and `JdModalHost` may fit better under feature folders than a flat `modals/` bucket.
+
+`services/`
+- Keep this folder. It’s doing real work and cleanly isolates API/mocked fallback behavior: [resumeService.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/services/resumeService.ts:92), [jdService.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/services/jdService.ts:115).
+- The main weakness is that services currently mix three concerns: HTTP calls, local seed/mock fallback, and window-event broadcasting. Fine for a prototype, but later split into `api` + `mock/fallback` + `store/events`.
+
+`state/`
+- Keep `sessionContext.tsx` and `uiContext.tsx`. They are real global state: [sessionContext.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/state/session/sessionContext.tsx:20), [uiContext.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/state/ui/uiContext.tsx:24).
+- `state/editor/editorState.ts` and `state/jds/jdState.ts` are not earning their folder right now. They are tiny unused type holders: [editorState.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/state/editor/editorState.ts:1), [jdState.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/state/jds/jdState.ts:1).
+- Verdict: either delete those two or move those types closer to the pages that use them.
+
+`types/`
+- Keep this folder.
+- `resumeDocument.ts` is the main domain model and absolutely belongs somewhere central: [resumeDocument.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/types/resumeDocument.ts:176).
+- `resume.ts`, `jd.ts`, `session.ts`, `template.ts`, `ui.ts` are fine as lightweight app contracts.
+- The real issue is duplication with root-level `shared/contracts`.
+
+`app/`
+- Keep `App.tsx` and `router.tsx`. Even though they’re small, they are the right place for root providers and route registration: [App.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/app/App.tsx:6), [router.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/app/router.tsx:27).
+- What’s missing is route grouping. Right now public and workspace pages live in one flat router, and there’s no auth guard/boundary.
+- Later, split router into public routes and workspace routes with separate shells.
+
+`main.tsx`
+- Keep it exactly as a tiny bootstrap file: [main.tsx](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/react_app/src/main.tsx:7).
+- This is one of the places where “two lines” is actually correct.
+
+**Outside `react_app`**
+
+`shared/contracts/`
+- This is the only top-level folder with a strong reason to exist.
+- It is being used by backend and template-side code, so conceptually it makes sense as a monorepo shared-contracts layer.
+- But right now the frontend is not using it, and `react_app/src/types/resumeDocument.ts` duplicates a lot of it. That means you currently have two competing sources of truth.
+
+`lib/`
+- Root `lib/resume.ts` exists mainly for the TeX/template pipeline, not for the React app: [lib/resume.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/lib/resume.ts:14).
+- Since you asked to leave templates out of the app refactor, I’d treat this as a separate subsystem utility, not app infrastructure.
+
+`types/`
+- Root `types/resume.ts` is just a re-export shim: [types/resume.ts](c:/Users/josep/Desktop/Resume_Project/Prototype_v2/types/resume.ts:1).
+- This is the weakest folder of the three. It only makes sense if you intentionally want a top-level import alias for non-React code. Otherwise it’s unnecessary indirection.
+
+**Should Those Top-Level Folders Exist?**
+- `shared/contracts`: yes, if you want shared domain contracts across backend/template tooling and maybe frontend later.
+- Root `lib`: yes only for the template subsystem.
+- Root `types`: probably not as a standalone folder unless you really want that alias layer.
+
+**Best Practical Verdict**
+- For the React app cleanup, keep working inside `react_app/src`.
+- Do not let the top-level `lib/`, `shared/`, and `types/` drive your React folder structure.
+- If you want one clean long-term architecture, choose one of these:
+1. Make `shared/contracts` the single source of truth and gradually point the frontend to it.
+2. Keep the frontend independent and treat root `shared/lib/types` as backend/template-only infrastructure.
+
+Right now you’re in an awkward middle state, especially around resume types.
+
+**Most Worth Fixing Next**
+- Remove or relocate the unused tiny `state/editor` and `state/jds` files.
+- Trim unused `src/lib/constants.ts` and likely `formatCountLabel`.
+- Split `router.tsx` into public/workspace route groups.
+- Decide whether `react_app/src/types/resumeDocument.ts` or `shared/contracts/resume.ts` is the real source of truth.
+
+If you want, I can next give you a “keep / merge / delete / move” list for every file in those folders.
+
+------------------------------------------------------------------------
+
+So from all these analysis, what have you understood so far about this project?
+
+----------------------------
+
+This project looks like a resume-product prototype that is trying to become a real application without fully shedding its prototype scaffolding yet.
+
+**What The Product Is**
+- `meowfolio` has two surfaces: a public pre-auth storytelling/marketing layer and a post-auth workspace layer.
+- The real product value is in the workspace: resume creation, import, editing, template selection, ATS scoring, and JD matching.
+- The public pages are there to explain and frame the product, but the editor flow is clearly the center of gravity.
+- The app is aiming for a “one workspace, one source of truth” model where resume data flows through editor, PDF generation, ATS, and JD analysis.
+
+**How The Frontend Is Built**
+- It’s a React/Vite-style SPA with a small root app layer, route-driven pages, global modal hosts, a couple of context providers, and service-based data access.
+- `services/` is doing a lot of the app’s real orchestration right now: backend calls, local fallback data, active-item persistence, and event dispatching.
+- `state/` is intentionally small. Global state is mostly just session and modal visibility/config.
+- `types/` inside `react_app/src` is carrying the frontend domain model, especially for resumes.
+- The UI is organized by pages, but many pages still carry duplicated layout/chrome instead of using shared shells.
+
+**What The Main Structural Problems Are**
+- The public pages duplicate header, footer, buttons, pills, and layout tokens.
+- The workspace pages duplicate the authenticated shell, nav behavior, mobile tabs, badges, and action styles.
+- `EditorPage` is the biggest monolith. It contains page orchestration, helper utilities, rendering components, local persistence logic, and ATS UI all in one file.
+- There are two competing type systems: `react_app/src/types/...` and top-level `shared/contracts/...`. That’s a major architectural tension.
+- Some tiny files exist only as wrappers/placeholders and are not really earning their own folders yet.
+- Routing is simple and workable, but public and workspace concerns are not cleanly separated yet, and auth boundaries are still soft.
+
+**What This Tells Me About The Project Stage**
+- This is not a random toy app. There is a clear product model and a coherent UX direction.
+- But it is still in the “prototype becoming product” phase.
+- The codebase mostly needs decomposition and consolidation, not a total rewrite.
+- The right next moves are structural: shared public shell, shared workspace shell, editor decomposition, and choosing a single source of truth for contracts/types.
+
+So in one sentence: this is a promising resume-workflow product with a solid core idea, but the frontend architecture is still half prototype, half product, and now needs cleanup around shared shells, feature boundaries, and domain contracts.
+------------------------------------------------------------------------------------------------------------

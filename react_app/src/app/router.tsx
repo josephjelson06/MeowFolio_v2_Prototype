@@ -1,6 +1,5 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { routes } from 'lib/routes';
-import { RootLayout } from 'layouts/RootLayout';
 import { HomePage } from 'pages/public/HomePage';
 import { AboutPage } from 'pages/public/AboutPage';
 import { NotFoundPage } from 'pages/public/NotFoundPage';
@@ -10,11 +9,25 @@ import { ResumesPage } from 'pages/workspace/ResumesPage';
 import { JdsPage } from 'pages/workspace/JdsPage';
 import { EditorPage } from 'pages/workspace/EditorPage';
 import { ProfilePage } from 'pages/workspace/ProfilePage';
+import { AuthModalHost } from 'modals/AuthModalHost';
+import { ResumeModalHost } from 'modals/ResumeModalHost';
+import { JdModalHost } from 'modals/JdModalHost';
+
+function AppShell() {
+  return (
+    <>
+      <Outlet />
+      <AuthModalHost />
+      <ResumeModalHost />
+      <JdModalHost />
+    </>
+  );
+}
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <RootLayout />,
+    element: <AppShell />,
     children: [
       { index: true, element: <HomePage /> },
       { path: routes.about, element: <AboutPage /> },

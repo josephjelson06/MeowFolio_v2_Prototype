@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthModal } from 'hooks/useAuthModal';
 import { routes } from 'lib/routes';
 import { cn } from 'lib/cn';
+import { useUiContext } from 'state/ui/uiContext';
 import type { AuthModalConfig } from 'types/ui';
 
 type AuthModalChipVariant = 'accent' | 'info' | 'outline';
@@ -125,7 +125,7 @@ function AuthModalPanel({
 
 export function AuthModalHost() {
   const navigate = useNavigate();
-  const { authOpen, authConfig, closeAuth } = useAuthModal();
+  const { authOpen, authConfig, closeAuth } = useUiContext();
 
   useEffect(() => {
     if (!authOpen) return undefined;

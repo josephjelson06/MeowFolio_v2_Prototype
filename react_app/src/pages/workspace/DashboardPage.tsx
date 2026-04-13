@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { useResumeModal } from 'hooks/useResumeModal';
 import { cn } from 'lib/cn';
 import { routes } from 'lib/routes';
 import { resumeService } from 'services/resumeService';
 import { tipsService } from 'services/tipsService';
 import { useSession } from 'state/session/sessionContext';
+import { useUiContext } from 'state/ui/uiContext';
 
 const kpis = [
   { label: 'Average ATS Score', value: 74, icon: '\u25c8', warn: false },
@@ -127,7 +127,7 @@ function WorkspacePageShell({
 }
 
 export function DashboardPage() {
-  const { openResume } = useResumeModal();
+  const { openResume } = useUiContext();
   const { actor } = useSession();
   const [resumes, setResumes] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
   const [tips, setTips] = useState<string[]>([]);

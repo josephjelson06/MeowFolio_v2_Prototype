@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { useAuthModal } from 'hooks/useAuthModal';
 import { cn } from 'lib/cn';
 import { routes } from 'lib/routes';
+import { useUiContext } from 'state/ui/uiContext';
 
 const aboutSurfaceWidth = 'w-full max-w-[1360px]';
 const aboutBodyClass = 'text-base leading-7 text-[color:var(--txt2)] lg:text-lg lg:leading-8';
@@ -210,7 +210,7 @@ function AboutFooter() {
 }
 
 export function AboutPage() {
-  const { openAuth } = useAuthModal();
+  const { openAuth } = useUiContext();
 
   function openAboutAuth() {
     openAuth({

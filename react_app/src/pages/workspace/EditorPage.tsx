@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
-import { useViewportMode } from 'hooks/useViewportMode';
 import { cn } from 'lib/cn';
 import { routes } from 'lib/routes';
 import { resumeService } from 'services/resumeService';
@@ -53,6 +52,22 @@ const BASE_SECTION_ORDER = ['summary', 'education', 'skills', 'experience', 'pro
 const ACCENT_COLORS: RenderAccentColor[] = ['charcoal', 'navy', 'slate', 'forest', 'berry'];
 const DRAFT_PREFIX = 'meowfolio:editor-draft:';
 const LEGACY_DRAFT_PREFIX = 'resumeai:editor-draft:';
+
+function usePageViewportMode(breakpoint = 768) {
+  const getValue = () => window.matchMedia(`(max-width: ${breakpoint}px)`).matches;
+  const [isMobile, setIsMobile] = useState(() => getValue());
+
+  useEffect(() => {
+    const media = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const onChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, [breakpoint]);
+
+  return { isMobile };
+}
 
 function getDraftKey(id: string) {
   return `${DRAFT_PREFIX}${id}`;
@@ -1309,7 +1324,7 @@ function EditorFormPane({
 }
 
 export function EditorPage() {
-  const { isMobile } = useViewportMode();
+  const { isMobile } = usePageViewportMode();
   const [searchParams] = useSearchParams();
   const resumeIdFromQuery = searchParams.get('resumeId');
   const [resumeOptions, setResumeOptions] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);

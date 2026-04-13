@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useResumeModal } from 'hooks/useResumeModal';
 import { routes } from 'lib/routes';
 import { resumeService } from 'services/resumeService';
+import { useUiContext } from 'state/ui/uiContext';
 
 type ResumeMode = 'upload' | 'paste' | null;
 
 export function ResumeModalHost() {
   const navigate = useNavigate();
-  const { resumeOpen, closeResume } = useResumeModal();
+  const { resumeOpen, closeResume } = useUiContext();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mode, setMode] = useState<ResumeMode>(null);
   const [text, setText] = useState('');

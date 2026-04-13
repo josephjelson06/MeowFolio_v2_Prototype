@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useJdModal } from 'hooks/useJdModal';
-import { useViewportMode } from 'hooks/useViewportMode';
 import { cn } from 'lib/cn';
 import { downloadTextFile } from 'lib/formatters';
 import { jdService, type JdReportModel } from 'services/jdService';
 import { resumeService } from 'services/resumeService';
 import { routes } from 'lib/routes';
 import { useSession } from 'state/session/sessionContext';
+import { useUiContext } from 'state/ui/uiContext';
 import type { JdRecord } from 'types/jd';
 import type { ResumePickerOption } from 'types/resume';
 
@@ -24,6 +23,22 @@ const mobileTabClass =
   'flex-1 rounded-full border-2 border-charcoal/70 px-4 py-2 font-headline text-[11px] font-bold uppercase tracking-[0.12em] transition';
 const jdActionClass =
   'inline-flex min-h-8 items-center justify-center rounded-full border-2 border-charcoal/70 bg-white/85 px-3 py-1.5 text-[10px] font-semibold text-[color:var(--txt1)] shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white disabled:pointer-events-none disabled:opacity-40';
+
+function usePageViewportMode(breakpoint = 768) {
+  const getValue = () => window.matchMedia(`(max-width: ${breakpoint}px)`).matches;
+  const [isMobile, setIsMobile] = useState(() => getValue());
+
+  useEffect(() => {
+    const media = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const onChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, [breakpoint]);
+
+  return { isMobile };
+}
 
 function jdShellLinkClass(active: boolean) {
   return cn(
@@ -530,8 +545,8 @@ function JdMobileSheet({
 }
 
 export function JdsPage() {
-  const { isMobile } = useViewportMode();
-  const { openJd } = useJdModal();
+  const { isMobile } = usePageViewportMode();
+  const { openJd } = useUiContext();
   const [jds, setJds] = useState<Awaited<ReturnType<typeof jdService.list>>>([]);
   const [jdPage, setJdPage] = useState(1);
   const [selectedJdId, setSelectedJdId] = useState<string | null>(null);

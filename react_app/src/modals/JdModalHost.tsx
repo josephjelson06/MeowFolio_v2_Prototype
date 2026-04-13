@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { useJdModal } from 'hooks/useJdModal';
 import { jdService } from 'services/jdService';
+import { useUiContext } from 'state/ui/uiContext';
 
 type JdMode = 'upload' | 'paste';
 
 export function JdModalHost() {
-  const { jdOpen, closeJd } = useJdModal();
+  const { jdOpen, closeJd } = useUiContext();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mode, setMode] = useState<JdMode>('upload');
   const [text, setText] = useState('');

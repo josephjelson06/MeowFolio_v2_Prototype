@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useResumeModal } from 'hooks/useResumeModal';
 import { cn } from 'lib/cn';
 import { downloadTextFile } from 'lib/formatters';
 import { routes } from 'lib/routes';
 import { resumeService } from 'services/resumeService';
 import { useSession } from 'state/session/sessionContext';
+import { useUiContext } from 'state/ui/uiContext';
 import type { ResumeRecord } from 'types/resume';
 
 function getVisibleResumes(resumes: ResumeRecord[], page: number) {
@@ -247,7 +247,7 @@ function ResumeLibraryCard({
 
 export function ResumesPage() {
   const navigate = useNavigate();
-  const { openResume } = useResumeModal();
+  const { openResume } = useUiContext();
   const [resumes, setResumes] = useState<ResumeRecord[]>([]);
   const [page, setPage] = useState(1);
 

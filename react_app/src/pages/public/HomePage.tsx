@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { useAuthModal } from 'hooks/useAuthModal';
 import { cn } from 'lib/cn';
 import { routes } from 'lib/routes';
 import { templateService } from 'services/templateService';
+import { useUiContext } from 'state/ui/uiContext';
 import type { TemplateRecord } from 'types/template';
 
 const homeSurfaceWidth = 'w-full max-w-[1360px]';
@@ -134,13 +134,13 @@ function HomeAction({
     className,
   );
 
-  if (to) {
-    return (
-      <Link className={actionClass} to={to}>
-        {children}
-      </Link>
-    );
-  }
+  // if (to) {
+  //   return (
+  //     <Link className={actionClass} to={to}>
+  //       {children}
+  //     </Link>
+  //   );
+  // }
 
   return (
     <button className={actionClass} type="button" onClick={onClick}>
@@ -293,7 +293,7 @@ function HomeFooter() {
 }
 
 export function HomePage() {
-  const { openAuth } = useAuthModal();
+  const { openAuth } = useUiContext();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [templateItems, setTemplateItems] = useState<TemplateRecord[]>([]);
   const storyRailRef = useRef<HTMLDivElement | null>(null);
@@ -432,7 +432,7 @@ export function HomePage() {
             </div>
           </section>
 
-          <section className={homePageSection}>
+          {           <section className={homePageSection}>
             <div className="mx-auto mb-10 grid max-w-3xl justify-items-center gap-4 text-center sm:mb-11">
               <h2 className={homeHeadingClass}>Everything you need.</h2>
               <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
@@ -464,61 +464,61 @@ export function HomePage() {
                 </article>
               ))}
             </div>
-          </section>
+          </section> }
 
-          <section className={homePageSection}>
-            <div className="mb-8 flex flex-col gap-5 md:mb-10 md:flex-row md:items-center md:justify-between">
-              <h2 className={homeHeadingClass}>Pick your vibe.</h2>
-              <div className="flex items-center gap-3">
-                <HomeRailButton
-                  label="Show previous templates"
-                  onClick={() => scrollRail(templateRailRef, 'left', 0.82)}
-                />
-                <HomeRailButton
-                  label="Show next templates"
-                  onClick={() => scrollRail(templateRailRef, 'right', 0.82)}
-                />
+            {/* <section className={homePageSection}>
+              <div className="mb-8 flex flex-col gap-5 md:mb-10 md:flex-row md:items-center md:justify-between">
+                <h2 className={homeHeadingClass}>Pick your vibe.</h2>
+                <div className="flex items-center gap-3">
+                  <HomeRailButton
+                    label="Show previous templates"
+                    onClick={() => scrollRail(templateRailRef, 'left', 0.82)}
+                  />
+                  <HomeRailButton
+                    label="Show next templates"
+                    onClick={() => scrollRail(templateRailRef, 'right', 0.82)}
+                  />
+                </div>
               </div>
-            </div>
 
-            <div
-              className="hide-scrollbar flex max-w-full snap-x snap-mandatory gap-5 overflow-x-auto pb-4 lg:gap-6"
-              ref={templateRailRef}
-            >
-              {templateItems.map(template => (
-                <article
-                  className={cn(
-                    'flex w-[16.75rem] flex-none snap-start flex-col overflow-hidden bg-white/92 sm:w-[17.5rem] lg:w-[18rem]',
-                    homeCardShell,
-                  )}
-                  key={template.id}
-                >
-                  <div className="bg-surface-container-low px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
-                    <div className="overflow-hidden rounded-[1.25rem] bg-white p-3 shadow-ambient sm:p-4">
-                      {template.previewImageUrl ? (
-                        <img
-                          className="h-[14.5rem] w-full rounded-[1rem] bg-white object-cover object-top sm:h-[15rem]"
-                          src={template.previewImageUrl}
-                          alt={`${template.name} template preview`}
-                          loading="lazy"
-                        />
-                      ) : null}
+              <div
+                className="hide-scrollbar flex max-w-full snap-x snap-mandatory gap-5 overflow-x-auto pb-4 lg:gap-6"
+                ref={templateRailRef}
+              >
+                {templateItems.map(template => (
+                  <article
+                    className={cn(
+                      'flex w-[16.75rem] flex-none snap-start flex-col overflow-hidden bg-white/92 sm:w-[17.5rem] lg:w-[18rem]',
+                      homeCardShell,
+                    )}
+                    key={template.id}
+                  >
+                    <div className="bg-surface-container-low px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
+                      <div className="overflow-hidden rounded-[1.25rem] bg-white p-3 shadow-ambient sm:p-4">
+                        {template.previewImageUrl ? (
+                          <img
+                            className="h-[14.5rem] w-full rounded-[1rem] bg-white object-cover object-top sm:h-[15rem]"
+                            src={template.previewImageUrl}
+                            alt={`${template.name} template preview`}
+                            loading="lazy"
+                          />
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-1 flex-col gap-4 p-5 text-center sm:p-6">
-                    <h3 className="font-headline text-2xl font-extrabold text-on-surface">{template.badge}</h3>
-                    <p className={homeBodyClass}>{template.bestFor}</p>
-                    <div className="mt-auto pt-1">
-                      <HomeAction className="w-full justify-center px-6" onClick={openHomeAuth} size="lg">
-                        Use this template
-                      </HomeAction>
+                    <div className="flex flex-1 flex-col gap-4 p-5 text-center sm:p-6">
+                      <h3 className="font-headline text-2xl font-extrabold text-on-surface">{template.badge}</h3>
+                      <p className={homeBodyClass}>{template.bestFor}</p>
+                      <div className="mt-auto pt-1">
+                        <HomeAction className="w-full justify-center px-6" onClick={openHomeAuth} size="lg">
+                          Use this template
+                        </HomeAction>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
+                  </article>
+                ))}
+              </div>
+            </section> */}
 
           <section className={homePageSection}>
             <div className="grid gap-7 lg:grid-cols-[minmax(260px,0.68fr)_minmax(0,1.32fr)] lg:items-stretch lg:gap-8">
