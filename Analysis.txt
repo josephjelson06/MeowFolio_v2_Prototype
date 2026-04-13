@@ -667,3 +667,528 @@ This project looks like a resume-product prototype that is trying to become a re
 
 So in one sentence: this is a promising resume-workflow product with a solid core idea, but the frontend architecture is still half prototype, half product, and now needs cleanup around shared shells, feature boundaries, and domain contracts.
 ------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+So, what I think are the following:
+- First fix the frontend - the UI/UX is not properly built and has to be changed or properly built.
+(Buttons, cards, - and if these are reusable shouldn't affect page wise alterations if done)
+- But the backend's not wired up either - there's no auth, no AI calls, no DB save, no latex template design yet.
+- And now, there's currently some amount of mock data. But the UI's all messed up. I need to fix that first - atleast to a level where after which I can go and start working on the backend.
+- So, I'm not sure, whether to keep the mock data or not now.
+- The other places mock data usually works.
+- There's only one place where mock data cannot be tested. That's the actual rendered pdf resume | And other place could be the template images (for showing how the template looks like)
+- And there's also a thing about session now. Is it just mimicking the backend - will it be removed at the time of attaching the backend?
+
+- Then there comes the folder structure - right now, it's broken - not maintained properly. I want something clean - where I can directly go and fix the file I want change in | But mind these should not present problems later to other files. | 
+
+- I'm not trying to scale this - there will be users but don't treat it as a thousands, or hundres of thousands, or million users kind of project - just few hundred or max 2 - 3 thousands. 
+- The objective is to deliver  project ui/ux first - as it is a completely saas product | so huge focus on ui/ux development - the visual part what the users see. 
+-----------
+If there's some other questions / points I'm leaving out, list them and state what I should do.
+
+
+------------------------------------------------------------------
+
+Yes, your instinct is right: fix the frontend first, but do it in a way that doesn’t paint the backend into a corner later.
+
+**What I’d do**
+1. Stabilize the UI architecture first.
+2. Keep mock data for now.
+3. Keep the service/session layer as the backend boundary.
+4. Clean the folder structure while you refactor the UI.
+5. Only after the UI flows feel solid, wire the backend feature by feature.
+
+**Mock Data**
+Keep it for now.
+
+Use mock data anywhere the UI needs to be designed, reviewed, and interacted with:
+- dashboard metrics
+- resume library
+- JD list
+- profile
+- tips
+- auth/session state
+- editor form state
+- ATS/JD result cards
+
+Avoid depending on mock data for:
+- final rendered PDF correctness
+- real template preview generation
+- real auth
+- real save/load persistence
+- real AI outputs
+
+So the rule is:
+- keep mock data for layout and interaction design
+- do not let mock data define your final backend contract by accident
+
+**Session**
+Yes, the current session layer is basically mimicking the backend.
+
+That is fine.
+
+You should keep:
+- `sessionContext`
+- `sessionService`
+- `apiClient`
+
+Later, when the backend is attached, you change the implementation behind them, not the whole app. So it should not be “removed”; it should become the stable interface between UI and backend.
+
+**What To Fix First In Frontend**
+Fix the parts that improve changeability, not just visuals:
+- shared public layout
+- shared workspace layout
+- reusable buttons/badges/cards
+- page decomposition
+- editor file breakup
+- route structure
+- folder structure
+
+That way, when you change button/card styling later, it won’t break every page differently.
+
+**Folder Structure Goal**
+Your folder structure should optimize for:
+- finding files fast
+- changing one thing without hunting everywhere
+- keeping shared UI separate from page-specific UI
+- keeping backend-boundary code separate from visual code
+
+A clean direction would be:
+- `app/` for bootstrap, router, providers
+- `components/ui/` for true shared primitives
+- `components/public/` for pre-auth shared pieces
+- `components/workspace/` for post-auth shared pieces
+- `pages/public/...` with page-local sections/components
+- `pages/workspace/...` with page-local sections/components
+- `services/` for backend-facing logic
+- `state/` only for true global UI/session state
+- `types/` as one clear frontend source of truth
+
+**Big Architectural Decision You Still Need**
+You need to choose one source of truth for types:
+- either keep frontend types in `react_app/src/types`
+- or move toward `shared/contracts`
+
+Right now you have duplication. That will become painful later.
+
+Since your immediate focus is frontend cleanup, I’d suggest:
+- keep using `react_app/src/types` for now
+- do not expand duplicate types further
+- postpone shared-contract unification until after the UI refactor settles
+
+**Questions / Points You’re Missing**
+These are the important ones to decide now:
+
+- What is the minimum polished v1 UI?
+  Decide exactly which screens must feel “finished” before backend work starts.
+
+- What is real and what is placeholder?
+  Mark each feature as `real`, `mocked`, or `visual-only`.
+
+- What is the design system scope?
+  Decide which primitives you will standardize now:
+  - buttons
+  - badges/pills
+  - cards/panels
+  - inputs
+  - modal shell
+  - page shells
+
+- What is the backend contract you must not break?
+  Even with mock data, define the expected shapes for:
+  - session
+  - resumes
+  - resume document
+  - JD
+  - profile
+  - templates
+
+- What is the editor’s final responsibility?
+  Decide whether `EditorPage` is just orchestration or also a UI container for everything. It should be orchestration only.
+
+- What should remain mocked even after backend starts?
+  Likely:
+  - some ATS scoring
+  - some JD analysis
+  - some template previews
+  until those systems are ready.
+
+- What is the auth model?
+  If it’s Google-only, design around that now and stop pretending there are multiple auth paths.
+
+**My Recommendation**
+- Keep mock data.
+- Refactor the frontend around reusable shells and components.
+- Preserve services and session as backend adapters.
+- Do not delete the mocked boundaries; improve them.
+- Clean the folder structure during the UI refactor, not after.
+- Delay backend wiring until the UI flows, states, and contracts are stable.
+
+The core idea is: don’t remove the scaffolding, make the scaffolding intentional. That gives you a clean UI-first build path without creating rework later.
+
+
+------------------------------------------------------------------------------------------------------------------
+
+
+Architectural Decision:
+- Keep using react_app/src/types
+
+-------------
+
+For the answer of the Questions:
+
+minimum polished v1 -> All pages wired up -> perfectly mimics the actual ux as a product - both desktop and mobile responsivness
+
+templates ss - are visual only
+all post-auth pages data - mostly mocked
+rest all real i guess ?
+ 
+I'm not sure about the primitives or design system scope
+
+------------
+
+Editor Responsibility - don't know
+ATS Scoring - okay mocked
+JD Analysis - okay mocked
+yes template previews - okay
+----------------------------
+
+I'm not making a perfect decision here. You have to support me.
+
+
+----------------------------------------------------------------------------
+
+Keeping `react_app/src/types` as the source of truth is a good decision. It reduces confusion right now, and it matches your immediate goal: get the frontend clean and believable first.
+
+You do not need perfect decisions yet. You need stable enough decisions that let you move forward without thrashing. Based on what you said, I’d lock in these defaults:
+
+**What V1 Means**
+For now, define polished v1 as:
+- all public and post-auth pages present
+- desktop and mobile both feel intentional
+- flows are believable end-to-end
+- interactions feel like a real SaaS product
+- backend-heavy features can still be mocked if the UX is correct
+
+That is a solid target.
+
+**What Should Be Real vs Mocked**
+Use this split:
+
+- `Real now`
+  - routing
+  - page structure
+  - responsive behavior
+  - shared components
+  - modals
+  - form interactions
+  - editor local state
+  - navigation
+  - session boundary layer
+  - service interfaces
+  - template preview images as static visual assets
+
+- `Mocked for now`
+  - post-auth page data
+  - ATS scoring
+  - JD analysis
+  - auth result
+  - DB persistence
+  - server save/load fallback behavior
+  - final template compile/render pipeline details
+
+- `Visual only`
+  - template screenshots/previews
+
+That gives you a clear rule: if it affects UX flow, build it now; if it depends on backend intelligence/infrastructure, mock it.
+
+**Design System Scope**
+Since you’re unsure, I’d keep the first design system small and practical. Standardize only these:
+
+- `Button`
+- `Badge` / `Pill`
+- `Card` / `Panel`
+- `Input`
+- `Textarea`
+- `Select`
+- `ModalShell`
+- `PageShell`
+- `SectionHeading`
+- `EmptyState`
+
+That’s enough to clean the UI without overengineering.
+
+Do not try to build a giant design system now.
+
+**Editor Responsibility**
+Make this the rule:
+
+`EditorPage` should own:
+- route-level orchestration
+- loading the active resume
+- save state
+- mode switching
+- choosing which editor sub-panels are visible
+
+`EditorPage` should not own:
+- all field rendering details
+- toolbar UI internals
+- template picker UI internals
+- preview rendering internals
+- ATS panel rendering internals
+- helper utility logic
+
+So the editor page should be the conductor, not the whole orchestra.
+
+**Session**
+Keep it.
+
+Treat `sessionContext` and `sessionService` as the frontend auth/session boundary. Later, when real auth arrives, you swap implementation, not the whole app structure. So no, it should not be removed; it should mature.
+
+**What I’d Lock In As Your Plan**
+1. Clean folder structure while refactoring UI.
+2. Extract shared public components.
+3. Extract shared workspace components.
+4. Break down `EditorPage`.
+5. Keep mock data through services.
+6. Keep `react_app/src/types` as the only frontend type source.
+7. Ignore backend completeness until the UX shell is stable.
+
+**One Important Extra Decision**
+I would also decide this now:
+
+- frontend should never import from top-level `shared/contracts` during this cleanup phase
+- frontend should treat `react_app/src/types` as the only valid type layer
+
+That will save you a lot of confusion.
+
+**What You’re Still Leaving Open**
+These are the only meaningful unresolved areas now:
+- exact folder structure
+- exact shared component boundaries
+- how far to split `EditorPage` in phase 1 versus phase 2
+- whether 404/500 should later have separate public/workspace variants
+
+Those are manageable. They do not block you.
+
+Your direction is good. The safest next move is not backend work, and not deleting mocks. The safest next move is making the UI architecture clean enough that styling and page changes become easy instead of fragile.
+
+If you want, I can now help you make the next concrete decision:
+- final folder structure
+- minimal design system component list
+- phased refactor order
+
+I’d recommend we do the folder structure next.
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+see basically keep two folders - backend | frontend (change name from react_app to frontend) - do what ever the hell you want with frontend in frontend/ folder only.
+
+Now, we focus on the frontend final folder structure and other mandate decisions.
+
+---------
+
+Yes. Make the repo conceptually just:
+
+- `backend/`
+- `frontend/`
+
+And from this point on, the frontend should be self-contained inside `frontend/`.
+
+**Final Frontend Structure**
+```text
+frontend/
+  public/
+  src/
+    app/
+      App.tsx
+      router/
+        index.tsx
+        routes.ts
+        shells/
+          RootShell.tsx
+    assets/
+      images/
+      template-previews/
+    components/
+      ui/
+        Button.tsx
+        Badge.tsx
+        Card.tsx
+        Input.tsx
+        Textarea.tsx
+        Select.tsx
+        ModalShell.tsx
+        EmptyState.tsx
+        SectionHeading.tsx
+      public/
+        PublicHeader.tsx
+        PublicFooter.tsx
+        PublicLayout.tsx
+        PublicStatusPage.tsx
+      workspace/
+        WorkspaceShell.tsx
+        WorkspaceTopNav.tsx
+        WorkspaceMobileNav.tsx
+        WorkspaceHeader.tsx
+    modals/
+      auth/
+        AuthModalHost.tsx
+      resumes/
+        ResumeModalHost.tsx
+      jds/
+        JdModalHost.tsx
+    pages/
+      public/
+        home/
+          HomePage.tsx
+          components/
+          data.ts
+        about/
+          AboutPage.tsx
+          components/
+          data.ts
+        status/
+          NotFoundPage.tsx
+          Error500Page.tsx
+      workspace/
+        dashboard/
+          DashboardPage.tsx
+          components/
+        editor/
+          EditorPage.tsx
+          components/
+          hooks/
+          utils/
+        resumes/
+          ResumesPage.tsx
+          components/
+        jds/
+          JdsPage.tsx
+          components/
+        profile/
+          ProfilePage.tsx
+          components/
+    services/
+      api/
+        apiClient.ts
+      session/
+        sessionService.ts
+      resumes/
+        resumeService.ts
+      jds/
+        jdService.ts
+      templates/
+        templateService.ts
+      profile/
+        profileService.ts
+      tips/
+        tipsService.ts
+    state/
+      session/
+        sessionContext.tsx
+      ui/
+        uiContext.tsx
+    types/
+      resumeDocument.ts
+      resume.ts
+      jd.ts
+      template.ts
+      session.ts
+      ui.ts
+    lib/
+      cn.ts
+      formatters.ts
+    styles/
+      tokens.css
+      react-app.css
+    main.tsx
+```
+
+**Mandate Decisions**
+These should be treated as rules.
+
+1. `frontend/src/types` is the only frontend type source.
+2. Frontend does not import from repo-root `shared/`, `types/`, or `lib/`.
+3. Mock app data lives in `services/`, not in pages.
+4. Public marketing copy/data can live in page-local `data.ts`.
+5. Pages orchestrate; components render.
+6. Global state is only for true app-wide state:
+   - session
+   - modal/open-close UI
+7. Reusable primitives live only in `components/ui`.
+8. Shared pre-auth pieces live only in `components/public`.
+9. Shared post-auth pieces live only in `components/workspace`.
+10. `EditorPage` is orchestration only; editor sub-UI must be split out.
+11. `main.tsx`, `App.tsx`, and router stay small.
+12. No frontend architectural dependency on backend readiness.
+
+**Design System Scope**
+Keep it intentionally small for v1.
+
+Build and standardize only:
+- `Button`
+- `Badge`
+- `Card`
+- `Input`
+- `Textarea`
+- `Select`
+- `ModalShell`
+- `EmptyState`
+- `SectionHeading`
+
+That is enough. Don’t build a giant system now.
+
+**What Goes Where**
+- Public page-specific content:
+  - page-local `data.ts`
+  - page-local `components/`
+- Workspace mocked business data:
+  - `services/`
+- Shared shell/chrome:
+  - `components/public/`
+  - `components/workspace/`
+- Tiny pure helpers:
+  - `lib/`
+- Global providers:
+  - `state/`
+- Route registration:
+  - `app/router/`
+
+**Specific Calls**
+- Rename `react_app` to `frontend`.
+- Keep `main.tsx`.
+- Keep `App.tsx`.
+- Move `routes.ts` from `lib/` into `app/router/routes.ts`.
+- Move `apiClient.ts` from `lib/` into `services/api/apiClient.ts`.
+- Remove or fold tiny unused state files like `state/editor/editorState.ts` and `state/jds/jdState.ts`.
+- Stop growing duplicate top-level folders outside `frontend`.
+
+**For Your Current Product**
+- Public side gets one shared public shell.
+- Workspace side gets one shared workspace shell.
+- 404/500 stay public for now.
+- Session stays as the frontend auth boundary.
+- ATS/JD/template previews remain mocked.
+- Backend can come later without breaking the UI structure.
+
+**Refactor Order**
+1. Rename `react_app` to `frontend`.
+2. Create shared `components/ui`.
+3. Extract shared `components/public`.
+4. Extract shared `components/workspace`.
+5. Re-folder pages into page-per-folder structure.
+6. Break down `EditorPage`.
+7. Reorganize `services/`.
+8. Remove dead tiny files.
+
+This is the structure I’d commit to. If you want, I can next turn this into a very concrete “move these exact files to these exact new paths” plan.
+
+------------------------------------------------------------------------------------
