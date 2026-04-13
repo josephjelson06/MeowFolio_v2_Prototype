@@ -1459,47 +1459,71 @@ export function EditorPage() {
       </div>
 
       <div className="hidden items-center justify-between gap-4 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 px-5 py-4 shadow-tactile md:flex">
-        <div className="flex min-w-0 flex-wrap items-center gap-2 text-sm text-[color:var(--txt1)]">
-          <NavLink className="font-semibold text-primary transition hover:text-on-surface" to={routes.resumes}>
-            Resumes
-          </NavLink>
-          <span>/</span>
-          <span className="truncate">{resumeName}</span>
-          <span>/</span>
-          <span className="font-semibold text-on-surface">{mode === 'ats' ? 'ATS Score' : 'Editor'}</span>
-        </div>
+        <div className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-4">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 text-sm text-[color:var(--txt1)]">
+            <NavLink className="font-semibold text-primary transition hover:text-on-surface" to={routes.resumes}>
+              Resumes
+            </NavLink>
+            <span>/</span>
+            <span className="truncate">{resumeName}</span>
+            <span>/</span>
+            <span className="font-semibold text-on-surface">{mode === 'ats' ? 'ATS Score' : 'Editor'}</span>
+          </div>
 
-        <div className="flex shrink-0 gap-2">
-          <button
-            className={cn(
-              desktopModeClass,
-              mode === 'editor' ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm' : 'border-outline bg-white/65 text-[color:var(--txt1)]',
-            )}
-            type="button"
-            onClick={() => handleModeChange('editor')}
-          >
-            Editor
-          </button>
-          <button
-            className={cn(
-              desktopModeClass,
-              mode === 'ats' ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm' : 'border-outline bg-white/65 text-[color:var(--txt1)]',
-            )}
-            type="button"
-            onClick={() => {
-              handleModeChange('ats');
-              void runAtsAnalysis();
-            }}
-          >
-            ATS Score
-          </button>
+          {mode === 'editor' ? (
+            <div className="flex items-center justify-self-center gap-2">
+              {leftTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  className={cn(
+                    'inline-flex min-h-10 items-center justify-center rounded-full border-2 px-4 py-2 font-headline text-[11px] font-bold uppercase tracking-[0.12em] transition',
+                    activeLeftTab === tab.id
+                      ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm'
+                      : 'border-outline bg-white/65 text-[color:var(--txt1)] hover:bg-white',
+                  )}
+                  type="button"
+                  onClick={() => setActiveLeftTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div />
+          )}
+
+          <div className="flex shrink-0 justify-self-end gap-2">
+            <button
+              className={cn(
+                desktopModeClass,
+                mode === 'editor' ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm' : 'border-outline bg-white/65 text-[color:var(--txt1)]',
+              )}
+              type="button"
+              onClick={() => handleModeChange('editor')}
+            >
+              Editor
+            </button>
+            <button
+              className={cn(
+                desktopModeClass,
+                mode === 'ats' ? 'border-charcoal/75 bg-white text-on-surface shadow-tactile-sm' : 'border-outline bg-white/65 text-[color:var(--txt1)]',
+              )}
+              type="button"
+              onClick={() => {
+                handleModeChange('ats');
+                void runAtsAnalysis();
+              }}
+            >
+              ATS Score
+            </button>
+          </div>
         </div>
       </div>
 
       {mode === 'editor' ? (
-        <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start">
           <div className={cn(mobileView === 'edit' ? 'grid gap-4' : 'hidden gap-4 md:grid')}>
-            <div className="flex flex-wrap gap-2 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-3 shadow-tactile-sm">
+            <div className="flex flex-wrap gap-2 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-3 shadow-tactile-sm md:hidden">
               {leftTabs.map(tab => (
                 <button
                   key={tab.id}
@@ -1517,80 +1541,83 @@ export function EditorPage() {
               ))}
             </div>
 
-            {activeLeftTab === 'sections' ? (
+            <div className="grid gap-4 xl:grid-cols-[240px_minmax(0,1fr)] xl:items-start">
+              <SectionNav
+                sections={sections}
+                activeSection={activeSection}
+                onSelect={setActiveSection}
+                onAddCustomSection={addCustomSection}
+                onMoveSection={moveSection}
+                onRemoveSection={removeSection}
+                canMoveUp={section => {
+                  if (section === 'contact') return false;
+                  const index = record.renderOptions.sectionOrder.indexOf(section);
+                  return index > 0;
+                }}
+                canMoveDown={section => {
+                  if (section === 'contact') return false;
+                  const index = record.renderOptions.sectionOrder.indexOf(section);
+                  return index !== -1 && index < record.renderOptions.sectionOrder.length - 1;
+                }}
+              />
+
               <div className="grid gap-4">
-                <SectionNav
-                  sections={sections}
-                  activeSection={activeSection}
-                  onSelect={setActiveSection}
-                  onAddCustomSection={addCustomSection}
-                  onMoveSection={moveSection}
-                  onRemoveSection={removeSection}
-                  canMoveUp={section => {
-                    if (section === 'contact') return false;
-                    const index = record.renderOptions.sectionOrder.indexOf(section);
-                    return index > 0;
-                  }}
-                  canMoveDown={section => {
-                    if (section === 'contact') return false;
-                    const index = record.renderOptions.sectionOrder.indexOf(section);
-                    return index !== -1 && index < record.renderOptions.sectionOrder.length - 1;
-                  }}
-                />
-                <EditorFormPane
-                  activeSection={activeSection}
-                  page={page}
-                  resume={record.content}
-                  totalPages={totalPages}
-                  onContentChange={updateContent}
-                  onNextPage={() => updatePage(page + 1)}
-                  onPrevPage={() => updatePage(page - 1)}
-                />
+                {activeLeftTab === 'sections' ? (
+                  <EditorFormPane
+                    activeSection={activeSection}
+                    page={page}
+                    resume={record.content}
+                    totalPages={totalPages}
+                    onContentChange={updateContent}
+                    onNextPage={() => updatePage(page + 1)}
+                    onPrevPage={() => updatePage(page - 1)}
+                  />
+                ) : null}
+
+                {activeLeftTab === 'template' ? (
+                  <TemplatePane
+                    selectedTemplate={record.templateId}
+                    onSelect={(templateId: RenderTemplateId) => {
+                      setRecord(current =>
+                        current
+                          ? {
+                              ...current,
+                              renderOptions: { ...current.renderOptions, templateId },
+                              templateId,
+                            }
+                          : current,
+                      );
+                      setAtsReport(null);
+                    }}
+                  />
+                ) : null}
+
+                {activeLeftTab === 'toolbar' ? (
+                  <ToolbarPane
+                    values={toolbarValues}
+                    onChange={patch => {
+                      setToolbarValues(current => {
+                        const next = { ...current, ...patch };
+                        setRecord(previous =>
+                          previous
+                            ? {
+                                ...previous,
+                                renderOptions: applyToolbarValues(previous.renderOptions, next),
+                              }
+                            : previous,
+                        );
+                        return next;
+                      });
+                      setAtsReport(null);
+                    }}
+                  />
+                ) : null}
               </div>
-            ) : null}
-
-            {activeLeftTab === 'template' ? (
-              <TemplatePane
-                selectedTemplate={record.templateId}
-                onSelect={(templateId: RenderTemplateId) => {
-                  setRecord(current =>
-                    current
-                      ? {
-                          ...current,
-                          renderOptions: { ...current.renderOptions, templateId },
-                          templateId,
-                        }
-                      : current,
-                  );
-                  setAtsReport(null);
-                }}
-              />
-            ) : null}
-
-            {activeLeftTab === 'toolbar' ? (
-              <ToolbarPane
-                values={toolbarValues}
-                onChange={patch => {
-                  setToolbarValues(current => {
-                    const next = { ...current, ...patch };
-                    setRecord(previous =>
-                      previous
-                        ? {
-                            ...previous,
-                            renderOptions: applyToolbarValues(previous.renderOptions, next),
-                          }
-                        : previous,
-                    );
-                    return next;
-                  });
-                  setAtsReport(null);
-                }}
-              />
-            ) : null}
+            </div>
           </div>
 
           <div className={cn(mobileView === 'edit' ? 'hidden gap-4 md:grid' : 'grid gap-4')}>
-            <div className="flex flex-col gap-4 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-4 shadow-tactile-sm md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-1 text-sm text-[color:var(--txt1)]">
               <div className="flex items-center gap-3 text-sm text-[color:var(--txt1)]">
                 <span className="size-2.5 rounded-full bg-tertiary"></span>
                 <span>
