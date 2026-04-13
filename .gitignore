@@ -3,8 +3,11 @@ SS/
 old_global.css
 old_tokens.css
 old_tailwind.config.ts
+frontend/node_modules/
+frontend/dist/
 react_app/node_modules/
 react_app/dist/
+react_app/.vite/
 backend/node_modules/
 backend/dist/
 backend/uploads/
