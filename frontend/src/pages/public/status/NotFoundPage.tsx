@@ -16,8 +16,8 @@ export function NotFoundPage() {
           <div className="absolute inset-x-10 top-10 h-36 rounded-full bg-primary/12 blur-3xl" />
 
           <div className="relative z-10 grid justify-items-center gap-7 sm:gap-8">
-            <div className="grid size-28 place-items-center rounded-full bg-primary-fixed text-primary shadow-[inset_0_0_0_1px_rgba(28,28,24,0.12)] sm:size-32">
-              <span className="font-headline text-7xl font-extrabold leading-none tracking-[-0.06em] sm:text-[5rem]">404</span>
+            <div className="grid size-32 place-items-center rounded-full bg-primary-fixed text-primary shadow-[inset_0_0_0_1px_rgba(28,28,24,0.12)] sm:size-36">
+              <span className="font-headline text-6xl font-extrabold leading-none tracking-[-0.06em] sm:text-[4rem]">404</span>
             </div>
 
             <div className="inline-flex rounded-full border border-primary/35 bg-primary-fixed px-4 py-1.5 font-headline text-[11px] font-bold uppercase tracking-[0.16em] text-primary">

@@ -24,3 +24,7 @@ Update at 13:39 Hrs
 
 Update at 14:37 Hrs
 - Completed Implementing the Modals - Edit,Rename,Delete, Delete,Logout
+
+Update at 15:27 Hrs
+ - Fixed the NavBar Issues
+ - Fixed the sizing of the 404 and 500 Pages.

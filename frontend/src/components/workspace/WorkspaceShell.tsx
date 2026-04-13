@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { BrandLink } from 'components/BrandLink';
 import { cn } from 'lib/cn';
 import { routes } from 'app/router/routes';
+import { PUBLIC_SURFACE_WIDTH } from 'components/public/publicStyles';
 import { useSession } from 'state/session/sessionContext';
 
 import { useAutoHideHeader } from '@/hooks/useAutoHideHeader';
@@ -39,44 +41,40 @@ export function WorkspaceShell({
     <div className="min-h-screen">
       <nav
         className={cn(
-          'sticky top-0 z-40 hidden min-h-[68px] grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-charcoal/10 bg-background/85 px-4 shadow-[0_8px_24px_rgba(28,28,24,0.05)] backdrop-blur-xl transition-transform duration-300 ease-out md:grid md:px-8',
+          'sticky top-0 z-40 hidden w-full border-b border-charcoal/10 bg-background/85 shadow-[0_8px_24px_rgba(28,28,24,0.05)] backdrop-blur-xl transition-transform duration-300 ease-out md:block',
           isHidden ? '-translate-y-full' : 'translate-y-0',
         )}
       >
-
-
-        <NavLink className="inline-flex w-max items-center font-headline text-2xl font-extrabold tracking-[-0.03em] text-on-surface" to={routes.dashboard}>
-          meowfolio
-        </NavLink>
-        <div className="flex items-center justify-self-center gap-2">
-          <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.dashboard}>
-            Dashboard
-          </NavLink>
-          <NavLink className={workspaceLinkClass(resumesActive)} to={routes.resumes}>
-            Resumes
-          </NavLink>
-          <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.jds}>
-            JDs
-          </NavLink>
-        </div>
-        <div className="justify-self-end">
-          <NavLink className="grid size-9 place-items-center rounded-full border-[1.5px] border-charcoal/75 bg-white/85 font-headline text-xs font-bold text-secondary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:shadow-tactile" to={routes.profile}>
-            {initials}
-          </NavLink>
+        <div className={`mx-auto grid min-h-[68px] w-full grid-cols-[auto_1fr_auto] items-center gap-6 px-4 sm:px-6 lg:px-8 ${PUBLIC_SURFACE_WIDTH}`}>
+          <BrandLink to={routes.dashboard} />
+          <div className="flex items-center justify-self-center gap-2">
+            <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.dashboard}>
+              Dashboard
+            </NavLink>
+            <NavLink className={workspaceLinkClass(resumesActive)} to={routes.resumes}>
+              Resumes
+            </NavLink>
+            <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.jds}>
+              JDs
+            </NavLink>
+          </div>
+          <div className="justify-self-end">
+            <NavLink className="grid size-9 place-items-center rounded-full border-[1.5px] border-charcoal/75 bg-white/85 font-headline text-xs font-bold text-secondary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:shadow-tactile" to={routes.profile}>
+              {initials}
+            </NavLink>
+          </div>
         </div>
       </nav>
 
       {showMobileTopBar ? (
-        // <div className="sticky top-0 z-40 flex min-h-[56px] items-center gap-3 border-b border-charcoal/10 bg-background/92 px-4 backdrop-blur-xl md:hidden">
-        <div className={cn('sticky top-0 z-40 flex min-h-[56px] items-center gap-3 border-b border-charcoal/10 bg-background/92 px-4 backdrop-blur-xl transition-transform duration-300 ease-out md:hidden', isHidden ? '-translate-y-full' : 'translate-y-0',)}>
-
-          <NavLink className="inline-flex items-center font-headline text-lg font-extrabold tracking-[-0.03em] text-on-surface" to={routes.dashboard}>
-            meowfolio
-          </NavLink>
-          <span className="min-w-0 flex-1 truncate text-sm font-semibold text-on-surface">{title}</span>
-          <NavLink className="grid size-9 place-items-center rounded-full border-[1.5px] border-charcoal/75 bg-white/85 font-headline text-xs font-bold text-secondary shadow-tactile-sm" to={routes.profile}>
-            {initials}
-          </NavLink>
+        <div className={cn('sticky top-0 z-40 w-full border-b border-charcoal/10 bg-background/92 backdrop-blur-xl transition-transform duration-300 ease-out md:hidden', isHidden ? '-translate-y-full' : 'translate-y-0')}>
+          <div className={`mx-auto flex min-h-[60px] w-full items-center gap-3 px-4 ${PUBLIC_SURFACE_WIDTH}`}>
+            <BrandLink compact to={routes.dashboard} />
+            <span className="min-w-0 flex-1 truncate text-sm font-semibold text-on-surface">{title}</span>
+            <NavLink className="grid size-9 place-items-center rounded-full border-[1.5px] border-charcoal/75 bg-white/85 font-headline text-xs font-bold text-secondary shadow-tactile-sm" to={routes.profile}>
+              {initials}
+            </NavLink>
+          </div>
         </div>
       ) : null}
 
