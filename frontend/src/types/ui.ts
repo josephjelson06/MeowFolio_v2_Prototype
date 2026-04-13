@@ -21,3 +21,13 @@ export interface AuthModalConfig {
   previewTitle?: string;
   previewCopy?: string;
 }
+
+export interface ResumeActionModalTarget {
+  id: string;
+  name: string;
+}
+
+export interface JdActionModalTarget {
+  id: string;
+  title: string;
+}

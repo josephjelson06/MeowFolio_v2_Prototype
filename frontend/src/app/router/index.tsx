@@ -12,6 +12,11 @@ import { ProfilePage } from 'pages/workspace/ProfilePage';
 import { AuthModalHost } from 'modals/AuthModalHost';
 import { ResumeModalHost } from 'modals/ResumeModalHost';
 import { JdModalHost } from 'modals/JdModalHost';
+import { ResumeRenameModalHost } from 'modals/resumes/ResumeRenameModalHost';
+import { ResumeDeleteModalHost } from 'modals/resumes/ResumeDeleteModalHost';
+import { JdRenameModalHost } from 'modals/jds/JdRenameModalHost';
+import { JdDeleteModalHost } from 'modals/jds/JdDeleteModalHost';
+import { LogoutConfirmModalHost } from 'modals/session/LogoutConfirmModalHost';
 
 function AppShell() {
   return (
@@ -20,6 +25,11 @@ function AppShell() {
       <AuthModalHost />
       <ResumeModalHost />
       <JdModalHost />
+      <ResumeRenameModalHost />
+      <ResumeDeleteModalHost />
+      <JdRenameModalHost />
+      <JdDeleteModalHost />
+      <LogoutConfirmModalHost />
     </>
   );
 }

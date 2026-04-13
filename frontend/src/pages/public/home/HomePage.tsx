@@ -135,7 +135,7 @@ export function HomePage() {
   return (
     <PublicLayout onOpenAuth={openHomeAuth}>
       <div className={`mx-auto flex w-full flex-col gap-12 sm:gap-14 lg:gap-16 ${PUBLIC_SURFACE_WIDTH}`}>
-        <section className={`${homePageSection} relative overflow-hidden`}>
+        <section className={`${homePageSection} relative `}>
           <div className="absolute left-8 top-10 h-32 w-32 rounded-full bg-primary-fixed/85 blur-3xl sm:h-40 sm:w-40" />
           <div className="absolute bottom-8 right-10 h-40 w-40 rounded-full bg-secondary-fixed/85 blur-3xl sm:h-48 sm:w-48" />
 
@@ -170,7 +170,7 @@ export function HomePage() {
               </div>
             </div>
 
-            <div className="relative mx-auto min-w-0 w-full max-w-[43rem] lg:ml-auto">
+            {/* <div className="relative mx-auto min-w-0 w-full max-w-[43rem] lg:ml-auto">
               <div className="absolute -left-5 top-6 hidden h-[84%] w-[84%] rounded-[2.2rem] bg-primary-fixed/85 lg:block" />
               <div className="relative overflow-hidden rounded-[2.2rem] border-[1.5px] border-charcoal/75 bg-white/96 p-3 shadow-tactile-lg sm:rotate-[1.5deg] sm:p-4 lg:p-5">
                 <div className="aspect-[5/4] overflow-hidden rounded-[1.6rem] border border-charcoal/10 bg-surface-container-low">
@@ -181,10 +181,19 @@ export function HomePage() {
                   />
                 </div>
               </div>
+            </div> */}
+
+            <div className="relative mx-auto min-w-0 w-full max-w-[43rem] lg:ml-auto">
+              <div className="absolute -left-5 top-6 hidden h-[84%] w-[84%] rounded-[2.2rem] bg-primary-fixed/85 lg:block" />
+              <div className="relative rounded-[2.2rem] border-[1.5px] border-charcoal/75 bg-white/96 p-3 shadow-tactile-lg sm:rotate-[1.5deg] sm:p-4 lg:p-5">
+                <div className="aspect-[5/4] overflow-hidden rounded-[1.6rem] border border-charcoal/10 bg-surface-container-low">
+                  <img className="h-full w-full object-cover object-center" src="/Images/Mochii.png" alt="Mochii hero illustration" />
+                </div>
+              </div>
             </div>
           </div>
         </section>
-
+        <hr className="w-full border-t border-black"></hr>
         <section className={homePageSection}>
           <div className="mb-8 flex flex-col gap-5 md:mb-9 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
@@ -245,7 +254,7 @@ export function HomePage() {
             </article>
           </div>
         </section>
-
+        <hr className="w-full border-t border-black"></hr>
         <section className={homePageSection}>
           <div className="mx-auto mb-10 grid max-w-3xl justify-items-center gap-4 text-center sm:mb-11">
             <h2 className={homeHeadingClass}>Everything you need.</h2>
@@ -279,20 +288,20 @@ export function HomePage() {
             ))}
           </div>
         </section>
-
+        <hr className="w-full border-t border-black"></hr>
         <section className={homePageSection}>
           <div className="grid gap-7 lg:grid-cols-[minmax(260px,0.68fr)_minmax(0,1.32fr)] lg:items-stretch lg:gap-8">
             <div className="grid">
               <div className={cn('grid h-full content-start gap-4 bg-white/95 p-5 sm:p-6', PUBLIC_CARD_SHELL)}>
                 <div className="grid min-h-[12.5rem] place-items-center rounded-[1.6rem] bg-surface-container-low sm:min-h-[14rem] lg:min-h-[16rem]">
-                  <div className="grid size-32 place-items-center rounded-full bg-primary-fixed sm:size-36 lg:size-40">
-                    <img
-                      className="h-24 w-24 object-contain sm:h-28 sm:w-28 lg:h-32 lg:w-32"
-                      src="/Images/Prof_Mochii.png"
-                      alt="Professor Mochii illustration"
-                      loading="lazy"
-                    />
-                  </div>
+                  {/* <div className="grid size-32 place-items-center rounded-full bg-primary-fixed sm:size-36 lg:size-40"> */}
+                  <img
+                    className="h-full w-full object-contain"
+                    src="/Images/Prof_Mochii.png"
+                    alt="Professor Mochii illustration"
+                    loading="lazy"
+                  />
+                  {/* </div> */}
                 </div>
                 <div className="rounded-[1.25rem] border-[1.5px] border-charcoal/75 bg-coral p-5 shadow-tactile">
                   <p className="font-headline text-lg font-extrabold italic leading-snug text-white sm:text-xl">
@@ -338,6 +347,7 @@ export function HomePage() {
             </div>
           </div>
         </section>
+        <hr className="w-full border-t border-black"></hr>
       </div>
     </PublicLayout>
   );

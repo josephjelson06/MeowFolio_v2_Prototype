@@ -462,7 +462,7 @@ function JdMobileSheet({
 
 export function JdsPage() {
   const { isMobile } = usePageViewportMode();
-  const { openJd } = useUiContext();
+  const { openJd, openJdDelete, openJdRename } = useUiContext();
   const [jds, setJds] = useState<Awaited<ReturnType<typeof jdService.list>>>([]);
   const [jdPage, setJdPage] = useState(1);
   const [selectedJdId, setSelectedJdId] = useState<string | null>(null);
@@ -554,32 +554,10 @@ export function JdsPage() {
     }
   }
 
-  async function renameJd(id: string) {
-    const jd = await jdService.getById(id);
-    if (!jd) return;
-    const nextName = window.prompt('Edit JD name', jd.title);
-    if (!nextName || !nextName.trim()) return;
-    setJds(await jdService.rename(id, nextName.trim()));
-  }
-
   async function downloadJd(id: string) {
     const jd = await jdService.getById(id);
     if (!jd) return;
     downloadTextFile(`${jd.title.toLowerCase().replace(/[^a-z0-9]+/g, '_')}_jd.txt`, jd.parsedText);
-  }
-
-  async function deleteJd(id: string) {
-    const next = await jdService.remove(id);
-    setJds(next);
-
-    if (reportState?.jd.id === id) {
-      setReportState(null);
-    }
-
-    const nextSelected = next.find(item => item.id === selectedJdId) ? selectedJdId : next[0]?.id ?? null;
-    setSelectedJdId(nextSelected);
-    setJdPage(current => Math.min(current, Math.max(1, Math.ceil(next.length / JD_PAGE_SIZE))));
-    setSheetOpen(false);
   }
 
   const analyzeTitle = selectedJd ? `${selectedJd.title} - ${selectedJd.company}` : 'No saved JDs';
@@ -623,9 +601,17 @@ export function JdsPage() {
             onAdd={openJd}
             onPrev={() => setJdPage(current => Math.max(1, current - 1))}
             onNext={() => setJdPage(current => Math.min(totalPages, current + 1))}
-            onRename={renameJd}
+            onRename={id => {
+              const jd = jds.find(item => item.id === id);
+              if (!jd) return;
+              openJdRename({ id: jd.id, title: jd.title });
+            }}
             onDownload={downloadJd}
-            onDelete={deleteJd}
+            onDelete={id => {
+              const jd = jds.find(item => item.id === id);
+              if (!jd) return;
+              openJdDelete({ id: jd.id, title: jd.title });
+            }}
           />
         </div>
 

@@ -4,6 +4,8 @@ import { cn } from 'lib/cn';
 import { routes } from 'app/router/routes';
 import { useSession } from 'state/session/sessionContext';
 
+import { useAutoHideHeader } from '@/hooks/useAutoHideHeader';
+
 function workspaceLinkClass(active: boolean) {
   return cn(
     'inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-bold text-[color:var(--txt1)] transition hover:bg-white/70 hover:text-primary',
@@ -31,9 +33,18 @@ export function WorkspaceShell({
       active && 'text-primary',
     );
 
+  const isHidden = useAutoHideHeader();
+
   return (
     <div className="min-h-screen">
-      <nav className="sticky top-0 z-40 hidden min-h-[68px] grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-charcoal/10 bg-background/85 px-4 shadow-[0_8px_24px_rgba(28,28,24,0.05)] backdrop-blur-xl md:grid md:px-8">
+      <nav
+        className={cn(
+          'sticky top-0 z-40 hidden min-h-[68px] grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-charcoal/10 bg-background/85 px-4 shadow-[0_8px_24px_rgba(28,28,24,0.05)] backdrop-blur-xl transition-transform duration-300 ease-out md:grid md:px-8',
+          isHidden ? '-translate-y-full' : 'translate-y-0',
+        )}
+      >
+
+
         <NavLink className="inline-flex w-max items-center font-headline text-2xl font-extrabold tracking-[-0.03em] text-on-surface" to={routes.dashboard}>
           meowfolio
         </NavLink>
@@ -56,7 +67,9 @@ export function WorkspaceShell({
       </nav>
 
       {showMobileTopBar ? (
-        <div className="sticky top-0 z-40 flex min-h-[56px] items-center gap-3 border-b border-charcoal/10 bg-background/92 px-4 backdrop-blur-xl md:hidden">
+        // <div className="sticky top-0 z-40 flex min-h-[56px] items-center gap-3 border-b border-charcoal/10 bg-background/92 px-4 backdrop-blur-xl md:hidden">
+        <div className={cn('sticky top-0 z-40 flex min-h-[56px] items-center gap-3 border-b border-charcoal/10 bg-background/92 px-4 backdrop-blur-xl transition-transform duration-300 ease-out md:hidden', isHidden ? '-translate-y-full' : 'translate-y-0',)}>
+
           <NavLink className="inline-flex items-center font-headline text-lg font-extrabold tracking-[-0.03em] text-on-surface" to={routes.dashboard}>
             meowfolio
           </NavLink>

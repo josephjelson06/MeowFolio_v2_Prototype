@@ -83,7 +83,7 @@ export function AboutPage() {
             </article>
           </div>
         </section>
-
+        <hr className="w-full border-t border-black"></hr>
         <section className="w-full py-5 sm:py-7 lg:py-10">
           <div className="mx-auto max-w-4xl text-center">
             <div className={aboutEyebrowClass}>PRODUCT</div>
@@ -105,32 +105,35 @@ export function AboutPage() {
             ))}
           </div>
         </section>
+        <hr className="w-full border-t border-black"></hr>
 
-        <section className="w-full py-5 sm:py-7 lg:py-10">
-          <div className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start lg:gap-12 xl:grid-cols-[360px_minmax(0,1fr)]">
-            <article className={cn('flex w-full items-center gap-5 bg-white/95 p-6 sm:p-7', PUBLIC_CARD_SHELL)}>
+        <section className="w-full py-10">
+
+          <div className={cn(
+            "flex w-full items-start gap-10 bg-white/95 p-6 sm:p-7",
+            PUBLIC_CARD_SHELL
+          )}>
+
+            {/* LEFT PROFILE (same as your article, just pasted here) */}
+            <div className="flex items-center gap-5">
               <img
-                className="h-24 w-24 shrink-0 rounded-full object-cover"
+                // className="h-24 w-24 shrink-0 rounded-full object-cover"
+                className="h-40 w-40 rounded-full object-cover"
                 src="/Images/DP.jpg"
                 alt="Profile photo of the builder"
                 loading="lazy"
               />
 
-              <div className="flex min-w-0 flex-col gap-1">
-                <h3 className="font-headline text-2xl font-extrabold text-on-surface">Jelson Joseph</h3>
-                <p className="text-base font-semibold text-[color:var(--txt1)]">Software Engineer</p>
-                <p className="max-w-[22rem] text-base leading-7 text-[color:var(--txt2)]">
-                  Passionate about crafting scalable and innovative solutions.
-                </p>
-              </div>
-            </article>
+            </div>
 
-            <div className="grid gap-6">
-              <h2 className="max-w-3xl font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface sm:text-5xl">
+            {/* RIGHT CONTENT */}
+            <div className="flex flex-1 flex-col gap-6">
+
+              <h2 className="font-headline text-4xl font-extrabold tracking-[-0.04em] text-on-surface sm:text-5xl">
                 About Me
               </h2>
 
-              <p className={`max-w-3xl ${PUBLIC_BODY_CLASS}`}>
+              <p className={PUBLIC_BODY_CLASS}>
                 Hello Everyone! My name is Jelson Joseph, and I am a Software Engineer with a passion for crafting
                 innovative solutions. I have a strong background in software development, and I am always eager to take
                 on new challenges and learn new technologies. I believe in the power of collaboration and teamwork, and
@@ -142,9 +145,14 @@ export function AboutPage() {
                   Enter the Workspace
                 </PublicAction>
               </div>
+
             </div>
           </div>
+
         </section>
+
+        <hr className="w-full border-t border-black"></hr>
+
       </div>
     </PublicLayout>
   );

@@ -2,11 +2,11 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from 'lib/cn';
-import { routes } from 'app/router/routes';
 import { WorkspaceBadge } from 'components/workspace/WorkspaceBadge';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { profileService } from 'services/profileService';
 import { useSession } from 'state/session/sessionContext';
+import { useUiContext } from 'state/ui/uiContext';
 import type { ProfileSummary, UsageMetric } from 'types/ui';
 
 type ProfileActionVariant = 'primary' | 'secondary' | 'link' | 'danger';
@@ -66,6 +66,7 @@ function ProfileAction({
 
 export function ProfilePage() {
   const { actor, initials } = useSession();
+  const { openLogout } = useUiContext();
   const [summary, setSummary] = useState<ProfileSummary>({
     name: 'Arjun Kumar',
     email: 'arjun@email.com',
@@ -97,7 +98,7 @@ export function ProfilePage() {
             <div className="font-headline text-xl font-extrabold text-on-surface">{actor?.name ?? summary.name}</div>
             <div className="mt-1 text-sm text-[color:var(--txt2)]">{actor?.email ?? summary.email}</div>
           </div>
-          <ProfileAction variant="danger" to={routes.home}>
+          <ProfileAction variant="danger" onClick={openLogout}>
             Logout
           </ProfileAction>
         </section>

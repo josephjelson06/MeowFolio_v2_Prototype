@@ -138,7 +138,7 @@ function ResumeLibraryCard({
 
 export function ResumesPage() {
   const navigate = useNavigate();
-  const { openResume } = useUiContext();
+  const { openResume, openResumeDelete, openResumeRename } = useUiContext();
   const [resumes, setResumes] = useState<ResumeRecord[]>([]);
   const [page, setPage] = useState(1);
 
@@ -155,20 +155,9 @@ export function ResumesPage() {
   const totalPages = useMemo(() => getTotalPages(resumes.length), [resumes.length]);
   const visibleResumes = useMemo(() => getVisibleResumes(resumes, page), [page, resumes]);
 
-  async function renameResume(resume: ResumeRecord) {
-    const nextName = window.prompt('Rename resume', resume.name);
-    if (!nextName || !nextName.trim()) return;
-    setResumes(await resumeService.rename(resume.id, nextName.trim()));
-  }
-
-  async function deleteResume(resume: ResumeRecord) {
-    const confirmed = window.confirm(`Delete ${resume.name}?`);
-    if (!confirmed) return;
-    const next = await resumeService.remove(resume.id);
-    setResumes(next);
-    const nextTotal = getTotalPages(next.length);
-    setPage(current => Math.min(current, nextTotal));
-  }
+  useEffect(() => {
+    setPage(current => Math.min(current, totalPages));
+  }, [totalPages]);
 
   async function downloadResume(resume: ResumeRecord) {
     try {
@@ -217,9 +206,9 @@ export function ResumesPage() {
             <ResumeLibraryCard
               key={resume.id}
               resume={resume}
-              onRename={renameResume}
+              onRename={target => openResumeRename({ id: target.id, name: target.name })}
               onDownload={downloadResume}
-              onDelete={deleteResume}
+              onDelete={target => openResumeDelete({ id: target.id, name: target.name })}
               onOpen={() => {
                 resumeService.setActiveId(resume.id);
                 navigate(`${routes.editor}?resumeId=${resume.id}`);

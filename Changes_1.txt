@@ -1,0 +1,26 @@
+Date: 13-04-2026
+Update at 11:29 Hrs
+
+Fix the spacings and code now
+
+-----------
+
+Update at 12:17 Hrs
+- Fixed the About Me Section -> AboutPage.tsx
+- Added Visual White Box Container for 500 | 404 Pages
+
+Update at 12:47 Hrs
+- Fixed the Hidden Image-Overflow of Mochii Frame
+- Added HR tags
+
+Update at 13:04 Hrs
+- Added the Paw Logo and Image
+
+Update at 13:27 Hrs (Hand Coded - So Took Long)
+- Added Disappearing NavBar Behaviour in both Pre-Auth and Post-Auth Pages
+
+Update at 13:39 Hrs
+- Lunch
+
+Update at 14:37 Hrs
+- Completed Implementing the Modals - Edit,Rename,Delete, Delete,Logout

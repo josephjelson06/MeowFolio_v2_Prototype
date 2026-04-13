@@ -1,4 +1,3 @@
-import { cn } from 'lib/cn';
 import { routes } from 'app/router/routes';
 import { PublicAction } from 'components/public/PublicAction';
 import { PublicLayout } from 'components/public/PublicLayout';
@@ -13,7 +12,7 @@ export function NotFoundPage() {
       <section
         className={`mx-auto flex min-h-[calc(100vh-13rem)] w-full items-center justify-center ${PUBLIC_SURFACE_WIDTH}`}
       >
-        <div className="relative w-full max-w-[36rem] py-12 text-center">
+        <div className={`relative w-full max-w-[36rem] bg-white/95 px-6 py-12 text-center sm:px-8 ${PUBLIC_CARD_SHELL}`}>
           <div className="absolute inset-x-10 top-10 h-36 rounded-full bg-primary/12 blur-3xl" />
 
           <div className="relative z-10 grid justify-items-center gap-7 sm:gap-8">
@@ -42,8 +41,6 @@ export function NotFoundPage() {
               </PublicAction>
             </div>
           </div>
-
-          <div className={cn('pointer-events-none absolute inset-0 -z-10 rounded-[2rem] bg-white/60', PUBLIC_CARD_SHELL)} />
         </div>
       </section>
     </PublicLayout>

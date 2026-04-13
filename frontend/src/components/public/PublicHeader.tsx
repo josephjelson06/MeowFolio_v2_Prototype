@@ -4,6 +4,8 @@ import { routes } from 'app/router/routes';
 import { PublicAction } from 'components/public/PublicAction';
 import { PUBLIC_SURFACE_WIDTH } from 'components/public/publicStyles';
 
+import { useAutoHideHeader } from '@/hooks/useAutoHideHeader';
+
 export function PublicHeader({ onOpenAuth }: { onOpenAuth: () => void }) {
   const desktopLink = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -19,15 +21,24 @@ export function PublicHeader({ onOpenAuth }: { onOpenAuth: () => void }) {
         : 'text-[color:var(--txt1)] hover:bg-white/90 hover:text-on-surface',
     );
 
+  const isHidden = useAutoHideHeader();
+
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-charcoal/10 bg-background/92 backdrop-blur-xl">
+    <header className={cn("sticky top-0 z-40 w-full border-b border-charcoal/10 bg-background/92 backdrop-blur-xl transition-transform duration-300 ease-out", isHidden ? '-translate-y-full' : 'translate-y-0')}>
       <div className={`mx-auto w-full ${PUBLIC_SURFACE_WIDTH} px-4 sm:px-6 lg:px-8`}>
         <div className="hidden min-h-[78px] items-center justify-between gap-6 md:flex">
           <NavLink
-            className="inline-flex w-max items-center font-headline text-2xl font-extrabold tracking-[-0.03em] text-on-surface"
+            className="flex items-center gap-3"
             to={routes.home}
           >
-            meowfolio
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-charcoal bg-primary shadow-tactile-sm">
+              <span className="material-symbols-outlined text-[22px] text-on-primary" style={{ fontVariationSettings: '"FILL" 1' }}>
+                pets
+              </span>
+            </div>
+            <span className="font-headline text-xl font-extrabold tracking-tight text-on-surface">
+              MeowFolio
+            </span>
           </NavLink>
 
           <div className="flex items-center gap-3 lg:gap-4">
@@ -72,6 +83,6 @@ export function PublicHeader({ onOpenAuth }: { onOpenAuth: () => void }) {
           </nav>
         </div>
       </div>
-    </header>
+    </header >
   );
 }
