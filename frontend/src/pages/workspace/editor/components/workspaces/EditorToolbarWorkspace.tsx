@@ -8,5 +8,5 @@ export function EditorToolbarWorkspace({
   values: ToolbarValues;
   onChange: (patch: Partial<ToolbarValues>) => void;
 }) {
-  return <ToolbarPane values={values} onChange={onChange} className="xl:min-h-full xl:rounded-none xl:border-0 xl:bg-transparent xl:p-5 xl:shadow-none" />;
+  return <ToolbarPane values={values} onChange={onChange} className="xl:h-full xl:min-h-0 xl:overflow-y-auto xl:rounded-none xl:border-0 xl:bg-transparent xl:p-5 xl:shadow-none" />;
 }

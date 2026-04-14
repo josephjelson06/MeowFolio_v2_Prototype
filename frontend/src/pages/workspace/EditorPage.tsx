@@ -119,23 +119,25 @@ export function EditorPage() {
     if (nextMode === 'editor' && isMobile) setMobileView('edit');
   }
 
-  function moveSection(sectionId: string, direction: 'up' | 'down') {
+  function reorderSection(fromId: string, toId: string) {
     setRecord(current => {
       if (!current) return current;
       const order = [...current.renderOptions.sectionOrder];
-      const index = order.indexOf(sectionId);
-      if (index === -1) return current;
-      const target = direction === 'up' ? index - 1 : index + 1;
-      if (target < 0 || target >= order.length) return current;
-      [order[index], order[target]] = [order[target], order[index]];
+      const fromIndex = order.indexOf(fromId);
+      const toIndex = order.indexOf(toId);
+      if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return current;
+      const nextOrder = [...order];
+      const [moved] = nextOrder.splice(fromIndex, 1);
+      nextOrder.splice(toIndex, 0, moved);
       return {
         ...current,
         renderOptions: {
           ...current.renderOptions,
-          sectionOrder: order,
+          sectionOrder: nextOrder,
         },
       };
     });
+    clearAtsReport();
   }
 
   function addCustomSection() {
@@ -246,6 +248,7 @@ export function EditorPage() {
         : saveState === 'recovered'
           ? 'draft recovered'
           : 'saved locally and synced';
+  const editorStatus = `${syncCopy}${loadError ? ` · ${loadError}` : ''}`;
 
   if (!record) {
     return (
@@ -276,18 +279,8 @@ export function EditorPage() {
         resume={record.content}
         onSelectSection={setActiveSection}
         onAddCustomSection={addCustomSection}
-        onMoveSection={moveSection}
+        onReorderSection={reorderSection}
         onRemoveSection={removeSection}
-        canMoveUp={section => {
-          if (section === 'contact') return false;
-          const index = record.renderOptions.sectionOrder.indexOf(section);
-          return index > 0;
-        }}
-        canMoveDown={section => {
-          if (section === 'contact') return false;
-          const index = record.renderOptions.sectionOrder.indexOf(section);
-          return index !== -1 && index < record.renderOptions.sectionOrder.length - 1;
-        }}
         onContentChange={updateContent}
         onNextPage={() => updatePage(page + 1)}
         onPrevPage={() => updatePage(page - 1)}
@@ -316,6 +309,11 @@ export function EditorPage() {
           handleModeChange('ats');
           void runAtsAnalysis();
         }}
+        onAnalyze={() => {
+          void runAtsAnalysis();
+        }}
+        analyzeLoading={atsLoading}
+        statusText={editorStatus}
         mobileTopBar={
           <EditorMobileTopbar
             title={resumeName}
@@ -328,14 +326,8 @@ export function EditorPage() {
         previewPanel={
           <EditorPreviewPanel
             resume={record.content}
-            syncCopy={syncCopy}
-            loadError={loadError}
-            atsLoading={atsLoading}
             atsReport={atsReport}
             drawerOpen={drawerOpen}
-            onAnalyze={() => {
-              void runAtsAnalysis();
-            }}
             onCloseDrawer={() => setDrawerOpen(false)}
           />
         }

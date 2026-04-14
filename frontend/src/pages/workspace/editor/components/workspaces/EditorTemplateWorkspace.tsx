@@ -8,5 +8,5 @@ export function EditorTemplateWorkspace({
   selectedTemplate: RenderTemplateId;
   onSelect: (id: RenderTemplateId) => void;
 }) {
-  return <TemplatePane selectedTemplate={selectedTemplate} onSelect={onSelect} className="xl:min-h-full xl:rounded-none xl:border-0 xl:bg-transparent xl:p-5 xl:shadow-none" />;
+  return <TemplatePane selectedTemplate={selectedTemplate} onSelect={onSelect} className="xl:h-full xl:min-h-0 xl:overflow-y-auto xl:rounded-none xl:border-0 xl:bg-transparent xl:p-5 xl:shadow-none" />;
 }

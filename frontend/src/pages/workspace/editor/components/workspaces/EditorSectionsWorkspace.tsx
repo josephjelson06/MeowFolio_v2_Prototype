@@ -11,10 +11,8 @@ export function EditorSectionsWorkspace({
   resume,
   onSelectSection,
   onAddCustomSection,
-  onMoveSection,
+  onReorderSection,
   onRemoveSection,
-  canMoveUp,
-  canMoveDown,
   onContentChange,
   onPrevPage,
   onNextPage,
@@ -26,26 +24,22 @@ export function EditorSectionsWorkspace({
   resume: ResumeData;
   onSelectSection: (section: string) => void;
   onAddCustomSection: () => void;
-  onMoveSection: (section: string, direction: 'up' | 'down') => void;
+  onReorderSection: (fromId: string, toId: string) => void;
   onRemoveSection: (section: string) => void;
-  canMoveUp: (section: string) => boolean;
-  canMoveDown: (section: string) => boolean;
   onContentChange: (updater: (current: ResumeData) => ResumeData) => void;
   onPrevPage: () => void;
   onNextPage: () => void;
 }) {
   return (
-    <div className="grid gap-4 xl:min-h-full xl:grid-cols-[240px_minmax(0,1fr)] xl:items-start xl:gap-0">
+    <div className="grid min-h-0 gap-4 xl:h-full xl:grid-cols-[15rem_minmax(0,1fr)] xl:items-stretch xl:gap-0">
       <SectionNav
         sections={sections}
         activeSection={activeSection}
         onSelect={onSelectSection}
         onAddCustomSection={onAddCustomSection}
-        onMoveSection={onMoveSection}
+        onReorder={onReorderSection}
         onRemoveSection={onRemoveSection}
-        canMoveUp={canMoveUp}
-        canMoveDown={canMoveDown}
-        className="xl:min-h-full xl:rounded-none xl:border-0 xl:border-r-[1.5px] xl:border-charcoal/18 xl:bg-transparent xl:p-5 xl:shadow-none"
+        className="xl:h-full xl:rounded-none xl:border-0 xl:border-r-[1.5px] xl:border-charcoal/18 xl:bg-transparent xl:p-5 xl:shadow-none"
       />
       <EditorFormPane
         activeSection={activeSection}
@@ -55,7 +49,7 @@ export function EditorSectionsWorkspace({
         onContentChange={onContentChange}
         onNextPage={onNextPage}
         onPrevPage={onPrevPage}
-        className="xl:rounded-none xl:border-0 xl:bg-transparent xl:p-5 xl:shadow-none"
+        className="xl:h-full xl:min-h-0 xl:overflow-y-auto xl:rounded-none xl:border-0 xl:bg-transparent xl:p-5 xl:shadow-none"
       />
     </div>
   );
