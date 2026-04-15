@@ -22,3 +22,5 @@ qa_screens/
 
 .env*
 Old*
+
+DS_Template/
