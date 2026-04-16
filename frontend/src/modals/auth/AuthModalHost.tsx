@@ -83,7 +83,7 @@ function AuthModalPanel({
           {authConfig.note ?? 'This prototype uses a single Google sign-in path so you can jump straight into the workspace.'}
         </div>
 
-        {import.meta.env.DEV || (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? (
+        {import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' ? (
           <button
             id="test-seam-login-btn"
             className="mt-4 w-full rounded border border-dashed border-charcoal/30 bg-surface-variant/30 py-2 text-xs font-bold text-[color:var(--txt2)] transition hover:bg-surface-variant/50"

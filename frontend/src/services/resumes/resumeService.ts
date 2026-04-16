@@ -68,7 +68,7 @@ function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
 }
 
 async function getUserId(): Promise<string> {
-  if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+  if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
     return 'test-seam-mock-id';
   }
   const { data: { user } } = await supabase.auth.getUser();
@@ -103,7 +103,7 @@ export const resumeService = {
   },
 
   async list(): Promise<ResumeRecord[]> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       return [...mockResumes];
     }
     const { data, error } = await supabase
@@ -116,7 +116,7 @@ export const resumeService = {
   },
 
   async rename(id: string, nextName: string): Promise<ResumeRecord[]> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       const target = mockResumes.find(r => r.id === id);
       if (target) target.name = nextName;
       if (mockDocuments[id]) mockDocuments[id].title = nextName;
@@ -134,7 +134,7 @@ export const resumeService = {
   },
 
   async remove(id: string): Promise<ResumeRecord[]> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       mockResumes = mockResumes.filter(r => r.id !== id);
       delete mockDocuments[id];
       notifyResumeChange();
@@ -156,7 +156,7 @@ export const resumeService = {
   },
 
   async getRecord(id: string): Promise<ResumeDocumentRecord> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       return mockDocuments[id] ?? mockDocuments['mock-1'];
     }
     const { data, error } = await supabase
@@ -176,7 +176,7 @@ export const resumeService = {
     title?: string;
     rawText?: string;
   }): Promise<ResumeDocumentRecord | null> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       if (mockDocuments[id]) {
         mockDocuments[id].content = input.content;
         mockDocuments[id].renderOptions = input.renderOptions;
@@ -225,7 +225,7 @@ export const resumeService = {
     const userId = await getUserId();
     const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
 
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       const id = `mock-${Date.now()}`;
       const rec: ResumeRecord = { id, name: 'Untitled Resume', template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
       mockResumes.unshift(rec);
@@ -260,7 +260,7 @@ export const resumeService = {
   },
 
   async importText(text: string, sourceName: string): Promise<ResumeMutationResponse> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       const { createEmptyResumeData } = await import('types/resumeDocument');
       const id = `mock-${Date.now()}`;
       const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;

@@ -8,7 +8,7 @@ export const sessionService = {
    * If no session exists, returns null (user is not logged in).
    */
   async bootstrap(): Promise<SessionActor | null> {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       return {
         id: 'test-seam-mock-id',
         name: 'Test Agent (Seam)',
@@ -60,7 +60,7 @@ export const sessionService = {
    * Sign out the current user. Clears the Supabase session.
    */
   async signOut() {
-    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
       window.localStorage.removeItem('TEST_SEAM_ACTIVE');
       return;
     }
