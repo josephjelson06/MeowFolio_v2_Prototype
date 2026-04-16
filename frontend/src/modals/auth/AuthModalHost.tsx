@@ -82,6 +82,20 @@ function AuthModalPanel({
         <div className="text-xs leading-6 text-[color:var(--txt2)]">
           {authConfig.note ?? 'This prototype uses a single Google sign-in path so you can jump straight into the workspace.'}
         </div>
+
+        {import.meta.env.DEV || (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? (
+          <button
+            id="test-seam-login-btn"
+            className="mt-4 w-full rounded border border-dashed border-charcoal/30 bg-surface-variant/30 py-2 text-xs font-bold text-[color:var(--txt2)] transition hover:bg-surface-variant/50"
+            type="button"
+            onClick={() => {
+              window.localStorage.setItem('TEST_SEAM_ACTIVE', 'true');
+              window.location.href = '/resumes';
+            }}
+          >
+            Bypass Login (Test Seam)
+          </button>
+        ) : null}
       </div>
     </>
   );

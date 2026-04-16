@@ -68,10 +68,26 @@ function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
 }
 
 async function getUserId(): Promise<string> {
+  if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    return 'test-seam-mock-id';
+  }
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
   return user.id;
 }
+
+// ─── Local Mock State for Test Seam ────────
+let mockResumes: ResumeRecord[] = [
+  { id: 'mock-1', name: 'Software Engineer Resume', template: 'template1', recent: true, updated: 'just now', updatedAt: new Date().toISOString() }
+];
+let mockDocuments: Record<string, ResumeDocumentRecord> = {
+  'mock-1': {
+    id: 'mock-1', title: 'Software Engineer Resume', source: 'scratch', templateId: 'template1',
+    content: { basics: { name: 'Test User', email: 'test@example.com' }, work: [] } as any,
+    renderOptions: {} as any, rawText: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+  }
+};
+
 
 /* ─── Service ──────────────────────────────────────────────────────────────── */
 
@@ -87,6 +103,9 @@ export const resumeService = {
   },
 
   async list(): Promise<ResumeRecord[]> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      return [...mockResumes];
+    }
     const { data, error } = await supabase
       .from('resumes')
       .select('id, title, template_id, updated_at, created_at')
@@ -97,6 +116,13 @@ export const resumeService = {
   },
 
   async rename(id: string, nextName: string): Promise<ResumeRecord[]> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      const target = mockResumes.find(r => r.id === id);
+      if (target) target.name = nextName;
+      if (mockDocuments[id]) mockDocuments[id].title = nextName;
+      notifyResumeChange();
+      return this.list();
+    }
     const { error } = await supabase
       .from('resumes')
       .update({ title: nextName, updated_at: new Date().toISOString() })
@@ -108,6 +134,12 @@ export const resumeService = {
   },
 
   async remove(id: string): Promise<ResumeRecord[]> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      mockResumes = mockResumes.filter(r => r.id !== id);
+      delete mockDocuments[id];
+      notifyResumeChange();
+      return this.list();
+    }
     const { error } = await supabase
       .from('resumes')
       .delete()
@@ -124,6 +156,9 @@ export const resumeService = {
   },
 
   async getRecord(id: string): Promise<ResumeDocumentRecord> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      return mockDocuments[id] ?? mockDocuments['mock-1'];
+    }
     const { data, error } = await supabase
       .from('resumes')
       .select('*')
@@ -141,6 +176,22 @@ export const resumeService = {
     title?: string;
     rawText?: string;
   }): Promise<ResumeDocumentRecord | null> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      if (mockDocuments[id]) {
+        mockDocuments[id].content = input.content;
+        mockDocuments[id].renderOptions = input.renderOptions;
+        mockDocuments[id].templateId = input.templateId as any;
+        if (input.title) {
+          mockDocuments[id].title = input.title;
+          const r = mockResumes.find(x => x.id === id);
+          if (r) r.name = input.title;
+        }
+        if (input.rawText) mockDocuments[id].rawText = input.rawText;
+        notifyResumeChange();
+        return mockDocuments[id];
+      }
+      return null;
+    }
     const { data, error } = await supabase
       .from('resumes')
       .update({
@@ -174,6 +225,18 @@ export const resumeService = {
     const userId = await getUserId();
     const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
 
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      const id = `mock-${Date.now()}`;
+      const rec: ResumeRecord = { id, name: 'Untitled Resume', template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
+      mockResumes.unshift(rec);
+      mockDocuments[id] = {
+        id, title: 'Untitled Resume', source: 'scratch', templateId: 'template1' as any, content: createEmptyResumeData('scratch') as any, renderOptions: DEFAULT_RENDER_OPTIONS as any, rawText: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+      };
+      setActiveResumeId(id);
+      notifyResumeChange();
+      return rec;
+    }
+
     const { data, error } = await supabase
       .from('resumes')
       .insert({
@@ -197,6 +260,29 @@ export const resumeService = {
   },
 
   async importText(text: string, sourceName: string): Promise<ResumeMutationResponse> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      const { createEmptyResumeData } = await import('types/resumeDocument');
+      const id = `mock-${Date.now()}`;
+      const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
+      const item: ResumeRecord = { id, name: title, template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
+      mockResumes.unshift(item);
+      mockDocuments[id] = {
+        id, title, source: 'import', templateId: 'template1' as any, 
+        content: createEmptyResumeData('import') as any, 
+        renderOptions: {} as any, rawText: text, 
+        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+      };
+      setActiveResumeId(id);
+      notifyResumeChange();
+      return {
+        extractedText: text,
+        item,
+        parseStatus: 'partial',
+        resumeId: id,
+        warnings: ['Mock import parsing applied.'],
+      };
+    }
+
     const userId = await getUserId();
     const { DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;

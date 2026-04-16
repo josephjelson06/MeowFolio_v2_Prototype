@@ -1,13 +1,13 @@
 {
   "name": "meowfolio-v2-root",
   "private": true,
-  "scripts": {},
-  "dependencies": {
-    "@supabase/supabase-js": "^2.103.1"
-  },
-  "devDependencies": {
-    "@types/node": "^22.13.10",
-    "@vercel/node": "^3.0.0",
-    "typescript": "^5.6.3"
+  "workspaces": [
+    "frontend",
+    "api"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "preview": "npm run preview --workspace=frontend"
   }
 }

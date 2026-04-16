@@ -8,6 +8,17 @@ export const sessionService = {
    * If no session exists, returns null (user is not logged in).
    */
   async bootstrap(): Promise<SessionActor | null> {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      return {
+        id: 'test-seam-mock-id',
+        name: 'Test Agent (Seam)',
+        email: 'test@testsprite.local',
+        avatarUrl: null,
+        credits: APP_LIMITS.freeCredits,
+        plan: 'free',
+      };
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return null;
 
@@ -49,6 +60,10 @@ export const sessionService = {
    * Sign out the current user. Clears the Supabase session.
    */
   async signOut() {
+    if (typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      window.localStorage.removeItem('TEST_SEAM_ACTIVE');
+      return;
+    }
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   },
