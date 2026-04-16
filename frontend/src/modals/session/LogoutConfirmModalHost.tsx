@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { routes } from 'app/router/routes';
 import { ModalShell } from 'components/ui/ModalShell';
+import { sessionService } from 'services/sessionService';
 import { useUiContext } from 'state/ui/uiContext';
 
 export function LogoutConfirmModalHost() {
@@ -54,6 +55,7 @@ export function LogoutConfirmModalHost() {
           type="button"
           onClick={() => {
             closeLogout();
+            void sessionService.signOut();
             navigate(routes.home);
           }}
         >

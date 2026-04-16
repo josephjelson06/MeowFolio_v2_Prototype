@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from 'lib/cn';
 import { downloadTextFile } from 'lib/formatters';
+import { downloadPdf } from 'lib/typst-renderer';
 import { routes } from 'app/router/routes';
 import { WorkspaceBadge } from 'components/workspace/WorkspaceBadge';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
@@ -161,8 +162,8 @@ export function ResumesPage() {
 
   async function downloadResume(resume: ResumeRecord) {
     try {
-      const exported = await resumeService.exportTex(resume.id);
-      downloadTextFile(exported.filename, exported.tex);
+      const record = await resumeService.getRecord(resume.id);
+      await downloadPdf(record.content, record.renderOptions, record.templateId, `${resume.name}.pdf`);
     } catch {
       downloadTextFile(
         resume.name.replace('.tex', '.txt'),

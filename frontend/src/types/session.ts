@@ -3,4 +3,6 @@ export interface SessionActor {
   name: string | null;
   email: string | null;
   avatarUrl: string | null;
+  credits: number;
+  plan: string;
 }

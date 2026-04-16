@@ -1,14 +1,4 @@
-import { apiClient } from 'lib/apiClient';
 import type { TemplateRecord } from 'types/template';
-
-interface TemplateListResponse {
-  items: TemplateRecord[];
-  runtime: {
-    compileEnabled: boolean;
-    texRenderEnabled?: boolean;
-    texSourceAvailable: boolean;
-  };
-}
 
 const fallbackTemplates: TemplateRecord[] = [
   {
@@ -17,9 +7,8 @@ const fallbackTemplates: TemplateRecord[] = [
     badge: 'Template 1',
     bestFor: 'ATS-friendly technical resumes with clear section rhythm',
     density: 'balanced',
-    // description: 'Centered identity block with ruled sections and clean multi-page flow.',
     headerLayout: 'center',
-    previewImageUrl: '/Templates/Temp1.jpg',
+    previewImageUrl: '/templates/previews/template1.jpg',
     sectionStyle: 'rule',
     availableForCompile: false,
   },
@@ -29,9 +18,8 @@ const fallbackTemplates: TemplateRecord[] = [
     badge: 'Template 2',
     bestFor: 'Classic software-engineering resumes with compact ATS structure',
     density: 'tight',
-    // description: 'Compact single-column technical layout with strong scanability.',
     headerLayout: 'center',
-    previewImageUrl: '/Templates/Temp2.jpg',
+    previewImageUrl: '/templates/previews/template2.jpg',
     sectionStyle: 'rule',
     availableForCompile: false,
   },
@@ -41,9 +29,8 @@ const fallbackTemplates: TemplateRecord[] = [
     badge: 'Template 3',
     bestFor: 'Student and early-career resumes with coursework and projects',
     density: 'balanced',
-    // description: 'Jake-style resume layout with dense but readable section rhythm.',
     headerLayout: 'center',
-    previewImageUrl: '/Templates/Temp5.jpg',
+    previewImageUrl: '/templates/previews/template3.jpg',
     sectionStyle: 'underline',
     availableForCompile: false,
   },
@@ -53,9 +40,8 @@ const fallbackTemplates: TemplateRecord[] = [
     badge: 'Template 4',
     bestFor: 'Low-chrome resumes that still preserve hierarchy',
     density: 'airy',
-    // description: 'Lean visual treatment with lighter section chrome and wider breathing room.',
     headerLayout: 'left',
-    previewImageUrl: '/Templates/Temp6.png',
+    previewImageUrl: '/templates/previews/template4.png',
     sectionStyle: 'capsule',
     availableForCompile: false,
   },
@@ -65,9 +51,8 @@ const fallbackTemplates: TemplateRecord[] = [
     badge: 'Template 5',
     bestFor: 'Application versions that need slightly stronger visual presence',
     density: 'balanced',
-    // description: 'A more expressive layout with a confident section treatment and compact flow.',
     headerLayout: 'left',
-    previewImageUrl: '/Templates/Temp7.png',
+    previewImageUrl: '/templates/previews/template5.png',
     sectionStyle: 'capsule',
     availableForCompile: false,
   },
@@ -75,17 +60,6 @@ const fallbackTemplates: TemplateRecord[] = [
 
 export const templateService = {
   async list() {
-    try {
-      const response = await apiClient.get<TemplateListResponse>('/templates');
-      const assetOrigin = apiClient.baseUrl.replace(/\/api\/?$/, '');
-      return response.items.map(item => ({
-        ...item,
-        previewImageUrl: item.previewImageUrl.startsWith('http')
-          ? item.previewImageUrl
-          : `${assetOrigin}${item.previewImageUrl}`,
-      }));
-    } catch {
-      return structuredClone(fallbackTemplates);
-    }
+    return structuredClone(fallbackTemplates);
   },
 };

@@ -75,6 +75,9 @@ export function ResumeModalHost() {
             <div className="mt-1 text-xs leading-6 text-[color:var(--txt2)]">
               Parse a PDF or document and preview the text before importing.
             </div>
+            <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+              ★ Uses 1 AI credit
+            </div>
           </div>
         </button>
         <button
@@ -92,6 +95,9 @@ export function ResumeModalHost() {
             <div className="font-headline text-sm font-bold text-on-surface">Paste resume text</div>
             <div className="mt-1 text-xs leading-6 text-[color:var(--txt2)]">
               Copy-paste your resume content for quick import.
+            </div>
+            <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+              ★ Uses 1 AI credit
             </div>
           </div>
         </button>
@@ -132,7 +138,7 @@ export function ResumeModalHost() {
               Choose a PDF, DOCX, TXT, or MD file and preview the parsed text.
             </div>
             <div className="mt-1 text-[11px] text-outline">
-              The backend stores the upload, extracts text, and creates an editable resume draft.
+              Text is extracted in your browser — no files are uploaded to any server.
             </div>
           </div>
           <input
@@ -202,7 +208,23 @@ export function ResumeModalHost() {
         </>
       ) : null}
 
-      {error ? <div className="mt-3 text-sm text-error">{error}</div> : null}
+      {error ? (
+        <div className="mt-3 rounded-xl border border-error/30 bg-error/5 p-3 text-sm text-error">
+          {error}
+          {error.toLowerCase().includes('credit') && (
+            <button
+              className="ml-2 font-bold underline"
+              type="button"
+              onClick={() => {
+                closeResume();
+                navigate(routes.profile);
+              }}
+            >
+              View Profile →
+            </button>
+          )}
+        </div>
+      ) : null}
     </ModalShell>
   );
 }

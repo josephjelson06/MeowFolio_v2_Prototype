@@ -1,30 +1,10 @@
-import { apiClient } from 'lib/apiClient';
+import { supabase } from 'lib/supabase';
 import type { ResumeRecord } from 'types/resume';
 import type { AtsScoreResponse, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
 
 const RESUME_EVENT = 'meowfolio:resume-library-changed';
 const ACTIVE_RESUME_KEY = 'meowfolio:active-resume-id';
 const LEGACY_ACTIVE_RESUME_KEY = 'resumeai:active-resume-id';
-const resumeLibrarySeed: ResumeRecord[] = [
-  { id: 'resume_v3', name: 'resume_v3.tex', updated: '2h ago', template: 'Classic', recent: true },
-  { id: 'resume_sde', name: 'resume_sde.tex', updated: 'yesterday', template: 'Sidebar' },
-  { id: 'resume_pm', name: 'resume_pm.tex', updated: '3d ago', template: 'Classic' },
-  { id: 'resume_ds', name: 'resume_ds.tex', updated: '5d ago', template: 'Minimal' },
-  { id: 'resume_ml', name: 'resume_ml.tex', updated: '1w ago', template: 'Modern' },
-  { id: 'resume_ops', name: 'resume_ops.tex', updated: '1w ago', template: 'Compact' },
-  { id: 'resume_frontend', name: 'resume_frontend.tex', updated: '2w ago', template: 'Clean' },
-  { id: 'resume_backend', name: 'resume_backend.tex', updated: '2w ago', template: 'Classic' },
-  { id: 'resume_cloud', name: 'resume_cloud.tex', updated: '3w ago', template: 'Modern' },
-  { id: 'resume_analytics', name: 'resume_analytics.tex', updated: '3w ago', template: 'Minimal' },
-  { id: 'resume_platform', name: 'resume_platform.tex', updated: '1mo ago', template: 'Structured' },
-  { id: 'resume_startup', name: 'resume_startup.tex', updated: '1mo ago', template: 'Bold' },
-];
-
-let resumeLibrary = structuredClone(resumeLibrarySeed);
-
-interface ResumeListResponse {
-  items: ResumeRecord[];
-}
 
 interface ResumeMutationResponse {
   item: ResumeRecord;
@@ -35,19 +15,7 @@ interface ResumeMutationResponse {
   extractedText?: string;
 }
 
-interface ResumeRecordResponse {
-  record: ResumeDocumentRecord;
-}
-
-interface ResumeTexExportResponse {
-  filename: string;
-  templateId: string;
-  tex: string;
-}
-
-function cloneLibrary() {
-  return structuredClone(resumeLibrary);
-}
+/* ─── Helpers ──────────────────────────────────────────────────────────────── */
 
 function notifyResumeChange() {
   window.dispatchEvent(new CustomEvent(RESUME_EVENT));
@@ -57,164 +25,259 @@ function setActiveResumeId(id: string) {
   localStorage.setItem(ACTIVE_RESUME_KEY, id);
 }
 
-function prependOrReplace(item: ResumeRecord) {
-  resumeLibrary = [item, ...resumeLibrary.filter(entry => entry.id !== item.id)].map((entry, index) => ({
-    ...entry,
-    recent: index === 0,
-  }));
+function relativeTime(isoDate: string): string {
+  const diff = Date.now() - new Date(isoDate).getTime();
+  const mins = Math.floor(diff / 60_000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 5) return `${weeks}w ago`;
+  const months = Math.floor(days / 30);
+  return `${months}mo ago`;
 }
 
-function updateLocalRename(id: string, nextName: string) {
-  resumeLibrary = resumeLibrary.map(item => item.id === id ? { ...item, name: nextName } : item);
-  return cloneLibrary();
-}
-
-function updateLocalDelete(id: string) {
-  resumeLibrary = resumeLibrary.filter(item => item.id !== id).map((item, index) => ({
-    ...item,
-    recent: index === 0,
-  }));
-  return cloneLibrary();
-}
-
-function buildFallbackResume(sourceName = 'resume') {
-  const id = `${sourceName.replace(/[^a-z0-9]+/gi, '_').toLowerCase() || 'resume'}_${Date.now()}`;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapRowToResumeRecord(row: any, index: number): ResumeRecord {
   return {
-    id,
-    name: `${id}.tex`,
-    recent: true,
-    template: 'template1',
-    updated: 'just now',
-    updatedAt: new Date().toISOString(),
-  } satisfies ResumeRecord;
+    id: row.id,
+    name: row.title ?? 'Untitled Resume',
+    updated: relativeTime(row.updated_at ?? row.created_at),
+    updatedAt: row.updated_at ?? row.created_at,
+    template: row.template_id ?? 'template1',
+    recent: index === 0,
+  };
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
+  return {
+    id: row.id,
+    title: row.title ?? 'Untitled Resume',
+    source: row.source ?? 'scratch',
+    templateId: row.template_id ?? 'template1',
+    content: row.content_json ?? {},
+    renderOptions: row.render_options ?? {},
+    rawText: row.raw_text ?? '',
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+async function getUserId(): Promise<string> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+  return user.id;
+}
+
+/* ─── Service ──────────────────────────────────────────────────────────────── */
 
 export const resumeService = {
   eventName: RESUME_EVENT,
+
   getActiveId() {
     return localStorage.getItem(ACTIVE_RESUME_KEY) ?? localStorage.getItem(LEGACY_ACTIVE_RESUME_KEY);
   },
+
   setActiveId(id: string) {
     setActiveResumeId(id);
   },
-  async list() {
-    try {
-      const response = await apiClient.get<ResumeListResponse>('/resumes');
-      resumeLibrary = response.items;
-      return cloneLibrary();
-    } catch {
-      return cloneLibrary();
-    }
+
+  async list(): Promise<ResumeRecord[]> {
+    const { data, error } = await supabase
+      .from('resumes')
+      .select('id, title, template_id, updated_at, created_at')
+      .order('updated_at', { ascending: false });
+
+    if (error) throw error;
+    return (data ?? []).map(mapRowToResumeRecord);
   },
-  async rename(id: string, nextName: string) {
-    try {
-      const response = await apiClient.patch<ResumeMutationResponse>(`/resumes/${id}`, { title: nextName });
-      prependOrReplace(response.item);
-      notifyResumeChange();
-      return cloneLibrary();
-    } catch {
-      const next = updateLocalRename(id, nextName);
-      notifyResumeChange();
-      return next;
-    }
+
+  async rename(id: string, nextName: string): Promise<ResumeRecord[]> {
+    const { error } = await supabase
+      .from('resumes')
+      .update({ title: nextName, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) throw error;
+    notifyResumeChange();
+    return this.list();
   },
-  async remove(id: string) {
-    try {
-      await apiClient.delete(`/resumes/${id}`);
-      const next = updateLocalDelete(id);
-      notifyResumeChange();
-      return next;
-    } catch {
-      const next = updateLocalDelete(id);
-      notifyResumeChange();
-      return next;
-    }
+
+  async remove(id: string): Promise<ResumeRecord[]> {
+    const { error } = await supabase
+      .from('resumes')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    notifyResumeChange();
+    return this.list();
   },
+
   async getById(id: string): Promise<ResumeRecord | undefined> {
     const loaded = await this.list();
     return loaded.find(item => item.id === id);
   },
-  async getRecord(id: string) {
-    const response = await apiClient.get<ResumeRecordResponse>(`/resumes/${id}`);
-    return response.record;
+
+  async getRecord(id: string): Promise<ResumeDocumentRecord> {
+    const { data, error } = await supabase
+      .from('resumes')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    return mapRowToDocumentRecord(data);
   },
+
   async saveRecord(id: string, input: {
     content: ResumeData;
     renderOptions: RenderOptions;
     templateId: string;
     title?: string;
     rawText?: string;
-  }) {
-    const response = await apiClient.patch<ResumeMutationResponse>(`/resumes/${id}`, input);
-    prependOrReplace(response.item);
+  }): Promise<ResumeDocumentRecord | null> {
+    const { data, error } = await supabase
+      .from('resumes')
+      .update({
+        content_json: input.content,
+        render_options: input.renderOptions,
+        template_id: input.templateId,
+        title: input.title,
+        raw_text: input.rawText ?? '',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
     notifyResumeChange();
-    return response.record ?? null;
+    return data ? mapRowToDocumentRecord(data) : null;
   },
-  async scoreAts(id: string) {
-    return apiClient.post<AtsScoreResponse>(`/resumes/${id}/ats-score`);
+
+  async scoreAts(_id: string): Promise<AtsScoreResponse> {
+    // ATS scoring is rule-based and runs locally — this is a placeholder
+    // that will be computed from the current resume content by the editor hook.
+    throw new Error('ATS scoring is handled locally by the editor');
   },
-  async exportTex(id: string) {
-    return apiClient.get<ResumeTexExportResponse>(`/resumes/${id}/export/tex`);
+
+  async exportTex(_id: string) {
+    throw new Error('LaTeX export has been replaced by Typst PDF generation');
   },
-  async createBlank() {
-    try {
-      const response = await apiClient.post<ResumeMutationResponse>('/resumes', {});
-      prependOrReplace(response.item);
-      setActiveResumeId(response.item.id);
-      notifyResumeChange();
-      return response.item;
-    } catch {
-      const item = buildFallbackResume('resume');
-      prependOrReplace(item);
-      setActiveResumeId(item.id);
-      notifyResumeChange();
-      return item;
-    }
+
+  async createBlank(): Promise<ResumeRecord> {
+    const userId = await getUserId();
+    const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
+
+    const { data, error } = await supabase
+      .from('resumes')
+      .insert({
+        user_id: userId,
+        title: 'Untitled Resume',
+        template_id: 'template1',
+        content_json: createEmptyResumeData('scratch'),
+        render_options: DEFAULT_RENDER_OPTIONS,
+        source: 'scratch',
+        raw_text: '',
+      })
+      .select('id, title, template_id, updated_at, created_at')
+      .single();
+
+    if (error) throw error;
+
+    const record = mapRowToResumeRecord(data, 0);
+    setActiveResumeId(record.id);
+    notifyResumeChange();
+    return record;
   },
-  async importText(text: string, sourceName: string) {
-    try {
-      const response = await apiClient.post<ResumeMutationResponse>('/import/resume', { sourceName, text });
-      prependOrReplace(response.item);
-      setActiveResumeId(response.item.id);
-      notifyResumeChange();
-      return response;
-    } catch {
-      const item = buildFallbackResume(sourceName);
-      prependOrReplace(item);
-      setActiveResumeId(item.id);
-      notifyResumeChange();
-      return {
-        extractedText: text,
-        item,
-        parseStatus: 'partial' as const,
-        resumeId: item.id,
-        warnings: ['Backend import unavailable, using local fallback.'],
-      };
-    }
-  },
-  async importFile(file: File) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('sourceName', file.name);
+
+  async importText(text: string, sourceName: string): Promise<ResumeMutationResponse> {
+    const userId = await getUserId();
+    const { DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
+    const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
+
+    // Try AI parsing via the serverless function
+    let parsedContent = null;
+    let parseStatus: 'parsed' | 'partial' | 'failed' = 'partial';
+    const warnings: string[] = [];
 
     try {
-      const response = await apiClient.postForm<ResumeMutationResponse>('/import/resume', formData);
-      prependOrReplace(response.item);
-      setActiveResumeId(response.item.id);
-      notifyResumeChange();
-      return response;
-    } catch {
-      const item = buildFallbackResume(file.name.replace(/\.[^.]+$/, ''));
-      prependOrReplace(item);
-      setActiveResumeId(item.id);
-      notifyResumeChange();
-      return {
-        extractedText: `Parsed text preview from ${file.name}`,
-        item,
-        parseStatus: 'partial' as const,
-        resumeId: item.id,
-        warnings: ['Backend file import unavailable, using local fallback.'],
-      };
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        const response = await fetch('/api/parse-resume', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text, source: sourceName }),
+        });
+
+        if (response.status === 402) {
+          throw new Error('No credits remaining. Upgrade your plan to continue using AI parsing.');
+        }
+
+        if (response.ok) {
+          const result = await response.json();
+          parsedContent = result.parsed;
+          parseStatus = 'parsed';
+        } else {
+          const errBody = await response.json().catch(() => ({}));
+          warnings.push(errBody.error ?? 'AI parsing returned an error. Resume saved with raw text.');
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('No credits')) {
+        throw err; // Re-throw credit errors so the modal can handle them
+      }
+      warnings.push('AI parsing unavailable. Resume saved with raw text only.');
     }
+
+    // If AI parsing failed, use empty content
+    if (!parsedContent) {
+      const { createEmptyResumeData } = await import('types/resumeDocument');
+      parsedContent = createEmptyResumeData('import');
+    }
+
+    const { data, error } = await supabase
+      .from('resumes')
+      .insert({
+        user_id: userId,
+        title,
+        template_id: 'template1',
+        content_json: parsedContent,
+        render_options: DEFAULT_RENDER_OPTIONS,
+        source: 'import',
+        raw_text: text,
+      })
+      .select('id, title, template_id, updated_at, created_at')
+      .single();
+
+    if (error) throw error;
+
+    const item = mapRowToResumeRecord(data, 0);
+    setActiveResumeId(item.id);
+    notifyResumeChange();
+
+    return {
+      extractedText: text,
+      item,
+      parseStatus,
+      resumeId: item.id,
+      warnings: warnings.length ? warnings : undefined,
+    };
+  },
+
+  async importFile(file: File): Promise<ResumeMutationResponse> {
+    const { extractText } = await import('lib/pdf-extractor');
+    const text = await extractText(file);
+    const sourceName = file.name.replace(/\.[^.]+$/, '');
+    return this.importText(text, sourceName);
   },
 };
+

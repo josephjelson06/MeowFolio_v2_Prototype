@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 var rootDir = fileURLToPath(new URL('.', import.meta.url));
 export default defineConfig({
+    envDir: '../',
     plugins: [react(), tailwindcss()],
     resolve: {
         alias: {

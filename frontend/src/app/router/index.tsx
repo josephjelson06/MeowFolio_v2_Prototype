@@ -4,6 +4,7 @@ import { HomePage } from 'pages/public/HomePage';
 import { AboutPage } from 'pages/public/AboutPage';
 import { NotFoundPage } from 'pages/public/NotFoundPage';
 import { Error500Page } from 'pages/public/Error500Page';
+import { AuthCallbackPage } from 'pages/public/AuthCallbackPage';
 import { DashboardPage } from 'pages/workspace/DashboardPage';
 import { ResumesPage } from 'pages/workspace/ResumesPage';
 import { JdsPage } from 'pages/workspace/JdsPage';
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       { path: routes.about, element: <AboutPage /> },
       { path: routes.notFound, element: <NotFoundPage /> },
       { path: routes.error500, element: <Error500Page /> },
+      { path: routes.authCallback, element: <AuthCallbackPage /> },
       { path: routes.dashboard, element: <DashboardPage /> },
       { path: routes.resumes, element: <ResumesPage /> },
       { path: routes.jds, element: <JdsPage /> },

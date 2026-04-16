@@ -19,7 +19,9 @@ export function EditorWorkspaceLayout({
   onShowEditor,
   onShowAts,
   onAnalyze,
+  onDownload,
   analyzeLoading,
+  downloadLoading,
   statusText,
   mobileTopBar,
   leftWorkspace,
@@ -36,7 +38,9 @@ export function EditorWorkspaceLayout({
   onShowEditor: () => void;
   onShowAts: () => void;
   onAnalyze: () => void;
+  onDownload?: () => void;
   analyzeLoading: boolean;
+  downloadLoading?: boolean;
   statusText: string;
   mobileTopBar: ReactNode;
   leftWorkspace: ReactNode;
@@ -127,6 +131,16 @@ export function EditorWorkspaceLayout({
                 <span className="size-2.5 shrink-0 rounded-full bg-tertiary"></span>
                 <span className="truncate">{statusText}</span>
               </div>
+              {onDownload && (
+                <button
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-primary/60 bg-primary-fixed/40 px-4 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed disabled:pointer-events-none disabled:opacity-40"
+                  type="button"
+                  onClick={onDownload}
+                  disabled={downloadLoading}
+                >
+                  {downloadLoading ? 'Building PDF...' : '↓ Download PDF'}
+                </button>
+              )}
               <button
                 className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white disabled:pointer-events-none disabled:opacity-40"
                 type="button"

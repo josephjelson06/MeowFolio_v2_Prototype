@@ -1,5 +1,3 @@
-import { apiClient } from 'lib/apiClient';
-
 const dashboardTipsSeed = [
   'Use numbers when they clarify scale, speed, quality, or reach.',
   'Start each bullet with a strong action verb - Led, Built, Reduced, Designed.',
@@ -10,11 +8,6 @@ const dashboardTipsSeed = [
 
 export const tipsService = {
   async list() {
-    try {
-      const response = await apiClient.get<{ items: string[] }>('/tips');
-      return response.items.slice();
-    } catch {
-      return dashboardTipsSeed.slice();
-    }
+    return dashboardTipsSeed.slice();
   },
 };

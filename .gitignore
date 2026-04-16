@@ -22,5 +22,5 @@ qa_screens/
 
 .env*
 Old*
-
+node_modules/
 DS_Template/

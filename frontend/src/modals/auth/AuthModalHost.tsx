@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { routes } from 'app/router/routes';
 import { PublicPill } from 'components/public/PublicPill';
 import { ModalShell } from 'components/ui/ModalShell';
+import { sessionService } from 'services/sessionService';
 import { useUiContext } from 'state/ui/uiContext';
 import type { AuthModalConfig } from 'types/ui';
 
@@ -89,7 +88,6 @@ function AuthModalPanel({
 }
 
 export function AuthModalHost() {
-  const navigate = useNavigate();
   const { authOpen, authConfig, closeAuth } = useUiContext();
 
   useEffect(() => {
@@ -115,7 +113,7 @@ export function AuthModalHost() {
         onClose={closeAuth}
         onContinue={() => {
           closeAuth();
-          navigate(routes.dashboard);
+          void sessionService.signInWithGoogle();
         }}
       />
     </ModalShell>

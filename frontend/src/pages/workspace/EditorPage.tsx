@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { routes } from 'lib/routes';
+import { downloadPdf } from 'lib/typst-renderer';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { AtsFullReport } from 'pages/workspace/editor/components/AtsFullReport';
 import { EditorMobileSheet } from 'pages/workspace/editor/components/EditorMobileSheet';
@@ -35,6 +36,7 @@ export function EditorPage() {
     skills: 1,
     projects: 1,
   });
+  const [downloadBusy, setDownloadBusy] = useState(false);
 
   const {
     activeResumeId,
@@ -313,6 +315,17 @@ export function EditorPage() {
           void runAtsAnalysis();
         }}
         analyzeLoading={atsLoading}
+        onDownload={() => {
+          if (!record) return;
+          setDownloadBusy(true);
+          void downloadPdf(
+            record.content,
+            record.renderOptions,
+            record.templateId,
+            `${resumeName.replace(/\s+/g, '_')}.pdf`,
+          ).finally(() => setDownloadBusy(false));
+        }}
+        downloadLoading={downloadBusy}
         statusText={editorStatus}
         mobileTopBar={
           <EditorMobileTopbar
@@ -326,6 +339,8 @@ export function EditorPage() {
         previewPanel={
           <EditorPreviewPanel
             resume={record.content}
+            renderOptions={record.renderOptions}
+            templateId={record.templateId}
             atsReport={atsReport}
             drawerOpen={drawerOpen}
             onCloseDrawer={() => setDrawerOpen(false)}

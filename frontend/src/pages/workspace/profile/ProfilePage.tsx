@@ -65,13 +65,13 @@ function ProfileAction({
 }
 
 export function ProfilePage() {
-  const { actor, initials } = useSession();
+  const { actor, initials, credits, plan } = useSession();
   const { openLogout } = useUiContext();
   const [summary, setSummary] = useState<ProfileSummary>({
-    name: 'Arjun Kumar',
-    email: 'arjun@email.com',
+    name: 'User',
+    email: '',
     plan: 'Free Plan',
-    memberSince: 'Jan 2026',
+    memberSince: '',
   });
   const [usage, setUsage] = useState<UsageMetric[]>([]);
 
@@ -93,7 +93,7 @@ export function ProfilePage() {
           <div className="min-w-0 flex-1">
             <div className="mb-2 flex flex-wrap gap-2">
               <WorkspaceBadge variant="accent">{summary.plan.toUpperCase()}</WorkspaceBadge>
-              <WorkspaceBadge variant="info">{`MEMBER SINCE ${summary.memberSince.toUpperCase()}`}</WorkspaceBadge>
+              {summary.memberSince && <WorkspaceBadge variant="info">{`MEMBER SINCE ${summary.memberSince.toUpperCase()}`}</WorkspaceBadge>}
             </div>
             <div className="font-headline text-xl font-extrabold text-on-surface">{actor?.name ?? summary.name}</div>
             <div className="mt-1 text-sm text-[color:var(--txt2)]">{actor?.email ?? summary.email}</div>
@@ -101,6 +101,32 @@ export function ProfilePage() {
           <ProfileAction variant="danger" onClick={openLogout}>
             Logout
           </ProfileAction>
+        </section>
+
+        <section className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6">
+          <div className="mb-4 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">AI CREDITS</div>
+          <div className="flex items-end gap-4">
+            <div className="font-headline text-5xl font-extrabold leading-none text-on-surface">{credits}</div>
+            <div className="mb-1 text-sm text-[color:var(--txt2)]">of 20 remaining · {plan.charAt(0).toUpperCase() + plan.slice(1)} plan</div>
+          </div>
+          <div className="mt-4 h-2 rounded-full bg-charcoal/10">
+            <div
+              className={`h-2 rounded-full transition-all ${credits <= 3 ? 'bg-[color:var(--warn)]' : 'bg-tertiary'}`}
+              style={{ width: `${Math.min(100, (credits / 20) * 100)}%` }}
+            ></div>
+          </div>
+          {credits <= 3 && (
+            <div className="mt-3 rounded-xl border border-[color:var(--warn)]/30 bg-[color:var(--warn)]/5 p-3 text-sm text-[color:var(--warn)]">
+              {credits <= 0
+                ? 'You have no credits left. AI-powered parsing is disabled until you upgrade.'
+                : `Only ${credits} credit${credits === 1 ? '' : 's'} remaining. Consider upgrading.`}
+            </div>
+          )}
+          <div className="mt-4">
+            <ProfileAction variant="secondary" size="sm">
+              Upgrade Plan (coming soon)
+            </ProfileAction>
+          </div>
         </section>
 
         <section className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6">

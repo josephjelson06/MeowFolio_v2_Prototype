@@ -16,7 +16,7 @@ const kpis = [
 
 export function DashboardPage() {
   const { openResume } = useUiContext();
-  const { actor } = useSession();
+  const { actor, credits, plan } = useSession();
   const [resumes, setResumes] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
   const [tips, setTips] = useState<string[]>([]);
   const [tipIndex, setTipIndex] = useState(0);
@@ -60,7 +60,7 @@ export function DashboardPage() {
           Good afternoon, {actor?.name ?? 'there'}!
         </div>
 
-        <section className="grid grid-cols-1 gap-5 lg:grid-cols-3" aria-label="Key metrics">
+        <section className="grid grid-cols-1 gap-5 lg:grid-cols-4" aria-label="Key metrics">
           {kpis.map(kpi => (
             <article className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6" key={kpi.label}>
               <div className="font-headline text-sm font-bold uppercase tracking-[0.18em] text-primary">{kpi.icon}</div>
@@ -74,6 +74,26 @@ export function DashboardPage() {
               </div>
             </article>
           ))}
+          <article className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6">
+            <div className="font-headline text-sm font-bold uppercase tracking-[0.18em] text-primary">★</div>
+            <div className="flex items-center gap-2 text-sm text-[color:var(--txt1)]">
+              AI Credits
+              {credits <= 3 && credits > 0 && (
+                <span className="rounded-full bg-[color:var(--warn)]/15 px-2 py-0.5 text-[10px] font-bold text-[color:var(--warn)]">LOW</span>
+              )}
+              {credits <= 0 && (
+                <span className="rounded-full bg-error/15 px-2 py-0.5 text-[10px] font-bold text-error">EMPTY</span>
+              )}
+            </div>
+            <div className="font-headline text-5xl font-extrabold leading-none text-on-surface">{credits}</div>
+            <div className="h-1.5 rounded-full bg-charcoal/10">
+              <div
+                className={`h-1.5 rounded-full ${credits <= 3 ? 'bg-[color:var(--warn)]' : 'bg-tertiary'}`}
+                style={{ width: `${Math.min(100, (credits / 20) * 100)}%` }}
+              ></div>
+            </div>
+            <div className="text-xs text-[color:var(--txt2)]">{plan.charAt(0).toUpperCase() + plan.slice(1)} plan</div>
+          </article>
         </section>
 
         <section className="grid grid-cols-1 gap-5 xl:grid-cols-3" aria-label="Dashboard workspace">
