@@ -28,7 +28,7 @@ const homeStoryCards = [
     shellClass: 'bg-cream',
   },
   {
-    title: 'Discovers meowfolio. A glimmer of hope.',
+    title: 'Discovers PrepJS. A glimmer of hope.',
     image: '/Images/Scene4.jpg',
     shellClass: 'bg-primary-fixed',
   },
@@ -82,12 +82,12 @@ const homeFaqs = [
   {
     question: 'Why keep the split workspace?',
     answer:
-      'Because the editor, ATS, and JD screens work best as focused tool surfaces, while the public pages explain the product clearly and calmly.',
+      'Because the mock interviews, practice questions, and study guides work best as focused tool surfaces, while the public pages explain the product clearly and calmly.',
   },
   {
     question: 'What carries across the app?',
     answer:
-      'Your resume data, template choice, ATS analysis, and JD match flow through one shared workspace instead of fragmenting into disconnected tools.',
+      'Your practice data, template choice, mock scores, and interview analysis flow through one shared workspace instead of fragmenting into disconnected tools.',
   },
 ] as const;
 
@@ -118,7 +118,7 @@ export function HomePage() {
   function openHomeAuth() {
     openAuth({
       copy:
-        'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
+        'The public pages now live inside the same PrepJS prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
       accent: 'GOOGLE ONLY',
     });
   }
@@ -145,18 +145,18 @@ export function HomePage() {
                 <PublicPill variant="info">FREE FOREVER. NO WATERMARKS.</PublicPill>
               </div>
 
-              <div className="max-w-[11ch] font-headline text-4xl font-extrabold leading-[0.93] tracking-[-0.055em] text-on-surface sm:text-5xl lg:text-[5.15rem]">
-                Build resumes that{' '}
-                <span className="text-coral underline decoration-4 underline-offset-8">actually</span> get read.
+              <div className="max-w-[15ch] font-headline text-4xl font-extrabold leading-[0.93] tracking-[-0.055em] text-on-surface sm:text-5xl lg:text-[5.15rem]">
+                Master React & Node.js to{' '}
+                <span className="text-coral underline decoration-4 underline-offset-8">actually</span> get hired.
               </div>
 
               <div className="grid gap-4">
                 <p className="max-w-lg text-lg font-semibold leading-8 text-[color:var(--txt1)] sm:text-xl md:text-2xl md:leading-9">
-                  Even a cat got hired. You&apos;re next.
+                  Crack the toughest engineering interviews. You're next.
                 </p>
                 <p className={`max-w-xl ${PUBLIC_BODY_CLASS}`}>
-                  Build the resume in one workspace, generate TeX-backed PDFs, and carry the same structured profile
-                  into ATS and JD analysis without jumping between disconnected tools.
+                  Prep for your interviews in one workspace, master JS/TS concepts, and carry the same structured knowledge
+                  into algorithm and system design analysis without jumping between disconnected tools.
                 </p>
               </div>
 
@@ -286,6 +286,35 @@ export function HomePage() {
                 <p className={PUBLIC_BODY_CLASS}>{feature.description}</p>
               </article>
             ))}
+          </div>
+        </section>
+        <hr className="w-full border-t border-black"></hr>
+        <section className={homePageSection}>
+          <div className="grid gap-7 lg:grid-cols-2 lg:items-center">
+            <div className="grid max-w-2xl content-start gap-4 lg:pr-8">
+              <h2 className={homeHeadingClass}>
+                About Me
+              </h2>
+              <p className={PUBLIC_BODY_CLASS}>
+                Hello Everyone! My name is Jelson Joseph, and I am a Software Engineer with a passion for crafting
+                innovative solutions. I built PrepJS as one of my many projects to help engineers conquer the React and Node.js ecosystem. 
+                With a strong background in software development, I am always eager to take on new challenges and learn new technologies. 
+                I believe in the power of collaboration and teamwork, and I am committed to delivering high-quality results in every project I undertake.
+              </p>
+            </div>
+            <div className="relative mx-auto w-full max-w-[20rem] lg:ml-auto">
+              <div className="absolute -right-4 top-4 hidden h-[90%] w-[90%] rounded-[2rem] bg-secondary-fixed/85 lg:block" />
+              <div className="relative overflow-hidden rounded-[2rem] border-[1.5px] border-charcoal/75 bg-white/96 p-2 shadow-tactile-lg sm:rotate-[1.5deg] sm:p-3">
+                <div className="aspect-[4/5] overflow-hidden rounded-[1.4rem] border border-charcoal/10 bg-surface-container-low">
+                  <img
+                    className="h-full w-full object-cover object-center"
+                    src="/Images/DP.jpg"
+                    alt="Jelson Joseph"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
         <hr className="w-full border-t border-black"></hr>

@@ -26,3 +26,5 @@ node_modules/
 DS_Template/
 Non-Project-Docs/
 testsprite_tests/
+
+.vercel
