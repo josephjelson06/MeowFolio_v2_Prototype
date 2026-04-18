@@ -2,9 +2,16 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { callGroq } from './_groq-client';
 
-const supabase = createClient(
+// Auth validation — anon key (used only for getUser)
+const supabaseAuth = createClient(
   process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
   process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
+);
+
+// Admin client — service role key, bypasses RLS for server-side DB ops
+const supabaseAdmin = createClient(
+  process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || '',
 );
 
 const SYSTEM_PROMPT = `You are a job description parser. Given raw JD text, extract key structured data as JSON.
@@ -39,12 +46,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const token = authHeader.slice(7);
-  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+  const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
   if (authError || !user) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 
-  const { data: profile } = await supabase
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('credits')
     .eq('id', user.id)
@@ -69,19 +76,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Failed to parse AI response as JSON' });
     }
 
-    await supabase
+    await supabaseAdmin
       .from('profiles')
       .update({ credits: profile.credits - 1 })
       .eq('id', user.id);
 
-    await supabase
+    await supabaseAdmin
       .from('credit_events')
       .insert({
         user_id: user.id,
         action: 'parse_jd',
         amount: 1,
         resource_id: 'jd',
-      });
+      })
+      .then(() => null)
+      .catch(() => null); // Non-fatal if table doesn't exist yet
 
     return res.status(200).json({ parsed, creditsRemaining: profile.credits - 1 });
   } catch (err) {
