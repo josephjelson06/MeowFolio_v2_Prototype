@@ -1,11 +1,12 @@
 import { cn } from 'lib/cn';
 import {
-  createEmptyDateField,
-  createEmptyDescriptionField,
   createEmptyEducationEntry,
   createEmptyExperienceEntry,
-  createEmptyLinkField,
   createEmptyProjectEntry,
+  createEmptyCustomEntry,
+  isGenericCustomSectionKey,
+  type GenericCustomSectionKey,
+  type CustomEntriesSection,
   type ResumeData,
   type SkillGroup,
 } from 'types/resumeDocument';
@@ -76,10 +77,11 @@ export function EditorFormPane({
     ? resume.skills.groups
     : [{ groupLabel: 'Core Skills', items: resume.skills.items }] as SkillGroup[]).slice(startIndex, startIndex + 5);
   const visibleProjects = resume.projects.slice(startIndex, startIndex + 5);
-  const activeCustomSection = resume.customSections.find(section => section.id === activeSection) ?? null;
-  const visibleCustomEntries = activeCustomSection?.entries.slice(startIndex, startIndex + 5) ?? [];
+  const isCustom = isGenericCustomSectionKey(activeSection);
+  const activeCustomSectionData: CustomEntriesSection | null = isCustom ? resume[activeSection as GenericCustomSectionKey] : null;
+  const visibleCustomEntries = activeCustomSectionData?.entries.slice(startIndex, startIndex + 5) ?? [];
   const needsPagination =
-    ['experience', 'education', 'skills', 'projects'].includes(activeSection) || Boolean(activeCustomSection);
+    ['experience', 'education', 'skills', 'projects'].includes(activeSection) || isCustom;
 
   return (
     <div className={cn('grid gap-3 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-4 shadow-tactile-sm', className)}>
@@ -483,25 +485,26 @@ export function EditorFormPane({
           })
         : null}
 
-      {activeCustomSection ? (
+      {isCustom && activeCustomSectionData ? (
         <>
           <div className={labelClass}>Section label</div>
           <input
             className={inputClass}
-            value={activeCustomSection.label}
+            value={activeCustomSectionData.label}
             onChange={event =>
               onContentChange(current => ({
                 ...current,
-                customSections: current.customSections.map(section =>
-                  section.id === activeCustomSection.id ? { ...section, label: event.target.value } : section,
-                ),
+                [activeSection]: {
+                  ...(current[activeSection as GenericCustomSectionKey]),
+                  label: event.target.value,
+                },
               }))
             }
           />
           {visibleCustomEntries.map((entry, localIndex) => {
             const index = startIndex + localIndex;
             return (
-              <div key={`${activeCustomSection.id}-${index}`}>
+              <div key={`${activeSection}-${index}`}>
                 <div className={labelGapClass}>Title</div>
                 <input
                   className={inputClass}
@@ -509,41 +512,12 @@ export function EditorFormPane({
                   onChange={event =>
                     onContentChange(current => ({
                       ...current,
-                      customSections: current.customSections.map(section =>
-                        section.id === activeCustomSection.id
-                          ? { ...section, entries: section.entries.map((item, itemIndex) => (itemIndex === index ? { ...item, title: event.target.value } : item)) }
-                          : section,
-                      ),
-                    }))
-                  }
-                />
-                <div className={labelGapClass}>Subtitle</div>
-                <input
-                  className={inputClass}
-                  value={entry.subtitle ?? ''}
-                  onChange={event =>
-                    onContentChange(current => ({
-                      ...current,
-                      customSections: current.customSections.map(section =>
-                        section.id === activeCustomSection.id
-                          ? { ...section, entries: section.entries.map((item, itemIndex) => (itemIndex === index ? { ...item, subtitle: event.target.value } : item)) }
-                          : section,
-                      ),
-                    }))
-                  }
-                />
-                <div className={labelGapClass}>Location</div>
-                <input
-                  className={inputClass}
-                  value={entry.location ?? ''}
-                  onChange={event =>
-                    onContentChange(current => ({
-                      ...current,
-                      customSections: current.customSections.map(section =>
-                        section.id === activeCustomSection.id
-                          ? { ...section, entries: section.entries.map((item, itemIndex) => (itemIndex === index ? { ...item, location: event.target.value } : item)) }
-                          : section,
-                      ),
+                      [activeSection]: {
+                        ...(current[activeSection as GenericCustomSectionKey]),
+                        entries: current[activeSection as GenericCustomSectionKey].entries.map((item, itemIndex) =>
+                          itemIndex === index ? { ...item, title: event.target.value } : item
+                        ),
+                      },
                     }))
                   }
                 />
@@ -554,16 +528,14 @@ export function EditorFormPane({
                   onChange={event =>
                     onContentChange(current => ({
                       ...current,
-                      customSections: current.customSections.map(section =>
-                        section.id === activeCustomSection.id
-                          ? {
-                              ...section,
-                              entries: section.entries.map((item, itemIndex) =>
-                                itemIndex === index ? { ...item, description: { ...item.description, bullets: linesToArray(event.target.value) } } : item,
-                              ),
-                            }
-                          : section,
-                      ),
+                      [activeSection]: {
+                        ...(current[activeSection as GenericCustomSectionKey]),
+                        entries: current[activeSection as GenericCustomSectionKey].entries.map((item, itemIndex) =>
+                          itemIndex === index
+                            ? { ...item, description: { ...item.description, bullets: linesToArray(event.target.value) } }
+                            : item
+                        ),
+                      },
                     }))
                   }
                 />
@@ -573,11 +545,10 @@ export function EditorFormPane({
                   onClick={() =>
                     onContentChange(current => ({
                       ...current,
-                      customSections: current.customSections.map(section =>
-                        section.id === activeCustomSection.id
-                          ? { ...section, entries: section.entries.filter((_item, itemIndex) => itemIndex !== index) }
-                          : section,
-                      ),
+                      [activeSection]: {
+                        ...(current[activeSection as GenericCustomSectionKey]),
+                        entries: current[activeSection as GenericCustomSectionKey].entries.filter((_item, itemIndex) => itemIndex !== index),
+                      },
                     }))
                   }
                 >
@@ -592,24 +563,13 @@ export function EditorFormPane({
             onClick={() =>
               onContentChange(current => ({
                 ...current,
-                customSections: current.customSections.map(section =>
-                  section.id === activeCustomSection.id
-                    ? {
-                        ...section,
-                        entries: [
-                          ...section.entries,
-                          {
-                            date: createEmptyDateField('mm-yyyy'),
-                            description: createEmptyDescriptionField('bullets'),
-                            link: createEmptyLinkField(),
-                            location: '',
-                            subtitle: '',
-                            title: '',
-                          },
-                        ],
-                      }
-                    : section,
-                ),
+                [activeSection]: {
+                  ...(current[activeSection as GenericCustomSectionKey]),
+                  entries: [
+                    ...current[activeSection as GenericCustomSectionKey].entries,
+                    createEmptyCustomEntry(),
+                  ],
+                },
               }))
             }
           >

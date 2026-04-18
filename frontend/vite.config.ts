@@ -6,6 +6,15 @@ import tailwindcss from '@tailwindcss/vite';
 
 const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
+// ---------------------------------------------------------------------------
+// Dev API proxy
+// In production, /api/* is handled by Vercel serverless functions.
+// In local dev (npm run dev), Vite has no runtime for those functions, so we
+// proxy the requests to the deployed Vercel preview/production URL so that
+// AI parsing works without needing a local server.
+// ---------------------------------------------------------------------------
+const VERCEL_API_TARGET = 'https://meowfolio-v2.vercel.app';
+
 export default defineConfig({
   envDir: '../',
   plugins: [react(), tailwindcss()],
@@ -24,6 +33,15 @@ export default defineConfig({
       state: path.resolve(rootDir, 'src/state'),
       styles: path.resolve(rootDir, 'src/styles'),
       types: path.resolve(rootDir, 'src/types'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: VERCEL_API_TARGET,
+        changeOrigin: true,
+        secure: true,
+      },
     },
   },
 });

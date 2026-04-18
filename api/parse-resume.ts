@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { callGroq } from './_groq-client';
+import { buildResumeParsePrompt } from './_resume-prompt';
 
 // Auth validation — anon key, respects RLS (used only for getUser)
 const supabaseAuth = createClient(
@@ -14,64 +15,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || '',
 );
 
-const SYSTEM_PROMPT = `You are a resume parser. Given raw resume text, extract structured data as JSON.
-
-Return ONLY a JSON object with this exact structure:
-{
-  "header": {
-    "name": "string",
-    "role": "string",
-    "email": "string",
-    "phone": "string",
-    "address": "string",
-    "linkedin": { "url": "string", "displayText": "string" },
-    "github": { "url": "string", "displayText": "string" },
-    "website": { "url": "string", "displayText": "string" }
-  },
-  "summary": { "content": "string", "mode": "professional-summary" },
-  "education": [
-    {
-      "institution": "string",
-      "degree": "string",
-      "field": "string",
-      "location": "string",
-      "result": "string",
-      "date": { "startMonth": "string", "startYear": "string", "endMonth": "string", "endYear": "string", "isOngoing": false }
-    }
-  ],
-  "experience": [
-    {
-      "role": "string",
-      "company": "string",
-      "location": "string",
-      "date": { "startMonth": "string", "startYear": "string", "endMonth": "string", "endYear": "string", "isOngoing": false },
-      "description": { "mode": "bullets", "bullets": ["string"], "paragraph": "" }
-    }
-  ],
-  "skills": {
-    "mode": "grouped",
-    "items": [],
-    "groups": [
-      { "groupLabel": "string", "items": ["string"] }
-    ]
-  },
-  "projects": [
-    {
-      "title": "string",
-      "technologies": ["string"],
-      "date": { "startMonth": "", "startYear": "", "endMonth": "", "endYear": "", "isOngoing": false },
-      "description": { "mode": "bullets", "bullets": ["string"], "paragraph": "" }
-    }
-  ]
-}
-
-Rules:
-- Extract as much data as possible from the text
-- Leave empty strings for missing fields, never null
-- Dates should be month names (e.g., "Jan", "Feb") and 4-digit years
-- Skill groups should be logical categories (Languages, Frameworks, Tools, etc.)
-- Bullets should be individual accomplishment statements
-- Return ONLY the JSON, no markdown, no explanation`;
+// Replaced by buildResumeParsePrompt
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -109,7 +53,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // Call Groq
-    const result = await callGroq(SYSTEM_PROMPT, text.slice(0, 8000));
+    const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
+    const result = await callGroq(systemPrompt, userPrompt);
 
     // Parse the JSON response
     let parsed;

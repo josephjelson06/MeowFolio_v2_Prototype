@@ -304,6 +304,52 @@ export function createEmptyCustomSection(key: GenericCustomSectionKey): CustomEn
   };
 }
 
+export function createEmptyEducationEntry(): EducationEntry {
+  return {
+    level: "degree-diploma",
+    degree: "",
+    field: "",
+    institution: "",
+    boardOrUniversity: "",
+    location: "",
+    date: createEmptyDateField("yyyy-range"),
+    result: "",
+    resultType: null
+  };
+}
+
+export function createEmptyExperienceEntry(): ExperienceEntry {
+  return {
+    role: "",
+    company: "",
+    location: "",
+    date: createEmptyDateField("mm-yyyy-range"),
+    isCurrent: false,
+    description: createEmptyDescriptionField("bullets")
+  };
+}
+
+export function createEmptyProjectEntry(): ProjectEntry {
+  return {
+    title: "",
+    githubLink: createEmptyLinkField(),
+    liveLink: createEmptyLinkField(),
+    date: createEmptyDateField("mm-yyyy-range"),
+    technologies: [],
+    description: createEmptyDescriptionField("bullets")
+  };
+}
+
+export function createEmptyCertificationEntry(): CertificationEntry {
+  return {
+    title: "",
+    issuer: "",
+    description: "",
+    date: createEmptyDateField("mm-yyyy"),
+    link: createEmptyLinkField()
+  };
+}
+
 export function createEmptyResumeData(source: ResumeSource = "scratch"): ResumeData {
   const now = new Date().toISOString();
 

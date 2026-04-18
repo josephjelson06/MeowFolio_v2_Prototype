@@ -288,7 +288,7 @@ export function HomePage() {
             ))}
           </div>
         </section>
-        <hr className="w-full border-t border-black"></hr>
+        {/* <hr className="w-full border-t border-black"></hr>
         <section className={homePageSection}>
           <div className="grid gap-7 lg:grid-cols-2 lg:items-center">
             <div className="grid max-w-2xl content-start gap-4 lg:pr-8">
@@ -317,7 +317,7 @@ export function HomePage() {
             </div>
           </div>
         </section>
-        <hr className="w-full border-t border-black"></hr>
+        <hr className="w-full border-t border-black"></hr> */}
         <section className={homePageSection}>
           <div className="grid gap-7 lg:grid-cols-[minmax(260px,0.68fr)_minmax(0,1.32fr)] lg:items-stretch lg:gap-8">
             <div className="grid">

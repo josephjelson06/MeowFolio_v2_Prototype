@@ -16,7 +16,7 @@ import { useEditorAutosave } from 'pages/workspace/editor/hooks/useEditorAutosav
 import { useEditorRecord } from 'pages/workspace/editor/hooks/useEditorRecord';
 import { usePageViewportMode } from 'pages/workspace/editor/hooks/usePageViewportMode';
 import { leftTabs, type ToolbarValues } from 'pages/workspace/editor/types';
-import { buildResumePlainText, createEmptyDateField, createEmptyDescriptionField, createEmptyLinkField, DEFAULT_RENDER_OPTIONS, type RenderTemplateId, type ResumeData } from 'types/resumeDocument';
+import { buildResumePlainText, DEFAULT_RENDER_OPTIONS, GENERIC_CUSTOM_SECTION_LABELS, type GenericCustomSectionKey, type RenderTemplateId, type ResumeData, type ResumeSectionKey } from 'types/resumeDocument';
 import { applyToolbarValues, toolbarFromRenderOptions } from 'pages/workspace/editor/utils/editorToolbar';
 
 export function EditorPage() {
@@ -125,8 +125,8 @@ export function EditorPage() {
     setRecord(current => {
       if (!current) return current;
       const order = [...current.renderOptions.sectionOrder];
-      const fromIndex = order.indexOf(fromId);
-      const toIndex = order.indexOf(toId);
+      const fromIndex = order.indexOf(fromId as ResumeSectionKey);
+      const toIndex = order.indexOf(toId as ResumeSectionKey);
       if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return current;
       const nextOrder = [...order];
       const [moved] = nextOrder.splice(fromIndex, 1);
@@ -143,38 +143,27 @@ export function EditorPage() {
   }
 
   function addCustomSection() {
-    const sectionId = `custom-${Date.now()}`;
+    if (!record) return;
+    const availableGenerics = Object.keys(GENERIC_CUSTOM_SECTION_LABELS) as GenericCustomSectionKey[];
+    const activeIds = record.renderOptions.sectionOrder;
+    const nextSection = availableGenerics.find(key => !activeIds.includes(key));
+    
+    if (!nextSection) {
+      alert("All custom sections are currently in use!");
+      return;
+    }
+
     setRecord(current => {
       if (!current) return current;
       return {
         ...current,
-        content: {
-          ...current.content,
-          customSections: [
-            ...current.content.customSections,
-            {
-              id: sectionId,
-              label: 'Custom Section',
-              entries: [
-                {
-                  date: createEmptyDateField('mm-yyyy'),
-                  description: createEmptyDescriptionField('bullets'),
-                  link: createEmptyLinkField(),
-                  location: '',
-                  subtitle: '',
-                  title: '',
-                },
-              ],
-            },
-          ],
-        },
         renderOptions: {
           ...current.renderOptions,
-          sectionOrder: [...current.renderOptions.sectionOrder, sectionId],
+          sectionOrder: [...current.renderOptions.sectionOrder, nextSection],
         },
       };
     });
-    setActiveSection(sectionId);
+    setActiveSection(nextSection);
   }
 
   function removeSection(sectionId: string) {
@@ -182,10 +171,6 @@ export function EditorPage() {
       if (!current) return current;
       return {
         ...current,
-        content: {
-          ...current.content,
-          customSections: current.content.customSections.filter(section => section.id !== sectionId),
-        },
         renderOptions: {
           ...current.renderOptions,
           sectionOrder: current.renderOptions.sectionOrder.filter(section => section !== sectionId),

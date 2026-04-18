@@ -18,6 +18,7 @@ import { ResumeDeleteModalHost } from 'modals/resumes/ResumeDeleteModalHost';
 import { JdRenameModalHost } from 'modals/jds/JdRenameModalHost';
 import { JdDeleteModalHost } from 'modals/jds/JdDeleteModalHost';
 import { LogoutConfirmModalHost } from 'modals/session/LogoutConfirmModalHost';
+import { ProtectedRoute } from 'app/router/ProtectedRoute';
 
 function AppShell() {
   return (
@@ -40,20 +41,26 @@ export const router = createBrowserRouter([
     path: '/',
     element: <AppShell />,
     children: [
+      // ── Public routes ────────────────────────────────────────────────
       { index: true, element: <HomePage /> },
       { path: routes.about, element: <AboutPage /> },
       { path: routes.notFound, element: <NotFoundPage /> },
       { path: routes.error500, element: <Error500Page /> },
       { path: routes.authCallback, element: <AuthCallbackPage /> },
-      { path: routes.dashboard, element: <DashboardPage /> },
-      { path: routes.resumes, element: <ResumesPage /> },
-      { path: routes.jds, element: <JdsPage /> },
-      { path: routes.profile, element: <ProfilePage /> },
-      { path: routes.editor, element: <EditorPage /> },
+
+      // ── Protected workspace routes (require login) ───────────────────
       {
-        path: '*',
-        element: <Navigate to={routes.notFound} replace />,
+        element: <ProtectedRoute />,
+        children: [
+          { path: routes.dashboard, element: <DashboardPage /> },
+          { path: routes.resumes,   element: <ResumesPage /> },
+          { path: routes.jds,       element: <JdsPage /> },
+          { path: routes.profile,   element: <ProfilePage /> },
+          { path: routes.editor,    element: <EditorPage /> },
+        ],
       },
+
+      { path: '*', element: <Navigate to={routes.notFound} replace /> },
     ],
   },
 ]);
