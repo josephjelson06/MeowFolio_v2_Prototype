@@ -63,4 +63,8 @@ export const router = createBrowserRouter([
       { path: '*', element: <Navigate to={routes.notFound} replace /> },
     ],
   },
-]);
+], {
+  future: {
+    v7_startTransition: true,
+  }
+});

@@ -1,4 +1,12 @@
-import { cn } from 'lib/cn';
+import os
+
+file_path = "C:\\Users\\josep\\Desktop\\Resume_Project\\Prototype_v2\\frontend\\src\\pages\\workspace\\editor\\components\\EditorFormPane.tsx"
+
+with open(file_path, "r", encoding="utf-8") as f:
+    orig = f.read()
+
+# We will read the start of the file and everything after imports to assemble the new file
+import_block = """import { cn } from 'lib/cn';
 import {
   createEmptyEducationEntry,
   createEmptyExperienceEntry,
@@ -12,11 +20,23 @@ import {
   type EducationLevel,
   type ResultType,
   type DateFieldMode,
+  type DescriptionMode,
   type MonthValue,
   type DateField,
   type DescriptionField,
   MONTH_OPTIONS,
 } from 'types/resumeDocument';
+
+function linesToArray(value: string) {
+  return value
+    .split('\\n')
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function joinLines(items: string[]) {
+  return items.join('\\n');
+}
 
 function joinCsv(items: string[]) {
   return items.join(', ');
@@ -39,6 +59,8 @@ const inputClass =
   'w-full rounded-[1rem] border border-outline-variant bg-white px-4 py-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10';
 const textAreaMdClass = `${inputClass} min-h-40 resize-y`;
 const textAreaSmClass = `${inputClass} min-h-28 resize-y`;
+const removeButtonClass =
+  'mt-4 inline-flex min-h-9 items-center justify-center self-start rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[10px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white';
 const addButtonClass =
   'mt-5 inline-flex min-h-10 items-center justify-center self-start rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white';
 const paginationButtonClass =
@@ -647,11 +669,11 @@ export function EditorFormPane({
                 <input
                   className={inputClass}
                   placeholder="Paste the full public URL"
-                  value={item.githubLink.url ?? ''}
+                  value={item.github.url ?? ''}
                   onChange={event =>
                     onContentChange(current => ({
                       ...current,
-                      projects: current.projects.map((entry, entryIndex) => (entryIndex === index ? { ...entry, githubLink: { url: event.target.value } } : entry)),
+                      projects: current.projects.map((entry, entryIndex) => (entryIndex === index ? { ...entry, github: { url: event.target.value } } : entry)),
                     }))
                   }
                 />
@@ -660,11 +682,11 @@ export function EditorFormPane({
                 <input
                   className={inputClass}
                   placeholder="Paste the full public URL"
-                  value={item.liveLink.url ?? ''}
+                  value={item.link.url ?? ''}
                   onChange={event =>
                     onContentChange(current => ({
                       ...current,
-                      projects: current.projects.map((entry, entryIndex) => (entryIndex === index ? { ...entry, liveLink: { url: event.target.value } } : entry)),
+                      projects: current.projects.map((entry, entryIndex) => (entryIndex === index ? { ...entry, link: { url: event.target.value } } : entry)),
                     }))
                   }
                 />
@@ -877,3 +899,9 @@ export function EditorFormPane({
     </div>
   );
 }
+"""
+
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(import_block)
+
+print("Rewritten securely!")

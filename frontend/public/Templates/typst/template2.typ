@@ -6,8 +6,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // Data is injected by the renderer as a stringified JSON variable
-#let data = json.decode(sys.inputs.at("resume-data", default: "{}"))
-#let opts = json.decode(sys.inputs.at("render-options", default: "{}"))
+#let data = json(bytes(sys.inputs.at("resume-data", default: "{}")))
+#let opts = json(bytes(sys.inputs.at("render-options", default: "{}")))
 
 // ── Config ────────────────────────────────────────────────────────────────────
 #let highlight-color = rgb(
@@ -245,12 +245,16 @@
 
     entry-header(role, company, loc, date)
     if desc != none {
-      let bullets = desc.at("bullets", default: ())
-      let para = field(desc, "paragraph")
-      if bullets.len() > 0 {
-        bullet-list(bullets)
-      } else if para != "" {
-        text(size: body-size, para)
+      if type(desc) == str {
+        text(size: body-size, desc)
+      } else if type(desc) == dictionary {
+        let bullets = desc.at("bullets", default: ())
+        let para = field(desc, "paragraph")
+        if type(bullets) == array and bullets.len() > 0 {
+          bullet-list(bullets)
+        } else if para != "" {
+          text(size: body-size, para)
+        }
       }
     }
     v(0.2em)
@@ -271,12 +275,16 @@
 
     entry-header(title, tech-str, "", date)
     if desc != none {
-      let bullets = desc.at("bullets", default: ())
-      let para = field(desc, "paragraph")
-      if bullets.len() > 0 {
-        bullet-list(bullets)
-      } else if para != "" {
-        text(size: body-size, para)
+      if type(desc) == str {
+        text(size: body-size, desc)
+      } else if type(desc) == dictionary {
+        let bullets = desc.at("bullets", default: ())
+        let para = field(desc, "paragraph")
+        if type(bullets) == array and bullets.len() > 0 {
+          bullet-list(bullets)
+        } else if para != "" {
+          text(size: body-size, para)
+        }
       }
     }
     v(0.2em)
@@ -306,12 +314,14 @@
 // ── Custom/Generic sections ───────────────────────────────────────────────────
 #let render-custom-section(section) = {
   if section == none { return }
+  if type(section) != dictionary { return }
   let label = field(section, "label")
   let entries = section.at("entries", default: ())
   if entries.len() == 0 { return }
 
   section-heading(label)
   for entry in entries {
+    if type(entry) != dictionary { continue }
     let title = field(entry, "title")
     let subtitle = field(entry, "subtitle")
     let loc = field(entry, "location")
@@ -320,12 +330,16 @@
 
     entry-header(title, subtitle, loc, date)
     if desc != none {
-      let bullets = desc.at("bullets", default: ())
-      let para = field(desc, "paragraph")
-      if bullets.len() > 0 {
-        bullet-list(bullets)
-      } else if para != "" {
-        text(size: body-size, para)
+      if type(desc) == str {
+        text(size: body-size, desc)
+      } else if type(desc) == dictionary {
+        let bullets = desc.at("bullets", default: ())
+        let para = field(desc, "paragraph")
+        if type(bullets) == array and bullets.len() > 0 {
+          bullet-list(bullets)
+        } else if para != "" {
+          text(size: body-size, para)
+        }
       }
     }
     v(0.2em)

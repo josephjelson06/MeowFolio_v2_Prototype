@@ -43,7 +43,7 @@ export async function compilePdf(
   await ensureInit();
 
   // Fetch the template file
-  const templateUrl = `/templates/typst/${templateId}.typ`;
+  const templateUrl = `/Templates/typst/${templateId}.typ?t=${Date.now()}`;
   const templateResponse = await fetch(templateUrl);
   if (!templateResponse.ok) {
     throw new Error(`Failed to load template: ${templateUrl}`);
@@ -135,7 +135,7 @@ export async function compileSvg(
 ): Promise<string> {
   await ensureInit();
 
-  const templateUrl = `/templates/typst/${templateId}.typ`;
+  const templateUrl = `/Templates/typst/${templateId}.typ?t=${Date.now()}`;
   const templateResponse = await fetch(templateUrl);
   if (!templateResponse.ok) {
     throw new Error(`Failed to load template: ${templateUrl}`);

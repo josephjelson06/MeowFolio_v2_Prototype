@@ -23,7 +23,14 @@ const SCHEMA_OVERVIEW = `
   "experience": [],
   "projects": [],
   "certifications": [],
-  "leadership": { "label": "Leaderships", "entries": [] },
+  "leadership": { "label": "Leaderships", "entries": [
+    {
+      "title": null,
+      "date": { "mode": "mm-yyyy-range", "startMonth": "", "startYear": "", "endMonth": "", "endYear": "", "isOngoing": false },
+      "link": { "url": null, "displayMode": "plain-url", "displayText": null },
+      "description": { "mode": "bullets", "bullets": [], "paragraph": null }
+    }
+  ] },
   "achievements": { "label": "Achievements", "entries": [] },
   "competitions": { "label": "Competitions", "entries": [] },
   "extracurricular": { "label": "Extra-Curricular", "entries": [] },
@@ -239,22 +246,22 @@ function stringifyExample(value: unknown) {
 
 export function buildResumeParsePrompt(rawText: string) {
   return {
-    systemPrompt: \`\${SYSTEM_PROMPT}\\n\${SCHEMA_OVERVIEW}\`,
-    userPrompt: \`
+    systemPrompt: `${SYSTEM_PROMPT}\n${SCHEMA_OVERVIEW}`,
+    userPrompt: `
 Parse the following resume text into JSON.
 Return JSON only.
 
 Schema:
-\${SCHEMA_OVERVIEW}
+${SCHEMA_OVERVIEW}
 
 Example input:
-\${EXAMPLE_INPUT}
+${EXAMPLE_INPUT}
 
 Example output:
-\${stringifyExample(EXAMPLE_OUTPUT)}
+${stringifyExample(EXAMPLE_OUTPUT)}
 
 Resume text:
-\${rawText}
-\`.trim()
+${rawText}
+`.trim()
   };
 }

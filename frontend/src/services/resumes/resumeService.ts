@@ -68,12 +68,8 @@ function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
 }
 
 async function getUserId(): Promise<string> {
-  if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
-    return 'test-seam-mock-id';
-  }
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Not authenticated');
-  return user.id;
+  return user?.id ?? 'guest-user';
 }
 
 // ─── Local Mock State for Test Seam ────────
@@ -83,10 +79,21 @@ let mockResumes: ResumeRecord[] = [
 let mockDocuments: Record<string, ResumeDocumentRecord> = {
   'mock-1': {
     id: 'mock-1', title: 'Software Engineer Resume', source: 'scratch', templateId: 'template1',
-    content: { basics: { name: 'Test User', email: 'test@example.com' }, work: [] } as any,
+    content: null as any, // will be initialized to avoid crash if accessed directly, wait, actually better write out a partial valid one:
     renderOptions: {} as any, rawText: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   }
 };
+
+// Lazy initialization of mock content because we can't statically import createEmptyResumeData here if it's dynamic
+import('types/resumeDocument').then(({ createEmptyResumeData, DEFAULT_RENDER_OPTIONS }) => {
+  if (mockDocuments['mock-1']) {
+    const data = createEmptyResumeData('scratch');
+    data.header.name = 'Test User';
+    data.header.email = 'test@example.com';
+    mockDocuments['mock-1'].content = data;
+    mockDocuments['mock-1'].renderOptions = DEFAULT_RENDER_OPTIONS as any;
+  }
+});
 
 
 /* ─── Service ──────────────────────────────────────────────────────────────── */
@@ -103,7 +110,7 @@ export const resumeService = {
   },
 
   async list(): Promise<ResumeRecord[]> {
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (await getUserId() === 'guest-user') {
       return [...mockResumes];
     }
     const { data, error } = await supabase
@@ -116,7 +123,7 @@ export const resumeService = {
   },
 
   async rename(id: string, nextName: string): Promise<ResumeRecord[]> {
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (await getUserId() === 'guest-user') {
       const target = mockResumes.find(r => r.id === id);
       if (target) target.name = nextName;
       if (mockDocuments[id]) mockDocuments[id].title = nextName;
@@ -134,7 +141,7 @@ export const resumeService = {
   },
 
   async remove(id: string): Promise<ResumeRecord[]> {
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (await getUserId() === 'guest-user') {
       mockResumes = mockResumes.filter(r => r.id !== id);
       delete mockDocuments[id];
       notifyResumeChange();
@@ -156,8 +163,17 @@ export const resumeService = {
   },
 
   async getRecord(id: string): Promise<ResumeDocumentRecord> {
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
-      return mockDocuments[id] ?? mockDocuments['mock-1'];
+    if (await getUserId() === 'guest-user') {
+      const doc = mockDocuments[id] ?? mockDocuments['mock-1'];
+      if (!doc.content) {
+        const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
+        const data = createEmptyResumeData('scratch');
+        data.header.name = 'Test User (Local)';
+        data.header.email = 'test@local.env';
+        doc.content = data;
+        doc.renderOptions = DEFAULT_RENDER_OPTIONS;
+      }
+      return doc;
     }
     const { data, error } = await supabase
       .from('resumes')
@@ -176,7 +192,7 @@ export const resumeService = {
     title?: string;
     rawText?: string;
   }): Promise<ResumeDocumentRecord | null> {
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (await getUserId() === 'guest-user') {
       if (mockDocuments[id]) {
         mockDocuments[id].content = input.content;
         mockDocuments[id].renderOptions = input.renderOptions;
@@ -225,7 +241,7 @@ export const resumeService = {
     const userId = await getUserId();
     const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
 
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+    if (await getUserId() === 'guest-user') {
       const id = `mock-${Date.now()}`;
       const rec: ResumeRecord = { id, name: 'Untitled Resume', template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
       mockResumes.unshift(rec);
@@ -260,62 +276,37 @@ export const resumeService = {
   },
 
   async importText(text: string, sourceName: string): Promise<ResumeMutationResponse> {
-    if (import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
-      const { createEmptyResumeData } = await import('types/resumeDocument');
-      const id = `mock-${Date.now()}`;
-      const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
-      const item: ResumeRecord = { id, name: title, template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
-      mockResumes.unshift(item);
-      mockDocuments[id] = {
-        id, title, source: 'import', templateId: 'template1' as any, 
-        content: createEmptyResumeData('import') as any, 
-        renderOptions: {} as any, rawText: text, 
-        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
-      };
-      setActiveResumeId(id);
-      notifyResumeChange();
-      return {
-        extractedText: text,
-        item,
-        parseStatus: 'partial',
-        resumeId: id,
-        warnings: ['Mock import parsing applied.'],
-      };
-    }
-
-    const userId = await getUserId();
-    const { DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
+    const isGuest = await getUserId() === 'guest-user';
+    const { DEFAULT_RENDER_OPTIONS, createEmptyResumeData } = await import('types/resumeDocument');
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
 
-    // Try AI parsing via the serverless function
+    // Try AI parsing via the serverless function FIRST (works for both local guest and prod)
     let parsedContent = null;
     let parseStatus: 'parsed' | 'partial' | 'failed' = 'partial';
     const warnings: string[] = [];
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        const response = await fetch('/api/parse-resume', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text, source: sourceName }),
-        });
+      const response = await fetch('/api/parse-resume', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+        },
+        body: JSON.stringify({ text, source: sourceName }),
+      });
 
-        if (response.status === 402) {
-          throw new Error('No credits remaining. Upgrade your plan to continue using AI parsing.');
-        }
+      if (response.status === 402) {
+        throw new Error('No credits remaining. Upgrade your plan to continue using AI parsing.');
+      }
 
-        if (response.ok) {
-          const result = await response.json();
-          parsedContent = result.parsed;
-          parseStatus = 'parsed';
-        } else {
-          const errBody = await response.json().catch(() => ({}));
-          warnings.push(errBody.error ?? 'AI parsing returned an error. Resume saved with raw text.');
-        }
+      if (response.ok) {
+        const result = await response.json();
+        parsedContent = result.parsed;
+        parseStatus = 'parsed';
+      } else {
+        const errBody = await response.json().catch(() => ({}));
+        warnings.push(errBody.error ?? 'AI parsing returned an error. Resume saved with raw text.');
       }
     } catch (err) {
       if (err instanceof Error && err.message.includes('No credits')) {
@@ -326,9 +317,33 @@ export const resumeService = {
 
     // If AI parsing failed, use empty content
     if (!parsedContent) {
-      const { createEmptyResumeData } = await import('types/resumeDocument');
       parsedContent = createEmptyResumeData('import');
     }
+
+    // --- Guest User Branch ---
+    if (isGuest) {
+      const id = `mock-${Date.now()}`;
+      const item: ResumeRecord = { id, name: title, template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
+      mockResumes.unshift(item);
+      mockDocuments[id] = {
+        id, title, source: 'import', templateId: 'template1' as any, 
+        content: parsedContent as any, 
+        renderOptions: DEFAULT_RENDER_OPTIONS as any, rawText: text, 
+        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+      };
+      setActiveResumeId(id);
+      notifyResumeChange();
+      return {
+        extractedText: text,
+        item,
+        parseStatus,
+        resumeId: id,
+        warnings,
+      };
+    }
+
+    // --- Authenticated User Branch ---
+    const userId = await getUserId();
 
     const { data, error } = await supabase
       .from('resumes')

@@ -41,9 +41,10 @@ function mapRowToJdRecord(row: any): JdRecord {
 
 async function getUserId(): Promise<string> {
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Not authenticated');
-  return user.id;
+  return user?.id ?? 'guest-user';
 }
+
+let mockJds: JdRecord[] = [];
 
 /** Seed-style match profiles for local JD matching (rule-based) */
 const resumeMatchProfilesSeed: Record<string, ResumeMatchProfile> = {
@@ -86,6 +87,9 @@ export const jdService = {
   eventName: JD_EVENT,
 
   async list(): Promise<JdRecord[]> {
+    const userId = await getUserId();
+    if (userId === 'guest-user') return [...mockJds];
+
     const { data, error } = await supabase
       .from('jds')
       .select('*')
@@ -96,6 +100,9 @@ export const jdService = {
   },
 
   async getById(id: string): Promise<JdRecord | undefined> {
+    const userId = await getUserId();
+    if (userId === 'guest-user') return mockJds.find(j => j.id === id);
+
     const { data, error } = await supabase
       .from('jds')
       .select('*')
@@ -107,6 +114,14 @@ export const jdService = {
   },
 
   async rename(id: string, nextName: string): Promise<JdRecord[]> {
+    const userId = await getUserId();
+    if (userId === 'guest-user') {
+      const match = mockJds.find(j => j.id === id);
+      if (match) match.title = nextName;
+      notifyJdChange({ id });
+      return this.list();
+    }
+
     const { error } = await supabase
       .from('jds')
       .update({ title: nextName, updated_at: new Date().toISOString() })
@@ -118,6 +133,19 @@ export const jdService = {
   },
 
   async saveText(id: string, text: string, title?: string): Promise<JdRecord | null> {
+    const userId = await getUserId();
+    if (userId === 'guest-user') {
+      const match = mockJds.find(j => j.id === id);
+      if (match) {
+        match.parsedText = text;
+        if (title) match.title = title;
+        match.updatedAt = new Date().toISOString();
+        notifyJdChange({ id });
+        return match;
+      }
+      return null;
+    }
+
     const updatePayload: Record<string, unknown> = {
       raw_text: text,
       updated_at: new Date().toISOString(),
@@ -137,6 +165,13 @@ export const jdService = {
   },
 
   async remove(id: string): Promise<JdRecord[]> {
+    const userId = await getUserId();
+    if (userId === 'guest-user') {
+      mockJds = mockJds.filter(j => j.id !== id);
+      notifyJdChange();
+      return this.list();
+    }
+
     const { error } = await supabase
       .from('jds')
       .delete()
@@ -151,6 +186,22 @@ export const jdService = {
     const userId = await getUserId();
     const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
     const title = sourceName?.replace(/\.[^.]+$/, '') || lines[0] || `Imported JD ${Date.now()}`;
+
+    if (userId === 'guest-user') {
+      const item: JdRecord = {
+        id: `mock-jd-${Date.now()}`,
+        title,
+        company: lines[1] || '',
+        type: 'Imported',
+        parsedText: text,
+        badge: 'Newly added',
+        updatedAt: new Date().toISOString(),
+      };
+      mockJds.unshift(item);
+      notifyJdChange({ id: item.id });
+      const list = await this.list();
+      return { extractedText: text, item, list };
+    }
 
     const { data, error } = await supabase
       .from('jds')

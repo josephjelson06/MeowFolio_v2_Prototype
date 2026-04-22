@@ -3,11 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@supabase/supabase-js": "^2.103.1"
+    "@supabase/supabase-js": "^2.103.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.13.10",
-    "@vercel/node": "^3.0.0",
     "typescript": "^5.6.3"
+  },
+  "scripts": {
+    "dev": "tsx watch server.ts"
   }
 }
