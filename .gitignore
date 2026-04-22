@@ -28,3 +28,8 @@ Non-Project-Docs/
 testsprite_tests/
 
 .vercel
+
+# Auto-generated build artifacts
+frontend/vite.config.js
+frontend/tsconfig.node.tsbuildinfo
+*.tsbuildinfo
