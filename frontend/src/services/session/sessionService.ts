@@ -36,7 +36,7 @@ export const sessionService = {
       name: profile?.name ?? user.user_metadata?.full_name ?? null,
       email: user.email ?? null,
       avatarUrl: profile?.avatar_url ?? user.user_metadata?.avatar_url ?? null,
-      credits: 99999, // profile?.credits ?? APP_LIMITS.freeCredits,
+      credits: profile?.credits ?? APP_LIMITS.freeCredits,
       plan: profile?.plan ?? 'free',
     };
   },

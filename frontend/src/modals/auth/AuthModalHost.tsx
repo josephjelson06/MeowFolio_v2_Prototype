@@ -127,12 +127,7 @@ export function AuthModalHost() {
         onClose={closeAuth}
         onContinue={() => {
           closeAuth();
-          if (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') {
-            window.localStorage.setItem('TEST_SEAM_ACTIVE', 'true');
-            window.location.href = '/resumes';
-          } else {
-            void sessionService.signInWithGoogle();
-          }
+          void sessionService.signInWithGoogle();
         }}
       />
     </ModalShell>
