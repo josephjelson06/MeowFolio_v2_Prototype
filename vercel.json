@@ -2,7 +2,8 @@
   "version": 2,
   "buildCommand": "npm run build --workspace=frontend",
   "outputDirectory": "frontend/dist",
-  "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

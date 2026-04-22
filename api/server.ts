@@ -17,7 +17,8 @@ app.use(express.json({ limit: '10mb' }));
 
 app.post('/api/parse-resume', async (req, res) => {
   try {
-    await parseResumeHandler(req, res);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await parseResumeHandler(req as any, res as any);
   } catch (error) {
     console.error('Unhandled error in parse-resume:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -26,7 +27,8 @@ app.post('/api/parse-resume', async (req, res) => {
 
 app.post('/api/parse-jd', async (req, res) => {
   try {
-    await parseJdHandler(req, res);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await parseJdHandler(req as any, res as any);
   } catch (error) {
     console.error('Unhandled error in parse-jd:', error);
     res.status(500).json({ error: 'Internal Server Error' });
