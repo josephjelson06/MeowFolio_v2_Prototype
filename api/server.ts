@@ -6,8 +6,8 @@ import path from 'path';
 // Load .env.local from the root directory
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
-import { parseResumeHandler } from './parse-resume';
-import { parseJdHandler } from './parse-jd';
+import parseResumeHandler from './parse-resume';
+import parseJdHandler from './parse-jd';
 
 const app = express();
 const PORT = process.env.PORT || 3001;

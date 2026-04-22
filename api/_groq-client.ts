@@ -41,6 +41,7 @@ export async function callGroq(
 
   if (keys.length === 0) {
     throw new Error('No GROQ_KEY_* environment variables configured');
+  }
 
   const errors: string[] = [];
 
