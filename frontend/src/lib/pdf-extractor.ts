@@ -47,14 +47,30 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
     ? `${RENDER_BACKEND_URL}/api/extract-text`
     : '/api/extract-text';
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${session.access_token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ file: base64, filename: file.name }),
-  });
+  // 30-second hard timeout — Render free tier can take ~20s to cold-start.
+  // If it doesn't respond within 30s, abort and show a real error.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30_000);
+
+  let response: Response;
+  try {
+    response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ file: base64, filename: file.name }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error('Server extraction timed out after 30s. The server may be waking up — please try again in a moment.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
