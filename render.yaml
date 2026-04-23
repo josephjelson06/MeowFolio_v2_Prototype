@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: meowfolio-api
+    runtime: node
+    region: singapore          # closest to India — lowest latency for you
+    plan: free
+    rootDir: api
+    buildCommand: npm install
+    startCommand: npx tsx server.ts
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_SUPABASE_URL
+        sync: false            # Set manually in Render dashboard
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false            # Set manually in Render dashboard
+      - key: GROQ_API_KEY
+        sync: false            # Set manually in Render dashboard
+      - key: FRONTEND_ORIGIN
+        sync: false            # e.g. https://meowfolio-v2.vercel.app
