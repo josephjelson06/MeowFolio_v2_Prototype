@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { getDocument } from 'pdfjs-dist';
 
 // Removed top-level workerSrc assignment to avoid overriding the dynamic main-thread strategy used on mobile
 

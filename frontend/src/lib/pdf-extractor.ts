@@ -1,4 +1,4 @@
-import { supabase } from 'lib/supabase';
+// (No imports needed at the top level for pdf-extractor)
 
 /**
  * Returns true on Android/iOS mobile browsers where pdf.js workers
