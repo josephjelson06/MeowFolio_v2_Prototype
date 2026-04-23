@@ -110,15 +110,14 @@ export function AboutPage() {
         <section className="w-full py-10">
 
           <div className={cn(
-            "flex w-full items-start gap-10 bg-white/95 p-6 sm:p-7",
+            "flex w-full flex-col items-start gap-6 bg-white/95 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-7",
             PUBLIC_CARD_SHELL
           )}>
 
-            {/* LEFT PROFILE (same as your article, just pasted here) */}
-            <div className="flex items-center gap-5">
+            {/* LEFT PROFILE */}
+            <div className="flex shrink-0 items-center justify-center sm:justify-start">
               <img
-                // className="h-24 w-24 shrink-0 rounded-full object-cover"
-                className="h-40 w-40 rounded-full object-cover"
+                className="h-28 w-28 rounded-full object-cover sm:h-36 sm:w-36 lg:h-40 lg:w-40"
                 src="/Images/DP.jpg"
                 alt="Profile photo of the builder"
                 loading="lazy"
