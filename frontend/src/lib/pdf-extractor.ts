@@ -14,7 +14,8 @@ function isMobileBrowser(): boolean {
 
 /**
  * Extract text from a PDF via the server-side /api/extract-text endpoint.
- * Used on mobile to avoid running the memory-heavy pdf.js worker client-side.
+ * Sends the file as base64-encoded JSON — compatible with Vercel's built-in
+ * body parser (avoids the raw stream hanging bug in serverless functions).
  */
 async function extractTextFromPdfServer(file: File): Promise<string> {
   const { data: { session } } = await supabase.auth.getSession();
@@ -22,15 +23,16 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
     throw new Error('You must be signed in to upload a file for parsing.');
   }
 
-  const formData = new FormData();
-  formData.append('file', file, file.name);
+  // Encode the file as base64 in chunks to avoid stack overflow on large PDFs
+  const base64 = await fileToBase64(file);
 
   const response = await fetch('/api/extract-text', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json',
     },
-    body: formData,
+    body: JSON.stringify({ file: base64, filename: file.name }),
   });
 
   if (!response.ok) {
@@ -41,6 +43,26 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
   const result = await response.json() as { text: string };
   return result.text;
 }
+
+/** Convert a File to a base64 string using FileReader (safe for large files). */
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // Strip the "data:<mime>;base64," prefix
+      const base64 = result.split(',')[1];
+      if (!base64) {
+        reject(new Error('Failed to encode file as base64'));
+        return;
+      }
+      resolve(base64);
+    };
+    reader.onerror = () => reject(new Error('FileReader failed to read the PDF'));
+    reader.readAsDataURL(file);
+  });
+}
+
 
 /**
  * Extract all text from a PDF file — runs entirely in the browser.

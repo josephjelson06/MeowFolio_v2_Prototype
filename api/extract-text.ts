@@ -8,18 +8,14 @@ const getSupabaseAuth = () =>
     process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
   );
 
-export const config = {
-  api: {
-    bodyParser: false, // We need raw body for multipart/form-data
-  },
-};
-
 /**
  * POST /api/extract-text
  *
- * Accepts a multipart/form-data request with a PDF file.
- * Returns the extracted plain text.
- * Used by mobile clients where the client-side pdf.js worker is unstable.
+ * Accepts a JSON body: { file: "<base64-encoded PDF>", filename: "resume.pdf" }
+ * Returns: { text: "extracted plain text" }
+ *
+ * Used by mobile clients where the client-side pdf.js worker is killed by
+ * the OS due to memory constraints.
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -43,25 +39,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Collect the raw body buffer
-    const chunks: Buffer[] = [];
-    await new Promise<void>((resolve, reject) => {
-      (req as any).on('data', (chunk: Buffer) => chunks.push(chunk));
-      (req as any).on('end', resolve);
-      (req as any).on('error', reject);
-    });
-    const rawBody = Buffer.concat(chunks);
+    // Vercel's built-in JSON body parser handles req.body automatically
+    const { file: base64, filename } = req.body as { file?: string; filename?: string };
 
-    // Parse multipart/form-data to extract the PDF file buffer
-    const contentType = req.headers['content-type'] ?? '';
-    const boundaryMatch = contentType.match(/boundary=(.+)$/);
-    if (!boundaryMatch) {
-      return res.status(400).json({ error: 'Missing multipart boundary' });
+    if (!base64) {
+      return res.status(400).json({ error: 'Missing file data in request body' });
     }
 
-    const pdfBuffer = extractFileFromMultipart(rawBody, boundaryMatch[1]);
-    if (!pdfBuffer) {
-      return res.status(400).json({ error: 'No PDF file found in request' });
+    // Convert base64 string back to a Buffer
+    const pdfBuffer = Buffer.from(base64, 'base64');
+
+    if (pdfBuffer.length === 0) {
+      return res.status(400).json({ error: 'File is empty' });
     }
 
     // Dynamically import pdf-parse (CommonJS module)
@@ -71,7 +60,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const text: string = result.text ?? '';
 
     if (!text || text.trim().length < 10) {
-      return res.status(422).json({ error: 'Could not extract text from PDF. The file may be scanned or image-based.' });
+      return res.status(422).json({
+        error: `Could not extract text from "${filename ?? 'file'}". The PDF may be scanned or image-based.`,
+      });
     }
 
     return res.status(200).json({ text: text.trim() });
@@ -81,34 +72,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       error: err instanceof Error ? err.message : 'PDF extraction failed',
     });
   }
-}
-
-/**
- * Minimal multipart/form-data parser — extracts the first binary file part.
- */
-function extractFileFromMultipart(body: Buffer, boundary: string): Buffer | null {
-  const boundaryBuf = Buffer.from(`--${boundary}`);
-  const parts: Buffer[] = [];
-
-  let start = 0;
-  while (start < body.length) {
-    const boundaryIdx = body.indexOf(boundaryBuf, start);
-    if (boundaryIdx === -1) break;
-
-    const headerStart = boundaryIdx + boundaryBuf.length + 2; // skip \r\n
-    const headerEnd = body.indexOf(Buffer.from('\r\n\r\n'), headerStart);
-    if (headerEnd === -1) break;
-
-    const header = body.slice(headerStart, headerEnd).toString();
-    const nextBoundary = body.indexOf(boundaryBuf, headerEnd + 4);
-    const contentEnd = nextBoundary === -1 ? body.length : nextBoundary - 2; // trim \r\n
-
-    if (header.toLowerCase().includes('filename') || header.toLowerCase().includes('application/pdf')) {
-      parts.push(body.slice(headerEnd + 4, contentEnd));
-    }
-
-    start = nextBoundary === -1 ? body.length : nextBoundary;
-  }
-
-  return parts[0] ?? null;
 }
