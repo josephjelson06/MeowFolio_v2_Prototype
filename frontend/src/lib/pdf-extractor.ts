@@ -1,12 +1,6 @@
 // (No imports needed at the top level for pdf-extractor)
 
-/**
- * Returns true on Android/iOS mobile browsers where pdf.js workers
- * are frequently killed by the OS due to memory constraints.
- */
-function isMobileBrowser(): boolean {
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
+// No longer needed to check for mobile since we use standard pdfjs everywhere
 
 /**
  * Extract all text from a PDF file — runs entirely in the browser.
