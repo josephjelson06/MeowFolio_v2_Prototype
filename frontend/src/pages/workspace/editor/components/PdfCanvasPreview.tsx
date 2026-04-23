@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
-// Reuse the same worker already configured for extraction
-GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+// Removed top-level workerSrc assignment to avoid overriding the dynamic main-thread strategy used on mobile
 
 interface Props {
   pdfUrl: string | null;
