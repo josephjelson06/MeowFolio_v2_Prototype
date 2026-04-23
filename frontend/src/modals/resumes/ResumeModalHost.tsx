@@ -14,12 +14,14 @@ export function ResumeModalHost() {
   const [mode, setMode] = useState<ResumeMode>(null);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
+  const [busyLabel, setBusyLabel] = useState('Parsing upload...');
   const [error, setError] = useState('');
   const [resumeId, setResumeId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!resumeOpen) {
       setBusy(false);
+      setBusyLabel('Parsing upload...');
       setError('');
       setMode(null);
       setResumeId(null);
@@ -150,7 +152,10 @@ export function ResumeModalHost() {
               const file = event.target.files?.[0];
               if (!file) return;
               setBusy(true);
+              setBusyLabel('Parsing upload...');
               setError('');
+              // After 14s (just before timeout), show the server fallback label
+              const fallbackTimer = setTimeout(() => setBusyLabel('Trying server extraction...'), 14_000);
               try {
                 const imported = await resumeService.importFile(file);
                 setMode('paste');
@@ -159,7 +164,9 @@ export function ResumeModalHost() {
               } catch (nextError) {
                 setError(nextError instanceof Error ? nextError.message : 'Upload failed.');
               } finally {
+                clearTimeout(fallbackTimer);
                 setBusy(false);
+                setBusyLabel('Parsing upload...');
                 event.target.value = '';
               }
             }}
@@ -170,7 +177,7 @@ export function ResumeModalHost() {
             disabled={busy}
             onClick={() => fileInputRef.current?.click()}
           >
-            {busy ? 'Parsing upload...' : 'Upload and parse file ->'}
+            {busy ? busyLabel : 'Upload and parse file ->'}
           </button>
         </>
       ) : null}
