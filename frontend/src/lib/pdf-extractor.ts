@@ -1,8 +1,4 @@
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
 import { supabase } from 'lib/supabase';
-
-// Point the PDF.js worker to the file we copied into public/
-GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 /**
  * Returns true on Android/iOS mobile browsers where pdf.js workers
@@ -69,6 +65,11 @@ function fileToBase64(file: File): Promise<string> {
  * No file is uploaded to any server.
  */
 export async function extractTextFromPdf(file: File): Promise<string> {
+  const { GlobalWorkerOptions, getDocument } = await import('pdfjs-dist');
+  
+  // Point the PDF.js worker to the file we copied into public/
+  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await getDocument({ data: arrayBuffer }).promise;
 
