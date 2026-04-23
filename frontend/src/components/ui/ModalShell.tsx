@@ -23,7 +23,7 @@ export function ModalShell({
       }}
     >
       <div
-        className={cn('relative w-full overflow-hidden rounded-[1.75rem]', panelClassName)}
+        className={cn('relative w-full max-h-full overflow-hidden rounded-[1.75rem]', panelClassName)}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

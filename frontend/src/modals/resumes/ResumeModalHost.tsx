@@ -43,24 +43,24 @@ export function ResumeModalHost() {
       labelledBy="resume-modal-title"
       onClose={closeResume}
       overlayClassName="bg-charcoal/30 backdrop-blur-sm"
-      panelClassName="max-w-[35rem] overflow-y-auto border-[1.5px] border-charcoal/80 bg-[rgba(255,253,249,0.98)] p-6 shadow-tactile-lg shadow-ambient"
+      panelClassName="max-w-[35rem] max-h-full overflow-y-auto border-[1.5px] border-charcoal/80 bg-[rgba(255,253,249,0.98)] p-5 md:p-6 shadow-tactile-lg shadow-ambient"
     >
       <button
-        className="absolute right-4 top-4 grid size-8 place-items-center rounded-full border-[1.5px] border-charcoal/70 bg-white/85 text-sm text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low hover:text-on-surface"
+        className="absolute right-3 top-3 md:right-4 md:top-4 grid size-8 place-items-center rounded-full border-[1.5px] border-charcoal/70 bg-white/85 text-sm text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low hover:text-on-surface"
         type="button"
         onClick={closeResume}
       >
         &times;
       </button>
-      <div className="font-headline text-xl font-extrabold text-on-surface" id="resume-modal-title">
+      <div className="font-headline text-lg md:text-xl font-extrabold text-on-surface" id="resume-modal-title">
         Create new resume
       </div>
-      <div className="mt-2 text-sm leading-7 text-[color:var(--txt2)]">
+      <div className="mt-1 md:mt-2 text-xs md:text-sm leading-relaxed text-[color:var(--txt2)]">
         Upload a file, preview the parsed text, or start with a blank editor.
       </div>
-      <div className="mt-5 flex flex-col gap-3">
+      <div className="mt-3 md:mt-5 flex flex-col gap-2 md:gap-3">
         <button
-          className="flex items-start gap-4 rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm"
+          className="flex items-start gap-3 md:gap-4 rounded-2xl md:rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-3 md:p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm"
           type="button"
           onClick={() => {
             setError('');
@@ -81,7 +81,7 @@ export function ResumeModalHost() {
           </div>
         </button>
         <button
-          className="flex items-start gap-4 rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm"
+          className="flex items-start gap-3 md:gap-4 rounded-2xl md:rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-3 md:p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm"
           type="button"
           onClick={() => {
             setError('');
@@ -102,7 +102,7 @@ export function ResumeModalHost() {
           </div>
         </button>
         <button
-          className="flex items-start gap-4 rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm"
+          className="flex items-start gap-3 md:gap-4 rounded-2xl md:rounded-[1.3rem] border border-charcoal/15 bg-white/85 p-3 md:p-4 text-left transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/70 hover:shadow-tactile-sm"
           type="button"
           onClick={async () => {
             setBusy(true);
@@ -178,7 +178,7 @@ export function ResumeModalHost() {
       {mode === 'paste' ? (
         <>
           <textarea
-            className="mt-4 min-h-[140px] w-full rounded-2xl border border-outline-variant bg-white/90 px-4 py-3 text-sm text-[color:var(--txt1)]"
+            className="mt-4 min-h-[100px] w-full rounded-2xl border border-outline-variant bg-white/90 px-4 py-3 text-sm text-[color:var(--txt1)]"
             placeholder="Pasted or parsed resume text will appear here..."
             value={text}
             onChange={event => setText(event.target.value)}
