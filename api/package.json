@@ -8,7 +8,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "pdf-parse": "^2.4.5",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "unpdf": "^1.6.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

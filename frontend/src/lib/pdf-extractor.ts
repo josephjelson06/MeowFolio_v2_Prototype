@@ -47,11 +47,9 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
     ? `${RENDER_BACKEND_URL}/api/extract-text`
     : '/api/extract-text';
 
-  // 30-second hard timeout — Render free tier can take ~20s to cold-start.
-  // If it doesn't respond within 30s, abort and show a real error.
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30_000);
-
+  // AbortSignal.timeout() is handled at the browser network layer —
+  // immune to Android JS timer throttling that kills setTimeout.
+  // Supported: Chrome 103+, Safari 16+, Brave (all modern mobile browsers).
   let response: Response;
   try {
     response = await fetch(endpoint, {
@@ -61,15 +59,13 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ file: base64, filename: file.name }),
-      signal: controller.signal,
+      signal: AbortSignal.timeout(30_000),
     });
   } catch (err) {
-    if (err instanceof DOMException && err.name === 'AbortError') {
+    if (err instanceof DOMException && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
       throw new Error('Server extraction timed out after 30s. The server may be waking up — please try again in a moment.');
     }
     throw err;
-  } finally {
-    clearTimeout(timeoutId);
   }
 
   if (!response.ok) {

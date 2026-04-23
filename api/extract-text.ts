@@ -53,16 +53,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'File is empty' });
     }
 
-    // pdf-parse v2 has a CJS/ESM interop quirk — `require()` may return
-    // `{ default: fn }` instead of the function directly. Handle both.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const pdfParseImport = require('pdf-parse');
-    const pdfParse = typeof pdfParseImport === 'function' ? pdfParseImport : pdfParseImport.default;
-    if (typeof pdfParse !== 'function') {
-      throw new Error('pdf-parse module did not export a callable function');
-    }
-    const result = await pdfParse(pdfBuffer);
-    const text: string = result.text ?? '';
+    // unpdf: modern, TypeScript-native PDF text extractor.
+    // Works correctly in Node.js / Vercel serverless without CJS/ESM issues.
+    const { extractText } = await import('unpdf');
+    const { text: pages } = await extractText(new Uint8Array(pdfBuffer));
+    const text = Array.isArray(pages) ? pages.join('\n\n') : String(pages);
 
     if (!text || text.trim().length < 10) {
       return res.status(422).json({
