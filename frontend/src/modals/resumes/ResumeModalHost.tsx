@@ -151,11 +151,11 @@ export function ResumeModalHost() {
             onChange={async event => {
               const file = event.target.files?.[0];
               if (!file) return;
+              const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
               setBusy(true);
-              setBusyLabel('Parsing upload...');
+              // On mobile we go straight to the server — tell the user immediately
+              setBusyLabel(isMobile ? 'Extracting via server...' : 'Parsing upload...');
               setError('');
-              // After 14s (just before timeout), show the server fallback label
-              const fallbackTimer = setTimeout(() => setBusyLabel('Trying server extraction...'), 14_000);
               try {
                 const imported = await resumeService.importFile(file);
                 setMode('paste');
@@ -164,10 +164,10 @@ export function ResumeModalHost() {
               } catch (nextError) {
                 setError(nextError instanceof Error ? nextError.message : 'Upload failed.');
               } finally {
-                clearTimeout(fallbackTimer);
                 setBusy(false);
                 setBusyLabel('Parsing upload...');
                 event.target.value = '';
+
               }
             }}
           />

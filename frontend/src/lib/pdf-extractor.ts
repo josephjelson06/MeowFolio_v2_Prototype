@@ -1,33 +1,18 @@
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
 import { supabase } from 'lib/supabase';
 import { recordApiRequest } from 'lib/keepAlive';
 
-// Set the worker source once at module load time
-GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+// NOTE: pdfjs-dist is NOT statically imported here.
+// It is dynamically imported only on desktop inside extractTextFromPdfDesktop().
+// This prevents pdfjs from being evaluated on mobile, where it crashes in
+// restricted WebKit environments (iOS in-app browsers) with errors like
+// "undefined is not a function".
 
-// Render backend URL — set VITE_RENDER_BACKEND_URL in your Vercel env vars
+// Render backend URL — set VITE_RENDER_BACKEND_URL in Vercel env vars.
 // e.g. https://meowfolio-api.onrender.com
 const RENDER_BACKEND_URL = (import.meta.env.VITE_RENDER_BACKEND_URL as string | undefined) ?? '';
 
 function isMobileBrowser(): boolean {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-/**
- * Wraps a promise with a hard timeout.
- * On mobile, pdfjs workers get silently killed by the OS and promises
- * never resolve or reject — this converts that silent hang into a real error.
- */
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error('TIMEOUT'));
-    }, ms);
-    promise.then(
-      (value) => { clearTimeout(timer); resolve(value); },
-      (err) => { clearTimeout(timer); reject(err); }
-    );
-  });
 }
 
 function fileToBase64(file: File): Promise<string> {
@@ -39,14 +24,15 @@ function fileToBase64(file: File): Promise<string> {
       if (!base64) { reject(new Error('Failed to encode file as base64')); return; }
       resolve(base64);
     };
-    reader.onerror = () => reject(new Error('FileReader failed'));
+    reader.onerror = () => reject(new Error('FileReader failed to read the file'));
     reader.readAsDataURL(file);
   });
 }
 
 /**
- * Extract text via the dedicated Render backend /api/extract-text endpoint.
- * Used on mobile when client-side pdf.js times out (worker killed by OS).
+ * MOBILE PATH: Extract text via the dedicated Render backend.
+ *
+ * Skips pdfjs entirely — no worker spawned, no iOS crashes, no Android hangs.
  * Falls back to the Vercel function if no Render URL is configured.
  */
 async function extractTextFromPdfServer(file: File): Promise<string> {
@@ -57,7 +43,6 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
 
   const base64 = await fileToBase64(file);
 
-  // Prefer the dedicated Render backend; fall back to Vercel function
   const endpoint = RENDER_BACKEND_URL
     ? `${RENDER_BACKEND_URL}/api/extract-text`
     : '/api/extract-text';
@@ -77,55 +62,24 @@ async function extractTextFromPdfServer(file: File): Promise<string> {
   }
 
   const result = await response.json() as { text: string };
-
-  // Tell the keep-alive tracker that a real request was just made
   recordApiRequest();
-
   return result.text;
 }
 
 /**
- * Extract all text from a PDF using pdf.js in the browser.
+ * DESKTOP PATH: Extract text using pdfjs-dist in a Web Worker.
  *
- * Desktop: runs in a Web Worker (fast, non-blocking).
- * Mobile:  tries client-side first (15s timeout), then automatically falls back
- *          to the Render backend so the OS killing the worker doesn't cause
- *          an infinite hang.
+ * Dynamically imports pdfjs so it is NEVER evaluated on mobile devices.
+ * Desktop browsers handle the Web Worker reliably without OS interference.
  */
-export async function extractTextFromPdf(file: File): Promise<string> {
+async function extractTextFromPdfDesktop(file: File): Promise<string> {
+  // Dynamic import — only downloaded and executed on desktop
+  const { GlobalWorkerOptions, getDocument } = await import('pdfjs-dist');
+  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
   const arrayBuffer = await file.arrayBuffer();
-  const loadingTask = getDocument({ data: arrayBuffer });
+  const pdf = await getDocument({ data: arrayBuffer }).promise;
 
-  if (isMobileBrowser()) {
-    // On mobile, attempt client-side with a 15-second safety net.
-    // If the OS kills the worker, we catch TIMEOUT and hit the server instead.
-    try {
-      const pdf = await withTimeout(loadingTask.promise, 15_000);
-      try {
-        const pages: string[] = [];
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-          const page = await withTimeout(pdf.getPage(pageNum), 10_000);
-          const textContent = await withTimeout(page.getTextContent(), 10_000);
-          const pageText = textContent.items
-            .map((item) => ('str' in item ? item.str : ''))
-            .join(' ');
-          pages.push(pageText);
-        }
-        return pages.join('\n\n');
-      } finally {
-        await pdf.destroy().catch(() => undefined);
-      }
-    } catch (err) {
-      if (err instanceof Error && err.message === 'TIMEOUT') {
-        console.warn('[pdf-extractor] Client-side PDF.js timed out on mobile — falling back to Render backend...');
-        return extractTextFromPdfServer(file);
-      }
-      throw err;
-    }
-  }
-
-  // Desktop: no timeout needed, Web Worker runs reliably
-  const pdf = await loadingTask.promise;
   try {
     const pages: string[] = [];
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
@@ -143,7 +97,20 @@ export async function extractTextFromPdf(file: File): Promise<string> {
 }
 
 /**
- * Extract text from a text-based file (txt, md, etc).
+ * Extract all text from a PDF.
+ *
+ * Mobile  → server-side (Render backend). No pdfjs loaded at all.
+ * Desktop → client-side (pdfjs Web Worker). Fast and non-blocking.
+ */
+export async function extractTextFromPdf(file: File): Promise<string> {
+  if (isMobileBrowser()) {
+    return extractTextFromPdfServer(file);
+  }
+  return extractTextFromPdfDesktop(file);
+}
+
+/**
+ * Extract text from a plain text file (txt, md, etc).
  */
 export async function extractTextFromTextFile(file: File): Promise<string> {
   return file.text();
