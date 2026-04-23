@@ -13,17 +13,9 @@ import extractTextHandler from './extract-text-express';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:4173',
-    // Allow any Vercel deployment (production + preview)
-    /https:\/\/meowfolio.*\.vercel\.app/,
-    // Allow the production domain if you have one
-    process.env.FRONTEND_ORIGIN ?? '',
-  ].filter(Boolean),
-  credentials: true,
-}));
+// CORS: allow all origins — the API is protected by Supabase auth tokens,
+// so it's safe to open CORS. This avoids any Vercel preview URL mismatches.
+app.use(cors({ origin: '*' }));
 
 app.use(express.json({ limit: '20mb' }));
 
