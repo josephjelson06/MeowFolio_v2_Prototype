@@ -15,15 +15,8 @@ function isMobileBrowser(): boolean {
 export async function extractTextFromPdf(file: File): Promise<string> {
   const { GlobalWorkerOptions, getDocument } = await import('pdfjs-dist');
   
-  // On mobile, OS aggressively kills background workers doing heavy tasks.
-  // By omitting workerSrc (or setting to empty), we force pdf.js to run in the main thread.
-  // It will block the UI for a second, but it guarantees the parsing will actually finish
-  // without crashing or triggering Vercel serverless timeouts.
-  if (isMobileBrowser()) {
-    GlobalWorkerOptions.workerSrc = ''; 
-  } else {
-    GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-  }
+  // Point the PDF.js worker to the file we copied into public/
+  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await getDocument({ data: arrayBuffer }).promise;
