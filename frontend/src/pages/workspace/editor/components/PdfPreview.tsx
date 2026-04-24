@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { compilePdfBlobUrl } from 'lib/typst-renderer';
+import { compilePdfBlobUrl, compileSvg } from 'lib/typst-renderer';
 import { usePageViewportMode } from 'pages/workspace/editor/hooks/usePageViewportMode';
-import { PdfCanvasPreview } from 'pages/workspace/editor/components/PdfCanvasPreview';
+import { TypstSvgPreview } from 'pages/workspace/editor/components/TypstSvgPreview';
 import type { RenderOptions, ResumeData } from 'types/resumeDocument';
 
 export function PdfPreview({
@@ -15,6 +15,7 @@ export function PdfPreview({
 }) {
   const { isMobile } = usePageViewportMode();
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [svgMarkup, setSvgMarkup] = useState<string | null>(null);
   const [compiling, setCompiling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const debounceRef = useRef<number | null>(null);
@@ -23,7 +24,7 @@ export function PdfPreview({
   useEffect(() => {
     if (!renderOptions || !templateId) return;
 
-    const currentJson = JSON.stringify({ resume, renderOptions, templateId });
+    const currentJson = JSON.stringify({ isMobile, resume, renderOptions, templateId });
     if (currentJson === lastJsonRef.current) return;
 
     if (debounceRef.current) {
@@ -35,15 +36,29 @@ export function PdfPreview({
       setCompiling(true);
       setError(null);
       try {
-        const url = await compilePdfBlobUrl(resume, renderOptions, templateId);
-        setPdfUrl(oldUrl => {
-          if (oldUrl) URL.revokeObjectURL(oldUrl);
-          return url;
-        });
+        if (isMobile) {
+          const svg = await compileSvg(resume, renderOptions, templateId);
+          setSvgMarkup(svg);
+          setPdfUrl(oldUrl => {
+            if (oldUrl) URL.revokeObjectURL(oldUrl);
+            return null;
+          });
+        } else {
+          const url = await compilePdfBlobUrl(resume, renderOptions, templateId);
+          setSvgMarkup(null);
+          setPdfUrl(oldUrl => {
+            if (oldUrl) URL.revokeObjectURL(oldUrl);
+            return url;
+          });
+        }
       } catch (err) {
         console.warn('Typst compile error:', err);
         setError(err instanceof Error ? err.message : 'Compilation failed');
-        setPdfUrl(null);
+        setSvgMarkup(null);
+        setPdfUrl(oldUrl => {
+          if (oldUrl) URL.revokeObjectURL(oldUrl);
+          return null;
+        });
       } finally {
         setCompiling(false);
       }
@@ -54,7 +69,7 @@ export function PdfPreview({
         window.clearTimeout(debounceRef.current);
       }
     };
-  }, [resume, renderOptions, templateId]);
+  }, [isMobile, resume, renderOptions, templateId]);
 
   // Clean up object URL on unmount
   useEffect(() => {
@@ -71,23 +86,12 @@ export function PdfPreview({
     );
   }
 
-  // ── Mobile: use canvas renderer (iframe PDF not supported on Android/iOS) ──
+  // Mobile: render Typst SVG directly to avoid browser-side PDF rendering.
   if (isMobile) {
-    return (
-      <div className="relative w-full">
-        {compiling && (
-          <div className="absolute inset-0 z-10 grid place-items-center rounded-[1.5rem] bg-charcoal/30 backdrop-blur-sm">
-            <div className="rounded-2xl bg-white/95 px-5 py-3 text-sm font-bold text-on-surface shadow-tactile-sm">
-              Compiling...
-            </div>
-          </div>
-        )}
-        <PdfCanvasPreview pdfUrl={pdfUrl} compiling={compiling} />
-      </div>
-    );
+    return <TypstSvgPreview compiling={compiling} error={error} svgMarkup={svgMarkup} />;
   }
 
-  // ── Desktop: use iframe (native browser PDF viewer — best quality) ──────────
+  // Desktop: use iframe with the native browser PDF viewer.
   return (
     <div className="relative h-full w-full">
       {compiling && (
