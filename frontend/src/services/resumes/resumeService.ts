@@ -1,6 +1,6 @@
 import { supabase } from 'lib/supabase';
 import type { ResumeRecord } from 'types/resume';
-import type { AtsScoreResponse, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
+import type { AtsScoreResponse, AtsBreakdownItem, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
 
 const RESUME_EVENT = 'meowfolio:resume-library-changed';
 const ACTIVE_RESUME_KEY = 'meowfolio:active-resume-id';
@@ -227,10 +227,130 @@ export const resumeService = {
     return data ? mapRowToDocumentRecord(data) : null;
   },
 
-  async scoreAts(_id: string): Promise<AtsScoreResponse> {
-    // ATS scoring is rule-based and runs locally — this is a placeholder
-    // that will be computed from the current resume content by the editor hook.
-    throw new Error('ATS scoring is handled locally by the editor');
+  async scoreAts(id: string): Promise<AtsScoreResponse> {
+    const record = await this.getRecord(id);
+    const resume = record.content;
+    if (!resume) {
+      throw new Error('No resume data found to analyze');
+    }
+
+    let score = 0;
+    const breakdown: AtsBreakdownItem[] = [];
+    const tips: string[] = [];
+    const warnings: string[] = [];
+
+    // 1. Contact Info (max 20)
+    let contactScore = 0;
+    if (resume.header?.name?.trim()) contactScore += 4;
+    if (resume.header?.email?.trim()) contactScore += 4;
+    if (resume.header?.phone?.trim()) contactScore += 4;
+    if (resume.header?.address?.trim()) contactScore += 4;
+    if (resume.header?.role?.trim()) contactScore += 4;
+
+    breakdown.push({ label: 'Contact Information', score: contactScore, max: 20 });
+    score += contactScore;
+
+    if (!resume.header?.phone?.trim()) warnings.push('Add a phone number so recruiters can easily reach you.');
+    if (!resume.header?.email?.trim()) warnings.push('Add a professional email address.');
+    if (!resume.header?.role?.trim()) warnings.push('Add a target role title in your header (e.g. Software Engineer).');
+
+    // 2. Professional Summary (max 15)
+    let summaryScore = 0;
+    const summaryText = resume.summary?.content?.trim() ?? '';
+    if (summaryText.length > 0) {
+      if (summaryText.length >= 100 && summaryText.length <= 300) {
+        summaryScore = 15;
+      } else {
+        summaryScore = 10;
+        warnings.push('Keep your summary concise (ideally between 100 and 300 characters).');
+      }
+    } else {
+      warnings.push('Add a brief professional summary (1-2 sentences) highlighting your value proposition.');
+    }
+    breakdown.push({ label: 'Professional Summary', score: summaryScore, max: 15 });
+    score += summaryScore;
+
+    // 3. Work Experience (max 30)
+    let expScore = 0;
+    if (resume.experience && resume.experience.length > 0) {
+      expScore += 10;
+      let totalBullets = 0;
+      let validRoles = 0;
+      resume.experience.forEach(job => {
+        if (job.role?.trim() && job.company?.trim()) {
+          validRoles++;
+        }
+        if (job.description?.bullets) {
+          totalBullets += job.description.bullets.filter(b => b.trim().length > 0).length;
+        }
+      });
+      if (validRoles >= 2) expScore += 10;
+      else expScore += 5;
+
+      if (totalBullets >= validRoles * 2) expScore += 10;
+      else {
+        expScore += Math.min(10, Math.floor((totalBullets / Math.max(1, validRoles * 2)) * 10));
+        warnings.push('Include at least 2 detail bullets per job experience to demonstrate your impact.');
+      }
+    } else {
+      warnings.push('Include at least 1-2 work experience entries to show your career history.');
+    }
+    breakdown.push({ label: 'Work Experience', score: expScore, max: 30 });
+    score += expScore;
+
+    // 4. Skills & Core Competencies (max 20)
+    let skillsScore = 0;
+    const skillItems = resume.skills?.items?.filter(s => s.trim().length > 0) ?? [];
+    const skillGroups = resume.skills?.groups?.filter(g => g.items && g.items.length > 0) ?? [];
+    if (skillItems.length > 0 || skillGroups.length > 0) {
+      skillsScore += 10;
+      if (skillItems.length + skillGroups.reduce((acc, g) => acc + g.items.length, 0) >= 6) {
+        skillsScore += 10;
+      } else {
+        skillsScore += 5;
+        warnings.push('List at least 6-8 core skills to match employer search filters.');
+      }
+    } else {
+      warnings.push('Add a skills section listing your tools, frameworks, or methodologies.');
+    }
+    breakdown.push({ label: 'Skills & Competencies', score: skillsScore, max: 20 });
+    score += skillsScore;
+
+    // 5. Projects & Extras (max 15)
+    let extraScore = 0;
+    const projectItems = resume.projects?.filter(p => (p.title?.trim()?.length ?? 0) > 0) ?? [];
+    const educationItems = resume.education?.filter(e => (e.institution?.trim()?.length ?? 0) > 0) ?? [];
+    if (educationItems.length > 0) extraScore += 8;
+    else warnings.push('Add your education history (degree and school name).');
+
+    if (projectItems.length > 0) extraScore += 7;
+    else warnings.push('Include 1-2 projects to showcase practical application of your skills.');
+
+    breakdown.push({ label: 'Projects & Education', score: extraScore, max: 15 });
+    score += extraScore;
+
+    // 6. Verdict and tips
+    let verdict = 'Needs Improvement';
+    if (score >= 80) {
+      verdict = 'Strong Resume';
+      tips.push('Excellent coverage of key resume sections.');
+      tips.push('Ensure experience descriptions contain measurable metrics (%, $, scale).');
+    } else if (score >= 60) {
+      verdict = 'Good Base';
+      tips.push('Nice foundation. Complete the checklist warnings to boost your score.');
+      tips.push('Tailor the phrasing of your projects to highlight tools used.');
+    } else {
+      verdict = 'Incomplete';
+      tips.push('Add contact details and experiences to make this resume recruiter-ready.');
+    }
+
+    return {
+      score,
+      verdict,
+      breakdown,
+      tips,
+      warnings,
+    };
   },
 
   async exportTex(_id: string) {

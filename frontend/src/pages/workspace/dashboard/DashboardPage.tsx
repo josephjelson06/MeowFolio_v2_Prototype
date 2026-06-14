@@ -7,13 +7,6 @@ import { resumeService } from 'services/resumeService';
 import { tipsService } from 'services/tipsService';
 import { useSession } from 'state/session/sessionContext';
 import { useUiContext } from 'state/ui/uiContext';
-
-const kpis = [
-  { label: 'Average ATS Score', value: 74, icon: '\u25c8', warn: false },
-  { label: 'Resume Strength', value: 79, icon: '\u25c6', warn: false },
-  { label: 'JD Match Success', value: 18, icon: '\u2299', warn: true },
-] as const;
-
 export function DashboardPage() {
   const { openResume } = useUiContext();
   const { actor, credits, plan } = useSession();
@@ -60,21 +53,8 @@ export function DashboardPage() {
           Good afternoon, {actor?.name ?? 'there'}!
         </div>
 
-        <section className="grid grid-cols-1 gap-5 lg:grid-cols-4" aria-label="Key metrics">
-          {kpis.map(kpi => (
-            <article className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6" key={kpi.label}>
-              <div className="font-headline text-sm font-bold uppercase tracking-[0.18em] text-primary">{kpi.icon}</div>
-              <div className="text-sm text-[color:var(--txt1)]">{kpi.label}</div>
-              <div className="font-headline text-5xl font-extrabold leading-none text-on-surface">{kpi.value}%</div>
-              <div className="h-1.5 rounded-full bg-charcoal/10">
-                <div
-                  className={`h-1.5 rounded-full ${kpi.warn ? 'bg-[color:var(--warn)]' : 'bg-primary'}`}
-                  style={{ width: `${kpi.value}%` }}
-                ></div>
-              </div>
-            </article>
-          ))}
-          <article className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6">
+        <section className="flex flex-wrap gap-5" aria-label="Key metrics">
+          <article className="w-full max-w-sm grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/85 p-5 shadow-tactile md:p-6">
             <div className="font-headline text-sm font-bold uppercase tracking-[0.18em] text-primary">★</div>
             <div className="flex items-center gap-2 text-sm text-[color:var(--txt1)]">
               AI Credits

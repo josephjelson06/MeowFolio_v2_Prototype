@@ -39,10 +39,15 @@ export const profileService = {
     const credits = profile?.credits ?? APP_LIMITS.freeCredits;
     const used = APP_LIMITS.freeCredits - credits;
 
+    const [{ count: resumesCount }, { count: jdsCount }] = await Promise.all([
+      supabase.from('resumes').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('jds').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+    ]);
+
     return [
-      { label: 'AI credits used', used, total: APP_LIMITS.freeCredits },
-      { label: 'Resume imports', used: 0, total: APP_LIMITS.maxResumeImports },
-      { label: 'JD imports', used: 0, total: APP_LIMITS.maxJdImports },
+      { label: 'AI credits used', used: Math.max(0, used), total: APP_LIMITS.freeCredits },
+      { label: 'Resume imports', used: resumesCount ?? 0, total: APP_LIMITS.maxResumeImports },
+      { label: 'JD imports', used: jdsCount ?? 0, total: APP_LIMITS.maxJdImports },
     ];
   },
 };

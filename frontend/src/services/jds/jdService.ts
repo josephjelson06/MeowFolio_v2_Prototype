@@ -1,7 +1,8 @@
 import { supabase } from 'lib/supabase';
 import { resumeService } from 'services/resumeService';
+import { buildResumePlainText } from 'types/resumeDocument';
 import type { JdCheck, JdMetric, JdRecord } from 'types/jd';
-import type { ResumeMatchProfile, ResumePickerOption, ResumeScoreTone } from 'types/resume';
+import type { ResumePickerOption, ResumeScoreTone } from 'types/resume';
 
 const JD_EVENT = 'meowfolio:jd-library-changed';
 
@@ -47,38 +48,14 @@ async function getUserId(): Promise<string> {
 let mockJds: JdRecord[] = [];
 
 /** Seed-style match profiles for local JD matching (rule-based) */
-const resumeMatchProfilesSeed: Record<string, ResumeMatchProfile> = {
-  resume_v3: { score: 87, cls: 'high', found: ['Python', 'React', 'REST API', 'scalable', 'cloud'], miss: ['Kubernetes', 'Go'] },
-  resume_sde: { score: 62, cls: 'mid', found: ['React', 'Node.js', 'REST'], miss: ['Python', 'System design', 'scalable'] },
-  resume_pm: { score: 31, cls: 'low', found: ['communication'], miss: ['Python', 'React', 'backend', 'APIs'] },
-  resume_ds: { score: 78, cls: 'high', found: ['Python', 'AWS', 'data pipelines'], miss: ['React', 'Node.js'] },
-  resume_ml: { score: 55, cls: 'mid', found: ['Python', 'ML', 'TensorFlow', 'AWS'], miss: ['React', 'Node.js', 'REST API'] },
-};
-
-function fallbackReport(resumeId: string, jd: JdRecord): JdReportModel | null {
-  const resumeSeed = resumeMatchProfilesSeed[resumeId] ?? { score: 58, cls: 'mid' as const, found: ['React', 'APIs'], miss: ['Python', 'cloud'] };
-  return {
-    checks: [
-      { text: `Matched ${resumeSeed.found.length} keywords from the JD`, tone: 'ok' },
-      { text: 'Resume structure is clear enough for recruiter review', tone: 'warn' },
-      { text: `Address ${resumeSeed.miss.length} missing keyword gaps before applying`, tone: resumeSeed.miss.length > 2 ? 'bad' : 'warn' },
-      { text: 'Tailor the summary and experience bullets to this exact role', tone: 'warn' },
-    ],
-    found: resumeSeed.found,
-    jd,
-    metrics: [
-      { label: 'Keyword coverage', tone: resumeSeed.score >= 70 ? 'accent' : 'warn', value: resumeSeed.score },
-      { label: 'Role alignment', tone: 'warn', value: Math.max(40, resumeSeed.score - 5) },
-      { label: 'Preferred overlap', tone: 'warn', value: Math.max(35, resumeSeed.score - 12) },
-      { label: 'Evidence readiness', tone: resumeSeed.score >= 65 ? 'accent' : 'warn', value: Math.min(92, resumeSeed.score + 8) },
-    ],
-    miss: resumeSeed.miss,
-    resumeId,
-    resumeLabel: resumeId,
-    score: resumeSeed.score,
-    scoreTone: resumeSeed.cls,
-    verdict: resumeSeed.cls === 'high' ? 'Strong match for this role' : resumeSeed.cls === 'mid' ? 'Promising match with a few gaps' : 'Needs targeted tailoring',
-  };
+function containsKeyword(text: string, kw: string): boolean {
+  const escaped = kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  let pattern = `\\b${escaped}\\b`;
+  if (kw.includes('+') || kw.includes('#') || kw.startsWith('.')) {
+    pattern = escaped;
+  }
+  const regex = new RegExp(pattern, 'i');
+  return regex.test(text);
 }
 
 /* ─── Service ──────────────────────────────────────────────────────────────── */
@@ -240,6 +217,71 @@ export const jdService = {
   async buildReport(resumeId: string, jdId: string): Promise<JdReportModel | null> {
     const jd = await this.getById(jdId);
     if (!jd) return null;
-    return fallbackReport(resumeId, jd);
+
+    const record = await resumeService.getRecord(resumeId);
+    const resumeText = record?.content ? buildResumePlainText(record.content) : '';
+    const jdText = jd.parsedText || '';
+
+    const dict = [
+      'React', 'Node.js', 'Express', 'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'Go', 'Rust',
+      'Docker', 'Kubernetes', 'AWS', 'GCP', 'Azure', 'SQL', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis',
+      'REST API', 'GraphQL', 'Microservices', 'CI/CD', 'Git', 'HTML', 'CSS', 'Tailwind', 'System Design',
+      'Machine Learning', 'TensorFlow', 'PyTorch', 'Data Science', 'Data Pipelines', 'APIs', 'Node',
+      'Spring Boot', 'PHP', 'Agile', 'Scrum'
+    ];
+
+    const jdKeywords = dict.filter(kw => containsKeyword(jdText, kw));
+
+    if (jdKeywords.length === 0) {
+      const titleLower = jd.title.toLowerCase();
+      if (titleLower.includes('front') || titleLower.includes('web')) {
+        jdKeywords.push('React', 'JavaScript', 'HTML', 'CSS', 'Git');
+      } else if (titleLower.includes('back') || titleLower.includes('api')) {
+        jdKeywords.push('Node.js', 'REST API', 'SQL', 'Git', 'APIs');
+      } else {
+        jdKeywords.push('JavaScript', 'Python', 'Git', 'APIs');
+      }
+    }
+
+    const found = jdKeywords.filter(kw => containsKeyword(resumeText, kw));
+    const miss = jdKeywords.filter(kw => !containsKeyword(resumeText, kw));
+
+    const score = Math.round((found.length / jdKeywords.length) * 100);
+    let scoreTone: ResumeScoreTone = 'mid';
+    if (score >= 75) scoreTone = 'high';
+    else if (score < 45) scoreTone = 'low';
+
+    const verdict = scoreTone === 'high'
+      ? 'Strong match for this role'
+      : scoreTone === 'mid'
+        ? 'Promising match with a few gaps'
+        : 'Needs targeted tailoring';
+
+    const checks: JdCheck[] = [
+      { text: `Matched ${found.length} keywords from the JD`, tone: score >= 75 ? 'ok' : 'warn' },
+      { text: 'Resume structure is clear enough for recruiter review', tone: 'ok' },
+      { text: `Address ${miss.length} missing keyword gaps before applying`, tone: miss.length > 2 ? 'bad' : 'warn' },
+      { text: 'Tailor the summary and experience bullets to this exact role', tone: 'warn' },
+    ];
+
+    const metrics: JdMetric[] = [
+      { label: 'Keyword coverage', tone: score >= 75 ? 'accent' : 'warn', value: score },
+      { label: 'Role alignment', tone: score >= 60 ? 'accent' : 'warn', value: Math.max(30, score - 5) },
+      { label: 'Preferred overlap', tone: score >= 65 ? 'accent' : 'warn', value: Math.max(25, score - 12) },
+      { label: 'Evidence readiness', tone: score >= 55 ? 'accent' : 'warn', value: Math.min(95, score + 8) },
+    ];
+
+    return {
+      checks,
+      found,
+      jd,
+      metrics,
+      miss,
+      resumeId,
+      resumeLabel: record?.title ?? resumeId,
+      score,
+      scoreTone,
+      verdict,
+    };
   },
 };
