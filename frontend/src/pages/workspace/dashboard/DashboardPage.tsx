@@ -76,7 +76,7 @@ export function DashboardPage() {
           </article>
         </section>
 
-        <section className="grid grid-cols-1 gap-5 xl:grid-cols-3" aria-label="Dashboard workspace">
+        <section className="grid grid-cols-1 gap-5 xl:grid-cols-2" aria-label="Dashboard workspace">
           <button
             className="grid min-h-[22rem] content-start gap-4 rounded-[1.75rem] border-[1.5px] border-dashed border-charcoal/45 bg-white/70 p-5 text-left shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/75 hover:shadow-tactile md:p-6"
             type="button"
@@ -122,25 +122,6 @@ export function DashboardPage() {
             <Link className="font-headline text-sm font-bold text-primary transition hover:text-on-surface" to={`${routes.editor}?resumeId=${recentResume.id}`}>
               Open editor &rarr;
             </Link>
-          </article>
-
-          <article className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
-            <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">QUICK ACTIONS</div>
-            <div className="font-headline text-2xl font-extrabold text-on-surface">Move faster</div>
-            <div className="grid gap-3">
-              <Link className="grid gap-1 rounded-[1.25rem] border border-outline-variant bg-surface px-4 py-4 transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/60 hover:bg-white" to={`${routes.editor}?resumeId=${recentResume.id}`}>
-                <div className="text-sm font-bold text-on-surface">Open Editor</div>
-                <div className="text-sm text-[color:var(--txt2)]">Jump back into the latest resume.</div>
-              </Link>
-              <Link className="grid gap-1 rounded-[1.25rem] border border-outline-variant bg-surface px-4 py-4 transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/60 hover:bg-white" to={`${routes.editor}?resumeId=${recentResume.id}&mode=ats`}>
-                <div className="text-sm font-bold text-on-surface">Calculate ATS Score</div>
-                <div className="text-sm text-[color:var(--txt2)]">Run a formatting and content scan.</div>
-              </Link>
-              <Link className="grid gap-1 rounded-[1.25rem] border border-outline-variant bg-surface px-4 py-4 transition hover:-translate-x-px hover:-translate-y-px hover:border-charcoal/60 hover:bg-white" to={routes.jds}>
-                <div className="text-sm font-bold text-on-surface">Calculate JD Match</div>
-                <div className="text-sm text-[color:var(--txt2)]">Compare resume against a target role.</div>
-              </Link>
-            </div>
           </article>
         </section>
 

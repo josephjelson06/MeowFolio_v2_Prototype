@@ -3,28 +3,22 @@ import { NavLink, useSearchParams } from 'react-router-dom';
 import { routes } from 'lib/routes';
 import { downloadPdf } from 'lib/typst-renderer';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
-import { AtsFullReport } from 'pages/workspace/editor/components/AtsFullReport';
-import { EditorMobileSheet } from 'pages/workspace/editor/components/EditorMobileSheet';
 import { EditorMobileTopbar } from 'pages/workspace/editor/components/EditorMobileTopbar';
 import { EditorPreviewPanel } from 'pages/workspace/editor/components/EditorPreviewPanel';
 import { EditorWorkspaceLayout } from 'pages/workspace/editor/components/EditorWorkspaceLayout';
 import { EditorSectionsWorkspace } from 'pages/workspace/editor/components/workspaces/EditorSectionsWorkspace';
 import { EditorTemplateWorkspace } from 'pages/workspace/editor/components/workspaces/EditorTemplateWorkspace';
 import { EditorToolbarWorkspace } from 'pages/workspace/editor/components/workspaces/EditorToolbarWorkspace';
-import { useEditorAts } from 'pages/workspace/editor/hooks/useEditorAts';
 import { useEditorAutosave } from 'pages/workspace/editor/hooks/useEditorAutosave';
 import { useEditorRecord } from 'pages/workspace/editor/hooks/useEditorRecord';
-import { usePageViewportMode } from 'pages/workspace/editor/hooks/usePageViewportMode';
 import { leftTabs, type ToolbarValues } from 'pages/workspace/editor/types';
 import { buildResumePlainText, DEFAULT_RENDER_OPTIONS, GENERIC_CUSTOM_SECTION_LABELS, type GenericCustomSectionKey, type RenderTemplateId, type ResumeData, type ResumeSectionKey } from 'types/resumeDocument';
 import { applyToolbarValues, toolbarFromRenderOptions } from 'pages/workspace/editor/utils/editorToolbar';
 
 export function EditorPage() {
-  const { isMobile } = usePageViewportMode();
   const [searchParams] = useSearchParams();
   const resumeIdFromQuery = searchParams.get('resumeId');
-  const [mode, setMode] = useState<'editor' | 'ats'>('editor');
-  const [mobileView, setMobileView] = useState<'edit' | 'preview' | 'ats'>('edit');
+  const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit');
   const [activeLeftTab, setActiveLeftTab] = useState<(typeof leftTabs)[number]['id']>('sections');
   const [activeSection, setActiveSection] = useState('contact');
   const [toolbarValues, setToolbarValues] = useState<ToolbarValues>(toolbarFromRenderOptions(DEFAULT_RENDER_OPTIONS));
@@ -54,25 +48,10 @@ export function EditorPage() {
     onToolbarValuesChange: setToolbarValues,
   });
 
-  const { persistNow, saveState } = useEditorAutosave({
+  const { saveState } = useEditorAutosave({
     activeResumeId,
     record,
     setRecord,
-  });
-
-  const {
-    atsLoading,
-    atsReport,
-    clearAtsReport,
-    drawerOpen,
-    runAtsAnalysis,
-    setDrawerOpen,
-    setSheetOpen,
-    sheetOpen,
-  } = useEditorAts({
-    isMobile,
-    persistNow,
-    setMobileView,
   });
 
   useEffect(() => {
@@ -89,36 +68,11 @@ export function EditorPage() {
     }
   }, [activeSection, sections]);
 
-  useEffect(() => {
-    if (!isMobile) return;
-    if (mode === 'ats') {
-      setMobileView('ats');
-      return;
-    }
-
-    if (sheetOpen) {
-      setMobileView('preview');
-      return;
-    }
-
-    setMobileView('edit');
-  }, [isMobile, mode, sheetOpen]);
-
-  useEffect(() => {
-    if (isMobile) return;
-    if (mode === 'ats') setDrawerOpen(false);
-  }, [isMobile, mode, setDrawerOpen]);
-
   function updatePage(nextPage: number) {
     setPageBySection(current => ({
       ...current,
       [activeSection]: Math.max(1, Math.min(nextPage, totalPages)),
     }));
-  }
-
-  function handleModeChange(nextMode: 'editor' | 'ats') {
-    setMode(nextMode);
-    if (nextMode === 'editor' && isMobile) setMobileView('edit');
   }
 
   function reorderSection(fromId: string, toId: string) {
@@ -139,7 +93,6 @@ export function EditorPage() {
         },
       };
     });
-    clearAtsReport();
   }
 
   function addCustomSection() {
@@ -190,7 +143,6 @@ export function EditorPage() {
         rawText: buildResumePlainText(nextContent),
       };
     });
-    clearAtsReport();
   }
 
   function handleTemplateSelect(templateId: RenderTemplateId) {
@@ -203,7 +155,6 @@ export function EditorPage() {
           }
         : current,
     );
-    clearAtsReport();
   }
 
   function handleToolbarChange(patch: Partial<ToolbarValues>) {
@@ -219,12 +170,10 @@ export function EditorPage() {
       );
       return next;
     });
-    clearAtsReport();
   }
 
-  function handleMobileViewChange(view: 'edit' | 'preview' | 'ats') {
+  function handleMobileViewChange(view: 'edit' | 'preview') {
     setMobileView(view);
-    setSheetOpen(false);
   }
 
   const syncCopy =
@@ -286,20 +235,10 @@ export function EditorPage() {
     >
       <EditorWorkspaceLayout
         resumeName={resumeName}
-        mode={mode}
         mobileView={mobileView}
         activeLeftTab={activeLeftTab}
         setActiveLeftTab={setActiveLeftTab}
         setMobileView={handleMobileViewChange}
-        onShowEditor={() => handleModeChange('editor')}
-        onShowAts={() => {
-          handleModeChange('ats');
-          void runAtsAnalysis();
-        }}
-        onAnalyze={() => {
-          void runAtsAnalysis();
-        }}
-        analyzeLoading={atsLoading}
         onDownload={() => {
           if (!record) return;
           setDownloadBusy(true);
@@ -315,9 +254,6 @@ export function EditorPage() {
         mobileTopBar={
           <EditorMobileTopbar
             title={resumeName}
-            onAnalyze={() => {
-              void runAtsAnalysis();
-            }}
           />
         }
         leftWorkspace={leftWorkspace}
@@ -326,30 +262,6 @@ export function EditorPage() {
             resume={record.content}
             renderOptions={record.renderOptions}
             templateId={record.templateId}
-            atsReport={atsReport}
-            drawerOpen={drawerOpen}
-            onCloseDrawer={() => setDrawerOpen(false)}
-          />
-        }
-        atsReportView={
-          <AtsFullReport
-            report={atsReport}
-            resumeName={resumeName}
-            onBack={() => {
-              if (isMobile) setMobileView('edit');
-              handleModeChange('editor');
-            }}
-          />
-        }
-        mobileSheet={
-          <EditorMobileSheet
-            open={sheetOpen}
-            report={atsReport}
-            onToggle={() => setSheetOpen(current => !current)}
-            onOpenFullReport={() => {
-              setSheetOpen(false);
-              setMobileView('ats');
-            }}
           />
         }
       />

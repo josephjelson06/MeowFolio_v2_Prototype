@@ -4,10 +4,8 @@ import { useSession } from 'state/session/sessionContext';
 
 export function EditorMobileTopbar({
   title,
-  onAnalyze,
 }: {
   title: string;
-  onAnalyze: () => void;
 }) {
   const { initials } = useSession();
 
@@ -17,13 +15,6 @@ export function EditorMobileTopbar({
         &larr;
       </NavLink>
       <span className="min-w-0 flex-1 truncate font-headline text-lg font-extrabold text-on-surface">{title}</span>
-      <button
-        className="inline-flex min-h-9 items-center justify-center rounded-full border-2 border-charcoal/75 bg-white/90 px-3 py-1.5 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white"
-        type="button"
-        onClick={onAnalyze}
-      >
-        Analyze
-      </button>
       <NavLink className="grid size-10 place-items-center rounded-full border border-outline bg-surface text-sm font-semibold text-secondary" to={routes.profile}>
         {initials}
       </NavLink>

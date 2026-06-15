@@ -54,9 +54,6 @@ export function WorkspaceShell({
             <NavLink className={workspaceLinkClass(resumesActive)} to={routes.resumes}>
               Resumes
             </NavLink>
-            <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.jds}>
-              JDs
-            </NavLink>
           </div>
           <div className="justify-self-end">
             <NavLink className="grid size-9 place-items-center rounded-full border-[1.5px] border-charcoal/75 bg-white/85 font-headline text-xs font-bold text-secondary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:shadow-tactile" to={routes.profile}>
@@ -88,10 +85,6 @@ export function WorkspaceShell({
         <NavLink className={mobileTabClass(resumesActive)} to={routes.resumes}>
           <div className="text-base">&#9776;</div>
           <span>Resumes</span>
-        </NavLink>
-        <NavLink className={({ isActive }) => mobileTabClass(isActive)} to={routes.jds}>
-          <div className="text-base">&#8857;</div>
-          <span>JDs</span>
         </NavLink>
         <NavLink className={({ isActive }) => mobileTabClass(isActive)} to={routes.profile}>
           <div className="text-base">&#9675;</div>
