@@ -27,7 +27,16 @@ export function DashboardPage() {
 
   useEffect(() => {
     async function loadDashboardData() {
-      const [resumeItems, tipItems] = await Promise.all([resumeService.list(), tipsService.list()]);
+      const [resumeItems, tipItems] = await Promise.all([
+        resumeService.list().catch(err => {
+          console.error('Failed to load resumes:', err);
+          return [];
+        }),
+        tipsService.list().catch(err => {
+          console.error('Failed to load tips:', err);
+          return [];
+        }),
+      ]);
       setResumes(resumeItems);
       setTips(tipItems);
     }
