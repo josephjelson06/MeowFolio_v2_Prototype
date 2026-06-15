@@ -12,7 +12,7 @@ import { EditorToolbarWorkspace } from 'pages/workspace/editor/components/worksp
 import { useEditorAutosave } from 'pages/workspace/editor/hooks/useEditorAutosave';
 import { useEditorRecord } from 'pages/workspace/editor/hooks/useEditorRecord';
 import { leftTabs, type ToolbarValues } from 'pages/workspace/editor/types';
-import { buildResumePlainText, DEFAULT_RENDER_OPTIONS, GENERIC_CUSTOM_SECTION_LABELS, type GenericCustomSectionKey, type RenderTemplateId, type ResumeData, type ResumeSectionKey } from 'types/resumeDocument';
+import { buildResumePlainText, DEFAULT_RENDER_OPTIONS, type RenderTemplateId, type ResumeData, type ResumeSectionKey } from 'types/resumeDocument';
 import { applyToolbarValues, toolbarFromRenderOptions } from 'pages/workspace/editor/utils/editorToolbar';
 
 export function EditorPage() {
@@ -97,12 +97,27 @@ export function EditorPage() {
 
   function addCustomSection() {
     if (!record) return;
-    const availableGenerics = Object.keys(GENERIC_CUSTOM_SECTION_LABELS) as GenericCustomSectionKey[];
+    const allOptionalSections = [
+      'summary',
+      'experience',
+      'education',
+      'skills',
+      'projects',
+      'certifications',
+      'languages',
+      'hobbies',
+      'leadership',
+      'achievements',
+      'competitions',
+      'extracurricular',
+      'publications',
+      'openSource'
+    ];
     const activeIds = record.renderOptions.sectionOrder;
-    const nextSection = availableGenerics.find(key => !activeIds.includes(key));
+    const nextSection = allOptionalSections.find(key => !activeIds.includes(key as any));
     
     if (!nextSection) {
-      alert("All custom sections are currently in use!");
+      alert("All available sections are currently in use!");
       return;
     }
 
@@ -112,7 +127,7 @@ export function EditorPage() {
         ...current,
         renderOptions: {
           ...current.renderOptions,
-          sectionOrder: [...current.renderOptions.sectionOrder, nextSection],
+          sectionOrder: [...current.renderOptions.sectionOrder, nextSection as any],
         },
       };
     });

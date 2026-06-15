@@ -4,6 +4,7 @@ import {
   createEmptyExperienceEntry,
   createEmptyProjectEntry,
   createEmptyCustomEntry,
+  createEmptyCertificationEntry,
   isGenericCustomSectionKey,
   type GenericCustomSectionKey,
   type CustomEntriesSection,
@@ -190,7 +191,7 @@ export function EditorFormPane({
   const activeCustomSectionData: CustomEntriesSection | null = isCustom ? resume[activeSection as GenericCustomSectionKey] : null;
   const visibleCustomEntries = activeCustomSectionData?.entries.slice(startIndex, startIndex + 5) ?? [];
   const needsPagination =
-    ['experience', 'education', 'skills', 'projects'].includes(activeSection) || isCustom;
+    ['experience', 'education', 'skills', 'projects', 'certifications'].includes(activeSection) || isCustom;
 
   return (
     <div className={cn('grid gap-3 rounded-[1.5rem] border-[1.5px] border-charcoal/75 bg-white/85 p-4 shadow-tactile-sm', className)}>
@@ -700,6 +701,196 @@ export function EditorFormPane({
           })
         : null}
 
+      {activeSection === 'certifications'
+        ? resume.certifications.slice(startIndex, startIndex + 5).map((item, localIndex) => {
+            const index = startIndex + localIndex;
+            return (
+              <div key={`cert-${index}`}>
+                 <div className="flex items-center justify-between">
+                   <div className={labelClass}>Certification Title</div>
+                   <button
+                     type="button"
+                     className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-600 transition hover:bg-red-100"
+                     onClick={() =>
+                       onContentChange(current => ({
+                         ...current,
+                         certifications: current.certifications.filter((_, entryIndex) => entryIndex !== index),
+                       }))
+                     }
+                   >
+                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                   </button>
+                </div>
+                <input
+                  className={inputClass}
+                  placeholder="e.g. AWS Certified Solutions Architect"
+                  value={item.title ?? ''}
+                  onChange={event =>
+                    onContentChange(current => ({
+                      ...current,
+                      certifications: current.certifications.map((entry, entryIndex) => (entryIndex === index ? { ...entry, title: event.target.value } : entry)),
+                    }))
+                  }
+                />
+                
+                <div className={labelGapClass}>Issuer</div>
+                <input
+                  className={inputClass}
+                  placeholder="e.g. Amazon Web Services"
+                  value={item.issuer ?? ''}
+                  onChange={event =>
+                    onContentChange(current => ({
+                      ...current,
+                      certifications: current.certifications.map((entry, entryIndex) => (entryIndex === index ? { ...entry, issuer: event.target.value } : entry)),
+                    }))
+                  }
+                />
+                
+                <DateFieldEditor 
+                  date={item.date} 
+                  onChange={newDate => onContentChange(current => ({
+                    ...current,
+                    certifications: current.certifications.map((entry, entryIndex) =>
+                      entryIndex === index ? { ...entry, date: newDate } : entry,
+                    ),
+                  }))} 
+                />
+
+                <div className={labelGapClass}>Link</div>
+                <input
+                  className={inputClass}
+                  placeholder="Paste the full public credential URL"
+                  value={item.link.url ?? ''}
+                  onChange={event =>
+                    onContentChange(current => ({
+                      ...current,
+                      certifications: current.certifications.map((entry, entryIndex) => (entryIndex === index ? { ...entry, link: { url: event.target.value } } : entry)),
+                    }))
+                  }
+                />
+
+                <div className={labelGapClass}>Description</div>
+                <textarea
+                  className={textAreaSmClass}
+                  placeholder="Describe your certification or score (optional)"
+                  value={item.description ?? ''}
+                  onChange={event =>
+                    onContentChange(current => ({
+                      ...current,
+                      certifications: current.certifications.map((entry, entryIndex) => (entryIndex === index ? { ...entry, description: event.target.value } : entry)),
+                    }))
+                  }
+                />
+
+                {localIndex < resume.certifications.slice(startIndex, startIndex + 5).length - 1 ? <div className={dividerClass}></div> : null}
+              </div>
+            );
+          })
+        : null}
+
+      {activeSection === 'languages' ? (
+        <>
+          {resume.languages.items.map((item, index) => {
+            return (
+              <div key={`lang-${index}`}>
+                <div className="flex items-center justify-between">
+                  <div className={labelClass}>Language #{index + 1}</div>
+                  <button
+                    type="button"
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-600 transition hover:bg-red-100"
+                    onClick={() =>
+                      onContentChange(current => ({
+                        ...current,
+                        languages: {
+                          ...current.languages,
+                          items: current.languages.items.filter((_, entryIndex) => entryIndex !== index),
+                        },
+                      }))
+                    }
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <input
+                      className={inputClass}
+                      placeholder="e.g. English"
+                      value={item.language ?? ''}
+                      onChange={event =>
+                        onContentChange(current => ({
+                          ...current,
+                          languages: {
+                            ...current.languages,
+                            items: current.languages.items.map((entry, entryIndex) =>
+                              entryIndex === index ? { ...entry, language: event.target.value } : entry
+                            ),
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div>
+                    <input
+                      className={inputClass}
+                      placeholder="e.g. Native / Conversational"
+                      value={item.proficiency ?? ''}
+                      onChange={event =>
+                        onContentChange(current => ({
+                          ...current,
+                          languages: {
+                            ...current.languages,
+                            items: current.languages.items.map((entry, entryIndex) =>
+                              entryIndex === index ? { ...entry, proficiency: event.target.value as any } : entry
+                            ),
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                {index < resume.languages.items.length - 1 ? <div className={dividerClass}></div> : null}
+              </div>
+            );
+          })}
+          <button
+            className={addButtonClass}
+            type="button"
+            onClick={() =>
+              onContentChange(current => ({
+                ...current,
+                languages: {
+                  ...current.languages,
+                  items: [...current.languages.items, { language: '', proficiency: null as any }],
+                },
+              }))
+            }
+          >
+            + Add language
+          </button>
+        </>
+      ) : null}
+
+      {activeSection === 'hobbies' ? (
+        <>
+          <div className={labelClass}>Hobbies & Interests (comma-separated)</div>
+          <textarea
+            className={textAreaSmClass}
+            placeholder="e.g. Reading, Hiking, Photography"
+            value={joinCsv(resume.hobbies.items)}
+            onChange={event =>
+              onContentChange(current => ({
+                ...current,
+                hobbies: {
+                  ...current.hobbies,
+                  items: splitCsv(event.target.value),
+                },
+              }))
+            }
+          />
+        </>
+      ) : null}
+
       {isCustom && activeCustomSectionData ? (
         <>
           <div className={labelClass}>Section label</div>
@@ -858,6 +1049,12 @@ export function EditorFormPane({
       {activeSection === 'projects' ? (
         <button className={addButtonClass} type="button" onClick={() => onContentChange(current => ({ ...current, projects: [...current.projects, createEmptyProjectEntry()] }))}>
           + Add project
+        </button>
+      ) : null}
+
+      {activeSection === 'certifications' ? (
+        <button className={addButtonClass} type="button" onClick={() => onContentChange(current => ({ ...current, certifications: [...current.certifications, createEmptyCertificationEntry()] }))}>
+          + Add certification
         </button>
       ) : null}
 

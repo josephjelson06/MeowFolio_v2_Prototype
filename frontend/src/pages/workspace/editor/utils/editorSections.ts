@@ -25,14 +25,14 @@ export function sectionList(
 
   const itemMap = new Map<string, EditorSectionItem>([
     ['contact', { id: 'contact', label: 'Contact', done: Boolean(content.header.name || content.header.email) }],
-    ['summary', { id: 'summary', label: 'Summary', done: Boolean(content.summary.content), movable: true }],
-    ['education', { id: 'education', label: 'Education', done: content.education.length > 0, movable: true }],
-    ['skills', { id: 'skills', label: 'Skills', done: content.skills.items.length > 0 || content.skills.groups.length > 0, movable: true }],
-    ['experience', { id: 'experience', label: 'Experience', done: content.experience.length > 0, movable: true }],
-    ['projects', { id: 'projects', label: 'Projects', done: content.projects.length > 0, movable: true }],
-    ['certifications', { id: 'certifications', label: 'Certifications', done: content.certifications.length > 0, movable: true }],
-    ['languages', { id: 'languages', label: 'Languages', done: content.languages.items.length > 0 || content.languages.groups.length > 0, movable: true }],
-    ['hobbies', { id: 'hobbies', label: 'Hobbies', done: content.hobbies.items.length > 0 || content.hobbies.groups.length > 0, movable: true }],
+    ['summary', { id: 'summary', label: 'Summary', done: Boolean(content.summary.content), movable: true, removable: true }],
+    ['education', { id: 'education', label: 'Education', done: content.education.length > 0, movable: true, removable: true }],
+    ['skills', { id: 'skills', label: 'Skills', done: content.skills.items.length > 0 || content.skills.groups.length > 0, movable: true, removable: true }],
+    ['experience', { id: 'experience', label: 'Experience', done: content.experience.length > 0, movable: true, removable: true }],
+    ['projects', { id: 'projects', label: 'Projects', done: content.projects.length > 0, movable: true, removable: true }],
+    ['certifications', { id: 'certifications', label: 'Certifications', done: content.certifications.length > 0, movable: true, removable: true }],
+    ['languages', { id: 'languages', label: 'Languages', done: content.languages.items.length > 0 || content.languages.groups.length > 0, movable: true, removable: true }],
+    ['hobbies', { id: 'hobbies', label: 'Hobbies', done: content.hobbies.items.length > 0 || content.hobbies.groups.length > 0, movable: true, removable: true }],
   ]);
 
   Object.keys(GENERIC_CUSTOM_SECTION_LABELS).forEach(k => {
