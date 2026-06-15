@@ -24,20 +24,13 @@ export const sessionService = {
 
     const user = session.user;
 
-    // Fetch the profile row (created automatically by the DB trigger on signup)
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('name, avatar_url, plan, credits')
-      .eq('id', user.id)
-      .single();
-
     return {
       id: user.id,
-      name: profile?.name ?? user.user_metadata?.full_name ?? null,
+      name: user.user_metadata?.full_name ?? null,
       email: user.email ?? null,
-      avatarUrl: profile?.avatar_url ?? user.user_metadata?.avatar_url ?? null,
-      credits: profile?.credits ?? APP_LIMITS.freeCredits,
-      plan: profile?.plan ?? 'free',
+      avatarUrl: user.user_metadata?.avatar_url ?? null,
+      credits: APP_LIMITS.freeCredits,
+      plan: 'free',
     };
   },
 
@@ -73,6 +66,35 @@ export const sessionService = {
    * Returns the updated actor or null if not logged in.
    */
   async refreshProfile(): Promise<SessionActor | null> {
-    return this.bootstrap();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return null;
+
+    const user = session.user;
+
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('name, avatar_url, plan, credits')
+        .eq('id', user.id)
+        .single();
+
+      return {
+        id: user.id,
+        name: profile?.name ?? user.user_metadata?.full_name ?? null,
+        email: user.email ?? null,
+        avatarUrl: profile?.avatar_url ?? user.user_metadata?.avatar_url ?? null,
+        credits: profile?.credits ?? APP_LIMITS.freeCredits,
+        plan: profile?.plan ?? 'free',
+      };
+    } catch {
+      return {
+        id: user.id,
+        name: user.user_metadata?.full_name ?? null,
+        email: user.email ?? null,
+        avatarUrl: user.user_metadata?.avatar_url ?? null,
+        credits: APP_LIMITS.freeCredits,
+        plan: 'free',
+      };
+    }
   },
 };

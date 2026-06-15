@@ -34,14 +34,25 @@ export function SessionProvider({ children }: PropsWithChildren) {
     async function bootstrap() {
       try {
         const nextActor = await sessionService.bootstrap();
-        if (alive) setActor(nextActor);
-      } finally {
+        if (alive) {
+          setActor(nextActor);
+          setReady(true);
+          
+          if (nextActor) {
+            void sessionService.refreshProfile().then(refreshed => {
+              if (alive && refreshed) setActor(refreshed);
+            });
+          }
+        }
+      } catch {
         if (alive) setReady(true);
       }
     }
 
     void bootstrap();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // Subscribe to auth state changes (login, logout, token refresh)
