@@ -2,6 +2,8 @@ import { supabase } from 'lib/supabase';
 import { APP_LIMITS } from 'lib/constants';
 import type { SessionActor } from 'types/session';
 
+let cachedSessionPromise: Promise<any> | null = null;
+
 export const sessionService = {
   /**
    * Check for an existing Supabase session and return the actor.
@@ -19,7 +21,17 @@ export const sessionService = {
       };
     }
 
-    const { data: { session } } = await supabase.auth.getSession();
+    if (!cachedSessionPromise) {
+      cachedSessionPromise = supabase.auth.getSession().finally(() => {
+        cachedSessionPromise = null;
+      });
+    }
+
+    const { data: { session }, error } = await cachedSessionPromise;
+    if (error) {
+      console.warn('[SessionService] getSession error:', error);
+      return null;
+    }
     if (!session?.user) return null;
 
     const user = session.user;
