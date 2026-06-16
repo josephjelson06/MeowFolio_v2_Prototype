@@ -13,6 +13,8 @@ export function DashboardPage() {
   const [resumes, setResumes] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
   const [tips, setTips] = useState<string[]>([]);
   const [tipIndex, setTipIndex] = useState(0);
+  const [recentDocument, setRecentDocument] = useState<any | null>(null);
+
   const recentResume = useMemo(
     () =>
       resumes.find(item => item.recent) ??
@@ -24,6 +26,16 @@ export function DashboardPage() {
       },
     [resumes],
   );
+
+  useEffect(() => {
+    if (recentResume && recentResume.id !== 'resume_placeholder') {
+      resumeService.getRecord(recentResume.id)
+        .then(setRecentDocument)
+        .catch(err => console.error('Failed to load recent resume document:', err));
+    } else {
+      setRecentDocument(null);
+    }
+  }, [recentResume]);
 
   useEffect(() => {
     async function loadDashboardData() {
@@ -111,8 +123,12 @@ export function DashboardPage() {
               Open the latest saved resume directly in the editor and continue from where you left off.
             </div>
             <div className="grid gap-3 rounded-[1.25rem] border border-outline-variant bg-surface px-4 py-4">
-              <div className="font-headline text-sm font-bold text-on-surface">Arjun Kumar</div>
-              <div className="text-[11px] text-[color:var(--txt2)]">arjun@email.com</div>
+              <div className="font-headline text-sm font-bold text-on-surface">
+                {recentResume.id === 'resume_placeholder' ? 'Arjun Kumar' : (recentDocument?.content?.header?.name || 'Untitled Resume')}
+              </div>
+              <div className="text-[11px] text-[color:var(--txt2)]">
+                {recentResume.id === 'resume_placeholder' ? 'arjun@email.com' : (recentDocument?.content?.header?.email || 'No email provided')}
+              </div>
               <div className="h-px bg-outline-variant"></div>
               <div className="h-1.5 w-2/5 rounded-full bg-outline-variant/70"></div>
               <div className="h-1.5 w-full rounded-full bg-primary/20"></div>
