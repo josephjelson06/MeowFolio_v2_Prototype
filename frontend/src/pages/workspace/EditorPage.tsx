@@ -225,10 +225,6 @@ export function EditorPage() {
                   <p className="text-xs text-[color:var(--txt2)]">Choose a resume from the library first, then return to the editor.</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 self-start rounded-xl border border-charcoal/10 bg-white/70 px-3 py-1.5 text-xs text-[color:var(--txt2)] shadow-tactile-sm md:self-center">
-                <kbd className="inline-flex h-5 items-center justify-center rounded border border-charcoal/30 bg-white px-1.5 font-sans text-[10px] font-bold text-on-surface shadow-sm">Esc</kbd>
-                <span>To exit full screen, press and hold Esc</span>
-              </div>
             </div>
 
             {/* Content row */}
