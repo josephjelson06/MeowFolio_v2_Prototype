@@ -1,6 +1,7 @@
 import { supabase } from 'lib/supabase';
 import type { ResumeRecord } from 'types/resume';
 import type { AtsScoreResponse, AtsBreakdownItem, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
+import { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } from 'types/resumeDocument';
 
 const RESUME_EVENT = 'meowfolio:resume-library-changed';
 const ACTIVE_RESUME_KEY = 'meowfolio:active-resume-id';
@@ -53,14 +54,33 @@ function mapRowToResumeRecord(row: any, index: number): ResumeRecord {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+function deepMerge<T extends object>(target: T, source: any): T {
+  if (!source) return target;
+  const result = { ...target } as any;
+  for (const key of Object.keys(source)) {
+    const val = source[key];
+    if (val !== null && typeof val === 'object' && !Array.isArray(val)) {
+      if (typeof result[key] === 'object' && result[key] !== null && !Array.isArray(result[key])) {
+        result[key] = deepMerge(result[key], val);
+      } else {
+        result[key] = val;
+      }
+    } else if (val !== undefined) {
+      result[key] = val;
+    }
+  }
+  return result;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
   return {
     id: row.id,
     title: row.title ?? 'Untitled Resume',
     source: row.source ?? 'scratch',
     templateId: row.template_id ?? 'template2',
-    content: row.content_json ?? {},
-    renderOptions: row.render_options ?? {},
+    content: deepMerge(createEmptyResumeData(), row.content_json),
+    renderOptions: deepMerge(DEFAULT_RENDER_OPTIONS, row.render_options),
     rawText: row.raw_text ?? '',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -84,16 +104,14 @@ let mockDocuments: Record<string, ResumeDocumentRecord> = {
   }
 };
 
-// Lazy initialization of mock content because we can't statically import createEmptyResumeData here if it's dynamic
-import('types/resumeDocument').then(({ createEmptyResumeData, DEFAULT_RENDER_OPTIONS }) => {
-  if (mockDocuments['mock-1']) {
-    const data = createEmptyResumeData('scratch');
-    data.header.name = 'Test User';
-    data.header.email = 'test@example.com';
-    mockDocuments['mock-1'].content = data;
-    mockDocuments['mock-1'].renderOptions = DEFAULT_RENDER_OPTIONS as any;
-  }
-});
+// Initialization of mock content
+if (mockDocuments['mock-1']) {
+  const data = createEmptyResumeData('scratch');
+  data.header.name = 'Test User';
+  data.header.email = 'test@example.com';
+  mockDocuments['mock-1'].content = data;
+  mockDocuments['mock-1'].renderOptions = DEFAULT_RENDER_OPTIONS as any;
+}
 
 
 /* ─── Service ──────────────────────────────────────────────────────────────── */
@@ -166,7 +184,6 @@ export const resumeService = {
     if (await getUserId() === 'guest-user') {
       const doc = mockDocuments[id] ?? mockDocuments['mock-1'];
       if (!doc.content) {
-        const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
         const data = createEmptyResumeData('scratch');
         data.header.name = 'Test User (Local)';
         data.header.email = 'test@local.env';
@@ -359,7 +376,6 @@ export const resumeService = {
 
   async createBlank(): Promise<ResumeRecord> {
     const userId = await getUserId();
-    const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
 
     if (await getUserId() === 'guest-user') {
       const id = `mock-${Date.now()}`;
@@ -397,7 +413,6 @@ export const resumeService = {
 
   async importText(text: string, sourceName: string): Promise<ResumeMutationResponse> {
     const isGuest = await getUserId() === 'guest-user';
-    const { DEFAULT_RENDER_OPTIONS, createEmptyResumeData } = await import('types/resumeDocument');
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
 
     // Try AI parsing via the serverless function FIRST (works for both local guest and prod)
