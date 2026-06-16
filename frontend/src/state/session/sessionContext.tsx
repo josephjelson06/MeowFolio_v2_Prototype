@@ -32,20 +32,44 @@ export function SessionProvider({ children }: PropsWithChildren) {
     let alive = true;
 
     async function bootstrap() {
-      try {
-        const nextActor = await sessionService.bootstrap();
+      console.log('[Auth Session] Starting bootstrap...');
+      
+      // Failsafe timeout: if session resolution takes more than 1.5 seconds, force mount the app
+      const failsafeTimer = setTimeout(() => {
         if (alive) {
+          console.warn('[Auth Session] Failsafe timeout (1500ms) fired! Forcing ready state to prevent blank screen.');
+          setReady(true);
+        }
+      }, 1500);
+
+      try {
+        console.log('[Auth Session] Querying Supabase auth session...');
+        const nextActor = await sessionService.bootstrap();
+        console.log('[Auth Session] Supabase auth session resolved:', nextActor);
+        
+        if (alive) {
+          clearTimeout(failsafeTimer);
           setActor(nextActor);
           setReady(true);
           
           if (nextActor) {
+            console.log('[Auth Session] Profile refresh triggered...');
             void sessionService.refreshProfile().then(refreshed => {
-              if (alive && refreshed) setActor(refreshed);
+              if (alive && refreshed) {
+                console.log('[Auth Session] Profile refreshed successfully:', refreshed);
+                setActor(refreshed);
+              }
+            }).catch(err => {
+              console.warn('[Auth Session] Profile refresh failed:', err);
             });
           }
         }
-      } catch {
-        if (alive) setReady(true);
+      } catch (error) {
+        console.error('[Auth Session] Bootstrap exception caught:', error);
+        if (alive) {
+          clearTimeout(failsafeTimer);
+          setReady(true);
+        }
       }
     }
 
