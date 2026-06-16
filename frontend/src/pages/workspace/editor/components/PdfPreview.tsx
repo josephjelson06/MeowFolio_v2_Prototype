@@ -104,17 +104,17 @@ export function PdfPreview({
       {pdfUrl ? (
         <iframe
           src={`${pdfUrl}#toolbar=1&view=FitH`}
-          className="mx-auto w-full max-w-[720px] h-[calc(100vh-10rem)] min-h-[600px] rounded-[1.5rem] border-[1.5px] border-charcoal/70 bg-white shadow-tactile"
+          className="mx-auto w-full max-w-[720px] h-full rounded-[1.5rem] border-[1.5px] border-charcoal/70 bg-white shadow-tactile"
           title="Resume PDF Preview"
         />
       ) : error ? (
-        <div className="mx-auto flex w-full max-w-[720px] h-[calc(100vh-10rem)] min-h-[600px] items-center justify-center rounded-[1.5rem] border-[1.5px] border-red-500/50 bg-red-50/50 p-6 shadow-tactile">
+        <div className="mx-auto flex w-full max-w-[720px] h-full items-center justify-center rounded-[1.5rem] border-[1.5px] border-red-500/50 bg-red-50/50 p-6 shadow-tactile">
           <div className="text-center text-sm font-medium text-red-600">
             PDF preview unavailable: {error}
           </div>
         </div>
       ) : (
-        <div className="mx-auto flex w-full max-w-[720px] h-[calc(100vh-10rem)] min-h-[600px] items-center justify-center rounded-[1.5rem] border-[1.5px] border-charcoal/70 bg-white shadow-tactile">
+        <div className="mx-auto flex w-full max-w-[720px] h-full items-center justify-center rounded-[1.5rem] border-[1.5px] border-charcoal/70 bg-white shadow-tactile">
           <div className="text-sm font-semibold text-charcoal/50">Initializing preview...</div>
         </div>
       )}

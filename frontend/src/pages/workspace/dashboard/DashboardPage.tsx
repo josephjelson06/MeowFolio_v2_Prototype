@@ -19,7 +19,7 @@ export function DashboardPage() {
       resumes[0] ?? {
         id: 'resume_placeholder',
         name: 'resume_v3.tex',
-        template: 'template1',
+        template: 'template2',
         updated: 'just now',
       },
     [resumes],

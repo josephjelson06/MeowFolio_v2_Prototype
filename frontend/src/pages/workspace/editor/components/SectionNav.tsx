@@ -36,10 +36,13 @@ function SectionGhost({ section, mobile }: { section: EditorSectionItem; mobile:
         'pointer-events-none select-none border-[1.5px] border-charcoal/80 bg-white/95 shadow-tactile',
         mobile
           ? 'inline-flex min-h-12 min-w-[9rem] items-center gap-3 rounded-full px-4 py-2.5'
-          : 'flex items-center gap-3 rounded-[1rem] px-4 py-3',
+          : 'flex items-center gap-3 rounded-[1rem] px-3 py-3',
       )}
     >
-      <span className={cn('grid size-4 place-items-center rounded-full border', section.done ? 'border-tertiary bg-tertiary text-white' : 'border-outline bg-white')}>
+      <svg className="size-3.5 text-charcoal/30 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm7-10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+      </svg>
+      <span className={cn('grid size-4 place-items-center rounded-full border shrink-0', section.done ? 'border-tertiary bg-tertiary text-white' : 'border-outline bg-white')}>
         <span className={cn('size-2 rounded-full', section.done ? 'bg-white' : 'bg-outline')} />
       </span>
       <span className="truncate text-sm font-semibold text-on-surface">{section.label}</span>
@@ -93,7 +96,10 @@ function SortableSectionItem({
             {...attributes}
             {...listeners}
           >
-            <span className={cn('grid size-4 place-items-center rounded-full border', section.done ? 'border-tertiary bg-tertiary text-white' : 'border-outline bg-white')}>
+            <svg className="size-3.5 text-charcoal/30 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm7-10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+            </svg>
+            <span className={cn('grid size-4 place-items-center rounded-full border shrink-0', section.done ? 'border-tertiary bg-tertiary text-white' : 'border-outline bg-white')}>
               <span className={cn('size-2 rounded-full', section.done ? 'bg-white' : 'bg-outline')} />
             </span>
             <span className="truncate">{section.label}</span>
@@ -124,7 +130,7 @@ function SortableSectionItem({
       <div className="flex items-center gap-2">
         <button
           className={cn(
-            'flex min-w-0 flex-1 items-center gap-3 rounded-[1rem] border px-4 py-3 text-left text-sm font-semibold transition',
+            'flex min-w-0 flex-1 items-center gap-3 rounded-[1rem] border px-3 py-3 text-left text-sm font-semibold transition',
             section.movable && 'cursor-grab active:cursor-grabbing',
             active
               ? 'border-charcoal/75 bg-surface text-on-surface shadow-tactile-sm'
@@ -136,7 +142,10 @@ function SortableSectionItem({
           {...attributes}
           {...listeners}
         >
-          <span className={cn('grid size-4 place-items-center rounded-full border', section.done ? 'border-tertiary bg-tertiary text-white' : 'border-outline bg-white')}>
+          <svg className="size-3.5 text-charcoal/30 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm7-10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm0 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+          </svg>
+          <span className={cn('grid size-4 place-items-center rounded-full border shrink-0', section.done ? 'border-tertiary bg-tertiary text-white' : 'border-outline bg-white')}>
             <span className={cn('size-2 rounded-full', section.done ? 'bg-white' : 'bg-outline')} />
           </span>
           <span className="truncate">{section.label}</span>

@@ -3,6 +3,7 @@ import { NavLink, useSearchParams } from 'react-router-dom';
 import { routes } from 'lib/routes';
 import { downloadPdf } from 'lib/typst-renderer';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
+import { useUiContext } from 'state/ui/uiContext';
 import { EditorMobileTopbar } from 'pages/workspace/editor/components/EditorMobileTopbar';
 import { EditorPreviewPanel } from 'pages/workspace/editor/components/EditorPreviewPanel';
 import { EditorWorkspaceLayout } from 'pages/workspace/editor/components/EditorWorkspaceLayout';
@@ -17,6 +18,7 @@ import { applyToolbarValues, toolbarFromRenderOptions } from 'pages/workspace/ed
 
 export function EditorPage() {
   const [searchParams] = useSearchParams();
+  const { openResume } = useUiContext();
   const resumeIdFromQuery = searchParams.get('resumeId');
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit');
   const [activeLeftTab, setActiveLeftTab] = useState<(typeof leftTabs)[number]['id']>('sections');
@@ -203,20 +205,79 @@ export function EditorPage() {
 
   if (!record) {
     return (
-      <div className="grid gap-4">
-        <div className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
-          <div className="grid gap-1">
-            <div className="font-headline text-2xl font-extrabold text-on-surface">No resume selected</div>
-            <div className="text-sm leading-7 text-[color:var(--txt2)]">Choose a resume from the library first, then return to the editor.</div>
+      <WorkspaceShell
+        title="Editor"
+        mainClassName="mx-auto w-full max-w-[1000px] px-4 pb-28 pt-7 sm:px-6 lg:px-8"
+        showMobileTopBar={true}
+      >
+        <div className="grid gap-6">
+          <div className="grid rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+            {/* Header row */}
+            <div className="flex flex-col gap-4 border-b border-charcoal/10 pb-6 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-charcoal/15 bg-white/90 text-charcoal/75 shadow-tactile-sm">
+                  <svg className="size-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                  </svg>
+                </div>
+                <div className="grid gap-0.5 text-left">
+                  <h1 className="font-headline text-base font-extrabold text-on-surface leading-tight">No resume selected</h1>
+                  <p className="text-xs text-[color:var(--txt2)]">Choose a resume from the library first, then return to the editor.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 self-start rounded-xl border border-charcoal/10 bg-white/70 px-3 py-1.5 text-xs text-[color:var(--txt2)] shadow-tactile-sm md:self-center">
+                <kbd className="inline-flex h-5 items-center justify-center rounded border border-charcoal/30 bg-white px-1.5 font-sans text-[10px] font-bold text-on-surface shadow-sm">Esc</kbd>
+                <span>To exit full screen, press and hold Esc</span>
+              </div>
+            </div>
+
+            {/* Content row */}
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <img
+                src="/Images/no_resume_selected.png"
+                alt="No resume selected"
+                className="h-60 w-auto object-contain mb-6"
+              />
+              <h2 className="font-headline text-2xl font-extrabold text-on-surface mb-2">No resume selected</h2>
+              <p className="text-sm text-[color:var(--txt2)] max-w-sm mb-6">
+                Select a resume from your library to start editing or create a new one.
+              </p>
+              
+              <div className="flex flex-col items-center gap-3 w-full max-w-xs">
+                <NavLink
+                  to={routes.resumes}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border-2 border-charcoal bg-primary text-white px-6 py-2.5 font-headline text-sm font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary/95 hover:shadow-tactile active:translate-x-px active:translate-y-px active:shadow-none"
+                >
+                  <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                  </svg>
+                  Go to Resumes
+                </NavLink>
+                
+                <div className="flex items-center gap-3 w-full my-1">
+                  <div className="h-px bg-charcoal/10 flex-1"></div>
+                  <span className="text-xs text-[color:var(--txt2)] font-medium">or</span>
+                  <div className="h-px bg-charcoal/10 flex-1"></div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openResume}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border-2 border-primary bg-white text-primary px-6 py-2.5 font-headline text-sm font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed/30 hover:shadow-tactile active:translate-x-px active:translate-y-px active:shadow-none"
+                >
+                  + Create New Resume
+                </button>
+              </div>
+
+              {/* Tip */}
+              <div className="mt-12 flex items-center gap-2 text-xs text-[color:var(--txt2)] bg-white/50 border border-charcoal/10 rounded-xl px-4 py-2.5">
+                <span>💡</span>
+                <span><strong>Tip:</strong> You can create multiple resumes and tailor them for different roles.</span>
+              </div>
+            </div>
           </div>
-          <NavLink
-            className="inline-flex min-h-10 items-center justify-center self-start rounded-full border-2 border-charcoal/75 bg-white/90 px-4 py-2 font-headline text-[11px] font-bold shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-white"
-            to={routes.resumes}
-          >
-            Go to Resumes
-          </NavLink>
         </div>
-      </div>
+      </WorkspaceShell>
     );
   }
 

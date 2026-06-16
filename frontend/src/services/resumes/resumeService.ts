@@ -47,7 +47,7 @@ function mapRowToResumeRecord(row: any, index: number): ResumeRecord {
     name: row.title ?? 'Untitled Resume',
     updated: relativeTime(row.updated_at ?? row.created_at),
     updatedAt: row.updated_at ?? row.created_at,
-    template: row.template_id ?? 'template1',
+    template: row.template_id ?? 'template2',
     recent: index === 0,
   };
 }
@@ -58,7 +58,7 @@ function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
     id: row.id,
     title: row.title ?? 'Untitled Resume',
     source: row.source ?? 'scratch',
-    templateId: row.template_id ?? 'template1',
+    templateId: row.template_id ?? 'template2',
     content: row.content_json ?? {},
     renderOptions: row.render_options ?? {},
     rawText: row.raw_text ?? '',
@@ -74,11 +74,11 @@ async function getUserId(): Promise<string> {
 
 // ─── Local Mock State for Test Seam ────────
 let mockResumes: ResumeRecord[] = [
-  { id: 'mock-1', name: 'Software Engineer Resume', template: 'template1', recent: true, updated: 'just now', updatedAt: new Date().toISOString() }
+  { id: 'mock-1', name: 'Software Engineer Resume', template: 'template2', recent: true, updated: 'just now', updatedAt: new Date().toISOString() }
 ];
 let mockDocuments: Record<string, ResumeDocumentRecord> = {
   'mock-1': {
-    id: 'mock-1', title: 'Software Engineer Resume', source: 'scratch', templateId: 'template1',
+    id: 'mock-1', title: 'Software Engineer Resume', source: 'scratch', templateId: 'template2',
     content: null as any, // will be initialized to avoid crash if accessed directly, wait, actually better write out a partial valid one:
     renderOptions: {} as any, rawText: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   }
@@ -363,10 +363,10 @@ export const resumeService = {
 
     if (await getUserId() === 'guest-user') {
       const id = `mock-${Date.now()}`;
-      const rec: ResumeRecord = { id, name: 'Untitled Resume', template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
+      const rec: ResumeRecord = { id, name: 'Untitled Resume', template: 'template2', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
       mockResumes.unshift(rec);
       mockDocuments[id] = {
-        id, title: 'Untitled Resume', source: 'scratch', templateId: 'template1' as any, content: createEmptyResumeData('scratch') as any, renderOptions: DEFAULT_RENDER_OPTIONS as any, rawText: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+        id, title: 'Untitled Resume', source: 'scratch', templateId: 'template2' as any, content: createEmptyResumeData('scratch') as any, renderOptions: DEFAULT_RENDER_OPTIONS as any, rawText: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
       };
       setActiveResumeId(id);
       notifyResumeChange();
@@ -378,7 +378,7 @@ export const resumeService = {
       .insert({
         user_id: userId,
         title: 'Untitled Resume',
-        template_id: 'template1',
+        template_id: 'template2',
         content_json: createEmptyResumeData('scratch'),
         render_options: DEFAULT_RENDER_OPTIONS,
         source: 'scratch',
@@ -443,10 +443,10 @@ export const resumeService = {
     // --- Guest User Branch ---
     if (isGuest) {
       const id = `mock-${Date.now()}`;
-      const item: ResumeRecord = { id, name: title, template: 'template1', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
+      const item: ResumeRecord = { id, name: title, template: 'template2', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
       mockResumes.unshift(item);
       mockDocuments[id] = {
-        id, title, source: 'import', templateId: 'template1' as any, 
+        id, title, source: 'import', templateId: 'template2' as any, 
         content: parsedContent as any, 
         renderOptions: DEFAULT_RENDER_OPTIONS as any, rawText: text, 
         createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
@@ -470,7 +470,7 @@ export const resumeService = {
       .insert({
         user_id: userId,
         title,
-        template_id: 'template1',
+        template_id: 'template2',
         content_json: parsedContent,
         render_options: DEFAULT_RENDER_OPTIONS,
         source: 'import',

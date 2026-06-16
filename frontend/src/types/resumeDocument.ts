@@ -246,7 +246,7 @@ export const DEFAULT_RESUME_SECTION_ORDER: ResumeSectionKey[] = [
 export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   accentColor: "charcoal",
   fontFamily: "TeX Gyre Termes",
-  templateId: "template1",
+  templateId: "template2",
   fontSize: 11,
   lineSpacing: 1.15,
   maxBulletsPerEntry: 4,

@@ -51,7 +51,7 @@ export function createFallbackRecord(id: string, title: string): ResumeDocumentR
     rawText: '',
     renderOptions: { ...DEFAULT_RENDER_OPTIONS },
     source: 'scratch',
-    templateId: 'template1',
+    templateId: 'template2',
     title,
     updatedAt: now,
   };
