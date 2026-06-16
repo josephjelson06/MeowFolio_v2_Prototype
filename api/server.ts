@@ -17,6 +17,13 @@ const PORT = process.env.PORT || 3001;
 // so it's safe to open CORS. This avoids any Vercel preview URL mismatches.
 app.use(cors({ origin: '*' }));
 
+// Avoid body-parser conflicts on Vercel (where Vercel parses the body first, leaving the request stream consumed)
+app.use((req, _res, next) => {
+  if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
+    (req as any)._body = true;
+  }
+  next();
+});
 app.use(express.json({ limit: '20mb' }));
 
 // Health check — used by the keep-alive ping from the frontend

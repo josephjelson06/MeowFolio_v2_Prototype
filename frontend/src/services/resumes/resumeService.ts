@@ -141,7 +141,7 @@ export const resumeService = {
   },
 
   async rename(id: string, nextName: string): Promise<ResumeRecord[]> {
-    if (await getUserId() === 'guest-user') {
+    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
       const target = mockResumes.find(r => r.id === id);
       if (target) target.name = nextName;
       if (mockDocuments[id]) mockDocuments[id].title = nextName;
@@ -159,7 +159,7 @@ export const resumeService = {
   },
 
   async remove(id: string): Promise<ResumeRecord[]> {
-    if (await getUserId() === 'guest-user') {
+    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
       mockResumes = mockResumes.filter(r => r.id !== id);
       delete mockDocuments[id];
       notifyResumeChange();
@@ -181,7 +181,23 @@ export const resumeService = {
   },
 
   async getRecord(id: string): Promise<ResumeDocumentRecord> {
-    if (await getUserId() === 'guest-user') {
+    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
+      if (id === 'resume_placeholder' && !mockDocuments['resume_placeholder']) {
+        const data = createEmptyResumeData('scratch');
+        data.header.name = 'Arjun Kumar';
+        data.header.email = 'arjun@email.com';
+        mockDocuments['resume_placeholder'] = {
+          id: 'resume_placeholder',
+          title: 'resume_v3.tex',
+          source: 'scratch',
+          templateId: 'template2',
+          content: data,
+          renderOptions: DEFAULT_RENDER_OPTIONS,
+          rawText: '',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+      }
       const doc = mockDocuments[id] ?? mockDocuments['mock-1'];
       if (!doc.content) {
         const data = createEmptyResumeData('scratch');
@@ -209,7 +225,7 @@ export const resumeService = {
     title?: string;
     rawText?: string;
   }): Promise<ResumeDocumentRecord | null> {
-    if (await getUserId() === 'guest-user') {
+    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
       if (mockDocuments[id]) {
         mockDocuments[id].content = input.content;
         mockDocuments[id].renderOptions = input.renderOptions;
@@ -220,6 +236,21 @@ export const resumeService = {
           if (r) r.name = input.title;
         }
         if (input.rawText) mockDocuments[id].rawText = input.rawText;
+        notifyResumeChange();
+        return mockDocuments[id];
+      }
+      if (id === 'resume_placeholder') {
+        mockDocuments[id] = {
+          id,
+          title: input.title ?? 'resume_v3.tex',
+          source: 'scratch',
+          templateId: input.templateId as any,
+          content: input.content,
+          renderOptions: input.renderOptions,
+          rawText: input.rawText ?? '',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
         notifyResumeChange();
         return mockDocuments[id];
       }
