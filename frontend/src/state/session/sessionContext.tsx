@@ -33,14 +33,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     async function bootstrap() {
       console.log('[Auth Session] Starting bootstrap...');
-      
-      // Failsafe timeout: if session resolution takes more than 1.5 seconds, force mount the app
-      const failsafeTimer = setTimeout(() => {
-        if (alive) {
-          console.warn('[Auth Session] Failsafe timeout (1500ms) fired! Forcing ready state to prevent blank screen.');
-          setReady(true);
-        }
-      }, 1500);
 
       try {
         console.log('[Auth Session] Querying Supabase auth session...');
@@ -48,7 +40,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
         console.log('[Auth Session] Supabase auth session resolved:', nextActor);
         
         if (alive) {
-          clearTimeout(failsafeTimer);
           setActor(nextActor);
           setReady(true);
           
@@ -67,7 +58,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
       } catch (error) {
         console.error('[Auth Session] Bootstrap exception caught:', error);
         if (alive) {
-          clearTimeout(failsafeTimer);
           setReady(true);
         }
       }
@@ -117,7 +107,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
   }), [actor, ready]);
 
   if (!ready) {
-    return null;
+    return (
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#09090b', color: '#fafafa' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #333', borderTopColor: '#fafafa', animation: 'spin 1s linear infinite' }} />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <p style={{ fontFamily: 'system-ui, sans-serif', fontSize: '14px' }}>Loading session...</p>
+        </div>
+      </div>
+    );
   }
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
