@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/extract-text.ts",
+      "use": "@vercel/node"
+    },
+    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
@@ -14,6 +18,10 @@
     }
   ],
   "routes": [
+    {
+      "src": "/api/extract-text",
+      "dest": "api/extract-text.ts"
+    },
     {
       "src": "/api/(.*)",
       "dest": "api/server.ts"
