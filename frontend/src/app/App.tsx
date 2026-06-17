@@ -6,7 +6,6 @@ import { UiProvider } from 'state/ui/uiContext';
 import { startKeepAlive } from 'lib/keepAlive';
 
 export function App() {
-  // Start the Render keep-alive ping scheduler on app boot
   useEffect(() => {
     const stop = startKeepAlive();
     return stop;
