@@ -8,16 +8,36 @@ const getSupabaseAuth = () =>
     process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
   );
 
+// CORS headers — needed for mobile browsers that send OPTIONS preflight
+// (triggered by the Authorization header in cross-origin requests)
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 /**
  * POST /api/extract-text
  *
- * Accepts a JSON body: { file: "<base64-encoded PDF>", filename: "resume.pdf" }
+ * Accepts a JSON body: { file: "<base64-encoded file>", filename: "resume.pdf" }
  * Returns: { text: "extracted plain text" }
  *
- * Used by mobile clients where the client-side pdf.js worker is killed by
- * the OS due to memory constraints.
+ * Supports: .pdf (via pdf-parse, pure JS), .docx (via mammoth), .txt / .md (raw)
+ *
+ * Uses pdf-parse instead of unpdf/pdfjs-wasm — no WASM, instant cold start,
+ * works identically on mobile and desktop.
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Handle CORS preflight — mobile browsers send this before the actual POST
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, CORS_HEADERS);
+    res.end();
+    return;
+  }
+
+  // Set CORS headers on every response
+  Object.entries(CORS_HEADERS).forEach(([key, value]) => res.setHeader(key, value));
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -46,30 +66,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing file data in request body' });
     }
 
-    // Convert base64 string back to a Buffer
-    const pdfBuffer = Buffer.from(base64, 'base64');
+    const fileBuffer = Buffer.from(base64, 'base64');
 
-    if (pdfBuffer.length === 0) {
+    if (fileBuffer.length === 0) {
       return res.status(400).json({ error: 'File is empty' });
     }
 
-    // unpdf: modern, TypeScript-native PDF text extractor.
-    // Works correctly in Node.js / Vercel serverless without CJS/ESM issues.
-    const { extractText } = await import('unpdf');
-    const { text: pages } = await extractText(new Uint8Array(pdfBuffer));
-    const text = Array.isArray(pages) ? pages.join('\n\n') : String(pages);
+    const ext = (filename ?? '').split('.').pop()?.toLowerCase() ?? '';
+    let text = '';
+
+    if (ext === 'pdf') {
+      // pdf-parse: pure JS, no WASM, instant cold start on Vercel.
+      // Perfect for text-based resume PDFs (1-2 pages).
+      const pdfParse = (await import('pdf-parse')).default;
+      const result = await pdfParse(fileBuffer);
+      text = result.text ?? '';
+    } else if (ext === 'docx' || ext === 'doc') {
+      // mammoth: purpose-built Word document → plain text extractor.
+      const mammoth = await import('mammoth');
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      text = result.value ?? '';
+    } else {
+      // .txt, .md, or anything else — just decode as UTF-8
+      text = fileBuffer.toString('utf-8');
+    }
 
     if (!text || text.trim().length < 10) {
       return res.status(422).json({
-        error: `Could not extract text from "${filename ?? 'file'}". The PDF may be scanned or image-based.`,
+        error: `Could not extract text from "${filename ?? 'file'}". The file may be image-based or empty.`,
       });
     }
 
     return res.status(200).json({ text: text.trim() });
   } catch (err) {
-    console.error('PDF extraction error:', err);
+    console.error('File extraction error:', err);
     return res.status(500).json({
-      error: err instanceof Error ? err.message : 'PDF extraction failed',
+      error: err instanceof Error ? err.message : 'File extraction failed',
     });
   }
 }
