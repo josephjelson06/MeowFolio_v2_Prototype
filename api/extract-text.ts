@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import pdfParse from 'pdf-parse';
+import mammoth from 'mammoth';
 
 // Auth validation — anon key, respects RLS (used only for getUser)
 const getSupabaseAuth = () =>
@@ -78,12 +80,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (ext === 'pdf') {
       // pdf-parse: pure JS, no WASM, instant cold start on Vercel.
       // Perfect for text-based resume PDFs (1-2 pages).
-      const pdfParse = (await import('pdf-parse')).default;
       const result = await pdfParse(fileBuffer);
       text = result.text ?? '';
     } else if (ext === 'docx' || ext === 'doc') {
       // mammoth: purpose-built Word document → plain text extractor.
-      const mammoth = await import('mammoth');
       const result = await mammoth.extractRawText({ buffer: fileBuffer });
       text = result.value ?? '';
     } else {

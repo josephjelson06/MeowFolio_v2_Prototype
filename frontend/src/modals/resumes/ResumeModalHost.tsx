@@ -14,14 +14,14 @@ export function ResumeModalHost() {
   const [mode, setMode] = useState<ResumeMode>(null);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
-  const [busyLabel, setBusyLabel] = useState('Parsing upload...');
+  const [busyLabel, setBusyLabel] = useState('Parsing file...');
   const [error, setError] = useState('');
   const [resumeId, setResumeId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!resumeOpen) {
       setBusy(false);
-      setBusyLabel('Parsing upload...');
+      setBusyLabel('Parsing file...');
       setError('');
       setMode(null);
       setResumeId(null);
@@ -140,7 +140,7 @@ export function ResumeModalHost() {
               Choose a PDF, DOCX, TXT, or MD file and preview the parsed text.
             </div>
             <div className="mt-1 text-[11px] text-outline">
-              Text is extracted in your browser — no files are uploaded to any server.
+              Text is extracted on the server — no file is stored.
             </div>
           </div>
           <input
@@ -151,10 +151,8 @@ export function ResumeModalHost() {
             onChange={async event => {
               const file = event.target.files?.[0];
               if (!file) return;
-              const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
               setBusy(true);
-              // On mobile we go straight to the server — tell the user immediately
-              setBusyLabel(isMobile ? 'Extracting via server...' : 'Parsing upload...');
+              setBusyLabel('Parsing file...');
               setError('');
               try {
                 const imported = await resumeService.importFile(file);
@@ -165,7 +163,7 @@ export function ResumeModalHost() {
                 setError(nextError instanceof Error ? nextError.message : 'Upload failed.');
               } finally {
                 setBusy(false);
-                setBusyLabel('Parsing upload...');
+                setBusyLabel('Parsing file...');
                 event.target.value = '';
 
               }
