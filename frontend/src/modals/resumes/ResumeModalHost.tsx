@@ -18,6 +18,7 @@ export function ResumeModalHost() {
   const [error, setError] = useState('');
   const [resumeId, setResumeId] = useState<string | null>(null);
   const [authToken, setAuthToken] = useState<string>('');
+  const [debugSteps, setDebugSteps] = useState<string[]>([]);
 
   useEffect(() => {
     if (!resumeOpen) {
@@ -28,6 +29,7 @@ export function ResumeModalHost() {
       setResumeId(null);
       setText('');
       setAuthToken('');
+      setDebugSteps([]);
     } else {
       // Pre-fetch auth token when modal opens to avoid mobile WebKit lock freeze after file picker
       const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
@@ -168,23 +170,131 @@ export function ResumeModalHost() {
               const file = event.target.files?.[0];
               if (!file) return;
               setBusy(true);
-              setBusyLabel('Parsing file...');
+              setBusyLabel('1. Upload process initiated...');
               setError('');
+              setDebugSteps([]);
+
+              const addLog = async (msg: string) => {
+                console.log(`[UploadDebug] ${msg}`);
+                setDebugSteps(prev => [...prev, msg]);
+                setBusyLabel(msg);
+                await new Promise(resolve => setTimeout(resolve, 150));
+              };
+
               try {
+                await addLog('1. Start file upload...');
+
                 if (!authToken) {
+                  await addLog('ERROR: Auth token is empty!');
                   throw new Error('Still loading auth token. Please wait a moment and try again.');
                 }
-                const imported = await resumeService.importFile(file, authToken);
+                await addLog('2. Auth token present. Decoding userId...');
+
+                let userId = 'guest-user';
+                try {
+                  const payload = authToken.split('.')[1];
+                  const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+                  userId = decoded.sub ?? 'guest-user';
+                  await addLog(`3. Decoded userId: ${userId}`);
+                } catch (jwtErr) {
+                  await addLog(`Warning: Failed to decode JWT: ${jwtErr}`);
+                }
+
+                await addLog('4. Dynamically loading pdf-extractor...');
+                const { extractText } = await import('lib/pdf-extractor');
+
+                await addLog(`5. Starting text extraction for ${file.name} (${file.size} bytes)...`);
+                const text = await extractText(file, authToken);
+
+                await addLog(`6. Extraction success. Length: ${text?.length || 0} chars.`);
+                if (!text) {
+                  throw new Error('No text extracted from document.');
+                }
+
+                await addLog('7. Loading prompt builder & Groq client...');
+                const { buildResumeParsePrompt } = await import('lib/resume-prompt');
+                const { callGroq } = await import('lib/groq-client');
+
+                await addLog('8. Building Groq parse prompt...');
+                const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
+
+                await addLog('9. Calling Groq AI model...');
+                let parsedContent = null;
+                let parseStatus: 'parsed' | 'partial' | 'failed' = 'partial';
+                try {
+                  const result = await callGroq(systemPrompt, userPrompt);
+                  parsedContent = JSON.parse(result);
+                  parseStatus = 'parsed';
+                  await addLog('10. Groq AI successfully parsed the resume!');
+                } catch (groqErr) {
+                  await addLog(`Warning: Groq call failed: ${groqErr instanceof Error ? groqErr.message : String(groqErr)}. Saving raw text only.`);
+                }
+
+                const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
+                if (!parsedContent) {
+                  parsedContent = createEmptyResumeData('import');
+                }
+
+                await addLog('11. Checking database insert mode...');
+                const isGuest = userId === 'guest-user';
+                let finalResumeId = '';
+
+                if (isGuest) {
+                  await addLog('12. Guest user: inserting mock resume...');
+                  const imported = await resumeService.importText(text, file.name, userId);
+                  finalResumeId = imported.resumeId ?? imported.item.id;
+                  await addLog('13. Local mock resume created!');
+                } else {
+                  await addLog('12. Authenticated user: Loading Supabase client...');
+                  const { supabase } = await import('lib/supabase');
+
+                  await addLog('13. Executing Supabase insert query...');
+                  const sourceName = file.name.replace(/\.[^.]+$/, '');
+                  const title = sourceName || `Imported Resume ${Date.now()}`;
+                  
+                  const { data, error: dbError } = await supabase
+                    .from('resumes')
+                    .insert({
+                      user_id: userId,
+                      title,
+                      template_id: 'template2',
+                      content_json: parsedContent,
+                      render_options: DEFAULT_RENDER_OPTIONS,
+                      source: 'import',
+                      raw_text: text,
+                    })
+                    .select('id')
+                    .single();
+
+                  if (dbError) {
+                    await addLog(`ERROR: Supabase insert failed: ${dbError.message}`);
+                    throw dbError;
+                  }
+                  if (!data) {
+                    await addLog('ERROR: Supabase returned no data!');
+                    throw new Error('Supabase insert returned no data');
+                  }
+
+                  finalResumeId = data.id;
+                  await addLog(`14. Supabase insert success! ID: ${finalResumeId}`);
+                  
+                  await addLog('15. Updating active resume state...');
+                  localStorage.setItem('meowfolio:active-resume-id', finalResumeId);
+                  window.dispatchEvent(new CustomEvent('meowfolio:resume-library-changed'));
+                }
+
+                await addLog('16. Transitioning UI to paste/preview mode...');
                 setMode('paste');
-                setResumeId(imported.resumeId ?? imported.item.id);
-                setText(imported.extractedText ?? '');
+                setResumeId(finalResumeId);
+                setText(text);
+                await addLog('17. Finished successfully!');
               } catch (nextError) {
-                setError(nextError instanceof Error ? nextError.message : 'Upload failed.');
+                const errMsg = nextError instanceof Error ? nextError.message : 'Upload failed.';
+                await addLog(`ERROR: ${errMsg}`);
+                setError(errMsg);
               } finally {
                 setBusy(false);
-                setBusyLabel('Parsing file...');
                 event.target.value = '';
-
               }
             }}
           />
@@ -196,6 +306,22 @@ export function ResumeModalHost() {
           >
             {busy ? busyLabel : 'Upload and parse file ->'}
           </button>
+
+          {debugSteps.length > 0 && (
+            <div className="mt-4 rounded-xl border border-charcoal/20 bg-charcoal/5 p-3 text-left font-mono text-[10px] leading-relaxed max-h-48 overflow-y-auto">
+              <div className="font-bold border-b border-charcoal/10 pb-1 mb-1 text-[color:var(--txt1)]">
+                Upload Tracing Logs:
+              </div>
+              {debugSteps.map((step, idx) => (
+                <div 
+                  key={idx} 
+                  className={idx === debugSteps.length - 1 ? "text-primary font-bold animate-pulse" : "text-[color:var(--txt2)]"}
+                >
+                  {step}
+                </div>
+              ))}
+            </div>
+          )}
         </>
       ) : null}
 
