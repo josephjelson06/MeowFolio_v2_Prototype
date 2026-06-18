@@ -1,4 +1,3 @@
-import { supabase } from 'lib/supabase';
 import { callGroq } from 'lib/groq-client';
 import { buildResumeParsePrompt } from 'lib/resume-prompt';
 import type { ResumeRecord } from 'types/resume';
