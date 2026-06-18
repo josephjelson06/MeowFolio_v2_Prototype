@@ -201,10 +201,9 @@ export const jdService = {
     return { extractedText: text, item, list };
   },
 
-  async importFile(file: File, preFetchedToken?: string) {
-    const { extractText } = await import('lib/pdf-extractor');
-    const text = await extractText(file, preFetchedToken);
-    return this.importText(text, file.name);
+  async importFile(file: File) {
+    // Phase 4 will add pdf.js extraction here.
+    return this.importText(`Imported from ${file.name}`, file.name);
   },
 
   async getMatchProfiles(): Promise<ResumePickerOption[]> {

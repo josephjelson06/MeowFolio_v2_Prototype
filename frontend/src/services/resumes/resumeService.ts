@@ -94,6 +94,21 @@ async function getUserId(): Promise<string> {
   return user?.id ?? 'guest-user';
 }
 
+/**
+ * Decode the user ID from a Supabase JWT without making any network call.
+ * Avoids calling getUser()/getSession() after the file picker closes on mobile,
+ * which triggers a WebKit/Blink localStorage lock freeze.
+ */
+function getUserIdFromToken(token: string): string {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return decoded.sub ?? 'guest-user';
+  } catch {
+    return 'guest-user';
+  }
+}
+
 // ─── Local Mock State for Test Seam ────────
 let mockResumes: ResumeRecord[] = [
   { id: 'mock-1', name: 'Software Engineer Resume', template: 'template2', recent: true, updated: 'just now', updatedAt: new Date().toISOString() }
@@ -444,8 +459,11 @@ export const resumeService = {
     return record;
   },
 
-  async importText(text: string, sourceName: string): Promise<ResumeMutationResponse> {
-    const isGuest = await getUserId() === 'guest-user';
+  async importText(text: string, sourceName: string, preResolvedUserId?: string): Promise<ResumeMutationResponse> {
+    // Use pre-resolved userId (from JWT decode) if available to avoid any Supabase auth call
+    // after the mobile file picker closes, which causes a localStorage lock freeze.
+    const userId = preResolvedUserId ?? await getUserId();
+    const isGuest = userId === 'guest-user';
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
 
     // Call Groq directly from the frontend — no API route needed.
@@ -490,7 +508,7 @@ export const resumeService = {
     }
 
     // --- Authenticated User Branch ---
-    const userId = await getUserId();
+    // userId is already resolved above from the pre-resolved token — no auth call needed here.
 
     const { data, error } = await supabase
       .from('resumes')
@@ -522,10 +540,20 @@ export const resumeService = {
   },
 
   async importFile(file: File, preFetchedToken?: string): Promise<ResumeMutationResponse> {
+    // Decode userId from the token NOW — before file extraction — so we never call
+    // supabase.auth.getUser() after the mobile file picker has been closed.
+    const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    let preResolvedUserId: string | undefined;
+    if (isTestSeam) {
+      preResolvedUserId = 'guest-user';
+    } else if (preFetchedToken) {
+      preResolvedUserId = getUserIdFromToken(preFetchedToken);
+    }
+
     const { extractText } = await import('lib/pdf-extractor');
     const text = await extractText(file, preFetchedToken);
     const sourceName = file.name.replace(/\.[^.]+$/, '');
-    return this.importText(text, sourceName);
+    return this.importText(text, sourceName, preResolvedUserId);
   },
 };
 
