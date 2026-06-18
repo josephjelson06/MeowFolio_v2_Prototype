@@ -14,6 +14,7 @@ export function JdModalHost() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [savedJdId, setSavedJdId] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState<string>('');
 
   useEffect(() => {
     if (!jdOpen) {
@@ -23,6 +24,21 @@ export function JdModalHost() {
       setSavedJdId(null);
       setText('');
       setSourceName('');
+      setAuthToken('');
+    } else {
+      // Pre-fetch auth token when modal opens to avoid mobile WebKit lock freeze after file picker
+      const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+      if (isTestSeam) {
+        setAuthToken('test-seam-token');
+      } else {
+        import('lib/supabase').then(({ supabase }) => {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.access_token) {
+              setAuthToken(session.access_token);
+            }
+          });
+        });
+      }
     }
   }, [jdOpen]);
 
@@ -118,7 +134,10 @@ export function JdModalHost() {
               setBusy(true);
               setError('');
               try {
-                const saved = await jdService.importFile(file);
+                if (!authToken) {
+                  throw new Error('Still loading auth token. Please wait a moment and try again.');
+                }
+                const saved = await jdService.importFile(file, authToken);
                 setMode('paste');
                 setSavedJdId(saved.item.id);
                 setSourceName(file.name);
