@@ -36,12 +36,20 @@ export function ResumeModalHost() {
       if (isTestSeam) {
         setAuthToken('test-seam-token');
       } else {
-        import('lib/supabase').then(({ supabase }) => {
-          supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.access_token) {
-              setAuthToken(session.access_token);
-            }
-          });
+        import('lib/supabase').then(({ getCachedToken }) => {
+          const token = getCachedToken();
+          if (token) {
+            setAuthToken(token);
+          } else {
+            // Fallback: try getSession async, but don't block
+            import('lib/supabase').then(({ supabase }) => {
+              supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session?.access_token) {
+                  setAuthToken(session.access_token);
+                }
+              });
+            });
+          }
         });
       }
     }

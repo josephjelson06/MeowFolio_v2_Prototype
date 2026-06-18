@@ -145,49 +145,109 @@ export const resumeService = {
   },
 
   async list(): Promise<ResumeRecord[]> {
-    if (await getUserId() === 'guest-user') {
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
+
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    if (isGuestUser) {
       return [...mockResumes];
     }
-    const { data, error } = await supabase
-      .from('resumes')
-      .select('id, title, template_id, updated_at, created_at')
-      .order('updated_at', { ascending: false });
 
-    if (error) throw error;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes?select=id,title,template_id,updated_at,created_at&order=updated_at.desc`, {
+      method: 'GET',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to list resumes: ${response.statusText}`);
+    }
+
+    const data = await response.json();
     return (data ?? []).map(mapRowToResumeRecord);
   },
 
   async rename(id: string, nextName: string): Promise<ResumeRecord[]> {
-    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
+
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    if (id === 'resume_placeholder' || isGuestUser) {
       const target = mockResumes.find(r => r.id === id);
       if (target) target.name = nextName;
       if (mockDocuments[id]) mockDocuments[id].title = nextName;
       notifyResumeChange();
       return this.list();
     }
-    const { error } = await supabase
-      .from('resumes')
-      .update({ title: nextName, updated_at: new Date().toISOString() })
-      .eq('id', id);
 
-    if (error) throw error;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ title: nextName, updated_at: new Date().toISOString() })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to rename resume: ${response.statusText}`);
+    }
+
     notifyResumeChange();
     return this.list();
   },
 
   async remove(id: string): Promise<ResumeRecord[]> {
-    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
+
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    if (id === 'resume_placeholder' || isGuestUser) {
       mockResumes = mockResumes.filter(r => r.id !== id);
       delete mockDocuments[id];
       notifyResumeChange();
       return this.list();
     }
-    const { error } = await supabase
-      .from('resumes')
-      .delete()
-      .eq('id', id);
 
-    if (error) throw error;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete resume: ${response.statusText}`);
+    }
+
     notifyResumeChange();
     return this.list();
   },
@@ -198,7 +258,16 @@ export const resumeService = {
   },
 
   async getRecord(id: string): Promise<ResumeDocumentRecord> {
-    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
+
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    if (id === 'resume_placeholder' || isGuestUser) {
       if (id === 'resume_placeholder' && !mockDocuments['resume_placeholder']) {
         const data = createEmptyResumeData('scratch');
         data.header.name = 'Arjun Kumar';
@@ -225,13 +294,24 @@ export const resumeService = {
       }
       return doc;
     }
-    const { data, error } = await supabase
-      .from('resumes')
-      .select('*')
-      .eq('id', id)
-      .single();
 
-    if (error) throw error;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes?id=eq.${id}`, {
+      method: 'GET',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.pgrst.object+json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to load resume: ${response.statusText}`);
+    }
+
+    const data = await response.json();
     return mapRowToDocumentRecord(data);
   },
 
@@ -242,7 +322,16 @@ export const resumeService = {
     title?: string;
     rawText?: string;
   }): Promise<ResumeDocumentRecord | null> {
-    if (id === 'resume_placeholder' || await getUserId() === 'guest-user') {
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
+
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    if (id === 'resume_placeholder' || isGuestUser) {
       if (mockDocuments[id]) {
         mockDocuments[id].content = input.content;
         mockDocuments[id].renderOptions = input.renderOptions;
@@ -273,23 +362,37 @@ export const resumeService = {
       }
       return null;
     }
-    const { data, error } = await supabase
-      .from('resumes')
-      .update({
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
         content_json: input.content,
         render_options: input.renderOptions,
         template_id: input.templateId,
         title: input.title,
         raw_text: input.rawText ?? '',
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       })
-      .eq('id', id)
-      .select('*')
-      .single();
+    });
 
-    if (error) throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to save resume: ${errorText}`);
+    }
+
+    const data = await response.json();
+    const updatedRow = Array.isArray(data) ? data[0] : data;
     notifyResumeChange();
-    return data ? mapRowToDocumentRecord(data) : null;
+    return updatedRow ? mapRowToDocumentRecord(updatedRow) : null;
   },
 
   async scoreAts(id: string): Promise<AtsScoreResponse> {
@@ -423,9 +526,16 @@ export const resumeService = {
   },
 
   async createBlank(): Promise<ResumeRecord> {
-    const userId = await getUserId();
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
 
-    if (await getUserId() === 'guest-user') {
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    if (isGuestUser) {
       const id = `mock-${Date.now()}`;
       const rec: ResumeRecord = { id, name: 'Untitled Resume', template: 'template2', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
       mockResumes.unshift(rec);
@@ -437,9 +547,19 @@ export const resumeService = {
       return rec;
     }
 
-    const { data, error } = await supabase
-      .from('resumes')
-      .insert({
+    const userId = getUserIdFromToken(token);
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
         user_id: userId,
         title: 'Untitled Resume',
         template_id: 'template2',
@@ -447,23 +567,36 @@ export const resumeService = {
         render_options: DEFAULT_RENDER_OPTIONS,
         source: 'scratch',
         raw_text: '',
+        updated_at: new Date().toISOString()
       })
-      .select('id, title, template_id, updated_at, created_at')
-      .single();
+    });
 
-    if (error) throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to create blank resume: ${errorText}`);
+    }
 
-    const record = mapRowToResumeRecord(data, 0);
+    const data = await response.json();
+    const insertedRow = Array.isArray(data) ? data[0] : data;
+    if (!insertedRow) throw new Error('Create blank insert returned no data');
+
+    const record = mapRowToResumeRecord(insertedRow, 0);
     setActiveResumeId(record.id);
     notifyResumeChange();
     return record;
   },
 
   async importText(text: string, sourceName: string, preResolvedUserId?: string): Promise<ResumeMutationResponse> {
-    // Use pre-resolved userId (from JWT decode) if available to avoid any Supabase auth call
-    // after the mobile file picker closes, which causes a localStorage lock freeze.
-    const userId = preResolvedUserId ?? await getUserId();
-    const isGuest = userId === 'guest-user';
+    let token = '';
+    try {
+      const { getCachedToken } = await import('lib/supabase');
+      token = getCachedToken();
+    } catch {}
+
+    const isGuest = (import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+    const isGuestUser = isGuest || !token;
+
+    const userId = preResolvedUserId ?? (token ? getUserIdFromToken(token) : 'guest-user');
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
 
     // Call Groq directly from the frontend — no API route needed.
@@ -486,7 +619,7 @@ export const resumeService = {
     }
 
     // --- Guest User Branch ---
-    if (isGuest) {
+    if (isGuestUser) {
       const id = `mock-${Date.now()}`;
       const item: ResumeRecord = { id, name: title, template: 'template2', updated: 'just now', updatedAt: new Date().toISOString(), recent: true };
       mockResumes.unshift(item);
@@ -508,11 +641,18 @@ export const resumeService = {
     }
 
     // --- Authenticated User Branch ---
-    // userId is already resolved above from the pre-resolved token — no auth call needed here.
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-    const { data, error } = await supabase
-      .from('resumes')
-      .insert({
+    const response = await fetch(`${supabaseUrl}/rest/v1/resumes`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
         user_id: userId,
         title,
         template_id: 'template2',
@@ -520,13 +660,20 @@ export const resumeService = {
         render_options: DEFAULT_RENDER_OPTIONS,
         source: 'import',
         raw_text: text,
+        updated_at: new Date().toISOString()
       })
-      .select('id, title, template_id, updated_at, created_at')
-      .single();
+    });
 
-    if (error) throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to import resume: ${errorText}`);
+    }
 
-    const item = mapRowToResumeRecord(data, 0);
+    const data = await response.json();
+    const insertedRow = Array.isArray(data) ? data[0] : data;
+    if (!insertedRow) throw new Error('Import insert returned no data');
+
+    const item = mapRowToResumeRecord(insertedRow, 0);
     setActiveResumeId(item.id);
     notifyResumeChange();
 
