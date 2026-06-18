@@ -67,6 +67,17 @@ export const sessionService = {
    * Returns the updated actor or null if not logged in.
    */
   async refreshProfile(): Promise<SessionActor | null> {
+    if ((import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true') && typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true') {
+      return {
+        id: 'test-seam-mock-id',
+        name: 'Test Agent (Seam)',
+        email: 'test@testsprite.local',
+        avatarUrl: null,
+        credits: APP_LIMITS.freeCredits,
+        plan: 'free',
+      };
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return null;
 

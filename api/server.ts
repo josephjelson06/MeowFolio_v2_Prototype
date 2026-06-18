@@ -7,8 +7,9 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
 import parseResumeHandler from './parse-resume';
-import parseJdHandler from './parse-jd';
-import extractTextHandler from './extract-text-express';
+// import parseJdHandler from './parse-jd';
+// import extractTextHandler from './extract-text-express';
+import extractTextHandler from './extract-text';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -41,15 +42,15 @@ app.post('/api/parse-resume', async (req, res) => {
   }
 });
 
-app.post('/api/parse-jd', async (req, res) => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await parseJdHandler(req as any, res as any);
-  } catch (error) {
-    console.error('Unhandled error in parse-jd:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+// app.post('/api/parse-jd', async (req, res) => {
+//   try {
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     await parseJdHandler(req as any, res as any);
+//   } catch (error) {
+//     console.error('Unhandled error in parse-jd:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 app.post('/api/extract-text', async (req, res) => {
   try {

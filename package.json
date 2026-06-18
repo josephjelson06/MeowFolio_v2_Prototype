@@ -6,7 +6,7 @@
     "api"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace=api\" \"npm run dev --workspace=frontend\"",
+    "dev": "concurrently \"npm run dev --workspace=api\" \"npm run dev --workspace=frontend -- --host\"",
     "build": "npm run build --workspace=frontend",
     "preview": "npm run preview --workspace=frontend"
   },
