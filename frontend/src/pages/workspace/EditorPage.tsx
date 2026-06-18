@@ -326,6 +326,17 @@ export function EditorPage() {
         mobileTopBar={
           <EditorMobileTopbar
             title={resumeName}
+            onDownload={() => {
+              if (!record) return;
+              setDownloadBusy(true);
+              void downloadPdf(
+                record.content,
+                record.renderOptions,
+                record.templateId,
+                `${resumeName.replace(/\s+/g, '_')}.pdf`,
+              ).finally(() => setDownloadBusy(false));
+            }}
+            downloadLoading={downloadBusy}
           />
         }
         leftWorkspace={leftWorkspace}

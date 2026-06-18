@@ -4,8 +4,12 @@ import { useSession } from 'state/session/sessionContext';
 
 export function EditorMobileTopbar({
   title,
+  onDownload,
+  downloadLoading,
 }: {
   title: string;
+  onDownload?: () => void;
+  downloadLoading?: boolean;
 }) {
   const { initials } = useSession();
 
@@ -15,6 +19,23 @@ export function EditorMobileTopbar({
         &larr;
       </NavLink>
       <span className="min-w-0 flex-1 truncate font-headline text-lg font-extrabold text-on-surface">{title}</span>
+      
+      {onDownload && (
+        <button
+          className="grid size-10 place-items-center rounded-full border-2 border-charcoal bg-primary text-white shadow-tactile-sm transition active:translate-x-px active:translate-y-px active:shadow-none disabled:pointer-events-none disabled:opacity-40"
+          type="button"
+          onClick={onDownload}
+          disabled={downloadLoading}
+          title="Download PDF"
+        >
+          {downloadLoading ? (
+            <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          ) : (
+            <span className="text-base font-bold">↓</span>
+          )}
+        </button>
+      )}
+
       <NavLink className="grid size-10 place-items-center rounded-full border border-outline bg-surface text-sm font-semibold text-secondary" to={routes.profile}>
         {initials}
       </NavLink>
