@@ -1,74 +1,74 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Request, Response } from 'express';
+// import { createClient } from '@supabase/supabase-js';
+// import type { Request, Response } from 'express';
 
-// Auth validation using Supabase anon key (respects RLS)
-const getSupabaseAuth = () =>
-  createClient(
-    process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
-    process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
-  );
+// // Auth validation using Supabase anon key (respects RLS)
+// const getSupabaseAuth = () =>
+//   createClient(
+//     process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
+//     process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
+//   );
 
-/**
- * POST /api/extract-text
- *
- * Accepts: { file: "<base64-encoded PDF>", filename: "resume.pdf" }
- * Returns: { text: "extracted plain text" }
- *
- * Used as server-side fallback for mobile clients where the browser
- * pdf.js worker is killed by the OS (Android/iOS memory management).
- */
-export default async function handler(req: Request, res: Response) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+// /**
+//  * POST /api/extract-text
+//  *
+//  * Accepts: { file: "<base64-encoded PDF>", filename: "resume.pdf" }
+//  * Returns: { text: "extracted plain text" }
+//  *
+//  * Used as server-side fallback for mobile clients where the browser
+//  * pdf.js worker is killed by the OS (Android/iOS memory management).
+//  */
+// export default async function handler(req: Request, res: Response) {
+//   if (req.method !== 'POST') {
+//     return res.status(405).json({ error: 'Method not allowed' });
+//   }
 
-  // Validate Supabase auth token
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing authorization header' });
-  }
+//   // Validate Supabase auth token
+//   const authHeader = req.headers.authorization;
+//   if (!authHeader?.startsWith('Bearer ')) {
+//     return res.status(401).json({ error: 'Missing authorization header' });
+//   }
 
-  const token = authHeader.slice(7);
-  const supabaseAuth = getSupabaseAuth();
-  const {
-    data: { user },
-    error: authError,
-  } = await supabaseAuth.auth.getUser(token);
+//   const token = authHeader.slice(7);
+//   const supabaseAuth = getSupabaseAuth();
+//   const {
+//     data: { user },
+//     error: authError,
+//   } = await supabaseAuth.auth.getUser(token);
 
-  if (authError || !user) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
+//   if (authError || !user) {
+//     return res.status(401).json({ error: 'Invalid or expired token' });
+//   }
 
-  try {
-    const { file: base64, filename } = req.body as { file?: string; filename?: string };
+//   try {
+//     const { file: base64, filename } = req.body as { file?: string; filename?: string };
 
-    if (!base64) {
-      return res.status(400).json({ error: 'Missing file data in request body' });
-    }
+//     if (!base64) {
+//       return res.status(400).json({ error: 'Missing file data in request body' });
+//     }
 
-    const pdfBuffer = Buffer.from(base64, 'base64');
+//     const pdfBuffer = Buffer.from(base64, 'base64');
 
-    if (pdfBuffer.length === 0) {
-      return res.status(400).json({ error: 'File is empty' });
-    }
+//     if (pdfBuffer.length === 0) {
+//       return res.status(400).json({ error: 'File is empty' });
+//     }
 
-    // unpdf: modern, TypeScript-native PDF text extractor.
-    // Works correctly in Node.js without CJS/ESM import issues.
-    const { extractText } = await import('unpdf');
-    const { text: pages } = await extractText(new Uint8Array(pdfBuffer));
-    const text = Array.isArray(pages) ? pages.join('\n\n') : String(pages);
+//     // unpdf: modern, TypeScript-native PDF text extractor.
+//     // Works correctly in Node.js without CJS/ESM import issues.
+//     const { extractText } = await import('unpdf');
+//     const { text: pages } = await extractText(new Uint8Array(pdfBuffer));
+//     const text = Array.isArray(pages) ? pages.join('\n\n') : String(pages);
 
-    if (!text || text.trim().length < 10) {
-      return res.status(422).json({
-        error: `Could not extract text from "${filename ?? 'file'}". The PDF may be scanned or image-based.`,
-      });
-    }
+//     if (!text || text.trim().length < 10) {
+//       return res.status(422).json({
+//         error: `Could not extract text from "${filename ?? 'file'}". The PDF may be scanned or image-based.`,
+//       });
+//     }
 
-    return res.status(200).json({ text: text.trim() });
-  } catch (err) {
-    console.error('PDF extraction error:', err);
-    return res.status(500).json({
-      error: err instanceof Error ? err.message : 'PDF extraction failed',
-    });
-  }
-}
+//     return res.status(200).json({ text: text.trim() });
+//   } catch (err) {
+//     console.error('PDF extraction error:', err);
+//     return res.status(500).json({
+//       error: err instanceof Error ? err.message : 'PDF extraction failed',
+//     });
+//   }
+// }
