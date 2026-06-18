@@ -42,7 +42,18 @@ export async function callGroq(
       const apiKey = keys[keyIndex];
 
       try {
-        const response = await fetch(GROQ_API_URL, {
+        // Use Promise.race for timeout — works on all mobile browsers
+        // (AbortSignal.timeout is not supported on iOS Safari < 16 / Chrome Android < 103)
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+        const controller = new AbortController();
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => {
+            controller.abort();
+            reject(new Error('Groq request timed out after 25s'));
+          }, 25_000);
+        });
+
+        const fetchPromise = fetch(GROQ_API_URL, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -58,8 +69,11 @@ export async function callGroq(
             max_tokens: maxTokens,
             response_format: { type: 'json_object' },
           }),
-          signal: AbortSignal.timeout(30_000),
+          signal: controller.signal,
         });
+
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
+        if (timeoutId !== null) clearTimeout(timeoutId);
 
         if (response.status === 429) {
           const retryAfter = response.headers.get('retry-after');
