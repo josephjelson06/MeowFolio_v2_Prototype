@@ -521,9 +521,9 @@ export const resumeService = {
     };
   },
 
-  async importFile(file: File): Promise<ResumeMutationResponse> {
+  async importFile(file: File, preFetchedToken?: string): Promise<ResumeMutationResponse> {
     const { extractText } = await import('lib/pdf-extractor');
-    const text = await extractText(file);
+    const text = await extractText(file, preFetchedToken);
     const sourceName = file.name.replace(/\.[^.]+$/, '');
     return this.importText(text, sourceName);
   },

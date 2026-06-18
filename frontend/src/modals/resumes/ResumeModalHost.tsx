@@ -17,6 +17,7 @@ export function ResumeModalHost() {
   const [busyLabel, setBusyLabel] = useState('Parsing file...');
   const [error, setError] = useState('');
   const [resumeId, setResumeId] = useState<string | null>(null);
+  const [authToken, setAuthToken] = useState<string>('');
 
   useEffect(() => {
     if (!resumeOpen) {
@@ -26,6 +27,21 @@ export function ResumeModalHost() {
       setMode(null);
       setResumeId(null);
       setText('');
+      setAuthToken('');
+    } else {
+      // Pre-fetch auth token when modal opens to avoid mobile WebKit lock freeze after file picker
+      const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+      if (isTestSeam) {
+        setAuthToken('test-seam-token');
+      } else {
+        import('lib/supabase').then(({ supabase }) => {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.access_token) {
+              setAuthToken(session.access_token);
+            }
+          });
+        });
+      }
     }
   }, [resumeOpen]);
 
@@ -155,7 +171,10 @@ export function ResumeModalHost() {
               setBusyLabel('Parsing file...');
               setError('');
               try {
-                const imported = await resumeService.importFile(file);
+                if (!authToken) {
+                  throw new Error('Still loading auth token. Please wait a moment and try again.');
+                }
+                const imported = await resumeService.importFile(file, authToken);
                 setMode('paste');
                 setResumeId(imported.resumeId ?? imported.item.id);
                 setText(imported.extractedText ?? '');

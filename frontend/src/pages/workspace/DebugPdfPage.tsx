@@ -33,9 +33,34 @@ function timeoutSignal(ms: number): { signal: AbortSignal; clear: () => void } {
 }
 
 export function DebugPdfPage() {
+  const [authToken, setAuthToken] = useState<string>('');
+  const [authError, setAuthError] = useState<string>('');
   const [status, setStatus] = useState<string>('Idle');
   const [extractedText, setExtractedText] = useState<string>('');
   const [errorText, setErrorText] = useState<string>('');
+
+  // Fetch token BEFORE the file picker opens to avoid mobile background-resume lock freeze
+  React.useEffect(() => {
+    async function initToken() {
+      try {
+        const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
+        if (isTestSeam) {
+          setAuthToken('test-seam-token');
+          return;
+        }
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (session?.access_token) {
+          setAuthToken(session.access_token);
+        } else {
+          setAuthError('Not signed in');
+        }
+      } catch (err) {
+        setAuthError(err instanceof Error ? err.message : String(err));
+      }
+    }
+    initToken();
+  }, []);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,33 +70,19 @@ export function DebugPdfPage() {
     setExtractedText('');
     setErrorText('');
 
+    if (!authToken && !authError) {
+      setErrorText('Still loading auth token...');
+      return;
+    }
+    if (authError) {
+      setErrorText(authError);
+      return;
+    }
+
     try {
       await new Promise(r => setTimeout(r, 50)); // Force React to paint
 
-      setStatus('2. Checking test seam...');
-      await new Promise(r => setTimeout(r, 50));
-
-      const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
-      let token = '';
-
-      if (isTestSeam) {
-        token = 'test-seam-token';
-      } else {
-        setStatus('3. Calling supabase.auth.getSession()...');
-        await new Promise(r => setTimeout(r, 50));
-        
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        setStatus('4. Got supabase session');
-        await new Promise(r => setTimeout(r, 50));
-
-        if (!session?.access_token) {
-          throw new Error('You must be signed in to upload a file for parsing.');
-        }
-        token = session.access_token;
-      }
-
-      setStatus('5. Creating FileReader...');
+      setStatus('2. Token acquired. Creating FileReader...');
       await new Promise(r => setTimeout(r, 50));
 
       setStatus('6. Reading file to base64...');
@@ -91,7 +102,7 @@ export function DebugPdfPage() {
         response = await fetch('/api/extract-text', {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ file: base64, filename: file.name }),

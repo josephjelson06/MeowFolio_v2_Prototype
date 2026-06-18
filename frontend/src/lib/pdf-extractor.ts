@@ -36,18 +36,20 @@ function timeoutSignal(ms: number): { signal: AbortSignal; clear: () => void } {
  * Extract PDF text via the /api/extract-text serverless function.
  * Server-side using unpdf — works on all browsers and mobile devices.
  */
-export async function extractTextFromPdf(file: File): Promise<string> {
+export async function extractTextFromPdf(file: File, preFetchedToken?: string): Promise<string> {
   const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
-  let token = '';
+  let token = preFetchedToken || '';
 
-  if (isTestSeam) {
-    token = 'test-seam-token';
-  } else {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.access_token) {
-      throw new Error('You must be signed in to upload a file for parsing.');
+  if (!token) {
+    if (isTestSeam) {
+      token = 'test-seam-token';
+    } else {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('You must be signed in to upload a file for parsing.');
+      }
+      token = session.access_token;
     }
-    token = session.access_token;
   }
 
   const base64 = await fileToBase64(file);
@@ -95,10 +97,10 @@ export async function extractTextFromTextFile(file: File): Promise<string> {
 /**
  * Auto-detect file type and extract text.
  */
-export async function extractText(file: File): Promise<string> {
+export async function extractText(file: File, preFetchedToken?: string): Promise<string> {
   const ext = file.name.split('.').pop()?.toLowerCase();
   if (ext === 'pdf') {
-    return extractTextFromPdf(file);
+    return extractTextFromPdf(file, preFetchedToken);
   }
   return extractTextFromTextFile(file);
 }
