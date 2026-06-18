@@ -243,37 +243,54 @@ export function ResumeModalHost() {
                   finalResumeId = imported.resumeId ?? imported.item.id;
                   await addLog('13. Local mock resume created!');
                 } else {
-                  await addLog('12. Authenticated user: Loading Supabase client...');
-                  const { supabase } = await import('lib/supabase');
+                  await addLog('12. Authenticated user: executing direct REST insert to bypass Supabase client lock...');
+                  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+                  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-                  await addLog('13. Executing Supabase insert query...');
+                  if (!supabaseUrl || !supabaseAnonKey) {
+                    throw new Error('Missing Supabase URL or Anon Key in environment variables');
+                  }
+
                   const sourceName = file.name.replace(/\.[^.]+$/, '');
                   const title = sourceName || `Imported Resume ${Date.now()}`;
-                  
-                  const { data, error: dbError } = await supabase
-                    .from('resumes')
-                    .insert({
+
+                  const startTime = Date.now();
+                  const restResponse = await fetch(`${supabaseUrl}/rest/v1/resumes`, {
+                    method: 'POST',
+                    headers: {
+                      'apikey': supabaseAnonKey,
+                      'Authorization': `Bearer ${authToken}`,
+                      'Content-Type': 'application/json',
+                      'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
                       user_id: userId,
                       title,
                       template_id: 'template2',
                       content_json: parsedContent,
                       render_options: DEFAULT_RENDER_OPTIONS,
                       source: 'import',
-                      raw_text: text,
+                      raw_text: text
                     })
-                    .select('id')
-                    .single();
+                  });
 
-                  if (dbError) {
-                    await addLog(`ERROR: Supabase insert failed: ${dbError.message}`);
-                    throw dbError;
-                  }
-                  if (!data) {
-                    await addLog('ERROR: Supabase returned no data!');
-                    throw new Error('Supabase insert returned no data');
+                  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+                  await addLog(`13. REST insert query completed in ${duration}s.`);
+
+                  if (!restResponse.ok) {
+                    const errorText = await restResponse.text();
+                    await addLog(`ERROR: Direct REST insert failed (${restResponse.status}): ${errorText}`);
+                    throw new Error(`Database insert failed: ${errorText}`);
                   }
 
-                  finalResumeId = data.id;
+                  const data = await restResponse.json();
+                  const insertedRow = Array.isArray(data) ? data[0] : data;
+                  if (!insertedRow || !insertedRow.id) {
+                    await addLog('ERROR: Insert did not return ID!');
+                    throw new Error('Database insert returned no data');
+                  }
+
+                  finalResumeId = insertedRow.id;
                   await addLog(`14. Supabase insert success! ID: ${finalResumeId}`);
                   
                   await addLog('15. Updating active resume state...');
