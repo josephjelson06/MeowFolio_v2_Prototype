@@ -1,4 +1,6 @@
 import { supabase } from 'lib/supabase';
+import { callGroq } from 'lib/groq-client';
+import { buildResumeParsePrompt } from 'lib/resume-prompt';
 import type { ResumeRecord } from 'types/resume';
 import type { AtsScoreResponse, AtsBreakdownItem, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
 import { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } from 'types/resumeDocument';
@@ -446,47 +448,17 @@ export const resumeService = {
     const isGuest = await getUserId() === 'guest-user';
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
 
-    // Try AI parsing via the serverless function FIRST (works for both local guest and prod)
+    // Call Groq directly from the frontend — no API route needed.
     let parsedContent = null;
     let parseStatus: 'parsed' | 'partial' | 'failed' = 'partial';
     const warnings: string[] = [];
 
     try {
-      const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
-      let token = '';
-
-      if (isTestSeam) {
-        token = 'test-seam-token';
-      } else {
-        const { data: { session } } = await supabase.auth.getSession();
-        token = session?.access_token ?? '';
-      }
-
-      const response = await fetch('/api/parse-resume', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify({ text, source: sourceName }),
-      });
-
-      if (response.status === 402) {
-        throw new Error('No credits remaining. Upgrade your plan to continue using AI parsing.');
-      }
-
-      if (response.ok) {
-        const result = await response.json();
-        parsedContent = result.parsed;
-        parseStatus = 'parsed';
-      } else {
-        const errBody = await response.json().catch(() => ({}));
-        warnings.push(errBody.error ?? 'AI parsing returned an error. Resume saved with raw text.');
-      }
+      const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
+      const result = await callGroq(systemPrompt, userPrompt);
+      parsedContent = JSON.parse(result);
+      parseStatus = 'parsed';
     } catch (err) {
-      if (err instanceof Error && err.message.includes('No credits')) {
-        throw err; // Re-throw credit errors so the modal can handle them
-      }
       warnings.push('AI parsing unavailable. Resume saved with raw text only.');
     }
 

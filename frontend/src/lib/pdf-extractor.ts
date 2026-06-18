@@ -19,9 +19,22 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 /**
- * Extract PDF text via the Vercel /api/extract-text serverless function.
- * All PDF extraction is server-side using unpdf — works consistently across
- * all browsers and mobile devices without memory constraints.
+ * Returns an AbortSignal that fires after `ms` milliseconds.
+ * Falls back to a manual AbortController for browsers that don't support
+ * AbortSignal.timeout (iOS Safari < 16, Chrome Android < 103).
+ */
+function timeoutSignal(ms: number): { signal: AbortSignal; clear: () => void } {
+  if (typeof AbortSignal.timeout === 'function') {
+    return { signal: AbortSignal.timeout(ms), clear: () => {} };
+  }
+  const controller = new AbortController();
+  const id = window.setTimeout(() => controller.abort(), ms);
+  return { signal: controller.signal, clear: () => window.clearTimeout(id) };
+}
+
+/**
+ * Extract PDF text via the /api/extract-text serverless function.
+ * Server-side using unpdf — works on all browsers and mobile devices.
  */
 export async function extractTextFromPdf(file: File): Promise<string> {
   const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
@@ -39,6 +52,8 @@ export async function extractTextFromPdf(file: File): Promise<string> {
 
   const base64 = await fileToBase64(file);
 
+  const { signal, clear } = timeoutSignal(60_000);
+
   let response: Response;
   try {
     response = await fetch('/api/extract-text', {
@@ -48,14 +63,17 @@ export async function extractTextFromPdf(file: File): Promise<string> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ file: base64, filename: file.name }),
-      signal: AbortSignal.timeout(60_000),
+      signal,
     });
   } catch (err) {
+    clear();
     if (err instanceof DOMException && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
       throw new Error('File extraction timed out after 60s. Please try again.');
     }
     throw err;
   }
+
+  clear();
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));

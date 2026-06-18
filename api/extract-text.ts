@@ -1,17 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { PDFParse } from 'pdf-parse';
-import mammoth from 'mammoth';
 
-// Auth validation — anon key, respects RLS (used only for getUser)
+// Auth validation — anon key, used only for getUser()
 const getSupabaseAuth = () =>
   createClient(
     process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '',
     process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
   );
 
-// CORS headers — needed for mobile browsers that send OPTIONS preflight
-// (triggered by the Authorization header in cross-origin requests)
+// CORS headers — mobile browsers send OPTIONS preflight for the Authorization header
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -21,54 +18,48 @@ const CORS_HEADERS = {
 /**
  * POST /api/extract-text
  *
- * Accepts a JSON body: { file: "<base64-encoded file>", filename: "resume.pdf" }
+ * Accepts: { file: "<base64-encoded file>", filename: "resume.pdf" }
  * Returns: { text: "extracted plain text" }
  *
- * Supports: .pdf (via pdf-parse, pure JS), .docx (via mammoth), .txt / .md (raw)
+ * Supports: .pdf (unpdf — no WASM, server-side), .docx (mammoth), .txt / .md (raw)
  *
- * Uses pdf-parse instead of unpdf/pdfjs-wasm — no WASM, instant cold start,
- * works identically on mobile and desktop.
+ * This is the ONLY serverless function in the project.
+ * All other logic (Groq AI, Supabase) runs directly on the frontend.
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Handle CORS preflight — mobile browsers send this before the actual POST
+  // CORS preflight — mobile browsers send this before the actual POST
   if (req.method === 'OPTIONS') {
     res.writeHead(204, CORS_HEADERS);
     res.end();
     return;
   }
 
-  // Set CORS headers on every response
   Object.entries(CORS_HEADERS).forEach(([key, value]) => res.setHeader(key, value));
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Validate auth token
+  // Auth — bypass for test seam, validate with Supabase for real users
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Missing authorization header' });
   }
 
   const token = authHeader.slice(7);
-  let user = null;
 
-  if (token === 'test-seam-token') {
-    user = { id: 'test-seam-mock-id', email: 'test@testsprite.local' };
-  } else {
+  if (token !== 'test-seam-token') {
     const supabaseAuth = getSupabaseAuth();
     const {
-      data: { user: supabaseUser },
+      data: { user },
       error: authError,
     } = await supabaseAuth.auth.getUser(token);
-    if (authError || !supabaseUser) {
+    if (authError || !user) {
       return res.status(401).json({ error: 'Invalid or expired token' });
     }
-    user = supabaseUser;
   }
 
   try {
-    // Vercel's built-in JSON body parser handles req.body automatically
     const { file: base64, filename } = req.body as { file?: string; filename?: string };
 
     if (!base64) {
@@ -85,17 +76,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let text = '';
 
     if (ext === 'pdf') {
-      // pdf-parse: pure JS, no WASM, instant cold start on Vercel.
-      // Perfect for text-based resume PDFs (1-2 pages).
-      const parser = new PDFParse({ data: fileBuffer });
-      const result = await parser.getText();
-      text = result.text ?? '';
+      // unpdf: modern TS-native extractor, no WASM, works on Vercel serverless.
+      // Dynamic import avoids ncc bundler cold-start issues.
+      const { extractText } = await import('unpdf');
+      const { text: pages } = await extractText(new Uint8Array(fileBuffer));
+      text = Array.isArray(pages) ? pages.join('\n\n') : String(pages);
     } else if (ext === 'docx' || ext === 'doc') {
-      // mammoth: purpose-built Word document → plain text extractor.
+      // mammoth: purpose-built Word → plain text extractor
+      const mammoth = await import('mammoth');
       const result = await mammoth.extractRawText({ buffer: fileBuffer });
       text = result.value ?? '';
     } else {
-      // .txt, .md, or anything else — just decode as UTF-8
+      // .txt, .md, or anything else — decode as UTF-8
       text = fileBuffer.toString('utf-8');
     }
 

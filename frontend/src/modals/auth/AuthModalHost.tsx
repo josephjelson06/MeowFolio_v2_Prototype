@@ -16,7 +16,7 @@ function AuthModalPanel({
 }) {
   const copy =
     authConfig.copy ??
-    'Use one quick sign-in to move from the public story into the working meowfolio prototype.';
+    'Use one quick sign-in to move from the public story into the working meowfolio application.';
 
   return (
     <>
@@ -80,7 +80,7 @@ function AuthModalPanel({
         </button>
 
         <div className="text-xs leading-6 text-[color:var(--txt2)]">
-          {authConfig.note ?? 'This prototype uses a single Google sign-in path so you can jump straight into the workspace.'}
+          {authConfig.note ?? 'This platform uses a single Google sign-in path so you can jump straight into the workspace.'}
         </div>
 
         {import.meta.env.VITE_ENABLE_TEST_SEAM === 'true' ? (

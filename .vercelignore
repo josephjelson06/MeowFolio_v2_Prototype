@@ -1,0 +1,5 @@
+# Local dev only — not deployed as Vercel functions
+api/server.ts
+api/extract-text-express.ts
+api/parse-resume.ts
+api/parse-jd.ts

@@ -33,14 +33,14 @@ export function AboutPage() {
   function openAboutAuth() {
     openAuth({
       copy:
-        'The About page lives inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the workspace flow.',
+        'The About page lives inside the same meowfolio SaaS platform as the rest of the app. Sign in here and continue directly into the workspace flow.',
       accent: 'GOOGLE ONLY',
       info: 'SAME PRODUCT',
       outline: 'DASHBOARD READY',
       previewTitle: 'One product, one path',
       previewCopy:
         'Home, About, 404, 500, and the auth modal all share the same navigation, mobile treatment, and tactile design system as the workspace.',
-      note: 'No separate signup form on this prototype.',
+      note: 'No separate signup form on this platform.',
     });
   }
 

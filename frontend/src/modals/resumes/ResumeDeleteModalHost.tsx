@@ -46,7 +46,7 @@ export function ResumeDeleteModalHost() {
       </div>
       <div className="mt-2 text-sm leading-7 text-[color:var(--txt2)]">
         Delete <strong className="text-on-surface">{resumeDeleteTarget.name}</strong> from your resume library. This
-        action cannot be undone in the current prototype.
+        action cannot be undone.
       </div>
 
       {error ? <div className="mt-4 text-sm text-error">{error}</div> : null}

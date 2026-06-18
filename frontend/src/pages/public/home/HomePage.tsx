@@ -118,7 +118,7 @@ export function HomePage() {
   function openHomeAuth() {
     openAuth({
       copy:
-        'The public pages now live inside the same meowfolio prototype system as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
+        'The public pages now live inside the same meowfolio SaaS platform as the rest of the app. Sign in here and continue directly into the existing dashboard flow.',
       accent: 'GOOGLE ONLY',
     });
   }
