@@ -9,5 +9,6 @@ export const routes = {
   jds: '/jds',
   editor: '/editor',
   profile: '/profile',
+  debugPdf: '/debug-pdf',
 } as const;
 
