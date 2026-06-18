@@ -41,28 +41,48 @@ export function DebugPdfPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setStatus('Reading file locally...');
+    setStatus('1. Start handleFileUpload');
     setExtractedText('');
     setErrorText('');
 
     try {
+      await new Promise(r => setTimeout(r, 50)); // Force React to paint
+
+      setStatus('2. Checking test seam...');
+      await new Promise(r => setTimeout(r, 50));
+
       const isTestSeam = typeof window !== 'undefined' && window.localStorage.getItem('TEST_SEAM_ACTIVE') === 'true';
       let token = '';
 
       if (isTestSeam) {
         token = 'test-seam-token';
       } else {
+        setStatus('3. Calling supabase.auth.getSession()...');
+        await new Promise(r => setTimeout(r, 50));
+        
         const { data: { session } } = await supabase.auth.getSession();
+        
+        setStatus('4. Got supabase session');
+        await new Promise(r => setTimeout(r, 50));
+
         if (!session?.access_token) {
           throw new Error('You must be signed in to upload a file for parsing.');
         }
         token = session.access_token;
       }
 
-      setStatus('Converting file to base64...');
+      setStatus('5. Creating FileReader...');
+      await new Promise(r => setTimeout(r, 50));
+
+      setStatus('6. Reading file to base64...');
+      await new Promise(r => setTimeout(r, 50));
+
       const base64 = await fileToBase64(file);
 
-      setStatus('Calling /api/extract-text...');
+      setStatus('7. Base64 conversion complete! Length: ' + base64.length);
+      await new Promise(r => setTimeout(r, 50));
+
+      setStatus('8. Calling /api/extract-text...');
       const startTime = Date.now();
       const { signal, clear } = timeoutSignal(60_000);
 
