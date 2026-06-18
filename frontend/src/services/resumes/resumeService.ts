@@ -89,11 +89,6 @@ function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
   };
 }
 
-async function getUserId(): Promise<string> {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user?.id ?? 'guest-user';
-}
-
 /**
  * Decode the user ID from a Supabase JWT without making any network call.
  * Avoids calling getUser()/getSession() after the file picker closes on mobile,
