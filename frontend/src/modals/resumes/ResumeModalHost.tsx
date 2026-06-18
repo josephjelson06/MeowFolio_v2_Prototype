@@ -220,11 +220,9 @@ export function ResumeModalHost() {
 
                 await addLog('9. Calling Groq AI model...');
                 let parsedContent = null;
-                let parseStatus: 'parsed' | 'partial' | 'failed' = 'partial';
                 try {
                   const result = await callGroq(systemPrompt, userPrompt);
                   parsedContent = JSON.parse(result);
-                  parseStatus = 'parsed';
                   await addLog('10. Groq AI successfully parsed the resume!');
                 } catch (groqErr) {
                   await addLog(`Warning: Groq call failed: ${groqErr instanceof Error ? groqErr.message : String(groqErr)}. Saving raw text only.`);
