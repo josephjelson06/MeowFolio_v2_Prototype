@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { routes } from 'app/router/routes';
 import { WorkspaceBadge } from 'components/workspace/WorkspaceBadge';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
@@ -8,6 +8,7 @@ import { tipsService } from 'services/tipsService';
 import { useSession } from 'state/session/sessionContext';
 import { useUiContext } from 'state/ui/uiContext';
 export function DashboardPage() {
+  const navigate = useNavigate();
   const { openResume } = useUiContext();
   const { actor, credits, plan } = useSession();
   const [resumes, setResumes] = useState<Awaited<ReturnType<typeof resumeService.list>>>([]);
@@ -111,7 +112,18 @@ export function DashboardPage() {
             </div>
           </button>
 
-          <article className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+          <article 
+            className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6 cursor-pointer hover:-translate-x-px hover:-translate-y-px hover:shadow-tactile-lg transition"
+            onClick={() => navigate(`${routes.editor}?resumeId=${recentResume.id}`)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate(`${routes.editor}?resumeId=${recentResume.id}`);
+              }
+            }}
+          >
             <div className="font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-primary">ACTIVE RESUME</div>
             <div className="flex flex-wrap gap-2">
               <WorkspaceBadge variant="accent">MOST RECENT</WorkspaceBadge>
