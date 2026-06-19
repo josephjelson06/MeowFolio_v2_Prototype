@@ -99,7 +99,7 @@ export async function extractTextFromTextFile(file: File): Promise<string> {
  */
 export async function extractText(file: File, preFetchedToken?: string): Promise<string> {
   const ext = file.name.split('.').pop()?.toLowerCase();
-  if (ext === 'pdf') {
+  if (ext === 'pdf' || ext === 'docx' || ext === 'doc') {
     return extractTextFromPdf(file, preFetchedToken);
   }
   return extractTextFromTextFile(file);

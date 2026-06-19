@@ -160,7 +160,10 @@ export function ResumeModalHost() {
 
       {mode === 'upload' ? (
         <>
-          <div className="mt-4 rounded-[1.25rem] border-2 border-dashed border-charcoal/40 px-6 py-5 text-center">
+          <div 
+            className="mt-4 rounded-[1.25rem] border-2 border-dashed border-charcoal/40 px-6 py-5 text-center cursor-pointer hover:border-charcoal/80 hover:bg-charcoal/5 transition"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <div className="text-3xl text-[color:var(--txt2)]">&#9729;</div>
             <div className="mt-2 text-sm text-[color:var(--txt2)]">
               Choose a PDF, DOCX, TXT, or MD file and preview the parsed text.
