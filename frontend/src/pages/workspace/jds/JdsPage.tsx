@@ -5,7 +5,7 @@ import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { jdService, type JdReportModel } from 'services/jdService';
 import { resumeService } from 'services/resumeService';
 import { useUiContext } from 'state/ui/uiContext';
-import type { JdRecord } from 'types/jd';
+import type { JdRecord, JdTailoredSuggestions } from 'types/jd';
 import type { ResumePickerOption } from 'types/resume';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -279,6 +279,118 @@ function JdResultPane({
   selected: boolean;
   onBackToWorkspace?: () => void;
 }) {
+  const [originalResume, setOriginalResume] = useState<any | null>(null);
+  const [suggestions, setSuggestions] = useState<JdTailoredSuggestions | null>(null);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [error, setError] = useState('');
+  const [copiedSection, setCopiedSection] = useState<string | null>(null);
+  const [applyingSection, setApplyingSection] = useState<string | null>(null);
+  const [appliedSections, setAppliedSections] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (report?.resumeId) {
+      resumeService.getRecord(report.resumeId).then(rec => {
+        setOriginalResume(rec?.content ?? null);
+      });
+    } else {
+      setOriginalResume(null);
+    }
+    setSuggestions(null);
+    setAppliedSections({});
+    setError('');
+  }, [report]);
+
+  async function handleGenerateSuggestions() {
+    if (!report) return;
+    setLoadingSuggestions(true);
+    setError('');
+    try {
+      const suggestionsData = await jdService.tailorResume(report.resumeId, report.jd.id);
+      setSuggestions(suggestionsData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate suggestions');
+    } finally {
+      setLoadingSuggestions(false);
+    }
+  }
+
+  async function handleApplySection(sectionKey: 'summary' | 'skills' | 'experience' | 'projects') {
+    if (!report || !suggestions) return;
+    setApplyingSection(sectionKey);
+    try {
+      const record = await resumeService.getRecord(report.resumeId);
+      if (!record) throw new Error('Resume not found');
+
+      const updatedContent = { ...record.content };
+
+      if (sectionKey === 'summary') {
+        updatedContent.summary = {
+          ...updatedContent.summary,
+          content: suggestions.summary
+        };
+      } else if (sectionKey === 'skills') {
+        updatedContent.skills = {
+          ...updatedContent.skills,
+          mode: suggestions.skills.mode,
+          items: suggestions.skills.items,
+          groups: suggestions.skills.groups
+        };
+      } else if (sectionKey === 'experience') {
+        updatedContent.experience = (updatedContent.experience ?? []).map(exp => {
+          const match = suggestions.experience.find(
+            s => s.company.toLowerCase().trim() === exp.company?.toLowerCase().trim() &&
+                 s.role.toLowerCase().trim() === exp.role?.toLowerCase().trim()
+          );
+          if (match) {
+            return {
+              ...exp,
+              description: {
+                ...exp.description,
+                bullets: match.bullets
+              }
+            };
+          }
+          return exp;
+        });
+      } else if (sectionKey === 'projects') {
+        updatedContent.projects = (updatedContent.projects ?? []).map(proj => {
+          const match = suggestions.projects.find(
+            s => s.title.toLowerCase().trim() === proj.title?.toLowerCase().trim()
+          );
+          if (match) {
+            return {
+              ...proj,
+              description: {
+                ...proj.description,
+                bullets: match.bullets
+              }
+            };
+          }
+          return proj;
+        });
+      }
+
+      await resumeService.saveRecord(report.resumeId, {
+        content: updatedContent,
+        renderOptions: record.renderOptions,
+        templateId: record.templateId
+      });
+
+      setAppliedSections(prev => ({ ...prev, [sectionKey]: true }));
+      window.dispatchEvent(new CustomEvent('meowfolio:resume-library-changed'));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to apply section');
+    } finally {
+      setApplyingSection(null);
+    }
+  }
+
+  function copyToClipboard(text: string, key: string) {
+    navigator.clipboard.writeText(text);
+    setCopiedSection(key);
+    setTimeout(() => setCopiedSection(null), 2000);
+  }
+
   if (!report) {
     return (
       <div className="grid min-h-[16rem] place-items-center rounded-[1.75rem] border-[1.5px] border-dashed border-outline bg-white/70 px-6 py-8 text-center shadow-tactile-sm">
@@ -394,6 +506,260 @@ function JdResultPane({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* AI Tailoring Assistant */}
+      <div className="grid gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="grid gap-1">
+            <div className="font-headline text-xl font-extrabold text-on-surface">AI Tailoring Assistant</div>
+            <div className="text-xs text-[color:var(--txt2)]">
+              Generate tailored resume sections optimized for this job description.
+            </div>
+          </div>
+          {!suggestions && (
+            <button
+              className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal bg-white/95 px-5 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed hover:text-on-surface hover:shadow-tactile disabled:pointer-events-none disabled:opacity-40"
+              type="button"
+              disabled={loadingSuggestions || !originalResume}
+              onClick={handleGenerateSuggestions}
+            >
+              {loadingSuggestions ? 'Generating Suggestions...' : '★ Generate Tailored Suggestions (1 Credit)'}
+            </button>
+          )}
+        </div>
+
+        {error && (
+          <div className="rounded-xl border border-error/30 bg-error/5 p-3 text-sm text-error">
+            {error}
+          </div>
+        )}
+
+        {suggestions && originalResume && (
+          <div className="mt-4 grid gap-6">
+            {/* 1. Summary Section */}
+            {originalResume.summary?.content?.trim() && (
+              <div className="grid gap-3 rounded-2xl border border-charcoal/15 bg-white/80 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                  <span className="font-headline text-sm font-bold text-on-surface">1. Professional Summary</span>
+                  <div className="flex gap-2">
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                      type="button"
+                      onClick={() => copyToClipboard(suggestions.summary, 'summary')}
+                    >
+                      {copiedSection === 'summary' ? 'Copied!' : 'Copy'}
+                    </button>
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/70 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                      type="button"
+                      disabled={applyingSection === 'summary' || appliedSections['summary']}
+                      onClick={() => handleApplySection('summary')}
+                    >
+                      {appliedSections['summary'] ? 'Applied ✓' : applyingSection === 'summary' ? 'Applying...' : 'Apply to Resume'}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2 text-xs leading-relaxed">
+                  <div className="rounded-lg bg-charcoal/5 p-3">
+                    <div className="font-bold text-[color:var(--txt2)] mb-1 uppercase tracking-wider text-[9px]">Original:</div>
+                    <div className="text-[color:var(--txt2)]">{originalResume.summary.content}</div>
+                  </div>
+                  <div className="rounded-lg bg-tertiary-fixed/20 border border-tertiary/20 p-3">
+                    <div className="font-bold text-tertiary mb-1 uppercase tracking-wider text-[9px]">Tailored Suggestion:</div>
+                    <div className="text-on-surface font-medium">{suggestions.summary}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 2. Skills Section */}
+            {((originalResume.skills?.items && originalResume.skills.items.length > 0) || (originalResume.skills?.groups && originalResume.skills.groups.length > 0)) && (
+              <div className="grid gap-3 rounded-2xl border border-charcoal/15 bg-white/80 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                  <span className="font-headline text-sm font-bold text-on-surface">2. Skills & Competencies</span>
+                  <div className="flex gap-2">
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                      type="button"
+                      onClick={() => {
+                        const textVal = suggestions.skills.mode === 'csv' 
+                          ? suggestions.skills.items.join(', ')
+                          : suggestions.skills.groups.map(g => `${g.groupLabel}: ${g.items.join(', ')}`).join('\n');
+                        copyToClipboard(textVal, 'skills');
+                      }}
+                    >
+                      {copiedSection === 'skills' ? 'Copied!' : 'Copy'}
+                    </button>
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/70 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                      type="button"
+                      disabled={applyingSection === 'skills' || appliedSections['skills']}
+                      onClick={() => handleApplySection('skills')}
+                    >
+                      {appliedSections['skills'] ? 'Applied ✓' : applyingSection === 'skills' ? 'Applying...' : 'Apply to Resume'}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2 text-xs leading-relaxed">
+                  <div className="rounded-lg bg-charcoal/5 p-3">
+                    <div className="font-bold text-[color:var(--txt2)] mb-1 uppercase tracking-wider text-[9px]">Original:</div>
+                    {originalResume.skills.mode === 'csv' ? (
+                      <div className="text-[color:var(--txt2)]">{(originalResume.skills.items ?? []).join(', ')}</div>
+                    ) : (
+                      <div className="grid gap-1">
+                        {(originalResume.skills.groups ?? []).map((g: any, i: number) => (
+                          <div key={i} className="text-[color:var(--txt2)]">
+                            <span className="font-semibold text-on-surface">{g.groupLabel}:</span> {(g.items ?? []).join(', ')}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="rounded-lg bg-tertiary-fixed/20 border border-tertiary/20 p-3">
+                    <div className="font-bold text-tertiary mb-1 uppercase tracking-wider text-[9px]">Tailored Suggestion:</div>
+                    {suggestions.skills.mode === 'csv' ? (
+                      <div className="text-on-surface font-medium">{(suggestions.skills.items ?? []).join(', ')}</div>
+                    ) : (
+                      <div className="grid gap-1">
+                        {(suggestions.skills.groups ?? []).map((g, i) => (
+                          <div key={i} className="text-on-surface font-medium">
+                            <span className="font-bold text-tertiary">{g.groupLabel}:</span> {(g.items ?? []).join(', ')}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 3. Work Experience Section */}
+            {(originalResume.experience && originalResume.experience.length > 0) && (
+              <div className="grid gap-3 rounded-2xl border border-charcoal/15 bg-white/80 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                  <span className="font-headline text-sm font-bold text-on-surface">3. Work Experience Bullets</span>
+                  <div className="flex gap-2">
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                      type="button"
+                      onClick={() => {
+                        const textVal = suggestions.experience.map(exp => `${exp.role} at ${exp.company}:\n` + exp.bullets.map(b => `- ${b}`).join('\n')).join('\n\n');
+                        copyToClipboard(textVal, 'experience');
+                      }}
+                    >
+                      {copiedSection === 'experience' ? 'Copied!' : 'Copy All'}
+                    </button>
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/70 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                      type="button"
+                      disabled={applyingSection === 'experience' || appliedSections['experience']}
+                      onClick={() => handleApplySection('experience')}
+                    >
+                      {appliedSections['experience'] ? 'Applied ✓' : applyingSection === 'experience' ? 'Applying...' : 'Apply to Resume'}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-4 text-xs leading-relaxed">
+                  {(originalResume.experience ?? []).map((exp: any, i: number) => {
+                    const match = suggestions.experience.find(
+                      (s) => s.company.toLowerCase().trim() === exp.company?.toLowerCase().trim() &&
+                             s.role.toLowerCase().trim() === exp.role?.toLowerCase().trim()
+                    );
+                    return (
+                      <div key={i} className="border-b border-dashed border-charcoal/10 pb-3 last:border-0 last:pb-0">
+                        <div className="font-semibold text-on-surface text-xs mb-2">
+                          {exp.role} · <span className="text-[color:var(--txt2)]">{exp.company}</span>
+                        </div>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="rounded-lg bg-charcoal/5 p-3">
+                            <div className="font-bold text-[color:var(--txt2)] mb-1 uppercase tracking-wider text-[9px]">Original Bullets:</div>
+                            <ul className="list-disc pl-4 space-y-1 text-[color:var(--txt2)]">
+                              {(exp.description?.bullets ?? []).map((b: string, idx: number) => (
+                                <li key={idx}>{b}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="rounded-lg bg-tertiary-fixed/20 border border-tertiary/20 p-3">
+                            <div className="font-bold text-tertiary mb-1 uppercase tracking-wider text-[9px]">Tailored Bullets:</div>
+                            <ul className="list-disc pl-4 space-y-1 text-on-surface font-medium">
+                              {(match?.bullets ?? []).map((b: string, idx: number) => (
+                                <li key={idx}>{b}</li>
+                              ))}
+                              {!match && <li className="italic text-[color:var(--txt2)]">No tailoring suggested (name/role mismatch)</li>}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 4. Projects Section */}
+            {(originalResume.projects && originalResume.projects.length > 0) && (
+              <div className="grid gap-3 rounded-2xl border border-charcoal/15 bg-white/80 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                  <span className="font-headline text-sm font-bold text-on-surface">4. Projects Bullets</span>
+                  <div className="flex gap-2">
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                      type="button"
+                      onClick={() => {
+                        const textVal = suggestions.projects.map(proj => `${proj.title}:\n` + proj.bullets.map(b => `- ${b}`).join('\n')).join('\n\n');
+                        copyToClipboard(textVal, 'projects');
+                      }}
+                    >
+                      {copiedSection === 'projects' ? 'Copied!' : 'Copy All'}
+                    </button>
+                    <button
+                      className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/70 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                      type="button"
+                      disabled={applyingSection === 'projects' || appliedSections['projects']}
+                      onClick={() => handleApplySection('projects')}
+                    >
+                      {appliedSections['projects'] ? 'Applied ✓' : applyingSection === 'projects' ? 'Applying...' : 'Apply to Resume'}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-4 text-xs leading-relaxed">
+                  {(originalResume.projects ?? []).map((proj: any, i: number) => {
+                    const match = suggestions.projects.find(
+                      (s) => s.title.toLowerCase().trim() === proj.title?.toLowerCase().trim()
+                    );
+                    return (
+                      <div key={i} className="border-b border-dashed border-charcoal/10 pb-3 last:border-0 last:pb-0">
+                        <div className="font-semibold text-on-surface text-xs mb-2">
+                          {proj.title}
+                        </div>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="rounded-lg bg-charcoal/5 p-3">
+                            <div className="font-bold text-[color:var(--txt2)] mb-1 uppercase tracking-wider text-[9px]">Original Bullets:</div>
+                            <ul className="list-disc pl-4 space-y-1 text-[color:var(--txt2)]">
+                              {(proj.description?.bullets ?? []).map((b: string, idx: number) => (
+                                <li key={idx}>{b}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="rounded-lg bg-tertiary-fixed/20 border border-tertiary/20 p-3">
+                            <div className="font-bold text-tertiary mb-1 uppercase tracking-wider text-[9px]">Tailored Bullets:</div>
+                            <ul className="list-disc pl-4 space-y-1 text-on-surface font-medium">
+                              {(match?.bullets ?? []).map((b: string, idx: number) => (
+                                <li key={idx}>{b}</li>
+                              ))}
+                              {!match && <li className="italic text-[color:var(--txt2)]">No tailoring suggested (project title mismatch)</li>}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

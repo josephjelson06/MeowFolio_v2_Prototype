@@ -267,3 +267,79 @@ ${rawText}
 `.trim(),
   };
 }
+
+const TAILOR_SYSTEM_PROMPT = `
+You are an expert resume writer and ATS optimization specialist.
+Your task is to tailor a candidate's resume sections to match a specific Job Description (JD).
+Your goal is to highlight relevant experience, skills, and projects that align with the JD requirements without fabricating any credentials, jobs, dates, or projects.
+
+Guidelines:
+1. "summary": Rewrite the professional summary into a high-impact, 2-3 sentence paragraph. Incorporate keywords and align the tone with the JD's company culture.
+2. "skills": Reorder, clean up, and optimize the skills to prioritize keywords found in the JD. Maintain the original skills but highlight or front-load JD-matching terms. Do not add skills the candidate does not have.
+3. "experience": Rewrite description bullet points for each job entry. Focus on results, impact, and duties that align with the JD responsibilities. Keep the company and role names EXACTLY the same.
+4. "projects": Rewrite description bullet points and update technologies to highlight relevance to the JD requirements. Keep project titles EXACTLY the same.
+
+CRITICAL: Return ONLY a valid JSON object matching the requested schema. No commentary, no markdown wrapping, no extra keys.
+`.trim();
+
+const TAILOR_SCHEMA_OVERVIEW = `
+{
+  "summary": "Tailored summary paragraph",
+  "skills": {
+    "mode": "csv", // or "grouped"
+    "items": ["Skill A", "Skill B"],
+    "groups": [
+      { "groupLabel": "Languages", "items": ["TypeScript", "Python"] }
+    ]
+  },
+  "experience": [
+    {
+      "company": "Original Company Name",
+      "role": "Original Role Name",
+      "bullets": ["Tailored achievement bullet 1", "Tailored achievement bullet 2"]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Original Project Title",
+      "bullets": ["Tailored bullet 1", "Tailored bullet 2"]
+    }
+  ]
+}
+`.trim();
+
+export function buildResumeTailorPrompt(resumeData: any, jdText: string) {
+  // Simplify input to minimize tokens and focus AI
+  const simplifiedResume = {
+    summary: resumeData.summary?.content ?? "",
+    skills: resumeData.skills ?? { mode: "csv", items: [], groups: [] },
+    experience: (resumeData.experience ?? []).map((exp: any) => ({
+      company: exp.company ?? "",
+      role: exp.role ?? "",
+      bullets: exp.description?.bullets ?? []
+    })),
+    projects: (resumeData.projects ?? []).map((proj: any) => ({
+      title: proj.title ?? "",
+      bullets: proj.description?.bullets ?? []
+    }))
+  };
+
+  return {
+    systemPrompt: `${TAILOR_SYSTEM_PROMPT}\n\nSchema:\n${TAILOR_SCHEMA_OVERVIEW}`,
+    userPrompt: `
+Analyze the following Job Description (JD) and Resume Data.
+Generate the tailored versions of the Summary, Skills, Experience bullets, and Project bullets to match the JD requirements.
+
+Job Description:
+"""
+${jdText}
+"""
+
+Original Resume Data:
+${JSON.stringify(simplifiedResume, null, 2)}
+
+Return the tailored content strictly conforming to the JSON schema.
+`.trim(),
+  };
+}
+

@@ -1,7 +1,7 @@
 import { supabase } from 'lib/supabase';
 import { resumeService } from 'services/resumeService';
 import { buildResumePlainText } from 'types/resumeDocument';
-import type { JdCheck, JdMetric, JdRecord } from 'types/jd';
+import type { JdCheck, JdMetric, JdRecord, JdTailoredSuggestions } from 'types/jd';
 import type { ResumePickerOption, ResumeScoreTone } from 'types/resume';
 
 const JD_EVENT = 'meowfolio:jd-library-changed';
@@ -284,4 +284,26 @@ export const jdService = {
       verdict,
     };
   },
+
+  async tailorResume(resumeId: string, jdId: string): Promise<JdTailoredSuggestions> {
+    const jd = await this.getById(jdId);
+    if (!jd) throw new Error('Job description not found');
+
+    const record = await resumeService.getRecord(resumeId);
+    if (!record || !record.content) throw new Error('Resume not found or has no content');
+
+    const { buildResumeTailorPrompt } = await import('lib/resume-prompt');
+    const { callGroq } = await import('lib/groq-client');
+
+    const { systemPrompt, userPrompt } = buildResumeTailorPrompt(record.content, jd.parsedText);
+    const result = await callGroq(systemPrompt, userPrompt);
+    
+    try {
+      const suggestions = JSON.parse(result) as JdTailoredSuggestions;
+      return suggestions;
+    } catch (parseErr) {
+      console.error('Failed to parse tailored suggestions JSON:', result);
+      throw new Error('AI tailoring returned invalid JSON formatting. Please try again.');
+    }
+  }
 };
