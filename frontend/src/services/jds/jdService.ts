@@ -161,33 +161,53 @@ export const jdService = {
 
   async importText(text: string, sourceName?: string) {
     const userId = await getUserId();
-    const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
-    const title = sourceName?.replace(/\.[^.]+$/, '') || lines[0] || `Imported JD ${Date.now()}`;
+    
+    let cleanTitle = sourceName?.replace(/\.[^.]+$/, '') || `Imported JD ${Date.now()}`;
+    let cleanCompany = '';
+    let cleanType = 'Imported';
+    let cleanText = text;
+
+    try {
+      const { buildJdParsePrompt } = await import('lib/resume-prompt');
+      const { callGroq } = await import('lib/groq-client');
+      const { systemPrompt, userPrompt } = buildJdParsePrompt(text.slice(0, 8000));
+      const result = await callGroq(systemPrompt, userPrompt);
+      const parsed = JSON.parse(result);
+      if (parsed.title) cleanTitle = parsed.title;
+      if (parsed.company) cleanCompany = parsed.company;
+      if (parsed.type) cleanType = parsed.type;
+      if (parsed.cleanText) cleanText = parsed.cleanText;
+    } catch (err) {
+      console.warn('AI JD parsing failed, using fallback line-based parsing:', err);
+      const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+      cleanTitle = sourceName?.replace(/\.[^.]+$/, '') || lines[0] || `Imported JD ${Date.now()}`;
+      cleanCompany = lines[1] || '';
+    }
 
     if (userId === 'guest-user') {
       const item: JdRecord = {
         id: `mock-jd-${Date.now()}`,
-        title,
-        company: lines[1] || '',
-        type: 'Imported',
-        parsedText: text,
+        title: cleanTitle,
+        company: cleanCompany,
+        type: cleanType,
+        parsedText: cleanText,
         badge: 'Newly added',
         updatedAt: new Date().toISOString(),
       };
       mockJds.unshift(item);
       notifyJdChange({ id: item.id });
       const list = await this.list();
-      return { extractedText: text, item, list };
+      return { extractedText: cleanText, item, list };
     }
 
     const { data, error } = await supabase
       .from('jds')
       .insert({
         user_id: userId,
-        title,
-        company: lines[1] || '',
-        type: 'Imported',
-        raw_text: text,
+        title: cleanTitle,
+        company: cleanCompany,
+        type: cleanType,
+        raw_text: cleanText,
         badge: 'Newly added',
       })
       .select('*')
@@ -198,7 +218,7 @@ export const jdService = {
     const item = mapRowToJdRecord(data);
     notifyJdChange({ id: item.id });
     const list = await this.list();
-    return { extractedText: text, item, list };
+    return { extractedText: cleanText, item, list };
   },
 
   async importFile(file: File) {

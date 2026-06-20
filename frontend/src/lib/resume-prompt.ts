@@ -343,3 +343,26 @@ Return the tailored content strictly conforming to the JSON schema.
   };
 }
 
+const JD_PARSER_SYSTEM_PROMPT = `
+You are a Job Description (JD) parsing specialist.
+Your task is to take a raw job description (which may contain messy copy-paste garbage like application counters, EEO statements, footer links, etc.) and extract the structured core of the job.
+
+Return ONLY a valid JSON object matching this schema:
+{
+  "title": "Clean Job Title (e.g. Senior Frontend Engineer)",
+  "company": "Company Name (leave empty if not found)",
+  "type": "Full-time, Part-time, Contract, Internship, or Remote",
+  "cleanText": "A clean, structured markdown job description containing ONLY the Role Summary, Core Responsibilities, and Requirements/Qualifications. Strip out all EEO disclaimers, application links, application counts, and generic footer text."
+}
+
+Do not wrap in markdown or add explanations.
+`.trim();
+
+export function buildJdParsePrompt(rawText: string) {
+  return {
+    systemPrompt: JD_PARSER_SYSTEM_PROMPT,
+    userPrompt: `Parse the following raw Job Description text:\n\n${rawText}`
+  };
+}
+
+
