@@ -10,5 +10,6 @@ export const routes = {
   editor: '/editor',
   profile: '/profile',
   debugPdf: '/debug-pdf',
+  emailDrafter: '/email-drafter',
 } as const;
 
