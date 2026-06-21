@@ -10,6 +10,7 @@ import { ResumesPage } from 'pages/workspace/ResumesPage';
 import { EditorPage } from 'pages/workspace/EditorPage';
 import { ProfilePage } from 'pages/workspace/ProfilePage';
 import { DebugPdfPage } from 'pages/workspace/DebugPdfPage';
+import { CoverLetterPage } from 'pages/workspace/coverLetter/CoverLetterPage';
 import { AuthModalHost } from 'modals/AuthModalHost';
 import { ResumeModalHost } from 'modals/ResumeModalHost';
 import { JdModalHost } from 'modals/JdModalHost';
@@ -58,6 +59,7 @@ export const router = createBrowserRouter([
           { path: routes.profile,   element: <ProfilePage /> },
           { path: routes.editor,    element: <EditorPage /> },
           { path: routes.debugPdf,  element: <DebugPdfPage /> },
+          { path: routes.coverLetter, element: <CoverLetterPage /> },
         ],
       },
 
