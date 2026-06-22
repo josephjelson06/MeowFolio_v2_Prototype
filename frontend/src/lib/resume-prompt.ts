@@ -365,4 +365,43 @@ export function buildJdParsePrompt(rawText: string) {
   };
 }
 
+/* ─── Phase 2: Deep JD Intelligence Extraction ──────────────────────────────── */
 
+const JD_INTELLIGENCE_SYSTEM_PROMPT = `
+You are an expert Job Description analyst and ATS/recruiting specialist.
+Your job is to extract deep, structured intelligence from a raw Job Description — regardless of its format (short, long, fluffy, or highly technical).
+
+Return ONLY a valid JSON object matching this exact schema. Use empty strings/arrays for fields you cannot determine. Never hallucinate.
+
+{
+  "role": "Clean job title (e.g. Senior AI/ML Engineer)",
+  "seniority": "One of: intern | junior | mid | senior | lead | principal | unknown",
+  "company": "Company name (empty string if not found)",
+  "industry": "Industry/sector (e.g. FinTech, HealthTech, SaaS, EdTech, E-commerce)",
+  "location": "Location or 'Remote' or 'Hybrid' (empty if not found)",
+  "employmentType": "Full-time | Part-time | Contract | Internship | Freelance",
+  "mustHaveSkills": ["Array of 5-12 absolutely required skills/technologies — these are deal-breakers"],
+  "niceToHaveSkills": ["Array of 3-8 preferred but not required skills"],
+  "requiredExperience": "Plain English summary of experience requirement (e.g. '3+ years in ML engineering')",
+  "keyResponsibilities": ["Array of 4-7 core job duties — concrete and specific, not generic"],
+  "preferredQualifications": ["Array of 3-6 preferred/bonus qualifications"],
+  "companyContext": "1-2 sentence summary: what this company does, their current growth stage or focus area",
+  "roleContext": "1-2 sentence summary: why this role exists, what team/product it serves",
+  "redFlags": ["Array of concerning or vague signals (e.g. 'rockstar developer', '10 years React experience for a 5-year-old framework', extremely long requirement list)"],
+  "keyAtsKeywords": ["Top 12-18 ATS-critical keywords from this JD that MUST appear in the resume to pass automated screening — exact terminology from the JD"]
+}
+
+Rules:
+- mustHaveSkills must be EXACT tool/tech names (e.g. 'PyTorch' not 'deep learning frameworks')
+- keyAtsKeywords should be exact verbatim phrases from the JD — include both acronyms and full forms if both appear
+- If the JD is vague or poorly written, note that in redFlags
+- Never add fields outside the schema
+- Do not wrap in markdown code blocks
+`.trim();
+
+export function buildJdIntelligencePrompt(rawText: string) {
+  return {
+    systemPrompt: JD_INTELLIGENCE_SYSTEM_PROMPT,
+    userPrompt: `Extract structured intelligence from the following Job Description:\n\n${rawText.slice(0, 10000)}`,
+  };
+}

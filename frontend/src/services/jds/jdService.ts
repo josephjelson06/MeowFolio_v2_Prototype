@@ -37,8 +37,10 @@ function mapRowToJdRecord(row: any): JdRecord {
     badge: row.badge ?? 'New',
     parsedText: row.raw_text ?? '',
     updatedAt: row.updated_at ?? row.created_at,
+    parsedData: row.parsed_data ?? undefined,
   };
 }
+
 
 async function getUserId(): Promise<string> {
   const { data: { user } } = await supabase.auth.getUser();

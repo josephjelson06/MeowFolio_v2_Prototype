@@ -3,10 +3,12 @@ import { cn } from 'lib/cn';
 import { downloadTextFile } from 'lib/formatters';
 import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { jdService, type JdReportModel } from 'services/jdService';
+import { jdParserService } from 'services/jds/jdParserService';
 import { resumeService } from 'services/resumeService';
 import { useUiContext } from 'state/ui/uiContext';
-import type { JdRecord, JdTailoredSuggestions } from 'types/jd';
+import type { JdRecord, JdTailoredSuggestions, ParsedJD } from 'types/jd';
 import type { ResumePickerOption } from 'types/resume';
+
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -836,7 +838,13 @@ export function JdsPage() {
 
   // FIX 1 + FIX 6: renamed from mobileView → activeTab, and is no longer
   // conditionally reset based on viewport width.
-  const [activeTab, setActiveTab] = useState<'workspace' | 'report' | 'tailor'>('workspace');
+  const [activeTab, setActiveTab] = useState<'workspace' | 'report' | 'tailor' | 'intelligence'>('workspace');
+
+  // ── JD Intelligence (Phase 2) ────────────────────────────────────────────
+  const [parsedJd, setParsedJd] = useState<ParsedJD | null>(null);
+  const [parsing, setParsing] = useState(false);
+  const [parseError, setParseError] = useState('');
+
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [reportState, setReportState] = useState<JdReportModel | null>(null);
@@ -1075,6 +1083,20 @@ export function JdsPage() {
     downloadTextFile(`${jd.title.toLowerCase().replace(/[^a-z0-9]+/g, '_')}_jd.txt`, jd.parsedText);
   }
 
+  async function handleParse() {
+    if (!selectedJd) return;
+    setParsing(true);
+    setParseError('');
+    try {
+      const result = await jdParserService.parse(selectedJd);
+      setParsedJd(result);
+    } catch (err) {
+      setParseError(err instanceof Error ? err.message : 'Parse failed. Please try again.');
+    } finally {
+      setParsing(false);
+    }
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -1087,7 +1109,7 @@ export function JdsPage() {
           <span className="text-[color:var(--txt2)]">JD</span>
           <span className="text-[color:var(--txt2)]/50">/</span>
           <span className="text-on-surface">
-            {activeTab === 'workspace' ? 'Workspace' : activeTab === 'report' ? 'Report' : 'Tailor'}
+            {activeTab === 'workspace' ? 'Workspace' : activeTab === 'report' ? 'Report' : activeTab === 'tailor' ? 'Tailor' : 'Intelligence'}
           </span>
         </div>
 
@@ -1104,6 +1126,25 @@ export function JdsPage() {
             onClick={() => setActiveTab('workspace')}
           >
             Workspace
+          </button>
+          <button
+            className={cn(
+              tabClass,
+              activeTab === 'intelligence'
+                ? 'bg-white text-on-surface shadow-tactile-sm'
+                : 'bg-white/65 text-[color:var(--txt1)]',
+            )}
+            type="button"
+            onClick={() => {
+              if (selectedJd) {
+                const cached = jdParserService.getCached(selectedJd);
+                if (cached) setParsedJd(cached);
+              }
+              setActiveTab('intelligence');
+            }}
+            disabled={!selectedJdId}
+          >
+            Intelligence
           </button>
           <button
             className={cn(
@@ -1212,6 +1253,215 @@ export function JdsPage() {
           </div>
         )}
 
+        {/* ── JD Intelligence Panel (Phase 2) ────────────────────────────── */}
+        {activeTab === 'intelligence' && (
+          <div className="grid gap-5">
+
+            {/* Header */}
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+              <div className="grid gap-1">
+                <h2 className="font-headline text-2xl font-extrabold text-on-surface">JD Intelligence</h2>
+                <div className="text-sm text-[color:var(--txt2)]">
+                  {selectedJd ? (
+                    <><strong className="text-on-surface">{selectedJd.title}</strong> · {selectedJd.company || 'Unknown company'}</>
+                  ) : 'Select a JD in Workspace first'}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {parsedJd && (
+                  <span className="inline-flex items-center rounded-full border border-tertiary/30 bg-tertiary-fixed px-3 py-1 font-headline text-[9px] font-bold uppercase tracking-[0.12em] text-tertiary">
+                    Parsed ✓
+                  </span>
+                )}
+                <button
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal bg-white/95 px-5 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed hover:shadow-tactile disabled:pointer-events-none disabled:opacity-40"
+                  type="button"
+                  disabled={!selectedJd || parsing}
+                  onClick={() => { void handleParse(); }}
+                >
+                  {parsing ? 'Parsing JD...' : parsedJd ? '↺ Re-Parse JD (1 Credit)' : '★ Parse JD (1 Credit)'}
+                </button>
+              </div>
+            </div>
+
+            {parseError && (
+              <div className="rounded-[1.75rem] border border-error/30 bg-error/5 p-4 text-sm text-error">
+                {parseError}
+              </div>
+            )}
+
+            {!parsedJd && !parsing && (
+              <div className="grid min-h-[16rem] place-items-center rounded-[1.75rem] border-[1.5px] border-dashed border-outline bg-white/70 px-6 py-8 text-center shadow-tactile-sm">
+                <div className="grid max-w-sm gap-3">
+                  <div className="text-4xl">🧠</div>
+                  <div className="font-headline text-base font-bold text-on-surface">Run JD Intelligence</div>
+                  <div className="text-sm leading-7 text-[color:var(--txt2)]">
+                    Click <strong className="text-on-surface">Parse JD</strong> above to extract structured intelligence — must-have skills, ATS keywords, role context, red flags, and more.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {parsing && (
+              <div className="grid min-h-[12rem] place-items-center rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 shadow-tactile">
+                <div className="grid gap-3 text-center">
+                  <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  <div className="text-sm font-semibold text-[color:var(--txt2)]">Extracting JD intelligence…</div>
+                </div>
+              </div>
+            )}
+
+            {parsedJd && !parsing && (
+              <div className="grid gap-5">
+
+                {/* Identity row */}
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                  {([
+                    { label: 'Seniority',        value: parsedJd.seniority,       icon: '📊' },
+                    { label: 'Industry',          value: parsedJd.industry,        icon: '🏭' },
+                    { label: 'Location',          value: parsedJd.location,        icon: '📍' },
+                    { label: 'Employment Type',   value: parsedJd.employmentType,  icon: '💼' },
+                    { label: 'Exp. Required',     value: parsedJd.requiredExperience, icon: '⏱️' },
+                  ] as const).filter(item => (item.value as string)?.trim()).map(item => (
+                    <div key={item.label} className="flex items-start gap-3 rounded-[1.35rem] border border-charcoal/10 bg-white/70 p-4">
+                      <span className="text-lg">{item.icon}</span>
+                      <div className="min-w-0">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--txt2)]">{item.label}</div>
+                        <div className="mt-0.5 text-sm font-semibold capitalize text-on-surface">{item.value}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Must-have skills */}
+                {parsedJd.mustHaveSkills.length > 0 && (
+                  <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+                    <div className="mb-3 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-error">
+                      🚫 Must-Have Skills ({parsedJd.mustHaveSkills.length})
+                    </div>
+                    <div className="text-[11px] text-[color:var(--txt2)] mb-3">Missing any of these = no interview</div>
+                    <div className="flex flex-wrap gap-2">
+                      {parsedJd.mustHaveSkills.map(skill => (
+                        <span key={skill} className="inline-flex items-center rounded-full border border-error/25 bg-error-container/50 px-3 py-1.5 text-[11px] font-bold text-error">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Nice-to-have skills */}
+                {parsedJd.niceToHaveSkills.length > 0 && (
+                  <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+                    <div className="mb-3 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-secondary">
+                      ✨ Nice-to-Have Skills ({parsedJd.niceToHaveSkills.length})
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {parsedJd.niceToHaveSkills.map(skill => (
+                        <span key={skill} className="inline-flex items-center rounded-full border border-secondary/25 bg-secondary-container/40 px-3 py-1.5 text-[11px] font-semibold text-secondary">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ATS Keywords */}
+                {parsedJd.keyAtsKeywords.length > 0 && (
+                  <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+                    <div className="mb-1 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-tertiary">
+                      🎯 ATS Keywords — Use These Exact Terms in Your Resume
+                    </div>
+                    <div className="text-[11px] text-[color:var(--txt2)] mb-3">These {parsedJd.keyAtsKeywords.length} phrases must appear verbatim to pass ATS screening</div>
+                    <div className="flex flex-wrap gap-2">
+                      {parsedJd.keyAtsKeywords.map(kw => (
+                        <span key={kw} className="inline-flex items-center rounded-full border border-tertiary/30 bg-tertiary-fixed px-3 py-1.5 text-[11px] font-bold text-tertiary">
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Two-col: responsibilities + preferred quals */}
+                <div className="grid gap-5 md:grid-cols-2">
+                  {parsedJd.keyResponsibilities.length > 0 && (
+                    <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile">
+                      <div className="mb-3 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface">
+                        📋 Key Responsibilities
+                      </div>
+                      <ul className="space-y-2">
+                        {parsedJd.keyResponsibilities.map((r, i) => (
+                          <li key={i} className="flex gap-2 text-sm leading-relaxed text-[color:var(--txt1)]">
+                            <span className="mt-1 shrink-0 font-bold text-primary">•</span>
+                            {r}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {parsedJd.preferredQualifications.length > 0 && (
+                    <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile">
+                      <div className="mb-3 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface">
+                        ⭐ Preferred Qualifications
+                      </div>
+                      <ul className="space-y-2">
+                        {parsedJd.preferredQualifications.map((q, i) => (
+                          <li key={i} className="flex gap-2 text-sm leading-relaxed text-[color:var(--txt1)]">
+                            <span className="mt-1 shrink-0 font-bold text-secondary">•</span>
+                            {q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Context */}
+                {(parsedJd.companyContext || parsedJd.roleContext) && (
+                  <div className="grid gap-5 md:grid-cols-2">
+                    {parsedJd.companyContext && (
+                      <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile">
+                        <div className="mb-2 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface">🏢 Company Context</div>
+                        <p className="text-sm leading-relaxed text-[color:var(--txt1)]">{parsedJd.companyContext}</p>
+                      </div>
+                    )}
+                    {parsedJd.roleContext && (
+                      <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile">
+                        <div className="mb-2 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface">🎯 Role Context</div>
+                        <p className="text-sm leading-relaxed text-[color:var(--txt1)]">{parsedJd.roleContext}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Red flags */}
+                {parsedJd.redFlags.length > 0 && (
+                  <div className="rounded-[1.75rem] border border-[color:var(--warn)]/30 bg-[color:var(--warn)]/5 p-5">
+                    <div className="mb-3 font-headline text-[11px] font-bold uppercase tracking-[0.18em] text-[color:var(--warn)]">
+                      ⚠️ Red Flags Detected
+                    </div>
+                    <ul className="space-y-2">
+                      {parsedJd.redFlags.map((flag, i) => (
+                        <li key={i} className="flex gap-2 text-sm leading-relaxed text-[color:var(--txt1)]">
+                          <span className="mt-0.5 shrink-0 text-[color:var(--warn)]">⚠</span>
+                          {flag}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="text-center text-[10px] text-[color:var(--txt2)]/50">
+                  Parsed {new Date(parsedJd.parsedAt).toLocaleString()}
+                </div>
+
+              </div>
+            )}
+
+          </div>
+        )}
+
         {/*
           FIX 2: Report tab renders JdResultPane full-width on ALL viewports,
           both desktop and mobile. Previously this was wrapped in `md:hidden`
@@ -1224,6 +1474,7 @@ export function JdsPage() {
             onBackToWorkspace={() => setActiveTab('workspace')}
           />
         )}
+
 
         {activeTab === 'tailor' && (
           <JdTailorPane
