@@ -13,6 +13,7 @@ import { ProfilePage } from 'pages/workspace/ProfilePage';
 import { DebugPdfPage } from 'pages/workspace/DebugPdfPage';
 import { CoverLetterPage } from 'pages/workspace/coverLetter/CoverLetterPage';
 import { EmailDrafterPage } from 'pages/workspace/emailDrafter/EmailDrafterPage';
+import { TrackerPage } from 'pages/workspace/tracker/TrackerPage';
 import { AuthModalHost } from 'modals/AuthModalHost';
 import { ResumeModalHost } from 'modals/ResumeModalHost';
 import { JdModalHost } from 'modals/JdModalHost';
@@ -63,6 +64,7 @@ export const router = createBrowserRouter([
           { path: routes.debugPdf,  element: <DebugPdfPage /> },
           { path: routes.coverLetter, element: <CoverLetterPage /> },
           { path: routes.emailDrafter, element: <EmailDrafterPage /> },
+          { path: routes.tracker,   element: <TrackerPage /> },
         ],
       },
 
