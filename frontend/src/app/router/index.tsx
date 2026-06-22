@@ -7,6 +7,7 @@ import { Error500Page } from 'pages/public/Error500Page';
 import { AuthCallbackPage } from 'pages/public/AuthCallbackPage';
 import { DashboardPage } from 'pages/workspace/DashboardPage';
 import { ResumesPage } from 'pages/workspace/ResumesPage';
+import { JdsPage } from 'pages/workspace/JdsPage';
 import { EditorPage } from 'pages/workspace/EditorPage';
 import { ProfilePage } from 'pages/workspace/ProfilePage';
 import { DebugPdfPage } from 'pages/workspace/DebugPdfPage';
@@ -55,7 +56,7 @@ export const router = createBrowserRouter([
         children: [
           { path: routes.dashboard, element: <DashboardPage /> },
           { path: routes.resumes,   element: <ResumesPage /> },
-          { path: routes.jds,       element: <Navigate to={routes.resumes} replace /> },
+          { path: routes.jds,       element: <JdsPage /> },
           { path: routes.profile,   element: <ProfilePage /> },
           { path: routes.editor,    element: <EditorPage /> },
           { path: routes.debugPdf,  element: <DebugPdfPage /> },

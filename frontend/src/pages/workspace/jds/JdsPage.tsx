@@ -5,7 +5,7 @@ import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { jdService, type JdReportModel } from 'services/jdService';
 import { resumeService } from 'services/resumeService';
 import { useUiContext } from 'state/ui/uiContext';
-import type { JdRecord } from 'types/jd';
+import type { JdRecord, JdTailoredSuggestions } from 'types/jd';
 import type { ResumePickerOption } from 'types/resume';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -399,6 +399,334 @@ function JdResultPane({
   );
 }
 
+function JdTailorPane({
+  report,
+  originalResume,
+  suggestions,
+  loadingSuggestions,
+  tailorError,
+  copiedSection,
+  applyingSection,
+  appliedSections,
+  onGenerateSuggestions,
+  onApplySection,
+  onCopySection
+}: {
+  report: JdReportModel | null;
+  originalResume: any | null;
+  suggestions: JdTailoredSuggestions | null;
+  loadingSuggestions: boolean;
+  tailorError: string;
+  copiedSection: string | null;
+  applyingSection: string | null;
+  appliedSections: Record<string, boolean>;
+  onGenerateSuggestions: () => void;
+  onApplySection: (sectionKey: 'summary' | 'skills' | 'experience' | 'projects') => void;
+  onCopySection: (text: string, key: string) => void;
+}) {
+  if (!report) {
+    return (
+      <div className="grid min-h-[16rem] place-items-center rounded-[1.75rem] border-[1.5px] border-dashed border-outline bg-white/70 px-6 py-8 text-center shadow-tactile-sm">
+        <div className="grid max-w-md gap-3">
+          <div className="text-4xl text-primary">&#8856;</div>
+          <div className="text-sm leading-7 text-[color:var(--txt2)]">
+            Run an analysis first on the Workspace tab to enable AI tailoring.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-5">
+      {/* Title Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+        <div className="grid gap-1">
+          <h2 className="font-headline text-2xl font-extrabold text-on-surface">AI Tailoring Assistant</h2>
+          <div className="text-xs md:text-sm leading-relaxed text-[color:var(--txt2)]">
+            Review side-by-side differences of tailored resume recommendations for <strong>{report.jd.title}</strong> at <strong>{report.jd.company}</strong>.
+          </div>
+        </div>
+        {!suggestions && (
+          <button
+            className="inline-flex min-h-10 items-center justify-center rounded-full border-2 border-charcoal bg-white/95 px-5 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed hover:text-on-surface hover:shadow-tactile disabled:pointer-events-none disabled:opacity-40"
+            type="button"
+            disabled={loadingSuggestions || !originalResume}
+            onClick={onGenerateSuggestions}
+          >
+            {loadingSuggestions ? 'Generating Suggestions...' : '★ Generate Tailored Suggestions (1 Credit)'}
+          </button>
+        )}
+      </div>
+
+      {tailorError && (
+        <div className="rounded-[1.75rem] border border-error/30 bg-error/5 p-4 text-sm text-error">
+          {tailorError}
+        </div>
+      )}
+
+      {suggestions && originalResume ? (
+        <div className="grid gap-6">
+          {/* 1. Summary Section */}
+          {originalResume.summary?.content?.trim() && (
+            <div className="grid gap-3 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                <span className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">1. Professional Summary</span>
+                <div className="flex gap-2">
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                    type="button"
+                    onClick={() => onCopySection(suggestions.summary, 'summary')}
+                  >
+                    {copiedSection === 'summary' ? 'Copied ✓' : 'Copy Suggestion'}
+                  </button>
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/75 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                    type="button"
+                    disabled={applyingSection === 'summary' || appliedSections['summary']}
+                    onClick={() => onApplySection('summary')}
+                  >
+                    {appliedSections['summary'] ? 'Applied ✓' : applyingSection === 'summary' ? 'Applying...' : 'Apply to Resume'}
+                  </button>
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 text-xs leading-relaxed mt-2">
+                <div className="rounded-xl bg-charcoal/5 p-4">
+                  <div className="font-bold text-[color:var(--txt2)] mb-1.5 uppercase tracking-wider text-[9px]">Original Summary:</div>
+                  <div className="text-[color:var(--txt2)] whitespace-pre-wrap">{originalResume.summary.content}</div>
+                </div>
+                <div className="rounded-xl bg-tertiary-fixed/20 border border-tertiary/20 p-4">
+                  <div className="font-bold text-tertiary mb-1.5 uppercase tracking-wider text-[9px]">Tailored Recommendation:</div>
+                  <div className="text-on-surface font-medium whitespace-pre-wrap">{suggestions.summary}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Skills Section */}
+          {((originalResume.skills?.items && originalResume.skills.items.length > 0) || (originalResume.skills?.groups && originalResume.skills.groups.length > 0)) && (
+            <div className="grid gap-3 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                <span className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">2. Skills & Competencies</span>
+                <div className="flex gap-2">
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                    type="button"
+                    onClick={() => {
+                      const textVal = suggestions.skills.mode === 'csv' 
+                        ? suggestions.skills.items.join(', ')
+                        : suggestions.skills.groups.map(g => `${g.groupLabel}: ${g.items.join(', ')}`).join('\n');
+                      onCopySection(textVal, 'skills');
+                    }}
+                  >
+                    {copiedSection === 'skills' ? 'Copied ✓' : 'Copy Suggestion'}
+                  </button>
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/75 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                    type="button"
+                    disabled={applyingSection === 'skills' || appliedSections['skills']}
+                    onClick={() => onApplySection('skills')}
+                  >
+                    {appliedSections['skills'] ? 'Applied ✓' : applyingSection === 'skills' ? 'Applying...' : 'Apply to Resume'}
+                  </button>
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 text-xs leading-relaxed mt-2">
+                <div className="rounded-xl bg-charcoal/5 p-4">
+                  <div className="font-bold text-[color:var(--txt2)] mb-1.5 uppercase tracking-wider text-[9px]">Original Skills:</div>
+                  {originalResume.skills.mode === 'csv' ? (
+                    <div className="text-[color:var(--txt2)]">{(originalResume.skills.items ?? []).join(', ')}</div>
+                  ) : (
+                    <div className="grid gap-2">
+                      {(originalResume.skills.groups ?? []).map((g: any, idx: number) => (
+                        <div key={idx} className="text-[color:var(--txt2)]">
+                          <span className="font-bold text-on-surface">{g.groupLabel}:</span> {(g.items ?? []).join(', ')}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="rounded-xl bg-tertiary-fixed/20 border border-tertiary/20 p-4">
+                  <div className="font-bold text-tertiary mb-1.5 uppercase tracking-wider text-[9px]">Tailored Recommendation:</div>
+                  {suggestions.skills.mode === 'csv' ? (
+                    <div className="text-on-surface font-medium">{(suggestions.skills.items ?? []).join(', ')}</div>
+                  ) : (
+                    <div className="grid gap-2">
+                      {(suggestions.skills.groups ?? []).map((g, idx) => (
+                        <div key={idx} className="text-on-surface font-medium">
+                          <span className="font-bold text-tertiary">{g.groupLabel}:</span> {(g.items ?? []).join(', ')}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. Work Experience Section */}
+          {(originalResume.experience && originalResume.experience.length > 0) && (
+            <div className="grid gap-3 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                <span className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">3. Work Experience Bullets</span>
+                <div className="flex gap-2">
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                    type="button"
+                    onClick={() => {
+                      const textVal = suggestions.experience.map(exp => `${exp.role} at ${exp.company}:\n` + exp.bullets.map(b => `- ${b}`).join('\n')).join('\n\n');
+                      onCopySection(textVal, 'experience');
+                    }}
+                  >
+                    {copiedSection === 'experience' ? 'Copied ✓' : 'Copy All Suggestions'}
+                  </button>
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/75 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                    type="button"
+                    disabled={applyingSection === 'experience' || appliedSections['experience']}
+                    onClick={() => onApplySection('experience')}
+                  >
+                    {appliedSections['experience'] ? 'Applied ✓' : applyingSection === 'experience' ? 'Applying...' : 'Apply to Resume'}
+                  </button>
+                </div>
+              </div>
+              <div className="grid gap-5 mt-2">
+                {(originalResume.experience ?? []).map((exp: any, i: number) => {
+                  const match = suggestions.experience.find(
+                    (s) => s.company.toLowerCase().trim() === exp.company?.toLowerCase().trim() &&
+                           s.role.toLowerCase().trim() === exp.role?.toLowerCase().trim()
+                  );
+                  return (
+                    <div key={i} className="border-b border-dashed border-charcoal/15 pb-4 last:border-0 last:pb-0">
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <div className="font-headline text-sm font-extrabold text-on-surface">
+                          {exp.role} · <span className="text-[color:var(--txt2)]">{exp.company}</span>
+                        </div>
+                        {match && (
+                          <button
+                            className="inline-flex min-h-6 items-center justify-center rounded-full border border-charcoal/30 bg-white px-2.5 py-0.5 text-[9px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                            type="button"
+                            onClick={() => onCopySection(match.bullets.map(b => `- ${b}`).join('\n'), `exp-${i}`)}
+                          >
+                            {copiedSection === `exp-${i}` ? 'Copied ✓' : 'Copy Bullets'}
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid gap-4 md:grid-cols-2 text-xs leading-relaxed">
+                        <div className="rounded-xl bg-charcoal/5 p-4">
+                          <div className="font-bold text-[color:var(--txt2)] mb-1.5 uppercase tracking-wider text-[9px]">Original Bullets:</div>
+                          <ul className="list-disc pl-4 space-y-1 text-[color:var(--txt2)]">
+                            {(exp.description?.bullets ?? []).map((b: string, idx: number) => (
+                              <li key={idx}>{b}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-xl bg-tertiary-fixed/20 border border-tertiary/20 p-4">
+                          <div className="font-bold text-tertiary mb-1.5 uppercase tracking-wider text-[9px]">Tailored Bullets:</div>
+                          <ul className="list-disc pl-4 space-y-1 text-on-surface font-medium">
+                            {(match?.bullets ?? []).map((b: string, idx: number) => (
+                              <li key={idx}>{b}</li>
+                            ))}
+                            {!match && <li className="italic text-[color:var(--txt2)]">No tailoring suggested (name/role mismatch)</li>}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 4. Projects Section */}
+          {(originalResume.projects && originalResume.projects.length > 0) && (
+            <div className="grid gap-3 rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-charcoal/10 pb-2">
+                <span className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">4. Projects Bullets</span>
+                <div className="flex gap-2">
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/30 bg-white px-3 py-1 text-[10px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                    type="button"
+                    onClick={() => {
+                      const textVal = suggestions.projects.map(proj => `${proj.title}:\n` + proj.bullets.map(b => `- ${b}`).join('\n')).join('\n\n');
+                      onCopySection(textVal, 'projects');
+                    }}
+                  >
+                    {copiedSection === 'projects' ? 'Copied ✓' : 'Copy All Suggestions'}
+                  </button>
+                  <button
+                    className="inline-flex min-h-7 items-center justify-center rounded-full border border-charcoal/75 bg-primary-fixed px-3 py-1 text-[10px] font-bold text-primary shadow-tactile-sm transition hover:bg-primary hover:text-white disabled:opacity-50"
+                    type="button"
+                    disabled={applyingSection === 'projects' || appliedSections['projects']}
+                    onClick={() => onApplySection('projects')}
+                  >
+                    {appliedSections['projects'] ? 'Applied ✓' : applyingSection === 'projects' ? 'Applying...' : 'Apply to Resume'}
+                  </button>
+                </div>
+              </div>
+              <div className="grid gap-5 mt-2">
+                {(originalResume.projects ?? []).map((proj: any, i: number) => {
+                  const match = suggestions.projects.find(
+                    (s) => s.title.toLowerCase().trim() === proj.title?.toLowerCase().trim()
+                  );
+                  return (
+                    <div key={i} className="border-b border-dashed border-charcoal/15 pb-4 last:border-0 last:pb-0">
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <div className="font-headline text-sm font-extrabold text-on-surface">
+                          {proj.title}
+                        </div>
+                        {match && (
+                          <button
+                            className="inline-flex min-h-6 items-center justify-center rounded-full border border-charcoal/30 bg-white px-2.5 py-0.5 text-[9px] font-bold text-[color:var(--txt1)] shadow-tactile-sm transition hover:bg-surface-container-low"
+                            type="button"
+                            onClick={() => onCopySection(match.bullets.map(b => `- ${b}`).join('\n'), `proj-${i}`)}
+                          >
+                            {copiedSection === `proj-${i}` ? 'Copied ✓' : 'Copy Bullets'}
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid gap-4 md:grid-cols-2 text-xs leading-relaxed">
+                        <div className="rounded-xl bg-charcoal/5 p-4">
+                          <div className="font-bold text-[color:var(--txt2)] mb-1.5 uppercase tracking-wider text-[9px]">Original Bullets:</div>
+                          <ul className="list-disc pl-4 space-y-1 text-[color:var(--txt2)]">
+                            {(proj.description?.bullets ?? []).map((b: string, idx: number) => (
+                              <li key={idx}>{b}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-xl bg-tertiary-fixed/20 border border-tertiary/20 p-4">
+                          <div className="font-bold text-tertiary mb-1.5 uppercase tracking-wider text-[9px]">Tailored Bullets:</div>
+                          <ul className="list-disc pl-4 space-y-1 text-on-surface font-medium">
+                            {(match?.bullets ?? []).map((b: string, idx: number) => (
+                              <li key={idx}>{b}</li>
+                            ))}
+                            {!match && <li className="italic text-[color:var(--txt2)]">No tailoring suggested (title mismatch)</li>}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        originalResume && (
+          <div className="grid min-h-[16rem] place-items-center rounded-[1.75rem] border-[1.5px] border-dashed border-outline bg-white/70 px-6 py-8 text-center shadow-tactile-sm">
+            <div className="grid max-w-md gap-3">
+              <div className="text-4xl text-primary">★</div>
+              <div className="text-sm leading-7 text-[color:var(--txt2)]">
+                Click <strong>Generate Tailored Suggestions</strong> above to rewrite your resume's key sections for this job description.
+              </div>
+            </div>
+          </div>
+        )
+      )}
+    </div>
+  );
+}
+
 // ─── JdMobileSheet ────────────────────────────────────────────────────────────
 // Unchanged in structure — still mobile-only (md:hidden).
 // Quick summary preview that slides up from the bottom on mobile after analysis.
@@ -508,11 +836,124 @@ export function JdsPage() {
 
   // FIX 1 + FIX 6: renamed from mobileView → activeTab, and is no longer
   // conditionally reset based on viewport width.
-  const [activeTab, setActiveTab] = useState<'workspace' | 'report'>('workspace');
+  const [activeTab, setActiveTab] = useState<'workspace' | 'report' | 'tailor'>('workspace');
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [reportState, setReportState] = useState<JdReportModel | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+
+  // AI Tailoring States
+  const [originalResume, setOriginalResume] = useState<any | null>(null);
+  const [suggestions, setSuggestions] = useState<JdTailoredSuggestions | null>(null);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [tailorError, setTailorError] = useState('');
+  const [copiedSection, setCopiedSection] = useState<string | null>(null);
+  const [applyingSection, setApplyingSection] = useState<string | null>(null);
+  const [appliedSections, setAppliedSections] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (selectedResume) {
+      resumeService.getRecord(selectedResume).then(rec => {
+        setOriginalResume(rec?.content ?? null);
+      });
+    } else {
+      setOriginalResume(null);
+    }
+    setSuggestions(null);
+    setAppliedSections({});
+    setTailorError('');
+  }, [selectedResume, selectedJdId]);
+
+  async function handleGenerateSuggestions() {
+    if (!selectedResume || !selectedJdId) return;
+    setLoadingSuggestions(true);
+    setTailorError('');
+    try {
+      const suggestionsData = await jdService.tailorResume(selectedResume, selectedJdId);
+      setSuggestions(suggestionsData);
+    } catch (err) {
+      setTailorError(err instanceof Error ? err.message : 'Failed to generate suggestions');
+    } finally {
+      setLoadingSuggestions(false);
+    }
+  }
+
+  async function handleApplySection(sectionKey: 'summary' | 'skills' | 'experience' | 'projects') {
+    if (!selectedResume || !suggestions) return;
+    setApplyingSection(sectionKey);
+    try {
+      const record = await resumeService.getRecord(selectedResume);
+      if (!record) throw new Error('Resume not found');
+
+      const updatedContent = { ...record.content };
+
+      if (sectionKey === 'summary') {
+        updatedContent.summary = {
+          ...updatedContent.summary,
+          content: suggestions.summary
+        };
+      } else if (sectionKey === 'skills') {
+        updatedContent.skills = {
+          ...updatedContent.skills,
+          mode: suggestions.skills.mode,
+          items: suggestions.skills.items,
+          groups: suggestions.skills.groups
+        };
+      } else if (sectionKey === 'experience') {
+        updatedContent.experience = (updatedContent.experience ?? []).map(exp => {
+          const match = suggestions.experience.find(
+            s => s.company.toLowerCase().trim() === exp.company?.toLowerCase().trim() &&
+                 s.role.toLowerCase().trim() === exp.role?.toLowerCase().trim()
+          );
+          if (match) {
+            return {
+              ...exp,
+              description: {
+                ...exp.description,
+                bullets: match.bullets
+              }
+            };
+          }
+          return exp;
+        });
+      } else if (sectionKey === 'projects') {
+        updatedContent.projects = (updatedContent.projects ?? []).map(proj => {
+          const match = suggestions.projects.find(
+            s => s.title.toLowerCase().trim() === proj.title?.toLowerCase().trim()
+          );
+          if (match) {
+            return {
+              ...proj,
+              description: {
+                ...proj.description,
+                bullets: match.bullets
+              }
+            };
+          }
+          return proj;
+        });
+      }
+
+      await resumeService.saveRecord(selectedResume, {
+        content: updatedContent,
+        renderOptions: record.renderOptions,
+        templateId: record.templateId
+      });
+
+      setAppliedSections(prev => ({ ...prev, [sectionKey]: true }));
+      window.dispatchEvent(new CustomEvent('meowfolio:resume-library-changed'));
+    } catch (err) {
+      setTailorError(err instanceof Error ? err.message : 'Failed to apply section');
+    } finally {
+      setApplyingSection(null);
+    }
+  }
+
+  function handleCopySection(text: string, key: string) {
+    navigator.clipboard.writeText(text);
+    setCopiedSection(key);
+    setTimeout(() => setCopiedSection(null), 2000);
+  }
 
   // ── Derived data ──────────────────────────────────────────────────────────
 
@@ -595,12 +1036,34 @@ export function JdsPage() {
     if (!selectedResume || !selectedJdId) return;
     try {
       setAnalyzing(true);
-      const nextReport = await jdService.buildReport(selectedResume, selectedJdId);
-      if (!nextReport) return;
-      setReportState(nextReport);
-      // On mobile: keep workspace tab visible, pop up the bottom sheet
-      // On desktop: user can switch to Report tab manually — or we auto-switch
+      setTailorError('');
+      setSuggestions(null);
+      setAppliedSections({});
+
+      // Run both matching report (local/quick) and AI tailoring (Groq calls) in parallel
+      const [nextReport, suggestionsData] = await Promise.all([
+        jdService.buildReport(selectedResume, selectedJdId),
+        jdService.tailorResume(selectedResume, selectedJdId).catch(err => {
+          console.error('Tailoring suggestions generation failed:', err);
+          return null;
+        })
+      ]);
+
+      if (nextReport) {
+        setReportState(nextReport);
+      }
+
+      if (suggestionsData) {
+        setSuggestions(suggestionsData);
+        setActiveTab('tailor'); // automatically switch to new tailored tab
+      } else {
+        setTailorError('Failed to automatically generate tailored suggestions. You can view the match report or try generating again in the Tailored tab.');
+        setActiveTab('report'); // fallback to report tab
+      }
       setSheetOpen(true);
+    } catch (err) {
+      console.error(err);
+      setTailorError(err instanceof Error ? err.message : 'Failed to analyze JD');
     } finally {
       setAnalyzing(false);
     }
@@ -624,7 +1087,7 @@ export function JdsPage() {
           <span className="text-[color:var(--txt2)]">JD</span>
           <span className="text-[color:var(--txt2)]/50">/</span>
           <span className="text-on-surface">
-            {activeTab === 'workspace' ? 'Workspace' : 'Report'}
+            {activeTab === 'workspace' ? 'Workspace' : activeTab === 'report' ? 'Report' : 'Tailor'}
           </span>
         </div>
 
@@ -651,8 +1114,22 @@ export function JdsPage() {
             )}
             type="button"
             onClick={() => setActiveTab('report')}
+            disabled={!reportState}
           >
             Report
+          </button>
+          <button
+            className={cn(
+              tabClass,
+              activeTab === 'tailor'
+                ? 'bg-white text-on-surface shadow-tactile-sm'
+                : 'bg-white/65 text-[color:var(--txt1)]',
+            )}
+            type="button"
+            onClick={() => setActiveTab('tailor')}
+            disabled={!reportState}
+          >
+            Tailored
           </button>
         </div>
       </div>
@@ -745,6 +1222,22 @@ export function JdsPage() {
             report={reportState}
             selected={Boolean(selectedJd)}
             onBackToWorkspace={() => setActiveTab('workspace')}
+          />
+        )}
+
+        {activeTab === 'tailor' && (
+          <JdTailorPane
+            report={reportState}
+            originalResume={originalResume}
+            suggestions={suggestions}
+            loadingSuggestions={loadingSuggestions}
+            tailorError={tailorError}
+            copiedSection={copiedSection}
+            applyingSection={applyingSection}
+            appliedSections={appliedSections}
+            onGenerateSuggestions={handleGenerateSuggestions}
+            onApplySection={handleApplySection}
+            onCopySection={handleCopySection}
           />
         )}
       </main>

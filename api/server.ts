@@ -19,6 +19,7 @@ config({ path: path.resolve(__dirname, '../.env.local') });
 config({ path: path.resolve(__dirname, '../.env') });
 
 import extractTextHandler from './extract-text';
+import parseResumeHandler from './parse-resume';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,7 +32,7 @@ app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok', ts: Date.now() });
 });
 
-// PDF / DOCX text extraction — the only route needed
+// PDF / DOCX text extraction
 app.post('/api/extract-text', async (req, res) => {
   try {
     await extractTextHandler(req as any, res as any);
@@ -41,9 +42,19 @@ app.post('/api/extract-text', async (req, res) => {
   }
 });
 
+// Resume parsing and credit deductions
+app.post('/api/parse-resume', async (req, res) => {
+  try {
+    await parseResumeHandler(req as any, res as any);
+  } catch (error) {
+    console.error('Unhandled error in parse-resume:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Local API Server running at http://localhost:${PORT}`);
-  console.log(`   Only /api/extract-text is proxied — Groq runs directly in the browser.`);
+  console.log(`   Local proxy active for /api/extract-text and /api/parse-resume`);
 });
 
 export default app;

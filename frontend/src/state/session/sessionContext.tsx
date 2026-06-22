@@ -87,6 +87,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
+  // Listen to custom credit update events
+  useEffect(() => {
+    function handleCreditsUpdated(event: Event) {
+      const customEvent = event as CustomEvent<{ credits: number }>;
+      console.log('[Auth Session] Credits updated custom event caught:', customEvent.detail.credits);
+      setActor(prev => prev ? { ...prev, credits: customEvent.detail.credits } : null);
+    }
+
+    window.addEventListener('meowfolio:credits-updated', handleCreditsUpdated);
+    return () => {
+      window.removeEventListener('meowfolio:credits-updated', handleCreditsUpdated);
+    };
+  }, []);
+
   const value = useMemo<SessionContextValue>(() => ({
     actor,
     ready,

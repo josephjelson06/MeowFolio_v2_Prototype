@@ -4,6 +4,7 @@ import { routes } from 'app/router/routes';
 import { ModalShell } from 'components/ui/ModalShell';
 import { resumeService } from 'services/resumeService';
 import { useUiContext } from 'state/ui/uiContext';
+import { apiClient } from 'lib/apiClient';
 
 type ResumeMode = 'upload' | 'paste' | null;
 
@@ -222,21 +223,53 @@ export function ResumeModalHost() {
                   throw new Error('No text extracted from document.');
                 }
 
-                await addLog('7. Loading prompt builder & Groq client...');
-                const { buildResumeParsePrompt } = await import('lib/resume-prompt');
-                const { callGroq } = await import('lib/groq-client');
-
-                await addLog('8. Building Groq parse prompt...');
-                const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
-
-                await addLog('9. Calling Groq AI model...');
+                await addLog('7. Calling backend AI parse endpoint...');
                 let parsedContent = null;
-                try {
-                  const result = await callGroq(systemPrompt, userPrompt);
-                  parsedContent = JSON.parse(result);
-                  await addLog('10. Groq AI successfully parsed the resume!');
-                } catch (groqErr) {
-                  await addLog(`Warning: Groq call failed: ${groqErr instanceof Error ? groqErr.message : String(groqErr)}. Saving raw text only.`);
+                const isGuest = userId === 'guest-user';
+
+                if (authToken) {
+                  try {
+                    const response = await fetch(`${apiClient.baseUrl}/parse-resume`, {
+                      method: 'POST',
+                      headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ text, source: file.name })
+                    });
+                    if (response.status === 402) {
+                      throw new Error('No credits remaining. Upgrade your plan to continue.');
+                    }
+                    if (!response.ok) {
+                      const body = await response.text();
+                      throw new Error(`AI parsing server error: ${body}`);
+                    }
+                    const data = await response.json();
+                    parsedContent = data.parsed;
+                    await addLog('8. Backend AI successfully parsed the resume!');
+
+                    // Dispatch credit update event
+                    window.dispatchEvent(new CustomEvent('meowfolio:credits-updated', { detail: { credits: data.creditsRemaining } }));
+                  } catch (parseErr) {
+                    const errMsg = parseErr instanceof Error ? parseErr.message : String(parseErr);
+                    if (errMsg.includes('credits') || errMsg.includes('Payment Required') || errMsg.includes('402')) {
+                      throw parseErr;
+                    }
+                    await addLog(`Warning: Backend AI parsing failed: ${errMsg}. Saving raw text only.`);
+                  }
+                } else {
+                  // Guest user fallback (call Groq directly)
+                  try {
+                    await addLog('7. Guest user: loading browser Groq parser...');
+                    const { buildResumeParsePrompt } = await import('lib/resume-prompt');
+                    const { callGroq } = await import('lib/groq-client');
+                    const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
+                    const result = await callGroq(systemPrompt, userPrompt);
+                    parsedContent = JSON.parse(result);
+                    await addLog('8. Browser Groq successfully parsed the resume!');
+                  } catch (groqErr) {
+                    await addLog(`Warning: Browser Groq call failed: ${groqErr instanceof Error ? groqErr.message : String(groqErr)}. Saving raw text only.`);
+                  }
                 }
 
                 const { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } = await import('types/resumeDocument');
@@ -245,7 +278,6 @@ export function ResumeModalHost() {
                 }
 
                 await addLog('11. Checking database insert mode...');
-                const isGuest = userId === 'guest-user';
                 let finalResumeId = '';
 
                 if (isGuest) {

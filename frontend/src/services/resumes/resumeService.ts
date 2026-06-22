@@ -1,5 +1,6 @@
 import { callGroq } from 'lib/groq-client';
 import { buildResumeParsePrompt } from 'lib/resume-prompt';
+import { apiClient } from 'lib/apiClient';
 import type { ResumeRecord } from 'types/resume';
 import type { AtsScoreResponse, AtsBreakdownItem, RenderOptions, ResumeData, ResumeDocumentRecord } from 'types/resumeDocument';
 import { createEmptyResumeData, DEFAULT_RENDER_OPTIONS } from 'types/resumeDocument';
@@ -593,18 +594,51 @@ export const resumeService = {
     const userId = preResolvedUserId ?? (token ? getUserIdFromToken(token) : 'guest-user');
     const title = sourceName.replace(/\.[^.]+$/, '') || `Imported Resume ${Date.now()}`;
 
-    // Call Groq directly from the frontend — no API route needed.
     let parsedContent = null;
     let parseStatus: 'parsed' | 'partial' | 'failed' = 'partial';
     const warnings: string[] = [];
 
-    try {
-      const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
-      const result = await callGroq(systemPrompt, userPrompt);
-      parsedContent = JSON.parse(result);
-      parseStatus = 'parsed';
-    } catch (err) {
-      warnings.push('AI parsing unavailable. Resume saved with raw text only.');
+    if (token) {
+      try {
+        const response = await fetch(`${apiClient.baseUrl}/parse-resume`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text, source: sourceName })
+        });
+        if (response.status === 402) {
+          throw new Error('No credits remaining. Upgrade your plan to continue.');
+        }
+        if (!response.ok) {
+          const body = await response.text();
+          throw new Error(`AI parsing server error: ${body}`);
+        }
+        const data = await response.json();
+        parsedContent = data.parsed;
+        parseStatus = 'parsed';
+        
+        // Dispatch credit update event
+        window.dispatchEvent(new CustomEvent('meowfolio:credits-updated', { detail: { credits: data.creditsRemaining } }));
+      } catch (err) {
+        console.error('Backend resume parsing failed:', err);
+        const errMsg = err instanceof Error ? err.message : '';
+        if (errMsg.includes('credits') || errMsg.includes('Payment Required') || errMsg.includes('402')) {
+          throw err;
+        }
+        warnings.push('AI parsing unavailable. Resume saved with raw text only.');
+      }
+    } else {
+      // Guest user fallback (call Groq directly)
+      try {
+        const { systemPrompt, userPrompt } = buildResumeParsePrompt(text.slice(0, 8000));
+        const result = await callGroq(systemPrompt, userPrompt);
+        parsedContent = JSON.parse(result);
+        parseStatus = 'parsed';
+      } catch (err) {
+        warnings.push('AI parsing unavailable. Resume saved with raw text only.');
+      }
     }
 
     // If AI parsing failed, use empty content

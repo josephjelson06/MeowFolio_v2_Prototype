@@ -29,6 +29,7 @@ export function WorkspaceShell({
   const location = useLocation();
   const { initials } = useSession();
   const resumesActive = location.pathname === routes.resumes || location.pathname === routes.editor;
+  const jdsActive = location.pathname === routes.jds;
   const mobileTabClass = (active: boolean) =>
     cn(
       'flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-medium text-[color:var(--txt2)] transition',
@@ -56,6 +57,9 @@ export function WorkspaceShell({
             </NavLink>
             <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.coverLetter}>
               Cover Letters
+            </NavLink>
+            <NavLink className={workspaceLinkClass(jdsActive)} to={routes.jds}>
+              JD Match
             </NavLink>
           </div>
           <div className="justify-self-end">
@@ -92,6 +96,10 @@ export function WorkspaceShell({
         <NavLink className={({ isActive }) => mobileTabClass(isActive)} to={routes.coverLetter}>
           <div className="text-base">&#9993;</div>
           <span>Cover Letters</span>
+        </NavLink>
+        <NavLink className={mobileTabClass(jdsActive)} to={routes.jds}>
+          <div className="text-base">&#8857;</div>
+          <span>JD Match</span>
         </NavLink>
         <NavLink className={({ isActive }) => mobileTabClass(isActive)} to={routes.profile}>
           <div className="text-base">&#9675;</div>
