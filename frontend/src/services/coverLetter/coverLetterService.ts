@@ -1,4 +1,6 @@
 import type { CoverLetter } from 'types/coverLetter';
+import type { UserProfile } from 'types/userProfile';
+import type { ParsedJD } from 'types/jd';
 import { callGroq } from 'lib/groq-client';
 
 const STORAGE_KEY = 'meowfolio:cover-letters';
@@ -202,17 +204,38 @@ export const coverLetterService = {
     }
   },
 
-  async generate(resumeText: string, jdText: string, tone = 'professional'): Promise<string> {
+  async generate(
+    resumeText: string,
+    jdText: string,
+    tone = 'professional',
+    profileData?: UserProfile | null,
+    parsedJd?: ParsedJD | null
+  ): Promise<string> {
     const systemPrompt = `You are an expert career advisor and professional writer.
-Write a highly-tailored, compelling cover letter matching the candidate's resume details to the job description (JD) requirements.
+Write a highly-tailored, compelling cover letter matching the candidate's professional background to the job description (JD) requirements.
 The tone of the letter should be ${tone}.
 Format the layout nicely using normal formal spacing and structure (date, recipient block, introduction, body highlighting candidate achievements, call to action, closing).
-Return the result STRICTLY as a JSON object containing a single key "cover_letter". Do not output markdown text outside the JSON. Example:
+
+CRITICAL INSTRUCTIONS:
+1. Make it tailored and personalized. Avoid generic placeholders.
+2. Directly align candidate achievements, projects, or roles to the target role's key responsibilities and required skills.
+3. Reference the company's domain or context to show interest and research.
+4. Keep the letter to 3-4 structured paragraphs, maintaining a professional but engaging voice.
+5. Return the result STRICTLY as a JSON object containing a single key "cover_letter". Do not output markdown text outside the JSON. Example:
 {
   "cover_letter": "Dear Hiring Manager... \\n\\nSincerely,\\n[Name]"
 }`;
 
-    const userPrompt = `RESUME CONTENT:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`;
+    let userPrompt = '';
+    if (profileData && parsedJd) {
+      userPrompt = `CANDIDATE PROFILE DATA (Structured):\n${JSON.stringify(profileData, null, 2)}\n\nTARGET JOB INTEL (Parsed JD):\n${JSON.stringify(parsedJd, null, 2)}`;
+    } else if (profileData) {
+      userPrompt = `CANDIDATE PROFILE DATA (Structured):\n${JSON.stringify(profileData, null, 2)}\n\nJOB DESCRIPTION:\n${jdText}`;
+    } else if (parsedJd) {
+      userPrompt = `RESUME CONTENT:\n${resumeText}\n\nTARGET JOB INTEL (Parsed JD):\n${JSON.stringify(parsedJd, null, 2)}`;
+    } else {
+      userPrompt = `RESUME CONTENT:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`;
+    }
 
     const rawResult = await callGroq(systemPrompt, userPrompt);
     try {
@@ -226,3 +249,4 @@ Return the result STRICTLY as a JSON object containing a single key "cover_lette
     }
   },
 };
+

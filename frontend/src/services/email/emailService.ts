@@ -1,4 +1,6 @@
 import type { EmailRecord } from 'types/email';
+import type { UserProfile } from 'types/userProfile';
+import type { ParsedJD } from 'types/jd';
 import { callGroq } from 'lib/groq-client';
 
 const STORAGE_KEY = 'meowfolio:emails';
@@ -208,15 +210,23 @@ export const emailService = {
     resumeText: string,
     jdText: string,
     emailType = 'outreach',
-    tone = 'professional'
+    tone = 'professional',
+    profileData?: UserProfile | null,
+    parsedJd?: ParsedJD | null
   ): Promise<{ subject: string; body: string }> {
     const systemPrompt = `You are an expert career consultant and professional copywriter.
-Write a highly-tailored, compelling email based on the candidate's resume details and the target job description (JD) provided.
-The email type should be ${emailType} (e.g. outreach/cold email, referral request, or follow-up).
-The tone of the email should be ${tone}.
-Format the output STRICTLY as a JSON object containing two keys:
+Write a highly-tailored, compelling email based on the candidate's professional background and the target job description (JD).
+The email type should be: ${emailType} (e.g. outreach/cold email, referral request, or follow-up).
+The tone of the email should be: ${tone}.
+
+CRITICAL EMAIL GUIDELINES:
+1. Keep the email length between 100 to 150 words. Be brief and respectful of their time.
+2. Hook the reader immediately. Avoid long introductions.
+3. Make it metric-led: extract and highlight 1 or 2 key high-impact achievements/metrics from the candidate's experience that directly solve a pain point or align with responsibilities in the JD.
+4. Have a clear, single low-friction Call to Action (CTA) at the end.
+5. Format the output STRICTLY as a JSON object containing two keys:
 - "subject" (the email subject line)
-- "body" (the email body, using appropriate \n formatting for paragraph breaks)
+- "body" (the email body, using appropriate \\n formatting for paragraph breaks)
 
 Do not output markdown text outside the JSON. Example:
 {
@@ -224,7 +234,16 @@ Do not output markdown text outside the JSON. Example:
   "body": "Dear Hiring Manager... \\n\\nBest regards,\\n[Name]"
 }`;
 
-    const userPrompt = `RESUME CONTENT:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`;
+    let userPrompt = '';
+    if (profileData && parsedJd) {
+      userPrompt = `CANDIDATE PROFILE DATA (Structured):\n${JSON.stringify(profileData, null, 2)}\n\nTARGET JOB INTEL (Parsed JD):\n${JSON.stringify(parsedJd, null, 2)}`;
+    } else if (profileData) {
+      userPrompt = `CANDIDATE PROFILE DATA (Structured):\n${JSON.stringify(profileData, null, 2)}\n\nJOB DESCRIPTION:\n${jdText}`;
+    } else if (parsedJd) {
+      userPrompt = `RESUME CONTENT:\n${resumeText}\n\nTARGET JOB INTEL (Parsed JD):\n${JSON.stringify(parsedJd, null, 2)}`;
+    } else {
+      userPrompt = `RESUME CONTENT:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`;
+    }
 
     const rawResult = await callGroq(systemPrompt, userPrompt);
     try {
@@ -247,3 +266,4 @@ Do not output markdown text outside the JSON. Example:
     }
   },
 };
+

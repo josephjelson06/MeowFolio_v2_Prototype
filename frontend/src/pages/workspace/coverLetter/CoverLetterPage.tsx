@@ -3,7 +3,9 @@ import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { coverLetterService } from 'services/coverLetter/coverLetterService';
 import { resumeService } from 'services/resumeService';
 import { jdService } from 'services/jdService';
+import { userProfileService } from 'services/profile/userProfileService';
 import { buildResumePlainText } from 'types/resumeDocument';
+import { buildProfilePlainText } from 'types/userProfile';
 import { downloadTextFile } from 'lib/formatters';
 import type { ResumeRecord } from 'types/resume';
 import type { JdRecord } from 'types/jd';
@@ -59,8 +61,8 @@ export function CoverLetterPage() {
   const [jds, setJds] = useState<JdRecord[]>([]);
   const [savedLetters, setSavedLetters] = useState<CoverLetter[]>([]);
 
-  // Form State
-  const [selectedResumeId, setSelectedResumeId] = useState('');
+  // Form State - default to profile first
+  const [selectedResumeId, setSelectedResumeId] = useState('profile');
   const [selectedJdId, setSelectedJdId] = useState('manual');
   const [manualJdText, setManualJdText] = useState('');
   const [tone, setTone] = useState('professional');
@@ -87,10 +89,7 @@ export function CoverLetterPage() {
       setJds(jdList);
       setSavedLetters(clList);
 
-      // Pre-select defaults
-      if (resList.length > 0 && !selectedResumeId) {
-        setSelectedResumeId(resList[0].id);
-      }
+      // Pre-select defaults if we don't have selected values yet
       if (jdList.length > 0 && selectedJdId === 'manual') {
         setSelectedJdId(jdList[0].id);
       }
@@ -111,7 +110,7 @@ export function CoverLetterPage() {
   // AI Generation trigger
   const handleGenerate = async () => {
     if (!selectedResumeId) {
-      setErrorText('Please select a resume first.');
+      setErrorText('Please select a source first.');
       return;
     }
 
@@ -127,16 +126,35 @@ export function CoverLetterPage() {
     setActiveLetter(null);
 
     try {
-      // 1. Get Resume Content
-      const resumeDoc = await resumeService.getRecord(selectedResumeId);
-      const resumeText = buildResumePlainText(resumeDoc.content);
+      let sourceText = '';
+      let profileData = null;
 
-      if (!resumeText || !resumeText.trim()) {
-        throw new Error('The selected resume appears to contain empty text.');
+      // 1. Get Source Data
+      if (selectedResumeId === 'profile') {
+        const profile = await userProfileService.get();
+        sourceText = buildProfilePlainText(profile);
+        profileData = profile;
+        if (!sourceText.trim()) {
+          throw new Error('Your Master User Profile is currently empty. Please add details in the Profile page first.');
+        }
+      } else {
+        const resumeDoc = await resumeService.getRecord(selectedResumeId);
+        sourceText = buildResumePlainText(resumeDoc.content);
+        if (!sourceText.trim()) {
+          throw new Error('The selected resume appears to contain empty text.');
+        }
       }
 
+      const parsedJd = selectedJdId !== 'manual' ? activeJdRecord?.parsedData || null : null;
+
       // 2. Call Service to Generate
-      const generatedContent = await coverLetterService.generate(resumeText, jdText, tone);
+      const generatedContent = await coverLetterService.generate(
+        sourceText,
+        jdText,
+        tone,
+        profileData,
+        parsedJd
+      );
 
       // 3. Populate editing state
       const targetCompany = selectedJdId === 'manual' ? '' : activeJdRecord?.company || '';
@@ -157,6 +175,7 @@ export function CoverLetterPage() {
       setLoading(false);
     }
   };
+
 
   // Save to Database / LocalStorage Library
   const handleSave = async () => {
@@ -268,25 +287,20 @@ export function CoverLetterPage() {
               {/* Resume Selector */}
               <div className="grid gap-1.5">
                 <label className="font-headline text-[10px] font-bold uppercase tracking-wider text-[color:var(--txt2)]">
-                  1. Select Source Resume
+                  1. Select Source Data
                 </label>
-                {resumes.length === 0 ? (
-                  <div className="text-xs text-error font-bold">
-                    No resumes found. Please go to the Resumes page to create one first.
-                  </div>
-                ) : (
-                  <select
-                    className="w-full rounded-xl border-[1.5px] border-charcoal bg-white px-3 py-2.5 font-headline text-xs font-bold shadow-tactile-sm focus:border-primary"
-                    value={selectedResumeId}
-                    onChange={e => setSelectedResumeId(e.target.value)}
-                  >
-                    {resumes.map(r => (
-                      <option key={r.id} value={r.id}>
-                        {r.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
+                <select
+                  className="w-full rounded-xl border-[1.5px] border-charcoal bg-white px-3 py-2.5 font-headline text-xs font-bold shadow-tactile-sm focus:border-primary"
+                  value={selectedResumeId}
+                  onChange={e => setSelectedResumeId(e.target.value)}
+                >
+                  <option value="profile">Master User Profile</option>
+                  {resumes.map(r => (
+                    <option key={r.id} value={r.id}>
+                      Resume: {r.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* JD Selector */}
