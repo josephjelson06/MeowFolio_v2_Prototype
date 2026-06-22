@@ -5,6 +5,7 @@ import { WorkspaceShell } from 'components/workspace/WorkspaceShell';
 import { jdService, type JdReportModel } from 'services/jdService';
 import { jdParserService } from 'services/jds/jdParserService';
 import { resumeService } from 'services/resumeService';
+import { analyzeGap, generateResume, type GapAnalysisResult } from 'services/resumes/resumeGeneratorService';
 import { useUiContext } from 'state/ui/uiContext';
 import type { JdRecord, JdTailoredSuggestions, ParsedJD } from 'types/jd';
 import type { ResumePickerOption } from 'types/resume';
@@ -845,6 +846,13 @@ export function JdsPage() {
   const [parsing, setParsing] = useState(false);
   const [parseError, setParseError] = useState('');
 
+  // ── Resume Generation (Phase 3) ─────────────────────────────────────────
+  const [gapAnalysis, setGapAnalysis] = useState<GapAnalysisResult | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState('');
+  const [generatedResumeId, setGeneratedResumeId] = useState<string | null>(null);
+  const [generatedResumeTitle, setGeneratedResumeTitle] = useState('');
+
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [reportState, setReportState] = useState<JdReportModel | null>(null);
@@ -1087,13 +1095,46 @@ export function JdsPage() {
     if (!selectedJd) return;
     setParsing(true);
     setParseError('');
+    // Reset generation results when re-parsing
+    setGapAnalysis(null);
+    setGeneratedResumeId(null);
+    setGeneratedResumeTitle('');
     try {
       const result = await jdParserService.parse(selectedJd);
       setParsedJd(result);
+      // Auto-run gap analysis if there's a selected resume
+      if (selectedResume) {
+        const { userProfileService } = await import('services/profile/userProfileService');
+        const profile = await userProfileService.get();
+        const gap = analyzeGap(profile, result);
+        setGapAnalysis(gap);
+      }
     } catch (err) {
       setParseError(err instanceof Error ? err.message : 'Parse failed. Please try again.');
     } finally {
       setParsing(false);
+    }
+  }
+
+  async function handleGenerate(forceMode?: 'tailor' | 'fresh') {
+    if (!parsedJd) return;
+    setGenerating(true);
+    setGenerateError('');
+    setGeneratedResumeId(null);
+    try {
+      const result = await generateResume(parsedJd, {
+        forceMode,
+        baseResumeId: selectedResume ?? undefined,
+      });
+      setGeneratedResumeId(result.resumeId);
+      setGeneratedResumeTitle(result.resumeTitle);
+      setGapAnalysis(result.gapAnalysis);
+      // Refresh resume list so the new resume appears in picker
+      window.dispatchEvent(new CustomEvent('meowfolio:resume-library-changed'));
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : 'Generation failed. Please try again.');
+    } finally {
+      setGenerating(false);
     }
   }
 
@@ -1382,6 +1423,104 @@ export function JdsPage() {
                     </div>
                   </div>
                 )}
+
+                {/* ── Phase 3: Generate Resume ──────────────────────────── */}
+                <div className="rounded-[1.75rem] border-[1.5px] border-charcoal/75 bg-white/90 p-5 shadow-tactile md:p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="grid gap-1">
+                      <div className="font-headline text-sm font-extrabold text-on-surface">🚀 Generate Tailored Resume</div>
+                      <div className="text-xs text-[color:var(--txt2)]">
+                        Uses your Profile + this JD to create an ATS-optimized resume
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Gap analysis badge */}
+                  {gapAnalysis && (
+                    <div className="mt-4 rounded-[1.1rem] border border-charcoal/10 bg-surface px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="grid gap-0.5">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--txt2)]">Gap Score</div>
+                          <div className="text-sm font-bold text-on-surface">{gapAnalysis.verdict}</div>
+                        </div>
+                        <div className={cn(
+                          'grid size-12 place-items-center rounded-[1rem] font-headline text-xl font-extrabold',
+                          gapAnalysis.gapScore < 40 ? 'bg-tertiary-fixed text-tertiary' : 'bg-primary-fixed text-primary',
+                        )}>
+                          {gapAnalysis.gapScore}
+                        </div>
+                      </div>
+                      <div className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[color:var(--txt2)]">
+                        Recommended mode: <span className={cn('font-bold', gapAnalysis.mode === 'tailor' ? 'text-tertiary' : 'text-primary')}>
+                          {gapAnalysis.mode === 'tailor' ? 'Tailor existing resume' : 'Generate fresh resume'}
+                        </span>
+                      </div>
+                      {gapAnalysis.missingMustHave.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          <span className="text-[10px] font-semibold text-error">Missing:</span>
+                          {gapAnalysis.missingMustHave.slice(0, 6).map(s => (
+                            <span key={s} className="rounded-full bg-error-container/50 px-2 py-0.5 text-[10px] font-semibold text-error">{s}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {generateError && (
+                    <div className="mt-3 rounded-xl border border-error/30 bg-error/5 p-3 text-xs text-error">
+                      {generateError}
+                    </div>
+                  )}
+
+                  {/* Success */}
+                  {generatedResumeId && !generating && (
+                    <div className="mt-3 rounded-[1.1rem] border border-tertiary/30 bg-tertiary-fixed px-4 py-3">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-tertiary">✓ Resume Generated</div>
+                      <div className="mt-0.5 text-sm font-semibold text-on-surface">{generatedResumeTitle}</div>
+                      <div className="mt-1 text-xs text-[color:var(--txt2)]">Open the Resume Library to view and edit it.</div>
+                    </div>
+                  )}
+
+                  {/* Action buttons */}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {generating ? (
+                      <div className="flex items-center gap-2 px-2 text-sm text-[color:var(--txt2)]">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                        Generating resume…
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          className="inline-flex min-h-9 items-center justify-center rounded-full border-2 border-charcoal bg-white/95 px-4 py-2 font-headline text-[11px] font-bold text-primary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-fixed hover:shadow-tactile disabled:pointer-events-none disabled:opacity-40"
+                          type="button"
+                          disabled={generating}
+                          onClick={() => { void handleGenerate(); }}
+                          title="AI picks the best mode based on gap analysis"
+                        >
+                          ★ Generate (Auto)
+                        </button>
+                        <button
+                          className={cn(actionBtnClass)}
+                          type="button"
+                          disabled={generating || !selectedResume}
+                          onClick={() => { void handleGenerate('tailor'); }}
+                          title="Tailor your selected resume to this JD"
+                        >
+                          ↺ Tailor Existing
+                        </button>
+                        <button
+                          className={cn(actionBtnClass)}
+                          type="button"
+                          disabled={generating}
+                          onClick={() => { void handleGenerate('fresh'); }}
+                          title="Generate a completely fresh resume for this JD"
+                        >
+                          ✦ Generate Fresh
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
 
                 {/* Two-col: responsibilities + preferred quals */}
                 <div className="grid gap-5 md:grid-cols-2">

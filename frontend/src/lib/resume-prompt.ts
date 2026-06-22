@@ -405,3 +405,180 @@ export function buildJdIntelligencePrompt(rawText: string) {
     userPrompt: `Extract structured intelligence from the following Job Description:\n\n${rawText.slice(0, 10000)}`,
   };
 }
+
+/* ─── Phase 3: Resume Generation (Fresh & Tailor-from-Profile) ──────────────── */
+
+const RESUME_GEN_RULES = `
+Bullet-point writing framework (MANDATORY for all experience/project bullets):
+- Bullet 1 (Action + Context): Start with a strong past-tense action verb. Describe WHAT was built/done.
+- Bullet 2 (Purpose / Impact): WHY it was built or what problem it solved.
+- Bullet 3 (Metric / Outcome): Quantified result — %, $, users, time saved. If no real metric available, write a credible approximation.
+
+Resume writing rules:
+- Professional summary: 3-4 sentences. Opens with a strong adjective + title. Weaves in seniority, top 2-3 skills, and a value proposition.
+- Skills: Mirror the EXACT terminology from the JD's mustHaveSkills and keyAtsKeywords. Group by category if 8+ skills.
+- Experience bullets: 3 bullets per role (follow the 3-bullet framework above).
+- Project bullets: 2-3 bullets per project (follow the 3-bullet framework above).
+- NO filler phrases: avoid "responsible for", "assisted with", "helped", "worked on".
+- Dates: use the exact format the user provided. Never invent dates.
+- Output ONLY the JSON — no markdown fences, no commentary.
+`.trim();
+
+const RESUME_GEN_SCHEMA_NOTE = `
+Output must be a valid ResumeData JSON matching this schema exactly:
+${SCHEMA_OVERVIEW}
+
+Rules for the schema:
+- header.role = the job title from the JD (tailored exactly)
+- summary.content = the professional summary paragraph
+- skills.mode = "grouped" if multiple categories, "csv" if single list
+- experience[].description.mode = "bullets"
+- projects[].description.mode = "bullets"
+- Use createEmptyDateField patterns: { mode, startMonth, startYear, endMonth, endYear, isOngoing }
+- Use link patterns: { url, displayMode: "plain-url", displayText: null }
+- Empty sections = keep as empty arrays/objects (never omit keys)
+`.trim();
+
+/**
+ * FRESH GENERATION — build a complete resume from UserProfile + ParsedJD.
+ * Used when gap score is HIGH (user's background does not match JD closely).
+ */
+export function buildResumeFreshGenPrompt(
+  userProfile: {
+    fullName: string;
+    phone?: string;
+    location?: string;
+    linkedIn?: string;
+    github?: string;
+    portfolio?: string;
+    defaultTitle?: string;
+    summary?: string;
+    education: Array<{ institution: string; degree: string; field: string; startDate: string; endDate: string; gpa?: string; location?: string }>;
+    experience: Array<{ company: string; role: string; startDate: string; endDate: string; location?: string; current?: boolean; bullets: string[] }>;
+    projects: Array<{ name: string; techStack: string; description: string; link?: string; startDate?: string; endDate?: string }>;
+    skillGroups: Array<{ category: string; skills: string }>;
+    achievements: Array<{ title: string; issuer?: string; date?: string; description?: string }>;
+  },
+  parsedJd: {
+    role: string;
+    seniority: string;
+    company: string;
+    mustHaveSkills: string[];
+    niceToHaveSkills: string[];
+    keyResponsibilities: string[];
+    keyAtsKeywords: string[];
+    requiredExperience: string;
+    companyContext: string;
+    roleContext: string;
+  },
+) {
+  const systemPrompt = `
+You are an elite resume writer and ATS optimization expert.
+Your task: generate a COMPLETE, ATS-optimized resume JSON from the candidate's profile data and the target job description.
+
+${RESUME_GEN_RULES}
+
+${RESUME_GEN_SCHEMA_NOTE}
+`.trim();
+
+  const userPrompt = `
+TARGET JD:
+Role: ${parsedJd.role} at ${parsedJd.company}
+Seniority: ${parsedJd.seniority}
+Must-Have Skills: ${parsedJd.mustHaveSkills.join(', ')}
+Nice-to-Have: ${parsedJd.niceToHaveSkills.join(', ')}
+Key Responsibilities: ${parsedJd.keyResponsibilities.map((r, i) => `${i + 1}. ${r}`).join('\n')}
+ATS Keywords (MUST appear in resume): ${parsedJd.keyAtsKeywords.join(', ')}
+Experience Required: ${parsedJd.requiredExperience}
+Company Context: ${parsedJd.companyContext}
+Role Context: ${parsedJd.roleContext}
+
+CANDIDATE PROFILE:
+Name: ${userProfile.fullName}
+Phone: ${userProfile.phone ?? ''}
+Location: ${userProfile.location ?? ''}
+LinkedIn: ${userProfile.linkedIn ?? ''}
+GitHub: ${userProfile.github ?? ''}
+Portfolio: ${userProfile.portfolio ?? ''}
+Default Title: ${userProfile.defaultTitle ?? ''}
+
+Education:
+${userProfile.education.map(e => `- ${e.degree} in ${e.field} | ${e.institution} | ${e.startDate}–${e.endDate}${e.gpa ? ` | GPA: ${e.gpa}` : ''}`).join('\n') || 'None provided'}
+
+Experience:
+${userProfile.experience.map(e =>
+  `- ${e.role} @ ${e.company} (${e.startDate}–${e.current ? 'Present' : e.endDate})\n  Bullets: ${e.bullets.filter(Boolean).join(' | ')}`
+).join('\n') || 'None provided'}
+
+Projects:
+${userProfile.projects.map(p =>
+  `- ${p.name} [${p.techStack}]\n  ${p.description}`
+).join('\n') || 'None provided'}
+
+Skills:
+${userProfile.skillGroups.map(g => `${g.category}: ${g.skills}`).join('\n') || 'None provided'}
+
+Achievements:
+${userProfile.achievements.map(a => `- ${a.title}${a.issuer ? ` | ${a.issuer}` : ''}${a.date ? ` | ${a.date}` : ''}`).join('\n') || 'None provided'}
+
+TASK: Generate a complete, ATS-optimized ResumeData JSON for this candidate targeting the JD above.
+- Rewrite all bullets using the 3-bullet framework (Action → Purpose → Metric).
+- Ensure ALL keyAtsKeywords appear naturally in the resume text.
+- Set header.role to exactly: "${parsedJd.role}"
+- Write a new professional summary tailored specifically to ${parsedJd.company} and this role.
+- Prioritize and reorder skills to lead with mustHaveSkills.
+
+Return ONLY the JSON. No markdown. No commentary.
+`.trim();
+
+  return { systemPrompt, userPrompt };
+}
+
+/**
+ * TAILOR MODE — rewrite an existing ResumeData to match a ParsedJD more closely.
+ * Used when gap score is LOW (existing resume is already relevant).
+ */
+export function buildResumeTailorFromProfilePrompt(
+  existingResumeJson: string,
+  parsedJd: {
+    role: string;
+    company: string;
+    mustHaveSkills: string[];
+    keyResponsibilities: string[];
+    keyAtsKeywords: string[];
+    companyContext: string;
+  },
+) {
+  const systemPrompt = `
+You are an elite resume tailoring specialist.
+Your task: surgically update an existing ResumeData JSON to maximize ATS score and human appeal for a specific job.
+
+${RESUME_GEN_RULES}
+
+${RESUME_GEN_SCHEMA_NOTE}
+`.trim();
+
+  const userPrompt = `
+TARGET JD:
+Role: ${parsedJd.role} at ${parsedJd.company}
+Must-Have Skills: ${parsedJd.mustHaveSkills.join(', ')}
+Key Responsibilities: ${parsedJd.keyResponsibilities.slice(0, 5).map((r, i) => `${i + 1}. ${r}`).join('\n')}
+ATS Keywords (must appear in resume): ${parsedJd.keyAtsKeywords.join(', ')}
+Company Context: ${parsedJd.companyContext}
+
+EXISTING RESUME JSON:
+${existingResumeJson.slice(0, 8000)}
+
+TASK: Return the COMPLETE updated ResumeData JSON with these changes:
+1. Update header.role to: "${parsedJd.role}"
+2. Rewrite summary.content to open with a strong adjective, reference ${parsedJd.company} culture/context, and highlight top matching skills.
+3. Update skills to lead with mustHaveSkills, naturally weave in all keyAtsKeywords.
+4. Rewrite experience bullets using the 3-bullet framework. Make them specific to responsibilities above.
+5. Rewrite project bullets to highlight technologies matching mustHaveSkills.
+6. Keep all dates, institutions, companies, and personal info EXACTLY as-is — do not invent or change factual data.
+
+Return ONLY the complete JSON. No markdown. No commentary.
+`.trim();
+
+  return { systemPrompt, userPrompt };
+}
