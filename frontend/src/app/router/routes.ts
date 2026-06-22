@@ -11,5 +11,6 @@ export const routes = {
   profile: '/profile',
   debugPdf: '/debug-pdf',
   coverLetter: '/cover-letter',
+  emailDrafter: '/email-drafter',
 } as const;
 

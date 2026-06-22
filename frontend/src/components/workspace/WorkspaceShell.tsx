@@ -61,6 +61,9 @@ export function WorkspaceShell({
             <NavLink className={workspaceLinkClass(jdsActive)} to={routes.jds}>
               JD Match
             </NavLink>
+            <NavLink className={({ isActive }) => workspaceLinkClass(isActive)} to={routes.emailDrafter}>
+              Email Drafter
+            </NavLink>
           </div>
           <div className="justify-self-end">
             <NavLink className="grid size-9 place-items-center rounded-full border-[1.5px] border-charcoal/75 bg-white/85 font-headline text-xs font-bold text-secondary shadow-tactile-sm transition hover:-translate-x-px hover:-translate-y-px hover:shadow-tactile" to={routes.profile}>
@@ -100,6 +103,10 @@ export function WorkspaceShell({
         <NavLink className={mobileTabClass(jdsActive)} to={routes.jds}>
           <div className="text-base">&#8857;</div>
           <span>JD Match</span>
+        </NavLink>
+        <NavLink className={({ isActive }) => mobileTabClass(isActive)} to={routes.emailDrafter}>
+          <div className="text-base">&#9993;</div>
+          <span>Email Drafter</span>
         </NavLink>
         <NavLink className={({ isActive }) => mobileTabClass(isActive)} to={routes.profile}>
           <div className="text-base">&#9675;</div>
