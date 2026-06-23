@@ -13,6 +13,7 @@
 #let typography = opts.at("typography", default: (:))
 #let spacing = opts.at("spacing", default: (:))
 #let colors = opts.at("colors", default: (:))
+#let layout = opts.at("layout", default: (:))
 
 #let highlight-color = rgb(
   opts.at("accentColorR", default: 140),
@@ -30,8 +31,13 @@
 #let section-gap = eval(str(section-gap-val) + "pt")
 #let entry-gap = eval(str(entry-gap-val) + "pt")
 
+#let page-size = layout.at("pageSize", default: opts.at("pageSize", default: "letter"))
+#let typst-page-size = if page-size == "a4" { "a4" } else if page-size == "legal" { "us-legal" } else { "us-letter" }
+
+#let heading-font = typography.at("headingFont", default: opts.at("headingsFont", default: body-font))
+
 // ── Page setup ────────────────────────────────────────────────────────────────
-#set page(paper: "us-letter", margin: (x: page-margin, y: page-margin))
+#set page(paper: typst-page-size, margin: (x: page-margin, y: page-margin))
 #set text(font: body-font, size: body-size)
 #set par(justify: false, leading: line-height - 1em)
 
@@ -45,50 +51,110 @@
 // ── Header ────────────────────────────────════════════════════════════════════
 #let header-data = data.at("header", default: none)
 #if header-data != none {
-  let name = field(header-data, "name")
-  let role = field(header-data, "role")
+  let header-style = layout.at("headerStyle", default: opts.at("headerStyle", default: "left"))
   
-  // Left-aligned bold layout
-  if name != "" {
-    text(size: 28pt, weight: "black", fill: rgb(30, 30, 30), name)
+  if header-style == "centered" {
+    // Three-column centered header: left contact | center name+role | right links
+    grid(
+      columns: (1fr, 2fr, 1fr),
+      align: (left, center, right),
+
+      // Left column: phone, city, email
+      {
+        let items = ()
+        let phone = field(header-data, "phone")
+        let address = field(header-data, "address")
+        let email = field(header-data, "email")
+        if phone != "" { items.push(text(size: 9pt, phone)) }
+        if address != "" { items.push(text(size: 9pt, address)) }
+        if email != "" { items.push(text(size: 9pt, link("mailto:" + email, email))) }
+        items.join(linebreak())
+      },
+
+      // Center column: name + role
+      {
+        let name = field(header-data, "name")
+        let role = field(header-data, "role")
+        if name != "" {
+          text(size: 28pt, weight: "black", fill: rgb(30, 30, 30), name)
+        }
+        if role != "" {
+          linebreak()
+          v(0.1em)
+          text(size: 12pt, weight: "bold", fill: highlight-color, role)
+        }
+      },
+
+      // Right column: github, linkedin, website
+      {
+        let items = ()
+        let gh = header-data.at("github", default: none)
+        let li = header-data.at("linkedin", default: none)
+        let ws = header-data.at("website", default: none)
+        if gh != none and field(gh, "url") != "" {
+          let url = field(gh, "url")
+          let display = field(gh, "displayText", fallback: url)
+          items.push(text(size: 9pt, link(url, display)))
+        }
+        if li != none and field(li, "url") != "" {
+          let url = field(li, "url")
+          let display = field(li, "displayText", fallback: url)
+          items.push(text(size: 9pt, link(url, display)))
+        }
+        if ws != none and field(ws, "url") != "" {
+          let url = field(ws, "url")
+          let display = field(ws, "displayText", fallback: url)
+          items.push(text(size: 9pt, link(url, display)))
+        }
+        items.join(linebreak())
+      },
+    )
+  } else {
+    // Left-aligned bold layout
+    let name = field(header-data, "name")
+    let role = field(header-data, "role")
+    
+    if name != "" {
+      text(size: 28pt, weight: "black", fill: rgb(30, 30, 30), name)
+    }
+    if role != "" {
+      linebreak()
+      v(0.1em)
+      text(size: 12pt, weight: "bold", fill: highlight-color, role)
+    }
+    
+    v(0.4em)
+    
+    // Contact details in a clean flex/grid block
+    let contacts = ()
+    let email = field(header-data, "email")
+    let phone = field(header-data, "phone")
+    let address = field(header-data, "address")
+    let gh = header-data.at("github", default: none)
+    let li = header-data.at("linkedin", default: none)
+    let ws = header-data.at("website", default: none)
+    
+    if email != "" { contacts.push(link("mailto:" + email, email)) }
+    if phone != "" { contacts.push(phone) }
+    if address != "" { contacts.push(address) }
+    if gh != none and field(gh, "url") != "" {
+      let url = field(gh, "url")
+      let display = field(gh, "displayText", fallback: url)
+      contacts.push(link(url, display))
+    }
+    if li != none and field(li, "url") != "" {
+      let url = field(li, "url")
+      let display = field(li, "displayText", fallback: url)
+      contacts.push(link(url, display))
+    }
+    if ws != none and field(ws, "url") != "" {
+      let url = field(ws, "url")
+      let display = field(ws, "displayText", fallback: url)
+      contacts.push(link(url, display))
+    }
+    
+    text(size: 9pt, weight: "medium", fill: rgb(70, 70, 70), contacts.join("   |   "))
   }
-  if role != "" {
-    linebreak()
-    v(0.1em)
-    text(size: 12pt, weight: "bold", fill: highlight-color, role)
-  }
-  
-  v(0.4em)
-  
-  // Contact details in a clean flex/grid block
-  let contacts = ()
-  let email = field(header-data, "email")
-  let phone = field(header-data, "phone")
-  let address = field(header-data, "address")
-  let gh = header-data.at("github", default: none)
-  let li = header-data.at("linkedin", default: none)
-  let ws = header-data.at("website", default: none)
-  
-  if email != "" { contacts.push(link("mailto:" + email, email)) }
-  if phone != "" { contacts.push(phone) }
-  if address != "" { contacts.push(address) }
-  if gh != none and field(gh, "url") != "" {
-    let url = field(gh, "url")
-    let display = field(gh, "displayText", fallback: url)
-    contacts.push(link(url, display))
-  }
-  if li != none and field(li, "url") != "" {
-    let url = field(li, "url")
-    let display = field(li, "displayText", fallback: url)
-    contacts.push(link(url, display))
-  }
-  if ws != none and field(ws, "url") != "" {
-    let url = field(ws, "url")
-    let display = field(ws, "displayText", fallback: url)
-    contacts.push(link(url, display))
-  }
-  
-  text(size: 9pt, weight: "medium", fill: rgb(70, 70, 70), contacts.join("   |   "))
   v(0.8em)
 }
 
@@ -96,11 +162,20 @@
 #let section-heading(title) = {
   v(section-gap)
   block(width: 100%, breakable: false, {
-    // Bold, uppercase, colored, with a confident horizontal accent line
-    text(fill: highlight-color, weight: "black", size: 12pt, upper(title))
-    v(-0.5em)
-    line(length: 100%, stroke: 1.5pt + highlight-color)
-    v(0.25em)
+    let divider-style = layout.at("sectionDivider", default: opts.at("sectionDivider", default: "underline"))
+    text(fill: highlight-color, weight: "black", font: heading-font, size: 12pt, upper(title))
+    
+    if divider-style == "rule" {
+      v(-0.5em)
+      line(length: 100%, stroke: 0.75pt + rgb(200, 200, 200))
+      v(0.25em)
+    } else if divider-style == "underline" {
+      v(-0.5em)
+      line(length: 100%, stroke: 1.5pt + highlight-color)
+      v(0.25em)
+    } else {
+      v(0.25em)
+    }
   })
 }
 
@@ -157,7 +232,9 @@
 #let bullet-list(items) = {
   let filtered = items.filter(b => b != none and str(b).trim() != "")
   if filtered.len() > 0 {
-    set list(marker: ([▪],), body-indent: 0.5em)
+    let bullet-style = layout.at("bulletStyle", default: opts.at("bulletStyle", default: "square"))
+    let marker-sym = if bullet-style == "bullet" { [•] } else if bullet-style == "dash" { [–] } else { [▪] }
+    set list(marker: (marker-sym,), body-indent: 0.5em)
     for item in filtered {
       [- #text(size: body-size, str(item))]
     }

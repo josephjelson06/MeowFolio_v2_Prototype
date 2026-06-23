@@ -10,9 +10,11 @@
 #let opts = json(bytes(sys.inputs.at("render-options", default: "{}")))
 
 // ── Config ────────────────────────────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────────────────
 #let typography = opts.at("typography", default: (:))
 #let spacing = opts.at("spacing", default: (:))
 #let colors = opts.at("colors", default: (:))
+#let layout = opts.at("layout", default: (:))
 
 #let highlight-color = rgb(
   opts.at("accentColorR", default: 61),
@@ -30,8 +32,13 @@
 #let section-gap = eval(str(section-gap-val) + "pt")
 #let entry-gap = eval(str(entry-gap-val) + "pt")
 
+#let page-size = layout.at("pageSize", default: opts.at("pageSize", default: "letter"))
+#let typst-page-size = if page-size == "a4" { "a4" } else if page-size == "legal" { "us-legal" } else { "us-letter" }
+
+#let heading-font = typography.at("headingFont", default: opts.at("headingsFont", default: body-font))
+
 // ── Page setup ────────────────────────────────────────────────────────────────
-#set page(paper: "us-letter", margin: (x: page-margin, y: page-margin))
+#set page(paper: typst-page-size, margin: (x: page-margin, y: page-margin))
 #set text(font: body-font, size: body-size)
 #set par(justify: false, leading: line-height - 1em)
 
@@ -45,61 +52,101 @@
 // ── Header ────────────────────────────────────────────────────────────────────
 #let header-data = data.at("header", default: none)
 #if header-data != none {
-  // Three-column header: left contact | center name+role | right links
-  grid(
-    columns: (1fr, 2fr, 1fr),
-    align: (left, center, right),
+  let header-style = layout.at("headerStyle", default: opts.at("headerStyle", default: "centered"))
 
-    // Left column: phone, city, email
-    {
-      let items = ()
-      let phone = field(header-data, "phone")
-      let address = field(header-data, "address")
-      let email = field(header-data, "email")
-      if phone != "" { items.push(text(size: 9pt, phone)) }
-      if address != "" { items.push(text(size: 9pt, address)) }
-      if email != "" { items.push(text(size: 9pt, link("mailto:" + email, email))) }
-      items.join(linebreak())
-    },
+  if header-style == "left" {
+    // Left-aligned header style
+    let name = field(header-data, "name")
+    let role = field(header-data, "role")
+    if name != "" {
+      text(size: 22pt, weight: "bold", name)
+    }
+    if role != "" {
+      linebreak()
+      v(0.1em)
+      text(size: 11pt, weight: "medium", fill: highlight-color, role)
+    }
+    v(0.3em)
 
-    // Center column: name + role
-    {
-      let name = field(header-data, "name")
-      let role = field(header-data, "role")
-      if name != "" {
-        text(size: 22pt, weight: "bold", name)
-      }
-      if role != "" {
-        linebreak()
-        v(0.2em)
-        text(size: 13pt, fill: highlight-color, role)
-      }
-    },
+    let contacts = ()
+    let email = field(header-data, "email")
+    let phone = field(header-data, "phone")
+    let address = field(header-data, "address")
+    let gh = header-data.at("github", default: none)
+    let li = header-data.at("linkedin", default: none)
+    let ws = header-data.at("website", default: none)
 
-    // Right column: github, linkedin, website
-    {
-      let items = ()
-      let gh = header-data.at("github", default: none)
-      let li = header-data.at("linkedin", default: none)
-      let ws = header-data.at("website", default: none)
-      if gh != none and field(gh, "url") != "" {
-        let url = field(gh, "url")
-        let display = field(gh, "displayText", fallback: url)
-        items.push(text(size: 9pt, link(url, display)))
-      }
-      if li != none and field(li, "url") != "" {
-        let url = field(li, "url")
-        let display = field(li, "displayText", fallback: url)
-        items.push(text(size: 9pt, link(url, display)))
-      }
-      if ws != none and field(ws, "url") != "" {
-        let url = field(ws, "url")
-        let display = field(ws, "displayText", fallback: url)
-        items.push(text(size: 9pt, link(url, display)))
-      }
-      items.join(linebreak())
-    },
-  )
+    if email != "" { contacts.push(link("mailto:" + email, email)) }
+    if phone != "" { contacts.push(phone) }
+    if address != "" { contacts.push(address) }
+    if gh != none and field(gh, "url") != "" {
+      contacts.push(link(field(gh, "url"), field(gh, "displayText", fallback: field(gh, "url"))))
+    }
+    if li != none and field(li, "url") != "" {
+      contacts.push(link(field(li, "url"), field(li, "displayText", fallback: field(li, "url"))))
+    }
+    if ws != none and field(ws, "url") != "" {
+      contacts.push(link(field(ws, "url"), field(ws, "displayText", fallback: field(ws, "url"))))
+    }
+    text(size: 9pt, fill: rgb(80, 80, 80), contacts.join("   |   "))
+    v(0.5em)
+  } else {
+    // Three-column centered header: left contact | center name+role | right links
+    grid(
+      columns: (1fr, 2fr, 1fr),
+      align: (left, center, right),
+
+      // Left column: phone, city, email
+      {
+        let items = ()
+        let phone = field(header-data, "phone")
+        let address = field(header-data, "address")
+        let email = field(header-data, "email")
+        if phone != "" { items.push(text(size: 9pt, phone)) }
+        if address != "" { items.push(text(size: 9pt, address)) }
+        if email != "" { items.push(text(size: 9pt, link("mailto:" + email, email))) }
+        items.join(linebreak())
+      },
+
+      // Center column: name + role
+      {
+        let name = field(header-data, "name")
+        let role = field(header-data, "role")
+        if name != "" {
+          text(size: 22pt, weight: "bold", name)
+        }
+        if role != "" {
+          linebreak()
+          v(0.2em)
+          text(size: 13pt, fill: highlight-color, role)
+        }
+      },
+
+      // Right column: github, linkedin, website
+      {
+        let items = ()
+        let gh = header-data.at("github", default: none)
+        let li = header-data.at("linkedin", default: none)
+        let ws = header-data.at("website", default: none)
+        if gh != none and field(gh, "url") != "" {
+          let url = field(gh, "url")
+          let display = field(gh, "displayText", fallback: url)
+          items.push(text(size: 9pt, link(url, display)))
+        }
+        if li != none and field(li, "url") != "" {
+          let url = field(li, "url")
+          let display = field(li, "displayText", fallback: url)
+          items.push(text(size: 9pt, link(url, display)))
+        }
+        if ws != none and field(ws, "url") != "" {
+          let url = field(ws, "url")
+          let display = field(ws, "displayText", fallback: url)
+          items.push(text(size: 9pt, link(url, display)))
+        }
+        items.join(linebreak())
+      },
+    )
+  }
 
   // Header rule
   v(0.4em)
@@ -110,10 +157,22 @@
 // ── Section heading ───────────────────────────────────────────────────────────
 #let section-heading(title) = {
   v(section-gap)
-  text(fill: highlight-color, weight: "regular", size: 12pt, smallcaps(title))
-  v(-0.6em)
-  line(length: 100%, stroke: 0.5pt + highlight-color)
-  v(0.15em)
+  block(width: 100%, breakable: false, {
+    let divider-style = layout.at("sectionDivider", default: opts.at("sectionDivider", default: "rule"))
+    text(fill: highlight-color, weight: "regular", font: heading-font, size: 12pt, smallcaps(title))
+    
+    if divider-style == "rule" {
+      v(-0.6em)
+      line(length: 100%, stroke: 0.5pt + highlight-color)
+      v(0.15em)
+    } else if divider-style == "underline" {
+      v(-0.6em)
+      line(length: 100%, stroke: 1.25pt + highlight-color)
+      v(0.15em)
+    } else {
+      v(0.15em)
+    }
+  })
 }
 
 // ── Date formatter ────────────────────────────────────────────────────────────
@@ -167,6 +226,9 @@
 #let bullet-list(items) = {
   let filtered = items.filter(b => b != none and str(b).trim() != "")
   if filtered.len() > 0 {
+    let bullet-style = layout.at("bulletStyle", default: opts.at("bulletStyle", default: "bullet"))
+    let marker-sym = if bullet-style == "dash" { [–] } else if bullet-style == "square" { [▪] } else { [•] }
+    set list(marker: (marker-sym,), body-indent: 0.5em)
     for item in filtered {
       [- #text(size: body-size, str(item))]
     }

@@ -208,6 +208,9 @@ export interface ColorControl {
 export interface LayoutControl {
   templateId: RenderTemplateId;
   headerStyle?: 'centered' | 'left' | 'split';
+  pageSize?: 'letter' | 'a4' | 'legal';
+  sectionDivider?: 'rule' | 'underline' | 'none';
+  bulletStyle?: 'bullet' | 'dash' | 'square';
 }
 
 export interface RenderOptions {
@@ -223,6 +226,10 @@ export interface RenderOptions {
   lineSpacing?: number;
   margin?: string;
   accentColor?: RenderAccentColor;
+  pageSize?: 'letter' | 'a4' | 'legal';
+  headingsFont?: RenderFontFamily;
+  sectionDivider?: 'rule' | 'underline' | 'none';
+  bulletStyle?: 'bullet' | 'dash' | 'square';
   
   maxBulletsPerEntry: number;
   pageLimit: 1 | 2;
@@ -274,7 +281,7 @@ export const DEFAULT_RESUME_SECTION_ORDER: ResumeSectionKey[] = [
 ];
 
 export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
-  layout: { templateId: "template2", headerStyle: "centered" },
+  layout: { templateId: "template2", headerStyle: "centered", pageSize: "letter", sectionDivider: "rule", bulletStyle: "bullet" },
   typography: { fontFamily: "TeX Gyre Termes", baseFontSize: 11, lineHeight: 1.15 },
   spacing: { margin: "1cm", sectionGap: 14, entryGap: 8 },
   colors: { primaryAccent: "charcoal" },
@@ -286,6 +293,10 @@ export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   fontSize: 11,
   lineSpacing: 1.15,
   margin: "1cm",
+  pageSize: "letter",
+  headingsFont: "TeX Gyre Termes",
+  sectionDivider: "rule",
+  bulletStyle: "bullet",
   
   maxBulletsPerEntry: 4,
   pageLimit: 1,
