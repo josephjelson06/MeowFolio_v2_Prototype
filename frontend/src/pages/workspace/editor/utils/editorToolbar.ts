@@ -1,5 +1,5 @@
 import type { ToolbarValues } from 'pages/workspace/editor/types';
-import type { RenderAccentColor, RenderOptions } from 'types/resumeDocument';
+import type { RenderAccentColor, RenderOptions, RenderFontFamily } from 'types/resumeDocument';
 
 const ACCENT_COLORS: RenderAccentColor[] = ['charcoal', 'navy', 'slate', 'forest', 'berry'];
 
@@ -30,7 +30,7 @@ export function applyToolbarValues(current: RenderOptions, values: ToolbarValues
     layout: current.layout || { templateId: current.templateId || 'template2', headerStyle: 'centered' },
     typography: {
       ...current.typography,
-      fontFamily: values.font as RenderOptions['fontFamily'],
+      fontFamily: values.font as RenderFontFamily,
       baseFontSize: values.fontSize,
       lineHeight: values.lineSpacing / 100,
     },

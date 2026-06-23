@@ -12,6 +12,17 @@ const fallbackTemplates: TemplateRecord[] = [
     sectionStyle: 'rule',
     availableForCompile: false,
   },
+  {
+    id: 'template3',
+    name: 'Engineering Minimalist',
+    badge: 'Template 2',
+    bestFor: 'Left-aligned tech resumes, optimized for FAANG and technical roles',
+    density: 'balanced',
+    headerLayout: 'left',
+    previewImageUrl: '/Templates/previews/template3.jpg',
+    sectionStyle: 'rule',
+    availableForCompile: false,
+  },
 ];
 
 export const templateService = {

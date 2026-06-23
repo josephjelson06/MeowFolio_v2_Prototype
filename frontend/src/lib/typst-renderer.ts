@@ -58,7 +58,7 @@ export async function compilePdf(
     forest: { r: 34, g: 100, b: 75 },
     berry: { r: 140, g: 50, b: 80 },
   };
-  const accent = accentColors[renderOptions.accentColor] ?? accentColors.navy;
+  const accent = accentColors[renderOptions.accentColor || 'navy'] ?? accentColors.navy;
 
   // Prepare the inputs that the Typst template reads via sys.inputs
   const resumeDataJson = JSON.stringify(data);
@@ -149,7 +149,7 @@ export async function compileSvg(
     forest: { r: 34, g: 100, b: 75 },
     berry: { r: 140, g: 50, b: 80 },
   };
-  const accent = accentColors[renderOptions.accentColor] ?? accentColors.navy;
+  const accent = accentColors[renderOptions.accentColor || 'navy'] ?? accentColors.navy;
 
   const resumeDataJson = JSON.stringify(data);
   const renderOptsJson = JSON.stringify({
