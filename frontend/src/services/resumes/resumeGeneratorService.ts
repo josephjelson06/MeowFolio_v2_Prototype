@@ -86,6 +86,8 @@ export interface GenerateResumeOptions {
   baseResumeId?: string;
   /** Name for the newly created resume in the library */
   resumeTitle?: string;
+  /** JD ID to link this resume to the JD workspace */
+  targetJdId?: string;
 }
 
 export interface GenerateResumeResult {
@@ -154,6 +156,9 @@ export async function generateResume(
   try {
     const parsed = JSON.parse(rawJson);
     generated = mergeWithSkeleton(parsed, baseData);
+    if (options.targetJdId) {
+      generated.meta.targetJdId = options.targetJdId;
+    }
   } catch {
     throw new Error('AI returned invalid JSON. Please try again.');
   }

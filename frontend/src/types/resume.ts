@@ -5,6 +5,7 @@ export interface ResumeRecord {
   updatedAt?: string;
   template: string;
   recent?: boolean;
+  targetJdId?: string;
 }
 
 export type ResumeScoreTone = 'high' | 'mid' | 'low';

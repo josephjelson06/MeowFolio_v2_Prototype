@@ -13,5 +13,6 @@ export const routes = {
   coverLetter: '/cover-letter',
   emailDrafter: '/email-drafter',
   tracker: '/tracker',
+  jdWorkspace: '/jds/:id',
 } as const;
 

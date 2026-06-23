@@ -8,6 +8,7 @@ import { AuthCallbackPage } from 'pages/public/AuthCallbackPage';
 import { DashboardPage } from 'pages/workspace/DashboardPage';
 import { ResumesPage } from 'pages/workspace/ResumesPage';
 import { JdsPage } from 'pages/workspace/JdsPage';
+import { JdWorkspacePage } from 'pages/workspace/jds/JdWorkspacePage';
 import { EditorPage } from 'pages/workspace/EditorPage';
 import { ProfilePage } from 'pages/workspace/ProfilePage';
 import { DebugPdfPage } from 'pages/workspace/DebugPdfPage';
@@ -59,6 +60,7 @@ export const router = createBrowserRouter([
           { path: routes.dashboard, element: <DashboardPage /> },
           { path: routes.resumes,   element: <ResumesPage /> },
           { path: routes.jds,       element: <JdsPage /> },
+          { path: routes.jdWorkspace, element: <JdWorkspacePage /> },
           { path: routes.profile,   element: <ProfilePage /> },
           { path: routes.editor,    element: <EditorPage /> },
           { path: routes.debugPdf,  element: <DebugPdfPage /> },

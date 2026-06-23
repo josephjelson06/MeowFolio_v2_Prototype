@@ -52,6 +52,7 @@ function mapRowToResumeRecord(row: any, index: number): ResumeRecord {
     updatedAt: row.updated_at ?? row.created_at,
     template: row.template_id ?? 'template2',
     recent: index === 0,
+    targetJdId: row.content_json?.meta?.targetJdId,
   };
 }
 

@@ -54,6 +54,7 @@ export interface ResumeMeta {
   createdAt: string;
   updatedAt: string;
   source: ResumeSource;
+  targetJdId?: string;
 }
 
 export interface DateField {
