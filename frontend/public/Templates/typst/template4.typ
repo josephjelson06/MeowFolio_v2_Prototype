@@ -1,8 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// MeowFolio — Template 4: Minimal (DS_Template conversion)
+// MeowFolio — Template 4: Minimal
 // ═══════════════════════════════════════════════════════════════════════════════
 // Reads resume data from a JSON string variable injected at compile time.
-// Accent: rgb(61, 90, 128)  |  Font: Source Sans Pro  |  Layout: centered header
+// Left-aligned, low-chrome, elegant layout with strong vertical breathing room.
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // Data is injected by the renderer as a stringified JSON variable
@@ -10,19 +10,30 @@
 #let opts = json(bytes(sys.inputs.at("render-options", default: "{}")))
 
 // ── Config ────────────────────────────────────────────────────────────────────
+#let typography = opts.at("typography", default: (:))
+#let spacing = opts.at("spacing", default: (:))
+#let colors = opts.at("colors", default: (:))
+
 #let highlight-color = rgb(
-  opts.at("accentColorR", default: 30),
+  opts.at("accentColorR", default: 50),
   opts.at("accentColorG", default: 50),
-  opts.at("accentColorB", default: 100),
+  opts.at("accentColorB", default: 50),
 )
-#let body-font = opts.at("fontFamily", default: "Georgia")
-#let body-size = eval(str(opts.at("fontSize", default: 10)) + "pt")
-#let page-margin = eval(str(opts.at("margin", default: "0.5in")))
+#let body-font = typography.at("fontFamily", default: opts.at("fontFamily", default: "Palatino"))
+#let body-size = eval(str(typography.at("baseFontSize", default: opts.at("fontSize", default: 10))) + "pt")
+#let line-height = eval(str(typography.at("lineHeight", default: opts.at("lineSpacing", default: 1.2))) + "em")
+
+#let page-margin = eval(str(spacing.at("margin", default: opts.at("margin", default: "0.6in"))))
+#let section-gap-val = spacing.at("sectionGap", default: 14)
+#let entry-gap-val = spacing.at("entryGap", default: 8)
+
+#let section-gap = eval(str(section-gap-val) + "pt")
+#let entry-gap = eval(str(entry-gap-val) + "pt")
 
 // ── Page setup ────────────────────────────────────────────────────────────────
 #set page(paper: "us-letter", margin: (x: page-margin, y: page-margin))
 #set text(font: body-font, size: body-size)
-#set par(justify: false, leading: 0.55em)
+#set par(justify: false, leading: line-height - 1em)
 
 // ── Helper: safe field access ─────────────────────────────────────────────────
 #let field(obj, key, fallback: "") = {
@@ -34,75 +45,60 @@
 // ── Header ────────────────────────────────────────────────────────────────────
 #let header-data = data.at("header", default: none)
 #if header-data != none {
-  // Three-column header: left contact | center name+role | right links
-  grid(
-    columns: (1fr, 2fr, 1fr),
-    align: (left, center, right),
-
-    // Left column: phone, city, email
-    {
-      let items = ()
-      let phone = field(header-data, "phone")
-      let address = field(header-data, "address")
-      let email = field(header-data, "email")
-      if phone != "" { items.push(text(size: 9pt, phone)) }
-      if address != "" { items.push(text(size: 9pt, address)) }
-      if email != "" { items.push(text(size: 9pt, link("mailto:" + email, email))) }
-      items.join(linebreak())
-    },
-
-    // Center column: name + role
-    {
-      let name = field(header-data, "name")
-      let role = field(header-data, "role")
-      if name != "" {
-        text(size: 22pt, weight: "bold", name)
-      }
-      if role != "" {
-        linebreak()
-        v(0.2em)
-        text(size: 13pt, fill: highlight-color, role)
-      }
-    },
-
-    // Right column: github, linkedin, website
-    {
-      let items = ()
-      let gh = header-data.at("github", default: none)
-      let li = header-data.at("linkedin", default: none)
-      let ws = header-data.at("website", default: none)
-      if gh != none and field(gh, "url") != "" {
-        let url = field(gh, "url")
-        let display = field(gh, "displayText", fallback: url)
-        items.push(text(size: 9pt, link(url, display)))
-      }
-      if li != none and field(li, "url") != "" {
-        let url = field(li, "url")
-        let display = field(li, "displayText", fallback: url)
-        items.push(text(size: 9pt, link(url, display)))
-      }
-      if ws != none and field(ws, "url") != "" {
-        let url = field(ws, "url")
-        let display = field(ws, "displayText", fallback: url)
-        items.push(text(size: 9pt, link(url, display)))
-      }
-      items.join(linebreak())
-    },
-  )
-
-  // Header rule
+  let name = field(header-data, "name")
+  let role = field(header-data, "role")
+  
+  if name != "" {
+    text(size: 26pt, weight: "regular", name)
+  }
+  if role != "" {
+    linebreak()
+    v(0.1em)
+    text(size: 11pt, weight: "medium", tracking: 0.1em, fill: highlight-color, upper(role))
+  }
+  
   v(0.4em)
-  line(length: 100%, stroke: 1pt + highlight-color)
-  v(0.3em)
+  
+  // Inline contact items
+  let contacts = ()
+  let email = field(header-data, "email")
+  let phone = field(header-data, "phone")
+  let address = field(header-data, "address")
+  let gh = header-data.at("github", default: none)
+  let li = header-data.at("linkedin", default: none)
+  let ws = header-data.at("website", default: none)
+  
+  if email != "" { contacts.push(link("mailto:" + email, email)) }
+  if phone != "" { contacts.push(phone) }
+  if address != "" { contacts.push(address) }
+  if gh != none and field(gh, "url") != "" {
+    let url = field(gh, "url")
+    let display = field(gh, "displayText", fallback: url)
+    contacts.push(link(url, display))
+  }
+  if li != none and field(li, "url") != "" {
+    let url = field(li, "url")
+    let display = field(li, "displayText", fallback: url)
+    contacts.push(link(url, display))
+  }
+  if ws != none and field(ws, "url") != "" {
+    let url = field(ws, "url")
+    let display = field(ws, "displayText", fallback: url)
+    contacts.push(link(url, display))
+  }
+  
+  text(size: 8.5pt, fill: rgb(110, 110, 110), contacts.join("   ·   "))
+  v(0.8em)
 }
 
 // ── Section heading ───────────────────────────────────────────────────────────
 #let section-heading(title) = {
-  v(0.5em)
-  text(fill: highlight-color, weight: "regular", size: 12pt, smallcaps(title))
-  v(-0.6em)
-  line(length: 100%, stroke: 0.5pt + highlight-color)
-  v(0.15em)
+  v(section-gap)
+  block(width: 100%, breakable: false, {
+    // Low-chrome styling: no horizontal rule line, just elegant bold tracking
+    text(fill: highlight-color, weight: "bold", size: 11pt, tracking: 0.05em, upper(title))
+    v(0.3em)
+  })
 }
 
 // ── Date formatter ────────────────────────────────────────────────────────────
@@ -140,14 +136,16 @@
       {
         text(weight: "bold", size: body-size, title)
         if subtitle != "" {
-          text(" | ", weight: "regular")
-          text(style: "italic", subtitle)
+          text("  ·  ", weight: "regular", fill: rgb(150, 150, 150))
+          text(style: "normal", weight: "regular", subtitle)
         }
       },
-      text(size: 9pt, date-str),
+      text(size: body-size, style: "italic", date-str),
     )
     if location != "" {
-      text(size: 9pt, style: "italic", location)
+      v(-0.25em)
+      text(size: 8.5pt, style: "normal", fill: rgb(120, 120, 120), location)
+      v(0.1em)
     }
   })
 }
@@ -156,6 +154,7 @@
 #let bullet-list(items) = {
   let filtered = items.filter(b => b != none and str(b).trim() != "")
   if filtered.len() > 0 {
+    set list(marker: ([–],), body-indent: 0.5em)
     for item in filtered {
       [- #text(size: body-size, str(item))]
     }
@@ -197,10 +196,10 @@
 
     entry-header(if inst != "" { inst } else { title }, if inst != "" { title } else { "" }, loc, date)
     if result != "" {
-      text(size: 9pt, style: "italic", "Result: " + result)
+      text(size: 8.5pt, style: "italic", "Result: " + result)
       linebreak()
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -223,11 +222,11 @@
         linebreak()
       }
     }
-    v(0.2em)
+    v(entry-gap)
   } else if items.len() > 0 {
     section-heading("Skills")
     text(size: body-size, items.join(", "))
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -257,7 +256,7 @@
         }
       }
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -287,7 +286,7 @@
         }
       }
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -307,7 +306,7 @@
       text(size: body-size, desc)
       linebreak()
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -342,7 +341,7 @@
         }
       }
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 

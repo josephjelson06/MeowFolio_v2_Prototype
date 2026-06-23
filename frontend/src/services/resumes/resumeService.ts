@@ -74,6 +74,62 @@ function deepMerge<T extends object>(target: T, source: any): T {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+function migrateRenderOptions(options: any): RenderOptions {
+  const migrated = { ...DEFAULT_RENDER_OPTIONS };
+  const rawOpts = options || {};
+
+  const typography = rawOpts.typography || {};
+  const spacing = rawOpts.spacing || {};
+  const colors = rawOpts.colors || {};
+  const layout = rawOpts.layout || {};
+
+  const legacyFont = rawOpts.fontFamily || rawOpts.font || DEFAULT_RENDER_OPTIONS.fontFamily;
+  const legacySize = rawOpts.fontSize || DEFAULT_RENDER_OPTIONS.fontSize;
+  const legacyLineSpacing = rawOpts.lineSpacing || rawOpts.lineHeight || DEFAULT_RENDER_OPTIONS.lineSpacing;
+  const legacyMargin = rawOpts.margin || DEFAULT_RENDER_OPTIONS.margin;
+  const legacyAccent = rawOpts.accentColor || rawOpts.colors?.primaryAccent || DEFAULT_RENDER_OPTIONS.accentColor;
+  const legacyTemplate = rawOpts.templateId || DEFAULT_RENDER_OPTIONS.templateId;
+
+  migrated.typography = {
+    fontFamily: typography.fontFamily || legacyFont,
+    baseFontSize: typography.baseFontSize || legacySize,
+    lineHeight: typography.lineHeight || legacyLineSpacing,
+    headingFont: typography.headingFont || undefined,
+  };
+
+  migrated.spacing = {
+    margin: spacing.margin || legacyMargin,
+    sectionGap: spacing.sectionGap ?? rawOpts.sectionGap ?? DEFAULT_RENDER_OPTIONS.spacing.sectionGap,
+    entryGap: spacing.entryGap ?? rawOpts.entryGap ?? DEFAULT_RENDER_OPTIONS.spacing.entryGap,
+  };
+
+  migrated.colors = {
+    primaryAccent: colors.primaryAccent || legacyAccent,
+    secondaryAccent: colors.secondaryAccent || undefined,
+  };
+
+  migrated.layout = {
+    templateId: layout.templateId || legacyTemplate,
+    headerStyle: layout.headerStyle || (layout.templateId === 'template3' || legacyTemplate === 'template3' ? 'left' : 'centered'),
+  };
+
+  migrated.pageLimit = rawOpts.pageLimit ?? DEFAULT_RENDER_OPTIONS.pageLimit;
+  migrated.maxBulletsPerEntry = rawOpts.maxBulletsPerEntry ?? DEFAULT_RENDER_OPTIONS.maxBulletsPerEntry;
+  migrated.sectionOrder = rawOpts.sectionOrder || [...DEFAULT_RENDER_OPTIONS.sectionOrder];
+  migrated.sectionTitles = rawOpts.sectionTitles || {};
+
+  // Sync flat legacy fields
+  migrated.templateId = migrated.layout.templateId;
+  migrated.fontFamily = migrated.typography.fontFamily;
+  migrated.fontSize = migrated.typography.baseFontSize;
+  migrated.lineSpacing = migrated.typography.lineHeight;
+  migrated.margin = migrated.spacing.margin;
+  migrated.accentColor = migrated.colors.primaryAccent;
+
+  return migrated;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
   return {
     id: row.id,
@@ -81,7 +137,7 @@ function mapRowToDocumentRecord(row: any): ResumeDocumentRecord {
     source: row.source ?? 'scratch',
     templateId: row.template_id ?? 'template2',
     content: deepMerge(createEmptyResumeData(), row.content_json),
-    renderOptions: deepMerge(DEFAULT_RENDER_OPTIONS, row.render_options),
+    renderOptions: migrateRenderOptions(row.render_options),
     rawText: row.raw_text ?? '',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
