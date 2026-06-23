@@ -10,19 +10,30 @@
 #let opts = json(bytes(sys.inputs.at("render-options", default: "{}")))
 
 // ── Config ────────────────────────────────────────────────────────────────────
+#let typography = opts.at("typography", default: (:))
+#let spacing = opts.at("spacing", default: (:))
+#let colors = opts.at("colors", default: (:))
+
 #let highlight-color = rgb(
   opts.at("accentColorR", default: 61),
   opts.at("accentColorG", default: 90),
   opts.at("accentColorB", default: 128),
 )
-#let body-font = opts.at("fontFamily", default: "Source Sans Pro")
-#let body-size = eval(str(opts.at("fontSize", default: 10)) + "pt")
-#let page-margin = eval(str(opts.at("margin", default: "0.5in")))
+#let body-font = typography.at("fontFamily", default: opts.at("fontFamily", default: "Source Sans Pro"))
+#let body-size = eval(str(typography.at("baseFontSize", default: opts.at("fontSize", default: 10))) + "pt")
+#let line-height = eval(str(typography.at("lineHeight", default: opts.at("lineSpacing", default: 1.15))) + "em")
+
+#let page-margin = eval(str(spacing.at("margin", default: opts.at("margin", default: "0.5in"))))
+#let section-gap-val = spacing.at("sectionGap", default: 14)
+#let entry-gap-val = spacing.at("entryGap", default: 8)
+
+#let section-gap = eval(str(section-gap-val) + "pt")
+#let entry-gap = eval(str(entry-gap-val) + "pt")
 
 // ── Page setup ────────────────────────────────────────────────────────────────
 #set page(paper: "us-letter", margin: (x: page-margin, y: page-margin))
 #set text(font: body-font, size: body-size)
-#set par(justify: false, leading: 0.55em)
+#set par(justify: false, leading: line-height - 1em)
 
 // ── Helper: safe field access ─────────────────────────────────────────────────
 #let field(obj, key, fallback: "") = {
@@ -98,7 +109,7 @@
 
 // ── Section heading ───────────────────────────────────────────────────────────
 #let section-heading(title) = {
-  v(0.5em)
+  v(section-gap)
   text(fill: highlight-color, weight: "regular", size: 12pt, smallcaps(title))
   v(-0.6em)
   line(length: 100%, stroke: 0.5pt + highlight-color)
@@ -200,7 +211,7 @@
       text(size: 9pt, style: "italic", "Result: " + result)
       linebreak()
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -223,11 +234,11 @@
         linebreak()
       }
     }
-    v(0.2em)
+    v(entry-gap)
   } else if items.len() > 0 {
     section-heading("Skills")
     text(size: body-size, items.join(", "))
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -257,7 +268,7 @@
         }
       }
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -287,7 +298,7 @@
         }
       }
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -307,7 +318,7 @@
       text(size: body-size, desc)
       linebreak()
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 
@@ -342,7 +353,7 @@
         }
       }
     }
-    v(0.2em)
+    v(entry-gap)
   }
 }
 

@@ -187,14 +187,44 @@ export interface ResumeData {
   hobbies: HobbiesSection;
 }
 
-export interface RenderOptions {
-  templateId: RenderTemplateId;
+export interface TypographyControl {
   fontFamily: RenderFontFamily;
-  fontSize: number;
-  lineSpacing: number;
-  maxBulletsPerEntry: number;
+  headingFont?: RenderFontFamily;
+  baseFontSize: number;
+  lineHeight: number;
+}
+
+export interface SpacingControl {
   margin: string;
-  accentColor: RenderAccentColor;
+  sectionGap: number;
+  entryGap: number;
+}
+
+export interface ColorControl {
+  primaryAccent: RenderAccentColor;
+  secondaryAccent?: RenderAccentColor;
+}
+
+export interface LayoutControl {
+  templateId: RenderTemplateId;
+  headerStyle?: 'centered' | 'left' | 'split';
+}
+
+export interface RenderOptions {
+  layout: LayoutControl;
+  typography: TypographyControl;
+  spacing: SpacingControl;
+  colors: ColorControl;
+  
+  // Legacy fields preserved for backward compatibility and to avoid massive breakage
+  templateId?: RenderTemplateId;
+  fontFamily?: RenderFontFamily;
+  fontSize?: number;
+  lineSpacing?: number;
+  margin?: string;
+  accentColor?: RenderAccentColor;
+  
+  maxBulletsPerEntry: number;
   pageLimit: 1 | 2;
   sectionOrder: OrderedResumeSectionId[];
   sectionTitles: Partial<Record<ResumeSectionKey, string>>;
@@ -244,13 +274,20 @@ export const DEFAULT_RESUME_SECTION_ORDER: ResumeSectionKey[] = [
 ];
 
 export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
+  layout: { templateId: "template2", headerStyle: "centered" },
+  typography: { fontFamily: "TeX Gyre Termes", baseFontSize: 11, lineHeight: 1.15 },
+  spacing: { margin: "1cm", sectionGap: 14, entryGap: 8 },
+  colors: { primaryAccent: "charcoal" },
+  
+  // Legacy fields preserved for backward compatibility
   accentColor: "charcoal",
   fontFamily: "TeX Gyre Termes",
   templateId: "template2",
   fontSize: 11,
   lineSpacing: 1.15,
-  maxBulletsPerEntry: 4,
   margin: "1cm",
+  
+  maxBulletsPerEntry: 4,
   pageLimit: 1,
   sectionOrder: [...DEFAULT_RESUME_SECTION_ORDER],
   sectionTitles: {}

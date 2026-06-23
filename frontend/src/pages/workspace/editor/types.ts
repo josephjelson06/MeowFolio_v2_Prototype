@@ -11,6 +11,8 @@ export interface ToolbarValues {
   fontSize: number;
   lineSpacing: number;
   margins: number;
+  sectionGap: number;
+  entryGap: number;
   colorIndex: number;
 }
 

@@ -49,6 +49,20 @@ export function ToolbarPane({
           </div>
           <input type="range" min="10" max="30" value={values.margins} onChange={event => onChange({ margins: Number(event.target.value) })} />
         </div>
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span className="font-semibold text-on-surface">Section Spacing</span>
+            <span className="font-headline text-sm font-bold text-primary">{values.sectionGap}pt</span>
+          </div>
+          <input type="range" min="4" max="24" value={values.sectionGap} onChange={event => onChange({ sectionGap: Number(event.target.value) })} />
+        </div>
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span className="font-semibold text-on-surface">Entry Spacing</span>
+            <span className="font-headline text-sm font-bold text-primary">{values.entryGap}pt</span>
+          </div>
+          <input type="range" min="0" max="16" value={values.entryGap} onChange={event => onChange({ entryGap: Number(event.target.value) })} />
+        </div>
       </div>
 
       <div className="grid gap-4 rounded-[1.25rem] border border-outline-variant bg-white/75 p-4">
